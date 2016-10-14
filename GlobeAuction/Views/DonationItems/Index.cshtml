@@ -1,0 +1,69 @@
+﻿@model IEnumerable<GlobeAuction.Models.DonationItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Restrictions)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpirationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DollarValue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdateDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Restrictions)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExpirationDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DollarValue)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreateDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UpdateDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.DonationItemId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.DonationItemId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.DonationItemId })
+        </td>
+    </tr>
+}
+
+</table>
