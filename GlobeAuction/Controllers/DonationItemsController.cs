@@ -36,6 +36,7 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Create
+        [AllowAnonymous]
         public ActionResult Create()
         {
             var previousSolicitor = TempData["PreviousSolicitor"] as Solicitor;
@@ -62,6 +63,8 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+
         public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem)
         {
             if (ModelState.IsValid)
