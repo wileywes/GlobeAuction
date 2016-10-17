@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GlobeAuction.Models
 {
-    public class BuyableItemGroup
+    public class AuctionItem
     {
         /// <summary>
         /// Entered by admin, uniqueness enforced by DB

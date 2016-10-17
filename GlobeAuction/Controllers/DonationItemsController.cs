@@ -15,12 +15,14 @@ namespace GlobeAuction.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: DonationItems
+        [Authorize(Roles = Roles.CanEditItems)]
         public ActionResult Index()
         {
-            return View(db.DonationItems.ToList());
+            return View(db.DonationItems.Where(i => i.IsDeleted == false).ToList());
         }
 
         // GET: DonationItems/Details/5
+        [Authorize(Roles = Roles.CanEditItems)]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -64,7 +66,6 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-
         public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem)
         {
             if (ModelState.IsValid)
@@ -87,6 +88,7 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Edit/5
+        [Authorize(Roles = Roles.CanEditItems)]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -106,6 +108,7 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = Roles.CanEditItems)]
         public ActionResult Edit([Bind(Include = "DonationItemId,Category,Description,Restrictions,ExpirationDate,DollarValue,CreateDate,UpdateDate")] DonationItem donationItem)
         {
             if (ModelState.IsValid)
@@ -118,6 +121,7 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Delete/5
+        [Authorize(Roles = Roles.CanEditItems)]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -135,10 +139,11 @@ namespace GlobeAuction.Controllers
         // POST: DonationItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = Roles.CanEditItems)]
         public ActionResult DeleteConfirmed(int id)
         {
             DonationItem donationItem = db.DonationItems.Find(id);
-            db.DonationItems.Remove(donationItem);
+            donationItem.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

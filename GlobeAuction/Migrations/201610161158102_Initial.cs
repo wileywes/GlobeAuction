@@ -3,7 +3,7 @@ namespace GlobeAuction.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class Initial : DbMigration
     {
         public override void Up()
         {
@@ -19,6 +19,8 @@ namespace GlobeAuction.Migrations
                         DollarValue = c.Int(),
                         CreateDate = c.DateTime(nullable: false),
                         UpdateDate = c.DateTime(nullable: false),
+                        UpdateBy = c.String(),
+                        IsDeleted = c.Boolean(nullable: false),
                         Donor_DonorId = c.Int(),
                         Solicitor_SolicitorId = c.Int(),
                     })

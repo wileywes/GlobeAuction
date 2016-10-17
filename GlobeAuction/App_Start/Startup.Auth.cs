@@ -59,11 +59,11 @@ namespace GlobeAuction
             //   appId: "",
             //   appSecret: "");
 
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            /*app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {
                 ClientId = ConfigurationManager.AppSettings["GoogleClientID"],
                 ClientSecret = ConfigurationManager.AppSettings["GoogleSecret"]
-            });
+            });*/
         }
     }
 }

@@ -25,6 +25,8 @@ namespace GlobeAuction.Models
 
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public string UpdateBy { get; set; }
+        public bool IsDeleted { get; set; }
         
         public Solicitor Solicitor { get; set; }
         public Donor Donor { get; set; }
