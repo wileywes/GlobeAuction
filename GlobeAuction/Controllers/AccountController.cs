@@ -155,8 +155,10 @@ namespace GlobeAuction.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    SetupNewUser(user);
+
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -374,6 +376,8 @@ namespace GlobeAuction.Controllers
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
+                        SetupNewUser(user);
+
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         return RedirectToLocal(returnUrl);
                     }
@@ -401,6 +405,15 @@ namespace GlobeAuction.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        private void SetupNewUser(ApplicationUser user)
+        {
+            var newUser = UserManager.FindByName(user.UserName);
+            if (user.UserName.Equals("williams.wes@gmail.com"))
+            {
+                UserManager.AddToRole(newUser.Id, AuctionRoles.CanAdminUsers);
+            }
         }
 
         protected override void Dispose(bool disposing)

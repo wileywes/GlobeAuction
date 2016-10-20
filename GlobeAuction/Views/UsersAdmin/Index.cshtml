@@ -1,0 +1,56 @@
+﻿@model IEnumerable<GlobeAuction.Models.ApplicationUserWithRoleNames>
+
+@{
+    ViewBag.Title = "User Accounts";
+}
+
+<h2>User Accounts</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>Edit Items</th>
+        <th>Edit Winners</th>
+        <th>Checkout Winners</th>
+        <th>Admin Users</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td align="">
+                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                {
+                    <img src="~/Content/Images/checkmark.jpg" />
+                }
+            </td>
+            <td>
+                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditWinners))
+                {
+                    <img src="~/Content/Images/checkmark.jpg" />
+                }
+            </td>
+            <td>
+                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                {
+                    <img src="~/Content/Images/checkmark.jpg" />
+                }
+            </td>
+            <td>
+                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
+                {
+                    <img src="~/Content/Images/checkmark.jpg" />
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

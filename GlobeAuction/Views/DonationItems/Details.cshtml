@@ -1,19 +1,123 @@
 ﻿@model GlobeAuction.Models.DonationItem
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Donation Details";
 }
 
-<h2>Details</h2>
+<h2>Donation Details</h2>
 
 <div>
-    <h4>DonationItem</h4>
+    <h4>Solicitor Information</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Solicitor.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Solicitor.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Solicitor.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Solicitor.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Solicitor.Phone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Solicitor.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Solicitor.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Solicitor.Email)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Donor Information</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.BusinessName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.BusinessName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.ContactName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.ContactName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.Phone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.Address1)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.Address1)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.Address2)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.Address2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.City)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.State)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Donor.Zip)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Donor.Zip)
+        </dd>
+
+    </dl>
+</div>
+
+
+<div>
+    <h4>Donation Information</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Category)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Category)
         </dd>
@@ -21,7 +125,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Description)
         </dd>
@@ -29,7 +132,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.Restrictions)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Restrictions)
         </dd>
@@ -37,7 +139,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.ExpirationDate)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.ExpirationDate)
         </dd>
@@ -45,7 +146,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.DollarValue)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.DollarValue)
         </dd>
@@ -53,7 +153,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.CreateDate)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.CreateDate)
         </dd>
@@ -61,13 +160,20 @@
         <dt>
             @Html.DisplayNameFor(model => model.UpdateDate)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.UpdateDate)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdateBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UpdateBy)
+        </dd>
+
     </dl>
 </div>
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.DonationItemId }) |
     @Html.ActionLink("Back to List", "Index")

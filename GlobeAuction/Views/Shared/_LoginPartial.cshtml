@@ -1,11 +1,15 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
-        <ul class="nav navbar-nav">
-            <li>@Html.ActionLink("Items", "Index", "DonationItems")</li>
-        </ul>
-        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    <ul class="nav navbar-nav">
+        <li>@Html.ActionLink("Items", "Index", "DonationItems")</li>
+        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
         {
+            <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>
+        }
+    </ul>
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
         @Html.AntiForgeryToken()
 
         <ul class="nav navbar-nav navbar-right">
@@ -14,11 +18,11 @@
             </li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
-        }
-        }
-        else
-        {
-        <ul class="nav navbar-nav navbar-right">
-            <li>@Html.ActionLink("Volunteer Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-        </ul>
-        }
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Volunteer Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -37,10 +37,6 @@ namespace GlobeAuction.Migrations
 
         private void SetupRoles(ApplicationDbContext context)
         {
-            var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
-            var ir = rm.Create(new IdentityRole(Roles.CanCheckoutWinners));
-            ir = rm.Create(new IdentityRole(Roles.CanEditItems));
-            ir = rm.Create(new IdentityRole(Roles.CanEditWinners));
 
             /*
             var um = new UserManager<ApplicationUser>(

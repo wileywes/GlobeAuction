@@ -35,7 +35,7 @@
                     @Html.DisplayNameFor(model => model.DollarValue)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Donor.BusinessName)
+                    @Html.DisplayNameFor(model => model.UpdateDate)
                 </th>
                 <th></th>
             </tr>
@@ -60,7 +60,7 @@
                         @Html.DisplayFor(modelItem => item.DollarValue)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Donor.BusinessName)
+                        @Html.DisplayFor(modelItem => item.UpdateDate)
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.DonationItemId }) |

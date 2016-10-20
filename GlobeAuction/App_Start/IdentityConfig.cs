@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -14,6 +10,25 @@ using GlobeAuction.Models;
 
 namespace GlobeAuction
 {
+    public class IdentityConfig
+    {
+        public static void SetupIdentity()
+        {
+            var context = new ApplicationDbContext();
+            var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+            AuctionRoles.GetAllRoleNames().ForEach(roleName => CreateRoleIfNotExists(rm, roleName));
+        }
+
+        private static void CreateRoleIfNotExists(RoleManager<IdentityRole> rm, string roleName)
+        {
+            if (!rm.RoleExists(roleName))
+            {
+                rm.Create(new IdentityRole(roleName));
+            }
+        }
+    }
+
     public class EmailService : IIdentityMessageService
     {
         public Task SendAsync(IdentityMessage message)
