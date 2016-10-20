@@ -15,7 +15,8 @@ namespace GlobeAuction.Models
         public int BidIncrement { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
-        
+        public string UpdateBy { get; set; }
+
         /// <summary>
         /// List of items in this buyable group - could be 1 or more donation items
         /// </summary>

@@ -20,6 +20,9 @@
         <thead>
             <tr>
                 <th>
+                    @Html.DisplayNameFor(model => model.DonationItemId)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Category)
                 </th>
                 <th>
@@ -44,6 +47,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DonationItemId)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Category)
                     </td>

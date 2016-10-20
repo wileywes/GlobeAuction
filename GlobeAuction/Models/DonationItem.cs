@@ -11,6 +11,7 @@ namespace GlobeAuction.Models
         public string Category { get; set; }
 
         [Required]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
         public string Restrictions { get; set; }
@@ -21,8 +22,6 @@ namespace GlobeAuction.Models
         [DataType(DataType.Currency)]
         public int? DollarValue { get; set; }
 
-        //solicitor can enter quantity and we'll create separate DonationItems for each one
-
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
@@ -30,5 +29,14 @@ namespace GlobeAuction.Models
         
         public Solicitor Solicitor { get; set; }
         public Donor Donor { get; set; }
+
+        public DonationItem Clone()
+        {
+            var newItem = (DonationItem)MemberwiseClone();
+            newItem.DonationItemId = 0;
+            newItem.Donor = this.Donor;
+            newItem.Solicitor = this.Solicitor;
+            return newItem;
+        }
     }
 }

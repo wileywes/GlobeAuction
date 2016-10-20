@@ -70,23 +70,40 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem)
+        public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, string quantity)
         {
-            if (ModelState.IsValid)
+            int qty;
+            if (int.TryParse(quantity, out qty) && qty >= 1 && qty <= 20)
             {
-                //tie to existing Solicitor by email
-                var existingSolicitor = db.Solicitors.FirstOrDefault(s => s.Email.Equals(donationItem.Solicitor.Email, StringComparison.OrdinalIgnoreCase));
-                if (existingSolicitor != null)
-                    donationItem.Solicitor = existingSolicitor;
+                if (ModelState.IsValid)
+                {
+                    //tie to existing Solicitor by email
+                    var existingSolicitor = db.Solicitors.FirstOrDefault(s => s.Email.Equals(donationItem.Solicitor.Email, StringComparison.OrdinalIgnoreCase));
+                    if (existingSolicitor != null)
+                        donationItem.Solicitor = existingSolicitor;
 
-                donationItem.CreateDate = donationItem.UpdateDate = DateTime.Now;
-                donationItem.UpdateBy = donationItem.Solicitor.Email;
+                    donationItem.CreateDate = donationItem.UpdateDate = DateTime.Now;
+                    donationItem.UpdateBy = donationItem.Solicitor.Email;
 
-                db.DonationItems.Add(donationItem);
-                db.SaveChanges();
+                    db.DonationItems.Add(donationItem);
 
-                TempData["PreviousSolicitor"] = donationItem.Solicitor;
-                return RedirectToAction("Create");
+                    if (qty > 1)
+                    {
+                        for(int i=1; i < qty; i++)
+                        {
+                            var newDonation = donationItem.Clone();
+                            db.DonationItems.Add(newDonation);
+                        }
+                    }
+                    db.SaveChanges();
+
+                    TempData["PreviousSolicitor"] = donationItem.Solicitor;
+                    return RedirectToAction("Create");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("quantity", "Quantity must be a number between 1 and 20.");
             }
 
             AddDonationItemControlInfo(donationItem);
