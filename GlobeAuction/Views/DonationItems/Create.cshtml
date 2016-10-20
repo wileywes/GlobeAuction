@@ -16,11 +16,8 @@
 
     if (ViewData.ContainsKey("showSuccess"))
     {
-        <div class="panel panel-success">
-            <div class="panel-heading">Donation Submitted</div>
-            <div class="panel-body">
-                Thank you for submitting a donation!  If you'd like to enter another donation please do so below.
-            </div>
+        <div class="alert-success alert">
+            Thank you for submitting a donation!  If you'd like to enter another donation please do so below.
         </div>
     }
 
@@ -130,8 +127,8 @@
         <div class="form-group">
             @Html.MyLabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Category, (IEnumerable<SelectListItem>)ViewBag.DonationItemCategories, 
-                        "Select a Category" , new { htmlAttributes=new { @class="form-control" } })
+                @Html.DropDownListFor(model => model.Category, (IEnumerable<SelectListItem>)ViewBag.DonationItemCategories,
+                        "Select a Category", new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
             </div>
         </div>
