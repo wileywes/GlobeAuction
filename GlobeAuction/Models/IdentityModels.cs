@@ -41,6 +41,6 @@ namespace GlobeAuction.Models
 
         public System.Data.Entity.DbSet<GlobeAuction.Models.DonationItem> DonationItems { get; set; }
         public System.Data.Entity.DbSet<GlobeAuction.Models.Solicitor> Solicitors { get; set; }
-        public System.Data.Entity.DbSet<GlobeAuction.Models.Donor> Donors { get; set; }
+        public System.Data.Entity.DbSet<GlobeAuction.Models.AuctionItem> AuctionItems { get; set; }
     }
 }
