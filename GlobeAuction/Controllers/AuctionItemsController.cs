@@ -18,7 +18,18 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Index()
         {
-            return View(db.AuctionItems.ToList());
+            var auctionItems = db.AuctionItems.ToList();
+            var donationItemIdsInAuctionItem = db.AuctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
+            var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
+
+            var model = new ItemsViewModel
+            {
+                AuctionItems = auctionItems,
+                DonationsNotInAuctionItem = donationItemsNotInAuctionItem,
+                EmptyDonationItem = new DonationItem(),
+                EmptyAuctionItem = new AuctionItem()
+            };
+            return View(model);
         }
 
         // GET: AuctionItems/Details/5
