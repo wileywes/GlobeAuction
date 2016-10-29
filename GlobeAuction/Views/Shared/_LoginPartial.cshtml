@@ -2,7 +2,11 @@
 @if (Request.IsAuthenticated)
 {
     <ul class="nav navbar-nav">
-        <li>@Html.ActionLink("Items", "Index", "DonationItems")</li>
+        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+        {
+            <li>@Html.ActionLink("Donations", "Index", "DonationItems")</li>
+            <li>@Html.ActionLink("Auction Items", "Index", "AuctionItems")</li>
+        }
         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
         {
             <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>

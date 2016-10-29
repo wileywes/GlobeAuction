@@ -7,10 +7,40 @@ namespace GlobeAuction.Models
     public class ItemsViewModel
     {
         public AuctionItem EmptyAuctionItem = new AuctionItem();
-        public DonationItem EmptyDonationItem = new DonationItem();
+        public DonationItemViewModel EmptyDonationItem = new DonationItemViewModel();
 
         public List<AuctionItem> AuctionItems { get; set; }
-        public List<DonationItem> DonationsNotInAuctionItem { get; set; }
+        public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
+    }
+
+    public class DonationItemViewModel
+    {
+        public bool IsSelected { get; set; }
+        public int DonationItemId { get; set; }
+        [Required]
+        public string Category { get; set; }
+        [Required]
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
+        public string Restrictions { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? ExpirationDate { get; set; }
+        [DataType(DataType.Currency)]
+        public int? DollarValue { get; set; }
+
+        public DonationItemViewModel()
+        {
+        }
+
+        public DonationItemViewModel(DonationItem item)
+        {
+            this.Category = item.Category;
+            this.Description = item.Description;
+            this.DollarValue = item.DollarValue;
+            this.DonationItemId = item.DonationItemId;
+            this.ExpirationDate = item.ExpirationDate;
+            this.Restrictions = item.Restrictions;
+        }
     }
 
     public class AuctionItem

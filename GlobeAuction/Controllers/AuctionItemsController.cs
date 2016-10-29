@@ -25,9 +25,7 @@ namespace GlobeAuction.Controllers
             var model = new ItemsViewModel
             {
                 AuctionItems = auctionItems,
-                DonationsNotInAuctionItem = donationItemsNotInAuctionItem,
-                EmptyDonationItem = new DonationItem(),
-                EmptyAuctionItem = new AuctionItem()
+                DonationsNotInAuctionItem = donationItemsNotInAuctionItem.Select(d => new DonationItemViewModel(d)).ToList()
             };
             return View(model);
         }
