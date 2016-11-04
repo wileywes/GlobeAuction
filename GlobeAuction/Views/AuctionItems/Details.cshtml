@@ -92,7 +92,21 @@
 
         <dt>Donation Items</dt>
         <dd>
-            @Html.EditorFor(model => model.DonationItems)
+            <table class="table table-striped table-bordered" id="donationItemsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Restrictions</th>
+                        <th>Expiration</th>
+                        <th>Dollar Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @Html.EditorFor(model => model.DonationItems)
+                </tbody>
+            </table>
         </dd>
     </dl>
 </div>

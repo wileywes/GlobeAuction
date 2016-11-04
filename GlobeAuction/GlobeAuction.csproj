@@ -297,6 +297,7 @@
     <Content Include="Views\AuctionItems\Edit.cshtml" />
     <Content Include="Views\AuctionItems\Index.cshtml" />
     <Content Include="Views\AuctionItems\EditorTemplates\DonationItemViewModel.cshtml" />
+    <Content Include="Views\AuctionItems\EditorTemplates\DonationItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
