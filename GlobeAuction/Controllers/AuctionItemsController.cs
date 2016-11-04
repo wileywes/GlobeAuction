@@ -63,6 +63,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
             db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
+            AddAuctionItemControlInfo(auctionItem);
             return View(auctionItem);
         }
 
@@ -83,6 +84,7 @@ namespace GlobeAuction.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            AddAuctionItemControlInfo(auctionItem);
             return View(auctionItem);
         }
 
@@ -177,7 +179,7 @@ namespace GlobeAuction.Controllers
 
         private void AddAuctionItemControlInfo(AuctionItem item)
         {
-            var donationItemCategories = new List<SelectListItem>
+            var auctionItemCategories = new List<SelectListItem>
            {
                new SelectListItem { Text="Restaurant Gift Card", Value="Restaurant Gift Card" },
                new SelectListItem { Text="Tickets, Memberships, Experiences & Getaways", Value="Tickets, Memberships, Experiences & Getaways" },
@@ -190,12 +192,12 @@ namespace GlobeAuction.Controllers
 
             if (item != null && !string.IsNullOrEmpty(item.Category))
             {
-                var selected = donationItemCategories.FirstOrDefault(c => c.Value.Equals(item.Category));
+                var selected = auctionItemCategories.FirstOrDefault(c => c.Value.Equals(item.Category));
                 if (selected != null) selected.Selected = true;
             }
 
 
-            ViewBag.DonationItemCategories = donationItemCategories;
+            ViewBag.AuctionItemCategories = auctionItemCategories;
         }
     }
 }

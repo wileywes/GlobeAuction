@@ -195,6 +195,10 @@
     <Compile Include="Migrations\201611032153490_DonationItemHasDisplay.Designer.cs">
       <DependentUpon>201611032153490_DonationItemHasDisplay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611040057363_WinnerShouldBeNullable.cs" />
+    <Compile Include="Migrations\201611040057363_WinnerShouldBeNullable.Designer.cs">
+      <DependentUpon>201611040057363_WinnerShouldBeNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ItemsViewModels.cs" />
@@ -316,6 +320,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611032153490_DonationItemHasDisplay.resx">
       <DependentUpon>201611032153490_DonationItemHasDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611040057363_WinnerShouldBeNullable.resx">
+      <DependentUpon>201611040057363_WinnerShouldBeNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

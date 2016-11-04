@@ -27,8 +27,10 @@ namespace GlobeAuction.Models
         public string Description { get; set; }
         public string Restrictions { get; set; }
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? ExpirationDate { get; set; }
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
 
         public DonationItemViewModel()
@@ -52,11 +54,14 @@ namespace GlobeAuction.Models
         public int UniqueItemNumber { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
         //public List<DonationItemViewModel> DonationItems { get; set; }
-        public int WinningBidderId { get; set; }
-        public int WinningBid { get; set; }
+        public int? WinningBidderId { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public int? WinningBid { get; set; }
 
         public AuctionItemViewModel(AuctionItem i)
         {
@@ -88,8 +93,10 @@ namespace GlobeAuction.Models
         [Required]
         public string Category { get; set; }
         [Required]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
         [Required]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
@@ -100,8 +107,10 @@ namespace GlobeAuction.Models
         /// </summary>
         public List<DonationItem> DonationItems { get; set; }
         
-        public int WinningBidderId { get; set; }
-        public int WinningBid { get; set; }
+        public int? WinningBidderId { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public int? WinningBid { get; set; }
     }
 
     public class DonationItem
@@ -118,9 +127,11 @@ namespace GlobeAuction.Models
         public string Restrictions { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? ExpirationDate { get; set; }
 
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
         public bool HasDisplay { get; set; }
 
