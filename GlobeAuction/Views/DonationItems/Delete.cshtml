@@ -50,6 +50,13 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.HasDisplay)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HasDisplay)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.CreateDate)
         </dt>
         <dd>
@@ -181,7 +188,7 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Back to List", "Index", "AuctionItems")
         </div>
     }
 </div>

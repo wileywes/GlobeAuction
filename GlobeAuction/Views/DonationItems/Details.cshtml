@@ -151,6 +151,13 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.HasDisplay)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HasDisplay)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.CreateDate)
         </dt>
         <dd>
@@ -176,5 +183,5 @@
 
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.DonationItemId }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", "AuctionItems")
 </p>

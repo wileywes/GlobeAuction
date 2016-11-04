@@ -28,6 +28,9 @@ textarea {
     background: url("/Content/Images/header_bg.jpg") center 0px no-repeat, linear-gradient(to bottom, #78b7c6 0, #78b7c6 25px, #389bb4 50px);
 }
 
+.button-bar {
+    padding-bottom: 10px;
+}
 
 
 /* Overrides to bootstrap.css */
@@ -136,4 +139,14 @@ textarea {
 
 .navbar-inverse .navbar-link:hover {
   color: #ebcd2a;
+}
+
+
+ .table td {
+    border: 1px solid #ddd !important;
+    text-overflow: ellipsis;
+  }
+
+ .text-nowrap {
+    white-space: nowrap;
 }

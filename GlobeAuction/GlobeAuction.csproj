@@ -176,6 +176,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\ItemsHelper.cs" />
     <Compile Include="Helpers\LabelExtensions.cs" />
     <Compile Include="Migrations\201610161158102_Initial.cs" />
     <Compile Include="Migrations\201610161158102_Initial.Designer.cs">
@@ -184,6 +186,14 @@
     <Compile Include="Migrations\201610231315570_AddAuctionItems.cs" />
     <Compile Include="Migrations\201610231315570_AddAuctionItems.Designer.cs">
       <DependentUpon>201610231315570_AddAuctionItems.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611031855479_AuctionItemNumberUniqueIndex.cs" />
+    <Compile Include="Migrations\201611031855479_AuctionItemNumberUniqueIndex.Designer.cs">
+      <DependentUpon>201611031855479_AuctionItemNumberUniqueIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611032153490_DonationItemHasDisplay.cs" />
+    <Compile Include="Migrations\201611032153490_DonationItemHasDisplay.Designer.cs">
+      <DependentUpon>201611032153490_DonationItemHasDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -278,11 +288,11 @@
     <Content Include="Views\DonationItems\Index.cshtml" />
     <Content Include="Views\UsersAdmin\Edit.cshtml" />
     <Content Include="Views\UsersAdmin\Index.cshtml" />
-    <Content Include="Views\AuctionItems\Create.cshtml" />
     <Content Include="Views\AuctionItems\Delete.cshtml" />
     <Content Include="Views\AuctionItems\Details.cshtml" />
     <Content Include="Views\AuctionItems\Edit.cshtml" />
     <Content Include="Views\AuctionItems\Index.cshtml" />
+    <Content Include="Views\AuctionItems\EditorTemplates\DonationItemViewModel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -300,6 +310,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610231315570_AddAuctionItems.resx">
       <DependentUpon>201610231315570_AddAuctionItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611031855479_AuctionItemNumberUniqueIndex.resx">
+      <DependentUpon>201611031855479_AuctionItemNumberUniqueIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611032153490_DonationItemHasDisplay.resx">
+      <DependentUpon>201611032153490_DonationItemHasDisplay.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

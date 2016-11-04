@@ -144,7 +144,7 @@ namespace GlobeAuction.Controllers
 
                 db.Entry(donationItem).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "AuctionItems");
             }
             db.Entry(donationItem).Reference(d => d.Donor).Load();
             db.Entry(donationItem).Reference(d => d.Solicitor).Load();
@@ -179,7 +179,7 @@ namespace GlobeAuction.Controllers
             DonationItem donationItem = db.DonationItems.Find(id);
             donationItem.IsDeleted = true;
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "AuctionItems");
         }
 
         protected override void Dispose(bool disposing)

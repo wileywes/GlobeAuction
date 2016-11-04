@@ -1,6 +1,9 @@
-﻿using System;
+﻿using GlobeAuction.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace GlobeAuction.Models
 {
@@ -9,7 +12,7 @@ namespace GlobeAuction.Models
         public AuctionItem EmptyAuctionItem = new AuctionItem();
         public DonationItemViewModel EmptyDonationItem = new DonationItemViewModel();
 
-        public List<AuctionItem> AuctionItems { get; set; }
+        public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
     }
 
@@ -35,11 +38,37 @@ namespace GlobeAuction.Models
         public DonationItemViewModel(DonationItem item)
         {
             this.Category = item.Category;
-            this.Description = item.Description;
+            this.Description = item.Description.TruncateTo(50);
             this.DollarValue = item.DollarValue;
             this.DonationItemId = item.DonationItemId;
             this.ExpirationDate = item.ExpirationDate;
-            this.Restrictions = item.Restrictions;
+            this.Restrictions = item.Restrictions.TruncateTo(50);
+        }
+    }
+
+    public class AuctionItemViewModel
+    {
+        public int AuctionItemId { get; set; }
+        public int UniqueItemNumber { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; }
+        public int StartingBid { get; set; }
+        public int BidIncrement { get; set; }
+        //public List<DonationItemViewModel> DonationItems { get; set; }
+        public int WinningBidderId { get; set; }
+        public int WinningBid { get; set; }
+
+        public AuctionItemViewModel(AuctionItem i)
+        {
+            this.AuctionItemId = i.AuctionItemId;
+            this.UniqueItemNumber = i.UniqueItemNumber;
+            this.Description = i.Description.TruncateTo(50);
+            this.Category = i.Category;
+            this.StartingBid = i.StartingBid;
+            this.BidIncrement = i.BidIncrement;
+            //this.DonationItems = i.DonationItems.Select(d => new DonationItemViewModel(d)).ToList();
+            this.WinningBid = i.WinningBid;
+            this.WinningBidderId = i.WinningBidderId;
         }
     }
 
@@ -51,6 +80,7 @@ namespace GlobeAuction.Models
         /// Entered by admin, uniqueness enforced by DB
         /// </summary>
         [Required]
+        [Index("IX_AuctionItem_UniqueItemNumber", 1, IsUnique = true)]
         public int UniqueItemNumber { get; set; }
         [Required]
         [DataType(DataType.MultilineText)]
@@ -92,6 +122,7 @@ namespace GlobeAuction.Models
 
         [DataType(DataType.Currency)]
         public int? DollarValue { get; set; }
+        public bool HasDisplay { get; set; }
 
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
