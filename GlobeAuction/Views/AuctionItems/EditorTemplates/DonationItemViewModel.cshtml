@@ -3,7 +3,9 @@
 <tr>
     <td>
         @Html.CheckBoxFor(m => m.IsSelected, new { @class = "chkSelect" })
-        @Html.HiddenFor(m => m.DonationItemId)
+    </td>
+    <td>
+        @Html.DisplayFor(m => m.DonationItemId)
     </td>
     <td>
         @Html.DisplayFor(m => m.Category)

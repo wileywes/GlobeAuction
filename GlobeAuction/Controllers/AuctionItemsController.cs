@@ -22,7 +22,7 @@ namespace GlobeAuction.Controllers
         {
             var auctionItems = db.AuctionItems.ToList();
             var donationItemIdsInAuctionItem = db.AuctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
-            var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
+            var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
             
             var model = new ItemsViewModel
             {
@@ -125,7 +125,7 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedDonationItems([Bind(Exclude = "EmptyAuctionItem")] ItemsViewModel postedModel, string submitButton)
+        public ActionResult SubmitSelectedDonationItems(ItemsViewModel postedModel, string submitButton)
         {
             var selectedDonationIds = postedModel.DonationsNotInAuctionItem.Where(i => i.IsSelected)
                 .Select(d => d.DonationItemId)

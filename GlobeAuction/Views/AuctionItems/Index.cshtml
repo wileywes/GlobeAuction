@@ -1,104 +1,116 @@
 ﻿@model GlobeAuction.Models.ItemsViewModel
 
+<link href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
 @{
     ViewBag.Title = "Auction Items";
 }
 
 <h2>Auction Items</h2>
 
-<table class="table table-striped table-bordered" id="auctionItemsTable">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.UniqueItemNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.Category)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.StartingBid)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.BidIncrement)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.WinningBidderId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmptyAuctionItem.WinningBid)
-        </th>
-        <th></th>
-    </tr>
+<div class="container">
 
-    @foreach (var item in Model.AuctionItems)
+    <table class="table table-striped table-bordered" id="auctionItemsTable">
+        <thead>
+            <tr>
+                <th>
+                    Item No.
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Starting Bid
+                </th>
+                <th>
+                    Bid Increment
+                </th>
+                <th>
+                    Winner Id
+                </th>
+                <th>
+                    Winning Bid
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AuctionItems)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartingBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidIncrement)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WinningBidderId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WinningBid)
+                    </td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br /><br />
+
+    <h2>Donation Items</h2>
+    <p>These need to be set up for the auction and will then appear in the table above</p>
+
+    @using (Html.BeginForm("SubmitSelectedDonationItems", "AuctionItems", FormMethod.Post))
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UniqueItemNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartingBid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BidIncrement)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WinningBidderId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WinningBid)
-            </td>
-            <td class="text-nowrap">
-                @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
-            </td>
-        </tr>
-    }
+        @Html.AntiForgeryToken()
 
-</table>
-
-<br />
-
-<h2>Donation Items not yet Setup for Auction</h2>
-
-@using (Html.BeginForm("SubmitSelectedDonationItems", "AuctionItems", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="button-bar pull-right">
-        <input type="submit" class="btn btn-default" name="submitButton" value="Make Single Auction Item(s)" />
-        <input type="submit" class="btn btn-default" name="submitButton" value="Make a Basket" />
-    </div>
+        <div class="button-bar pull-right">
+            <input type="submit" class="btn btn-default" name="submitButton" value="Make Single Auction Item(s)" />
+            <input type="submit" class="btn btn-default" name="submitButton" value="Make a Basket" />
+        </div>
 
         <table class="table table-striped table-bordered" id="donationItemsTable">
             <thead>
                 <tr>
-                    <th>
+                    <th class="datatable-nosort">
                         <input type="checkbox" id="chkSelectAll" />
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.EmptyDonationItem.Category)
+                        Id
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.EmptyDonationItem.Description)
+                        Category
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.EmptyDonationItem.Restrictions)
+                        Description
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.EmptyDonationItem.ExpirationDate)
+                        Restrictions
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.EmptyDonationItem.DollarValue)
+                        Expiration
+                    </th>
+                    <th>
+                        Value
                     </th>
                     <th></th>
                 </tr>
@@ -107,15 +119,26 @@
                 @Html.EditorFor(model => model.DonationsNotInAuctionItem)
             </tbody>
         </table>
+    }
+</div>
 
-        <script>
-        $("#chkSelectAll").bind("change", function () {
-            $(".chkSelect").prop("checked", $(this).prop("checked"));
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#auctionItemsTable').dataTable();
+
+        $('#donationItemsTable').dataTable({
+            columnDefs: [{
+                targets: "datatable-nosort",
+                orderable: false
+            }]
         });
-        $(".chkSelect").bind("change", function () {
-            if (!$(this).prop("checked"))
-                $("#chkSelectAll").prop("checked", false);
-        });
-        $(".alert").hide().fadeIn("slow");
-        </script>
-}
+    });
+
+    $("#chkSelectAll").bind("change", function () {
+        $(".chkSelect").prop("checked", $(this).prop("checked"));
+    });
+    $(".chkSelect").bind("change", function () {
+        if (!$(this).prop("checked"))
+            $("#chkSelectAll").prop("checked", false);
+    });
+</script>

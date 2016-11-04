@@ -9,9 +9,6 @@ namespace GlobeAuction.Models
 {
     public class ItemsViewModel
     {
-        public AuctionItem EmptyAuctionItem = new AuctionItem();
-        public DonationItemViewModel EmptyDonationItem = new DonationItemViewModel();
-
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
     }
