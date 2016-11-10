@@ -55,7 +55,7 @@ namespace GlobeAuction.Models
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
-        //public List<DonationItemViewModel> DonationItems { get; set; }
+        public List<DonationItemViewModel> DonationItems { get; set; }
         public int? WinningBidderId { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? WinningBid { get; set; }
@@ -68,7 +68,7 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
-            //this.DonationItems = i.DonationItems.Select(d => new DonationItemViewModel(d)).ToList();
+            this.DonationItems = i.DonationItems.Select(d => new DonationItemViewModel(d)).ToList();
             this.WinningBid = i.WinningBid;
             this.WinningBidderId = i.WinningBidderId;
         }

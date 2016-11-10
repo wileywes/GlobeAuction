@@ -150,3 +150,11 @@ textarea {
  .text-nowrap {
     white-space: nowrap;
 }
+
+td.details-control {
+    background: url("/Content/Images/details_open.png") no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url("/Content/Images/details_close.png") no-repeat center center;
+}

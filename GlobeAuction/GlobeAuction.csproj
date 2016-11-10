@@ -223,6 +223,8 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\Images\checkmark.jpg" />
     <Content Include="Content\Images\checkmark.png" />
+    <Content Include="Content\Images\details_close.png" />
+    <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\header_bg.jpg" />
     <Content Include="Content\Images\header_logo.png" />
     <Content Include="favicon.ico" />

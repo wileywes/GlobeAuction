@@ -23,7 +23,12 @@ namespace GlobeAuction.Controllers
             var auctionItems = db.AuctionItems.ToList();
             var donationItemIdsInAuctionItem = db.AuctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
             var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
-            
+
+            foreach (var ai in auctionItems)
+            {
+                db.Entry(ai).Collection(a => a.DonationItems).Load();
+            }
+
             var model = new ItemsViewModel
             {
                 AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList(),
