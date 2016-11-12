@@ -1,0 +1,92 @@
+﻿@model GlobeAuction.Models.Bidder
+
+@{
+    ViewBag.Title = "Bidder Details";
+}
+
+<h2>Bidder Details</h2>
+
+<div>
+    <h4>Contact Information</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+
+    </dl>
+
+    <h4>Student(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @for(int i=0; i < Model.Students.Count; i++)
+        {
+            <dt>
+                @Html.Label("Child " + (i+1) + " Homeroom")
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => Model.Students[i].HomeroomTeacher)
+            </dd>
+        }
+    </dl>
+
+    <h4>Auction Guest(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @for (int i = 0; i < Model.AuctionGuests.Count; i++)
+        {
+            <dt>
+                @Html.Label("Guest " + (i + 1))
+            </dt>
+
+            <dd>
+                @string.Format("{0} {1} - {2} (paid {3:C})",
+                        Model.AuctionGuests[i].FirstName,
+                        Model.AuctionGuests[i].LastName,
+                        Model.AuctionGuests[i].TicketType,
+                        Model.AuctionGuests[i].TicketPricePaid.GetValueOrDefault(0))
+            </dd>
+        }
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BidderId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

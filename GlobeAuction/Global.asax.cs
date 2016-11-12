@@ -17,6 +17,8 @@ namespace GlobeAuction
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             IdentityConfig.SetupIdentity();
+
+            DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfHasValueAttribute), typeof(RequiredIfHasValueValidator));
         }
     }
 }

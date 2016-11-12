@@ -6,6 +6,14 @@
         {
             <li>@Html.ActionLink("Items", "Index", "AuctionItems")</li>
         }
+        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
+        {
+            <li>@Html.ActionLink("Bidders", "Index", "Bidders")</li>
+        }
+        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+        {
+            <li>@Html.ActionLink("Tickets", "Index", "TicketTypes")</li>
+        }
         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
         {
             <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>

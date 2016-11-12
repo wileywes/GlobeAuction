@@ -31,25 +31,6 @@ namespace GlobeAuction.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-
-            SetupRoles(context);
-        }
-
-        private void SetupRoles(ApplicationDbContext context)
-        {
-
-            /*
-            var um = new UserManager<ApplicationUser>(
-                new UserStore<ApplicationUser>(context));
-            var user = new ApplicationUser()
-            {
-                UserName = "user1@contoso.com",
-            };
-            ir = um.Create(user, "P_assw0rd1");
-            if (ir.Succeeded == false)
-                return ir.Succeeded;
-            ir = um.AddToRole(user.Id, "canEdit");
-            return ir.Succeeded;*/
         }
     }
 }

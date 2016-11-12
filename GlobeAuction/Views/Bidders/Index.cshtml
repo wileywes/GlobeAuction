@@ -1,0 +1,70 @@
+﻿@model IEnumerable<GlobeAuction.Models.BidderForList>
+
+@{
+    ViewBag.Title = "Registered Bidders";
+}
+
+<h2>Registered Bidders</h2>
+
+<p>
+    @Html.ActionLink("Register a New Bidder", "Register")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GuestCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketsPaid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalTicketCostPaid)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Phone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GuestCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TicketsPaid)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalTicketCostPaid)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.BidderId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.BidderId }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.BidderId }) |
+            @Html.ActionLink("PayPal", "RedirectToPayPal", new { id = item.BidderId })
+        </td>
+    </tr>
+}
+
+</table>

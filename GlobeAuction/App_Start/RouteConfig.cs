@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace GlobeAuction
@@ -17,6 +13,12 @@ namespace GlobeAuction
                 name: "Donate",
                 url: "donate",
                 defaults: new { controller = "DonationItems", action = "Create" }
+            );
+
+            routes.MapRoute(
+                name: "Register",
+                url: "register",
+                defaults: new { controller = "Bidders", action = "Register" }
             );
 
             routes.MapRoute(

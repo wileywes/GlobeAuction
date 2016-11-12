@@ -8,15 +8,19 @@ namespace GlobeAuction.Models
         public const string CanEditWinners = "canEditWinners";
         public const string CanCheckoutWinners = "canCheckoutWinners";
         public const string CanAdminUsers = "canAdminUsers";
+        public const string CanEditBidders = "canEditBidders";
+        public const string CanEditTickets = "canEditTickets";
 
         internal static List<string> GetAllRoleNames()
         {
             return new List<string>
             {
-                AuctionRoles.CanAdminUsers,
-                AuctionRoles.CanCheckoutWinners,
-                AuctionRoles.CanEditItems,
-                AuctionRoles.CanEditWinners
+                CanAdminUsers,
+                CanCheckoutWinners,
+                CanEditItems,
+                CanEditWinners,
+                CanEditBidders,
+                CanEditTickets
             };
         }
     }

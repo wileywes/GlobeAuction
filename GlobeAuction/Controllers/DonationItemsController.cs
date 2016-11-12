@@ -143,6 +143,10 @@ namespace GlobeAuction.Controllers
                 donationItem.UpdateBy = User.Identity.GetUserName();
 
                 db.Entry(donationItem).State = EntityState.Modified;
+
+                db.Entry(donationItem.Donor).State = EntityState.Modified;
+                db.Entry(donationItem.Solicitor).State = EntityState.Modified;
+
                 db.SaveChanges();
                 return RedirectToAction("Index", "AuctionItems");
             }
@@ -178,6 +182,7 @@ namespace GlobeAuction.Controllers
         {
             DonationItem donationItem = db.DonationItems.Find(id);
             donationItem.IsDeleted = true;
+            donationItem.UpdateBy = User.Identity.GetUserName();
             db.SaveChanges();
             return RedirectToAction("Index", "AuctionItems");
         }

@@ -169,9 +169,11 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuctionItemsController.cs" />
+    <Compile Include="Controllers\BiddersController.cs" />
     <Compile Include="Controllers\DonationItemsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\TicketTypesController.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -179,6 +181,10 @@
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\ItemsHelper.cs" />
     <Compile Include="Helpers\LabelExtensions.cs" />
+    <Compile Include="Helpers\RequiredIfHasValueAttribute.cs" />
+    <Compile Include="Helpers\RequiredIfAttribute.cs" />
+    <Compile Include="Helpers\RequiredIfHasValueValidator.cs" />
+    <Compile Include="Helpers\RequiredIfValidator.cs" />
     <Compile Include="Migrations\201610161158102_Initial.cs" />
     <Compile Include="Migrations\201610161158102_Initial.Designer.cs">
       <DependentUpon>201610161158102_Initial.cs</DependentUpon>
@@ -199,10 +205,43 @@
     <Compile Include="Migrations\201611040057363_WinnerShouldBeNullable.Designer.cs">
       <DependentUpon>201611040057363_WinnerShouldBeNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611102031066_AddBidders.cs" />
+    <Compile Include="Migrations\201611102031066_AddBidders.Designer.cs">
+      <DependentUpon>201611102031066_AddBidders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611102112020_AddTicketTypes.cs" />
+    <Compile Include="Migrations\201611102112020_AddTicketTypes.Designer.cs">
+      <DependentUpon>201611102112020_AddTicketTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611102115468_TicketPriceIsDecimal.cs" />
+    <Compile Include="Migrations\201611102115468_TicketPriceIsDecimal.Designer.cs">
+      <DependentUpon>201611102115468_TicketPriceIsDecimal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611111335475_BidderFieldsRequired.cs" />
+    <Compile Include="Migrations\201611111335475_BidderFieldsRequired.Designer.cs">
+      <DependentUpon>201611111335475_BidderFieldsRequired.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611111351245_BidderRequiredUpdates.cs" />
+    <Compile Include="Migrations\201611111351245_BidderRequiredUpdates.Designer.cs">
+      <DependentUpon>201611111351245_BidderRequiredUpdates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611120006162_AddPayPalTransaction.cs" />
+    <Compile Include="Migrations\201611120006162_AddPayPalTransaction.Designer.cs">
+      <DependentUpon>201611120006162_AddPayPalTransaction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611120017443_AuctionGuestTicketPrice.cs" />
+    <Compile Include="Migrations\201611120017443_AuctionGuestTicketPrice.Designer.cs">
+      <DependentUpon>201611120017443_AuctionGuestTicketPrice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611120039422_GuestTicketPricePaidIsDecimal.cs" />
+    <Compile Include="Migrations\201611120039422_GuestTicketPricePaidIsDecimal.Designer.cs">
+      <DependentUpon>201611120039422_GuestTicketPricePaidIsDecimal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\TicketModels.cs" />
     <Compile Include="Models\ItemsViewModels.cs" />
-    <Compile Include="Models\Bidder.cs" />
+    <Compile Include="Models\BidderModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Helpers\Enums.cs" />
@@ -300,6 +339,18 @@
     <Content Include="Views\AuctionItems\Index.cshtml" />
     <Content Include="Views\AuctionItems\EditorTemplates\DonationItemViewModel.cshtml" />
     <Content Include="Views\AuctionItems\EditorTemplates\DonationItem.cshtml" />
+    <Content Include="Views\Bidders\Register.cshtml" />
+    <Content Include="Views\Bidders\Delete.cshtml" />
+    <Content Include="Views\Bidders\Details.cshtml" />
+    <Content Include="Views\Bidders\Edit.cshtml" />
+    <Content Include="Views\Bidders\Index.cshtml" />
+    <Content Include="Views\TicketTypes\Create.cshtml" />
+    <Content Include="Views\TicketTypes\Delete.cshtml" />
+    <Content Include="Views\TicketTypes\Details.cshtml" />
+    <Content Include="Views\TicketTypes\Edit.cshtml" />
+    <Content Include="Views\TicketTypes\Index.cshtml" />
+    <Content Include="Views\Bidders\RedirectToPayPal.cshtml" />
+    <Content Include="Views\Bidders\PayPalComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -326,6 +377,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611040057363_WinnerShouldBeNullable.resx">
       <DependentUpon>201611040057363_WinnerShouldBeNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611102031066_AddBidders.resx">
+      <DependentUpon>201611102031066_AddBidders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611102112020_AddTicketTypes.resx">
+      <DependentUpon>201611102112020_AddTicketTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611102115468_TicketPriceIsDecimal.resx">
+      <DependentUpon>201611102115468_TicketPriceIsDecimal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611111335475_BidderFieldsRequired.resx">
+      <DependentUpon>201611111335475_BidderFieldsRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611111351245_BidderRequiredUpdates.resx">
+      <DependentUpon>201611111351245_BidderRequiredUpdates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611120006162_AddPayPalTransaction.resx">
+      <DependentUpon>201611120006162_AddPayPalTransaction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611120017443_AuctionGuestTicketPrice.resx">
+      <DependentUpon>201611120017443_AuctionGuestTicketPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611120039422_GuestTicketPricePaidIsDecimal.resx">
+      <DependentUpon>201611120039422_GuestTicketPricePaidIsDecimal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -1,0 +1,33 @@
+﻿@model GlobeAuction.Models.BidderForPayPal
+
+@{
+    ViewBag.Title = "Please wait...";
+}
+
+<h3>Please wait while you are redirected to PayPal to complete purchase of tickets...</h3>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="redirectForm">
+    <input type="hidden" name="cmd" value="_cart" />
+    <input type="hidden" name="upload" value="1" />
+    <input type="hidden" name="custom" value="@Model.BidderId" />
+    <input type="hidden" name="business" value="@ViewBag.PayPalBusiness" />
+    <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Bidders", null, Request.Url.Scheme, null)" />     
+    <input type="hidden" name="rm" value="2" />
+
+    @for (int i = 0; i < Model.Tickets.Count; i++)
+    {
+        <input type="hidden" name="item_name_@(i+1)" value="@Model.Tickets[i].Name" />
+        <input type="hidden" name="amount_@(i+1)" value="@Model.Tickets[i].Price" />
+    }
+
+    <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+
+
+    <input type="submit" value="Test Submit" />
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#redirectForm').submit();
+    }
+</script>

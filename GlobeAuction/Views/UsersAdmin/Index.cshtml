@@ -12,6 +12,8 @@
             @Html.DisplayNameFor(model => model.UserName)
         </th>
         <th>Edit Items</th>
+        <th>Edit Bidders</th>
+        <th>Edit Tickets</th>
         <th>Edit Winners</th>
         <th>Checkout Winners</th>
         <th>Admin Users</th>
@@ -25,6 +27,18 @@
             </td>
             <td align="">
                 @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                {
+                    <img src="~/Content/Images/checkmark.jpg" />
+                }
+            </td>
+            <td align="">
+                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditBidders))
+                {
+                    <img src="~/Content/Images/checkmark.jpg" />
+                }
+            </td>
+            <td align="">
+                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditTickets))
                 {
                     <img src="~/Content/Images/checkmark.jpg" />
                 }
