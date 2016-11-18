@@ -1,7 +1,9 @@
-﻿using System;
+﻿using GlobeAuction.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -19,6 +21,16 @@ namespace GlobeAuction
             IdentityConfig.SetupIdentity();
 
             DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfHasValueAttribute), typeof(RequiredIfHasValueValidator));
+
+            var basePath = HttpContext.Current.Server.MapPath("");
+            HostingEnvironment.QueueBackgroundWorkItem(t => new BackgroundMaintenance(basePath).DoMaintenance(t));
+        }
+
+        protected void Application_Error()
+        {
+            Exception lastException = Server.GetLastError();
+            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Error(lastException);
         }
     }
 }

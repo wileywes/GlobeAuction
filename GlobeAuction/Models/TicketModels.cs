@@ -15,6 +15,8 @@ namespace GlobeAuction.Models
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Price { get; set; }
+
+        public bool OnlyVisibleToAdmins { get; set; }
         
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }

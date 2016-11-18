@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
 using System.Configuration;
+using GlobeAuction.Helpers;
 
 namespace GlobeAuction.Controllers
 {
@@ -27,7 +28,7 @@ namespace GlobeAuction.Controllers
                 db.Entry(bidder).Collection(a => a.AuctionGuests).Load();
             }
             var models = bidders.Select(b => new BidderForList(b)).ToList();
-
+            
             return View(models);
         }
 
@@ -141,16 +142,22 @@ namespace GlobeAuction.Controllers
             }
             
             db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
-            var paymentLeft = ppTrans.PaymentGross;
 
-            foreach(var guest in bidder.AuctionGuests)
+            if (ppTrans.WasPaymentSuccessful)
             {
-                var priceToUseUp = Math.Min(guest.TicketPrice, paymentLeft);
-                guest.TicketPricePaid = priceToUseUp;
-                guest.TicketTransaction = ppTrans;
-                paymentLeft -= priceToUseUp;
+                var paymentLeft = ppTrans.PaymentGross;
+
+                foreach (var guest in bidder.AuctionGuests)
+                {
+                    var priceToUseUp = Math.Min(guest.TicketPrice, paymentLeft);
+                    guest.TicketPricePaid = priceToUseUp;
+                    guest.TicketTransaction = ppTrans;
+                    paymentLeft -= priceToUseUp;
+                }
+                db.SaveChanges();
+
+                new EmailHelper().SendBidderPaymentConfirmation(bidder, ppTrans);
             }
-            db.SaveChanges();
 
             return View(bidder);
         }
@@ -254,8 +261,17 @@ namespace GlobeAuction.Controllers
         {
             var ticketTypes = db.TicketTypes.ToList();
 
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            {
+                //remove admin-only ticket types
+                ticketTypes = ticketTypes.Where(t => t.OnlyVisibleToAdmins == false).ToList();
+            }
+
             ViewBag.TicketTypes = ticketTypes
                 .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
+
+            ViewBag.TeacherNames = AuctionConstants.TeacherNames
+                .Select(t => new SelectListItem { Text = t, Value = t });
         }
     }
 }

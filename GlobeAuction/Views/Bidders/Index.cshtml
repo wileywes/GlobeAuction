@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<GlobeAuction.Models.BidderForList>
 
+<link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap.js"></script>
+
 @{
     ViewBag.Title = "Registered Bidders";
 }
@@ -9,66 +13,82 @@
 <p>
     @Html.ActionLink("Register a New Bidder", "Register")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LastName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Phone)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.GuestCount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TicketsPaid)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TotalTicketCostPaid)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+<table class="table table-striped table-bordered" id="biddersTable">
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GuestCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketsPaid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalTicketCostPaid)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.BidderId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.BidderId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.BidderId }) |
-                @if (item.TicketsPaid == 0)
-                {
-                    @Html.ActionLink("PayPal", "RedirectToPayPal", new { id = item.BidderId })
-                }
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.BidderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>k
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GuestCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketsPaid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalTicketCostPaid)
+            </th>
+            <th></th>
         </tr>
-                }
-
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BidderId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GuestCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketsPaid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalTicketCostPaid)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.BidderId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.BidderId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.BidderId }) |
+                    @if (item.TicketsPaid == 0)
+                {
+                        @Html.ActionLink("PayPal", "RedirectToPayPal", new { id = item.BidderId })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#biddersTable').dataTable({
+            "iDisplayLength": 100
+        });
+    });
+</script>

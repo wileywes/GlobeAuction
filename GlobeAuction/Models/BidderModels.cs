@@ -111,7 +111,9 @@ namespace GlobeAuction.Models
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
-        public bool IsDeleted { get; set; }
+
+        [Required]
+        public bool IsPaymentReminderSent { get; set; }
     }
 
     public class AuctionGuest
@@ -162,6 +164,8 @@ namespace GlobeAuction.Models
         public string TxnId { get; set; }
         [Required]
         public string PaymentStatus { get; set; }
+
+        public bool WasPaymentSuccessful {  get { return PaymentStatus == "Completed"; } }
 
         public PayPalTransaction(FormCollection form)
         {
