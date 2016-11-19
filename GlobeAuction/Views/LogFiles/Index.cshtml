@@ -4,11 +4,10 @@
     ViewBag.Title = "Logs";
 }
 
-@foreach (var logFile in Model)
+@foreach (var logFile in Model.OrderByDescending(l => l.FilePath))
 {
     <h2>@logFile.FilePath</h2>
-    <pre>
-    @logFile.Content
+    <pre>@logFile.Content
     </pre>
     <br />
 }
