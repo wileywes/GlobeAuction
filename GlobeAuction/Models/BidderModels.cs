@@ -33,11 +33,14 @@ namespace GlobeAuction.Models
         [Display(Name = "Guests")]
         public int GuestCount { get; set; }
 
-        [Display(Name = "Tickets Purchased")]
+        [Display(Name = "Tickets Paid For")]
         public int TicketsPaid { get; set; }
 
         [Display(Name = "Tickets Cost Paid")]
         public decimal TotalTicketCostPaid { get; set; }
+
+        [Display(Name = "Pay Reminder Sent")]
+        public bool IsPaymentReminderSent{ get; set; }
 
         public BidderForList(Bidder b)
         {
@@ -47,6 +50,7 @@ namespace GlobeAuction.Models
             Phone = b.Phone;
             Email = b.Email;
             ZipCode = b.ZipCode;
+            IsPaymentReminderSent = b.IsPaymentReminderSent;
 
             if (b.AuctionGuests.Any())
             {

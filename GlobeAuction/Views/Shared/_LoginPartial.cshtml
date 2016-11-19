@@ -17,6 +17,7 @@
         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
         {
             <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>
+            <li>@Html.ActionLink("Logs", "Index", "LogFiles")</li>
         }
     </ul>
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))

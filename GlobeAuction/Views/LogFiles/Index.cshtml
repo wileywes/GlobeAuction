@@ -1,0 +1,14 @@
+﻿@model IEnumerable<GlobeAuction.Models.LogFile>
+
+@{
+    ViewBag.Title = "Logs";
+}
+
+@foreach (var logFile in Model)
+{
+    <h2>@logFile.FilePath</h2>
+    <pre>
+    @logFile.Content
+    </pre>
+    <br />
+}

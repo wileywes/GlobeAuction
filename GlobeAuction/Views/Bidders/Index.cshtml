@@ -40,6 +40,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalTicketCostPaid)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPaymentReminderSent)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -70,6 +73,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalTicketCostPaid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsPaymentReminderSent)
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.BidderId }) |
