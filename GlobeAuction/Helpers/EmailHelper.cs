@@ -21,7 +21,7 @@ namespace GlobeAuction.Helpers
 
 
         public EmailHelper()
-            : this(HttpContext.Current.Server.MapPath(""))
+            : this(HttpContext.Current.Server.MapPath("/"))
         {
         }
 

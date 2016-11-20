@@ -4,7 +4,10 @@
     ViewBag.Title = "Please wait...";
 }
 
-<h3>Please wait while you are redirected to PayPal to complete purchase of tickets...</h3>
+<h3>Please wait while you are redirected to PayPal to complete purchase of tickets.  If you do not have a PayPal account click the 
+    "Pay with Debit or Credit Card" button.  Once you complete purchase please wait for PayPal to send you back to this website.</h3>
+
+<br />
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="redirectForm">
     <input type="hidden" name="cmd" value="_cart" />

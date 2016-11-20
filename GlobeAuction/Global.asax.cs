@@ -22,7 +22,7 @@ namespace GlobeAuction
 
             DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfHasValueAttribute), typeof(RequiredIfHasValueValidator));
 
-            var basePath = HttpContext.Current.Server.MapPath("");
+            var basePath = HttpContext.Current.Server.MapPath("/");
             HostingEnvironment.QueueBackgroundWorkItem(t => new BackgroundMaintenance(basePath).DoMaintenance(t));
         }
 
