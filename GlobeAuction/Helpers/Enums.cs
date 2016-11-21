@@ -28,8 +28,19 @@ namespace GlobeAuction.Models
 
     public class AuctionConstants
     {
+        public static readonly List<string> DonationItemCategories = new List<string>
+        {
+            "Restaurant Gift Card",
+            "Tickets and Memberships",
+            "Experiences and Getaways",
+            "Health, Beauty and Fitness",
+            "Camps and Kids Stuff",
+            "Services"
+        };
+
         public static readonly List<string> TeacherNames = new List<string>
         {
+            "N/A",
         "Tendon - K",
         "Lambiotte - K",
         "Hogan - K",

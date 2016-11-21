@@ -8,8 +8,8 @@
 <br />
 
 <p>
-    Note: You will receive one bidding number/paddle for each registration you submit here.  If you are bringing guests
-    that want their own bidding ID or paddle then please submit a separate registration for them.
+    You will receive one bid paddle number for each registration you submit here.
+    If you are bringing guests that want their own bid paddle number then please submit a separate registration for them.
 </p>
 <br />
 
@@ -95,8 +95,14 @@
         {
             <div class="row form-group">
                 <div class="control-label col-md-2">Guest @(i + 1)</div>
-                <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
-                <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-2">
+                    @Html.EditorFor(m => Model.AuctionGuests[i].FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => Model.AuctionGuests[i].FirstName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-2">
+                    @Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => Model.AuctionGuests[i].LastName, "", new { @class = "text-danger" })
+                </div>
                 <div class="col-md-2">
                     @Html.DropDownListFor(model => Model.AuctionGuests[i].TicketType, (IEnumerable<SelectListItem>)ViewBag.TicketTypes,
                                     "Select a Ticket Type", new { htmlAttributes = new { @class = "form-control" } })

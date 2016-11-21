@@ -11,19 +11,18 @@ using Microsoft.AspNet.Identity;
 
 namespace GlobeAuction.Controllers
 {
+    [Authorize(Roles = AuctionRoles.CanEditItems)]
     public class DonationItemsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: DonationItems
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Index()
         {
             return View(db.DonationItems.Where(i => i.IsDeleted == false).ToList());
         }
 
         // GET: DonationItems/Details/5
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -41,7 +40,6 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Create
-        [AllowAnonymous]
         public ActionResult Create()
         {
             AddDonationItemControlInfo(null);
@@ -69,7 +67,6 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
         public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, string quantity)
         {
             int qty;
@@ -111,7 +108,6 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Edit/5
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -134,7 +130,6 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Edit([Bind(Exclude = "UpdateDate")] DonationItem donationItem)
         {
             if (ModelState.IsValid)
@@ -157,7 +152,6 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Delete/5
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -177,7 +171,6 @@ namespace GlobeAuction.Controllers
         // POST: DonationItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult DeleteConfirmed(int id)
         {
             DonationItem donationItem = db.DonationItems.Find(id);
@@ -198,15 +191,8 @@ namespace GlobeAuction.Controllers
 
         private void AddDonationItemControlInfo(DonationItem donationItem)
         {
-           var donationItemCategories = new List<SelectListItem>
-           {
-               new SelectListItem { Text="Restaurant Gift Card", Value="Restaurant Gift Card" },
-               new SelectListItem { Text="Tickets, Memberships, Experiences & Getaways", Value="Tickets, Memberships, Experiences & Getaways" },
-               new SelectListItem { Text="Health, Beauty and Fitness", Value="Health, Beauty and Fitness" },
-               new SelectListItem { Text="Camps", Value="Camps" },
-               new SelectListItem { Text="Services", Value="Services" }
-           };
-
+            var donationItemCategories = AuctionConstants.DonationItemCategories.Select(c => new SelectListItem { Text = c, Value = c }).ToList();
+            
             if (donationItem != null && !string.IsNullOrEmpty(donationItem.Category))
             {
                 var selected = donationItemCategories.FirstOrDefault(c => c.Value.Equals(donationItem.Category));

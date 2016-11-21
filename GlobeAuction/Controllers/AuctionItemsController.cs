@@ -184,16 +184,11 @@ namespace GlobeAuction.Controllers
 
         private void AddAuctionItemControlInfo(AuctionItem item)
         {
-            var auctionItemCategories = new List<SelectListItem>
-           {
-               new SelectListItem { Text="Restaurant Gift Card", Value="Restaurant Gift Card" },
-               new SelectListItem { Text="Tickets, Memberships, Experiences & Getaways", Value="Tickets, Memberships, Experiences & Getaways" },
-               new SelectListItem { Text="Health, Beauty and Fitness", Value="Health, Beauty and Fitness" },
-               new SelectListItem { Text="Camps", Value="Camps" },
-               new SelectListItem { Text="Services", Value="Services" },
-               new SelectListItem { Text="Live", Value="Live" },
-               new SelectListItem { Text="Teacher Treasures", Value="Teacher Treasures" }
-           };
+            var auctionItemCategories = AuctionConstants.DonationItemCategories.Select(c => new SelectListItem { Text = c, Value = c }).ToList();
+
+            //additional categories for auction items
+            auctionItemCategories.Add(new SelectListItem { Text = "Live", Value = "Live" });
+            auctionItemCategories.Add(new SelectListItem { Text = "Teacher Treasures", Value = "Teacher Treasures" });
 
             if (item != null && !string.IsNullOrEmpty(item.Category))
             {

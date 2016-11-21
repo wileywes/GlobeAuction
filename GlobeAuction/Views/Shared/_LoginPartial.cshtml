@@ -4,6 +4,7 @@
     <ul class="nav navbar-nav">
         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
         {
+            <li>@Html.ActionLink("Donate", "Create", "DonationItems")</li>
             <li>@Html.ActionLink("Items", "Index", "AuctionItems")</li>
         }
         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))

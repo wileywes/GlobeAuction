@@ -122,11 +122,15 @@ namespace GlobeAuction.Models
 
     public class AuctionGuest
     {
-        public int AuctionGuestId { get; set; }        
+        public int AuctionGuestId { get; set; }
+
+        [RequiredIfHasValue("TicketType", ErrorMessage = "First Name is required for each ticket selected")]
         public string FirstName { get; set; }
+
+        [RequiredIfHasValue("TicketType", ErrorMessage = "Last Name is required for each ticket selected")]
         public string LastName { get; set; }
 
-        [RequiredIfHasValue("FirstName", ErrorMessage = "You must select a Ticket Type to purchase")]
+        [RequiredIfHasValue("FirstName", ErrorMessage = "You must select a Ticket Type for each guest entered")]
         public string TicketType { get; set; }
         public decimal TicketPrice { get; set; }
 
