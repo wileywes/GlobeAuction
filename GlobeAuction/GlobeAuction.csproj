@@ -312,12 +312,25 @@
     <Content Include="Content\EmailTemplates\styles.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\Images\attendees1.jpg" />
+    <Content Include="Content\Images\attendees2.jpg" />
+    <Content Include="Content\Images\blue_color#.jpg" />
     <Content Include="Content\Images\checkmark.jpg" />
     <Content Include="Content\Images\checkmark.png" />
     <Content Include="Content\Images\details_close.png" />
     <Content Include="Content\Images\details_open.png" />
-    <Content Include="Content\Images\header_bg.jpg" />
-    <Content Include="Content\Images\header_logo.png" />
+    <Content Include="Content\Images\gold_color#.jpg" />
+    <Content Include="Content\Images\icon01.jpg" />
+    <Content Include="Content\Images\icon02.jpg" />
+    <Content Include="Content\Images\icon03.jpg" />
+    <Content Include="Content\Images\icon04.jpg" />
+    <Content Include="Content\Images\image_home.jpg" />
+    <Content Include="Content\Images\logo_web.jpg" />
+    <Content Include="Content\Images\logo_web_50.jpg" />
+    <Content Include="Content\Images\web_auction 2017_preview.jpg" />
+    <Content Include="Content\Images\when_box.jpg" />
+    <Content Include="Content\Images\where_box.jpg" />
+    <Content Include="Content\Images\who_box.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -363,7 +376,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -384,7 +397,6 @@
     <Content Include="Views\Manage\SetPassword.cshtml" />
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
-    <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\DonationItems\Create.cshtml" />
     <Content Include="Views\DonationItems\Delete.cshtml" />
     <Content Include="Views\DonationItems\Details.cshtml" />
@@ -411,6 +423,7 @@
     <Content Include="Views\Bidders\RedirectToPayPal.cshtml" />
     <Content Include="Views\Bidders\PayPalComplete.cshtml" />
     <Content Include="Views\LogFiles\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
