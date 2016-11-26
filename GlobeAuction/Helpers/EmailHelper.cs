@@ -42,7 +42,8 @@ namespace GlobeAuction.Helpers
         {
             var lines = bidder.AuctionGuests
                 .Where(g => g.TicketPricePaid.HasValue)
-                .ToDictionary(g => g.TicketType, g => g.TicketPricePaid.Value);
+                .Select(g => new Tuple<string, decimal>(g.TicketType, g.TicketPricePaid.Value))
+                .ToList();
 
             var body = GetInvoiceEmail(trans.PaymentGross,
                 bidder.FirstName + " " + bidder.LastName,
@@ -53,7 +54,7 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Ticket Confirmation", body);
         }
 
-        private string GetInvoiceEmail(decimal totalPaid, string address1, string address2, string address3, Dictionary<string, decimal> lines)
+        private string GetInvoiceEmail(decimal totalPaid, string address1, string address2, string address3, List<Tuple<string, decimal>> lines)
         {
             var body = GetEmailBody("invoicePaid");
             var lineTemplate = GetEmailBody("invoiceLine");
@@ -67,7 +68,7 @@ namespace GlobeAuction.Helpers
             var linesHtml = string.Empty;
             foreach(var line in lines)
             {
-                linesHtml += ReplaceToken("LineName", line.Key, ReplaceToken("LinePrice", line.Value.ToString("C"), lineTemplate));
+                linesHtml += ReplaceToken("LineName", line.Item1, ReplaceToken("LinePrice", line.Item2.ToString("C"), lineTemplate));
             }
             body = ReplaceToken("InvoiceLines", linesHtml, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);

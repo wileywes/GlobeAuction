@@ -28,9 +28,12 @@ namespace GlobeAuction
 
         protected void Application_Error()
         {
-            Exception lastException = Server.GetLastError();
+            var lastException = Server.GetLastError();
+            var request = HttpContext.Current.Request;
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Error(lastException);
+            var msg = string.Format("{0} {1}", request.Url, lastException);
+
+            logger.Error(msg);
         }
     }
 }
