@@ -15,7 +15,7 @@
                     Join us for a night of food, drinks, fantastic silent auction items and a spirited live auction!                    
                 </p>
                 <p>
-                    <table width="100%">
+                    <table width="100%" cellpadding="5">
                         <tr>
                             <td>Get your ticket(s) now!</td>
                             <td align="right">@Html.ActionLink("BUY TICKETS NOW", "Register", "Bidders", null, htmlAttributes: new { @class = "btn btn-lg btn-buytickets" })</td>
@@ -32,21 +32,20 @@
 
 <div class="container marketing">
     <div class="row">
-        <div class="col-lg-4">
-            <h2>Who</h2>
-            <p>Parents, Teachers, Grandparents and anyone who wants a fun night out for a great cause!</p>
+        <div class="col-lg-4 auction-logistic-col">
+            <img src="~/Content/Images/who_box.jpg" class=".auction-logistic-img" />
+            <p class="auction-logistic-text">Parents, Teachers, Grandparents and anyone who wants a fun night out for a great cause!</p>
         </div>
-        <div class="col-lg-4">
-            <h2>When</h2>
-            <p><b>March 25, 2017</b></p>
+        <div class="col-lg-4 auction-logistic-col">
+            <img src="~/Content/Images/when_box.jpg" class=".auction-logistic-img" />
+            <p class="auction-logistic-text"><b>March 25, 2017</b></p>
         </div>
-        <div class="col-lg-4">
-            <h2>Where</h2>
-            <p>
+        <div class="col-lg-4 auction-logistic-col">
+            <img src="~/Content/Images/where_box.jpg" class=".auction-logistic-img" />
+            <p class="auction-logistic-text">
                 <b>Spring Hall</b><br />
                 7130 Buford Hwy NE #100<br />
-                Atlanta, GA 30340
-            </p>
+                Atlanta, GA 30340</p>
         </div>
     </div>
 </div>

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -13,7 +14,7 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top header-logo">
+    <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -23,11 +24,54 @@
                 </button>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Register", "Register", "Bidders")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+                @if (Request.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav">
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                        {
+                            <li>@Html.ActionLink("Donate", "Create", "DonationItems")</li>
+                            <li>@Html.ActionLink("Items", "Index", "AuctionItems")</li>
+                        }
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
+                        {
+                            <li>@Html.ActionLink("Bidders", "Index", "Bidders")</li>
+                        }
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                        {
+                            <li>@Html.ActionLink("Tickets", "Index", "TicketTypes")</li>
+                        }
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
+                        {
+                            <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>
+                            <li>@Html.ActionLink("Logs", "Index", "LogFiles")</li>
+                        }
+                    </ul>
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                @Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                            </li>
+                            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                        </ul>
+                    }
+                }
+                else
+                {
+                    <div class="navbar-logo">
+                        <ul class="nav navbar-nav">
+                            <li><a href="/Home"><img src="~/Content/Images/icon01.jpg" class="hidden-xs" /><br />HOME</a></li>
+                            <li><a href="/register"><img src="~/Content/Images/icon02.jpg" class="hidden-xs" /><br />REGISTER</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="/account/login" id="loginLink"><img src="~/Content/Images/icon03.jpg" class="hidden-xs" /><br />VOLUNTEERS</a></li>
+                            <li><a href="mailto:@System.Web.Configuration.WebConfigurationManager.AppSettings["GmailAccountUsername"]"><img src="~/Content/Images/icon04.jpg" class="hidden-xs" /><br />CONTACT US</a></li>
+                        </ul>
+                    </div>
+                }
+
             </div>
         </div>
     </div>
@@ -38,6 +82,6 @@
             <p>&copy; @DateTime.Now.Year</p>
         </footer>
     </div>
-    
+
 </body>
 </html>
