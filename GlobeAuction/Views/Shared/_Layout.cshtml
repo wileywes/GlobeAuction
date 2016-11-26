@@ -12,6 +12,15 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
+    @if(Request.IsAuthenticated)
+    {
+        <style type="text/css">
+            body {
+                padding-top: 50px;
+            }
+        </style>
+    }
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
