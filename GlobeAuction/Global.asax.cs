@@ -34,6 +34,13 @@ namespace GlobeAuction
             var msg = string.Format("{0} {1}", request.Url, lastException);
 
             logger.Error(msg);
+
+            try
+            {
+                new EmailHelper().SendEmail("williams.wes@gmail.com", "Auction Site Error", request.Url + Environment.NewLine + lastException);
+            }
+            catch(Exception)
+            { }
         }
     }
 }

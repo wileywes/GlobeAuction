@@ -108,7 +108,7 @@ namespace GlobeAuction.Helpers
             return Path.Combine(_baseFilePath, @"Content\EmailTemplates\inlined\" + inlinedTemplateName + ".html");
         }
 
-        private static void SendEmail(string to, string subject, string body)
+        public void SendEmail(string to, string subject, string body)
         {
             var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
             {
@@ -116,6 +116,11 @@ namespace GlobeAuction.Helpers
                 IsBodyHtml = true,
                 Subject = subject
             };
+
+            if (!string.IsNullOrEmpty(_allEmailBcc))
+            {
+                msg.Bcc.Add(_allEmailBcc);
+            }
 
             var smtp = new SmtpClient("smtp.gmail.com", 587)
             {

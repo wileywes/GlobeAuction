@@ -1,7 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    color: #1e345d;
+    color: #21375E;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -37,9 +37,9 @@ textarea {
     }
 
     body {
-        padding-top: 153px;
+        padding-top: 155px;
         padding-bottom: 20px;
-        color: #1e345d;
+        color: #21375E;
     }
     
     .navbar-nav > li > a {
@@ -62,7 +62,7 @@ textarea {
 }
 
 .navbar {
-    background-color: #1e345d;
+    background-color: #21375E;
 }
 
 .nav > li.disabled > a {
@@ -86,30 +86,25 @@ textarea {
     text-decoration: none;
     cursor: not-allowed;
     background-color: transparent;
-    font-weight: bold;
 }
 
 .navbar-inverse .navbar-brand {
     color: #86754d;
-    font-weight: bold;
 }
 
     .navbar-inverse .navbar-brand:hover,
     .navbar-inverse .navbar-brand:focus {
         color: #ffffff;
         background-color: transparent;
-        font-weight: bold;
     }
 
 .navbar-inverse .navbar-text {
     color: #86754d;
-    font-weight: bold;
 }
 
 .navbar-inverse .navbar-nav > li > a {
     font-size: 18px;
     color: #86754d;
-    font-weight: bold;
 }
 
     .navbar-inverse .navbar-nav > li > a:hover,
@@ -193,7 +188,7 @@ textarea {
 
 
 .greybox {
-    background-color: #eeeeee;
+    background-color: #B3B3B3;
 }
 
 .table td {
@@ -217,7 +212,7 @@ tr.shown td.details-control {
 
 .btn-buytickets {
     color: #86754d;
-    background-color: #eeeeee;
+    background-color: #B3B3B3;
     border-color: #86754d;
     font-weight: bold;
 }
