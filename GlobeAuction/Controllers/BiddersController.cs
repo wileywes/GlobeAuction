@@ -115,6 +115,23 @@ namespace GlobeAuction.Controllers
             }
 
             db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
+
+            //before we redirect, make sure we have the latest prices on the current tickets configuration
+            var ticketTypes = db.TicketTypes.ToList();
+            var changesMade = false;
+            foreach(var guest in bidder.AuctionGuests)
+            {
+                var matchingTT = ticketTypes.FirstOrDefault(t => t.Name.Equals(guest.TicketType));
+                if (matchingTT != null && matchingTT.Price != guest.TicketPrice)
+                {
+                    guest.TicketPrice = matchingTT.Price;
+                    changesMade = true;
+                }
+            }
+
+            if (changesMade)
+                db.SaveChanges();
+
             var viewModel = new BidderForPayPal(bidder);
             ViewBag.PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 

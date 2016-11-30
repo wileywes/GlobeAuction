@@ -37,10 +37,20 @@ namespace GlobeAuction
 
             try
             {
-                new EmailHelper().SendEmail("williams.wes@gmail.com", "Auction Site Error", request.Url + Environment.NewLine + lastException);
+                var body = GetErrorParam("Url", request.Url) +
+                    GetErrorParam("UserAgent", request.UserAgent) +
+                    GetErrorParam("Referrer", request.UrlReferrer) +
+                    GetErrorParam("Exception", lastException);
+
+                new EmailHelper().SendEmail("williams.wes@gmail.com", "Auction Site Error", body);
             }
             catch(Exception)
             { }
+        }
+
+        private string GetErrorParam(string name, object val)
+        {
+            return string.Format("<b>{0}</b> : {1} <br />", name, val);
         }
     }
 }
