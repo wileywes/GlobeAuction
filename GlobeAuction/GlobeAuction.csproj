@@ -423,6 +423,7 @@
     <Content Include="Views\Bidders\PayPalComplete.cshtml" />
     <Content Include="Views\LogFiles\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\Info.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

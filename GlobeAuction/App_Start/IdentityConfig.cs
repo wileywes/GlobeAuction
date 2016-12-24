@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using GlobeAuction.Models;
+using GlobeAuction.Helpers;
 
 namespace GlobeAuction
 {
@@ -33,7 +34,7 @@ namespace GlobeAuction
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
+            new EmailHelper().SendEmail(message.Destination, message.Subject, message.Body);
             return Task.FromResult(0);
         }
     }
