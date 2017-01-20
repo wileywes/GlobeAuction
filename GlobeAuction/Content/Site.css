@@ -232,3 +232,8 @@ tr.shown td.details-control {
     left: 60px;
     width: 280px;
 }
+
+.printcontainer { 
+   page-break-after: always; 
+   page-break-inside: avoid;
+}

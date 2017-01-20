@@ -278,6 +278,10 @@
     <Compile Include="Migrations\201611182234486_BidderPaymentReminderFlag.Designer.cs">
       <DependentUpon>201611182234486_BidderPaymentReminderFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701201957103_AddDonationItemTitle.cs" />
+    <Compile Include="Migrations\201701201957103_AddDonationItemTitle.Designer.cs">
+      <DependentUpon>201701201957103_AddDonationItemTitle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\LogModels.cs" />
@@ -296,10 +300,9 @@
       <DependentUpon>aspnet-GlobeAuction-20161005062405.mdf</DependentUpon>
     </Content>
     <Content Include="App_Data\Identity queries.sql" />
-    <Content Include="Content\bootstrap-social.css" />
+    <Content Include="App_Data\bootstrap-social.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\dataTables.bootstrap.css" />
     <Content Include="Content\EmailTemplates\action.html" />
     <Content Include="Content\EmailTemplates\alert.html" />
     <Content Include="Content\EmailTemplates\billing.html" />
@@ -331,6 +334,80 @@
     <Content Include="Content\Images\when_box.jpg" />
     <Content Include="Content\Images\where_box.jpg" />
     <Content Include="Content\Images\who_box.jpg" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.bootstrap.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.bootstrap.min.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.dataTables.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.dataTables.min.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.foundation.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.foundation.min.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.jqueryui.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.jqueryui.min.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.semanticui.css" />
+    <Content Include="DataTables\Buttons-1.2.4\css\buttons.semanticui.min.css" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.bootstrap.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.bootstrap.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.colVis.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.colVis.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.flash.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.flash.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.foundation.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.foundation.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.html5.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.html5.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.jqueryui.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.jqueryui.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.print.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.print.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.semanticui.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\buttons.semanticui.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\dataTables.buttons.js" />
+    <Content Include="DataTables\Buttons-1.2.4\js\dataTables.buttons.min.js" />
+    <Content Include="DataTables\Buttons-1.2.4\swf\flashExport.swf" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.bootstrap.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.bootstrap.min.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.foundation.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.foundation.min.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.jqueryui.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.jqueryui.min.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.semanticui.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\dataTables.semanticui.min.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\jquery.dataTables.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\jquery.dataTables.min.css" />
+    <Content Include="DataTables\DataTables-1.10.13\css\jquery.dataTables_themeroller.css" />
+    <Content Include="DataTables\DataTables-1.10.13\images\sort_asc.png" />
+    <Content Include="DataTables\DataTables-1.10.13\images\sort_asc_disabled.png" />
+    <Content Include="DataTables\DataTables-1.10.13\images\sort_both.png" />
+    <Content Include="DataTables\DataTables-1.10.13\images\sort_desc.png" />
+    <Content Include="DataTables\DataTables-1.10.13\images\sort_desc_disabled.png" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.bootstrap.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.bootstrap.min.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.foundation.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.foundation.min.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.jqueryui.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.jqueryui.min.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.semanticui.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\dataTables.semanticui.min.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\jquery.dataTables.js" />
+    <Content Include="DataTables\DataTables-1.10.13\js\jquery.dataTables.min.js" />
+    <Content Include="DataTables\datatables.css" />
+    <Content Include="DataTables\datatables.js" />
+    <Content Include="DataTables\datatables.min.css" />
+    <Content Include="DataTables\datatables.min.js" />
+    <Content Include="DataTables\JSZip-2.5.0\jszip.js" />
+    <Content Include="DataTables\JSZip-2.5.0\jszip.min.js" />
+    <Content Include="DataTables\pdfmake-0.1.18\build\pdfmake.js" />
+    <Content Include="DataTables\pdfmake-0.1.18\build\pdfmake.min.js" />
+    <Content Include="DataTables\pdfmake-0.1.18\build\vfs_fonts.js" />
+    <Content Include="DataTables\Select-1.2.0\css\select.bootstrap.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.bootstrap.min.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.dataTables.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.dataTables.min.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.foundation.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.foundation.min.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.jqueryui.css" />
+    <Content Include="DataTables\Select-1.2.0\css\select.jqueryui.min.css" />
+    <Content Include="DataTables\Select-1.2.0\js\dataTables.select.js" />
+    <Content Include="DataTables\Select-1.2.0\js\dataTables.select.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -348,12 +425,13 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="DataTables\Buttons-1.2.4\css\common.scss" />
+    <Content Include="DataTables\Buttons-1.2.4\css\mixins.scss" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\GlobeAuction.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\dataTables.bootstrap.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -400,7 +478,6 @@
     <Content Include="Views\DonationItems\Delete.cshtml" />
     <Content Include="Views\DonationItems\Details.cshtml" />
     <Content Include="Views\DonationItems\Edit.cshtml" />
-    <Content Include="Views\DonationItems\Index.cshtml" />
     <Content Include="Views\UsersAdmin\Edit.cshtml" />
     <Content Include="Views\UsersAdmin\Index.cshtml" />
     <Content Include="Views\AuctionItems\Delete.cshtml" />
@@ -424,6 +501,7 @@
     <Content Include="Views\LogFiles\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\Info.cshtml" />
+    <Content Include="Views\AuctionItems\PrintBidSheets.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -480,6 +558,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611182234486_BidderPaymentReminderFlag.resx">
       <DependentUpon>201611182234486_BidderPaymentReminderFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701201957103_AddDonationItemTitle.resx">
+      <DependentUpon>201701201957103_AddDonationItemTitle.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

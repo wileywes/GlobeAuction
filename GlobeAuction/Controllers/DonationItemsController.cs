@@ -40,6 +40,7 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: DonationItems/Create
+        [AllowAnonymous]
         public ActionResult Create()
         {
             AddDonationItemControlInfo(null);
@@ -66,6 +67,7 @@ namespace GlobeAuction.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, string quantity)
         {
@@ -197,8 +199,7 @@ namespace GlobeAuction.Controllers
             {
                 var selected = donationItemCategories.FirstOrDefault(c => c.Value.Equals(donationItem.Category));
                 if (selected != null) selected.Selected = true;
-            }
-            
+            }            
 
             ViewBag.DonationItemCategories = donationItemCategories;
         }

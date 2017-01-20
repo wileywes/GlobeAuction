@@ -35,7 +35,9 @@ namespace GlobeAuction.Models
             "Experiences and Getaways",
             "Health, Beauty and Fitness",
             "Camps and Kids Stuff",
-            "Services"
+            "Home and Services",
+            "Teacher Treasure",
+            "GLOBE Perks"
         };
 
         public static readonly List<string> TeacherNames = new List<string>

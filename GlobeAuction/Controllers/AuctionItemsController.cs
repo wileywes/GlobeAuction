@@ -53,6 +53,26 @@ namespace GlobeAuction.Controllers
             db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
             return View(auctionItem);
         }
+
+        // GET: AuctionItems/PrintBidSheets?auctionItemIds=1,2,3
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult PrintBidSheets(string auctionItemIds)
+        {
+            if (string.IsNullOrEmpty(auctionItemIds))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var ids = auctionItemIds.Split(new[] { ',' }).Select(id => int.Parse(id)).ToList();
+
+            var auctionItems = db.AuctionItems.Where(ai => ids.Contains(ai.AuctionItemId)).ToList();
+
+            foreach (var ai in auctionItems)
+            {
+                db.Entry(ai).Collection(a => a.DonationItems).Load();
+            }
+
+            return View(auctionItems);
+        }
         
         // GET: AuctionItems/Edit/5
         [Authorize(Roles = AuctionRoles.CanEditItems)]
@@ -130,7 +150,7 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedDonationItems(ItemsViewModel postedModel, string submitButton)
+        public ActionResult SubmitSelectedDonationItems(ItemsViewModel postedModel)
         {
             var selectedDonationIds = postedModel.DonationsNotInAuctionItem.Where(i => i.IsSelected)
                 .Select(d => d.DonationItemId)
@@ -150,15 +170,15 @@ namespace GlobeAuction.Controllers
             }
 
             var username = User.Identity.GetUserName();
-            switch (submitButton)
+            switch (postedModel.PostActionName)
             {
-                case "Make a Basket":
+                case "MakeBasket":
                     var basket = ItemsHelper.CreateAuctionItemForDonations(nextUniqueId, selectedDonations, username);
                     db.AuctionItems.Add(basket);
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = basket.AuctionItemId });
 
-                case "Make Single Auction Item(s)":
+                case "MakeSingle":
                     foreach(var selectedDonation in selectedDonations)
                     {
                         var auctionItem = ItemsHelper.CreateAuctionItemForDonation(nextUniqueId, selectedDonation, username);

@@ -11,6 +11,7 @@ namespace GlobeAuction.Models
     {
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
+        public string PostActionName { get; set; }
     }
 
     public class DonationItemViewModel
@@ -19,6 +20,8 @@ namespace GlobeAuction.Models
         public int DonationItemId { get; set; }
         [Required]
         public string Category { get; set; }
+        [Required]
+        public string Title { get; set; }
         [Required]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
@@ -37,6 +40,7 @@ namespace GlobeAuction.Models
         public DonationItemViewModel(DonationItem item)
         {
             this.Category = item.Category;
+            this.Title = item.Title;
             this.Description = item.Description.TruncateTo(50);
             this.DollarValue = item.DollarValue;
             this.DonationItemId = item.DonationItemId;
@@ -116,6 +120,9 @@ namespace GlobeAuction.Models
 
         [Required]
         public string Category { get; set; }
+
+        [Required]
+        public string Title { get; set; }
 
         [Required]
         [DataType(DataType.MultilineText)]

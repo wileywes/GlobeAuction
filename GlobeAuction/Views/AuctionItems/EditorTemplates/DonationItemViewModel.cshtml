@@ -5,10 +5,14 @@
         @Html.CheckBoxFor(m => m.IsSelected, new { @class = "chkSelect" })
     </td>
     <td>
+        @Html.HiddenFor(m => m.DonationItemId)
         @Html.DisplayFor(m => m.DonationItemId)
     </td>
     <td>
         @Html.DisplayFor(m => m.Category)
+    </td>
+    <td>
+        @Html.DisplayFor(m => m.Title)
     </td>
     <td>
         @Html.DisplayFor(m => m.Description)
