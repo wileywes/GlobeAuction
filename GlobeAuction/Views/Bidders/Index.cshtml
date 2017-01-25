@@ -1,8 +1,7 @@
 ﻿@model IEnumerable<GlobeAuction.Models.BidderForList>
 
-<link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
-<script src="~/Scripts/jquery.dataTables.min.js"></script>
-<script src="~/Scripts/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
 
 @{
     ViewBag.Title = "Registered Bidders";
@@ -43,6 +42,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.IsPaymentReminderSent)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateDate)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -78,6 +80,9 @@
                     @Html.DisplayFor(modelItem => item.IsPaymentReminderSent)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+                <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.BidderId }) |
                     @Html.ActionLink("Details", "Details", new { id = item.BidderId }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.BidderId }) |
@@ -94,7 +99,14 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#biddersTable').dataTable({
-            "iDisplayLength": 100
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ]
         });
     });
 </script>
