@@ -152,9 +152,9 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult SubmitSelectedDonationItems(ItemsViewModel postedModel)
         {
-            var selectedDonationIds = postedModel.DonationsNotInAuctionItem.Where(i => i.IsSelected)
-                .Select(d => d.DonationItemId)
-                .ToList();
+            var selectedDonationIds = postedModel.SelectedDonationItemIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse);
 
             if (!selectedDonationIds.Any())
             {

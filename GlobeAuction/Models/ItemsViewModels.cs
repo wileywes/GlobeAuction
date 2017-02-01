@@ -12,11 +12,11 @@ namespace GlobeAuction.Models
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
         public string PostActionName { get; set; }
+        public string SelectedDonationItemIds { get; set; }
     }
 
     public class DonationItemViewModel
     {
-        public bool IsSelected { get; set; }
         public int DonationItemId { get; set; }
         [Required]
         public string Category { get; set; }
