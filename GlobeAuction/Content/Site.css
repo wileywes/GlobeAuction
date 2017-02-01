@@ -237,3 +237,9 @@ tr.shown td.details-control {
    page-break-after: always; 
    page-break-inside: avoid;
 }
+
+
+.table-striped > tbody > tr.selected:nth-child(odd) > td,
+.table-striped > tbody > tr.selected:nth-child(odd) > th {
+  background-color: #A0AEC9;
+}

@@ -155,8 +155,18 @@
                 {
                     text: 'Print Bid Sheets',
                     action: function (e, dt, node, config) {
-                        var count = dt.rows({ selected: true }).count();
-                        alert(count + ' rows are selected.  Wes is still building this - stay tuned...');
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows to print bid sheets for.');
+                        }
+                        else {
+                            var ids = '';
+                            for (var i = 0; i < data.length ; i++) {
+                                ids += data[i][0] + ',';
+                            }
+                            ids = ids.trimRight(',');
+                            window.open('/AuctionItems/PrintBidSheets?auctionItemIds=' + ids, '_blank');
+                        }
                     }
                 }
             ],

@@ -62,9 +62,9 @@ namespace GlobeAuction.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var ids = auctionItemIds.Split(new[] { ',' }).Select(id => int.Parse(id)).ToList();
+            var ids = auctionItemIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(id => int.Parse(id)).ToList();
 
-            var auctionItems = db.AuctionItems.Where(ai => ids.Contains(ai.AuctionItemId)).ToList();
+            var auctionItems = db.AuctionItems.Where(ai => ids.Contains(ai.UniqueItemNumber)).ToList();
 
             foreach (var ai in auctionItems)
             {

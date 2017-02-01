@@ -1,53 +1,72 @@
 ﻿@model IEnumerable<GlobeAuction.Models.AuctionItem>
+@{
+    Layout = null;
+}
 
-<div class="container">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
 
-    @foreach (var auctionItem in Model)
-    {
-        <div class="printcontainer">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body style="padding-top:0px; padding-bottom:0px">
 
-            <h2>#@Html.DisplayFor(m => auctionItem.UniqueItemNumber)</h2>
-            <h3>@Html.DisplayFor(m => auctionItem.Description)</h3>
+    <div class="container body-content">
 
-            @if (auctionItem.DonationItems.All(d => d.DollarValue.HasValue))
-            {
-                <h3>Retail Value: $@auctionItem.DonationItems.Sum(d => d.DollarValue.Value)</h3>
-            }
+        @foreach (var auctionItem in Model)
+        {
+            <div class="printcontainer">
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <h3>Starting Bid: $@auctionItem.StartingBid</h3>
-                </div>
-                <div class="col-lg-6">
-                    <h3>Bid Increment Amount: $@auctionItem.BidIncrement</h3>
-                </div>
-            </div>
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>
-                            BID NUMBER
-                            (printer on yourbid paddle)
-                        </th>
-                        <th>
-                            BID AMT.
-                        </th>
-                    </tr>
-                </thead>
-                @for (int i = 0; i <= 20; i++)
+                <h2>#@Html.DisplayFor(m => auctionItem.UniqueItemNumber)</h2>
+                <h3>@Html.DisplayFor(m => auctionItem.Description)</h3>
+
+                @if (auctionItem.DonationItems.All(d => d.DollarValue.HasValue))
                 {
-                    <tr>
-                        <td>
-                            @i
-                        </td>
-                        <td>
-                            $
-                        </td>
-                    </tr>
+                    <h3>Retail Value: $@auctionItem.DonationItems.Sum(d => d.DollarValue.Value)</h3>
                 }
-            </table>
 
-            <img src="~/Content/Images/logo_web.jpg" />
-        </div>
-    }
-</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Starting Bid: $@auctionItem.StartingBid</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Bid Increment Amount: $@auctionItem.BidIncrement</h3>
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                BID NUMBER 
+                                (printed on your bid paddle)
+                            </th>
+                            <th>
+                                BID AMT.
+                            </th>
+                        </tr>
+                    </thead>
+                    @for (int i = 1; i <= 20; i++)
+                {
+                        <tr>
+                            <td>
+                                @i
+                            </td>
+                            <td>
+                                $
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+                <img src="~/Content/Images/logo_web.jpg" />
+            </div>
+        }
+    </div>
+
+</body>
+</html>
