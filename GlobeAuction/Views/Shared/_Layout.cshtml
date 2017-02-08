@@ -40,14 +40,15 @@
                         {
                             <li>@Html.ActionLink("Donate", "Create", "DonationItems")</li>
                             <li>@Html.ActionLink("Items", "Index", "AuctionItems")</li>
+                            <li>@Html.ActionLink("Tickets", "Index", "TicketTypes")</li>
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
                         {
                             <li>@Html.ActionLink("Bidders", "Index", "Bidders")</li>
                         }
-                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners))
                         {
-                            <li>@Html.ActionLink("Tickets", "Index", "TicketTypes")</li>
+                            <li>@Html.ActionLink("Winners", "Winners", "AuctionItems")</li>
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                         {

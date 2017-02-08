@@ -502,6 +502,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\AuctionItems\PrintBidSheets.cshtml" />
+    <Content Include="Views\AuctionItems\Winners.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

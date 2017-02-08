@@ -113,6 +113,33 @@ namespace GlobeAuction.Controllers
             return View(auctionItem);
         }
 
+        // POST: AuctionItems/RemoveFromBasket/5
+        [HttpGet]
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult RemoveFromBasket(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AuctionItem auctionItem = db.AuctionItems.FirstOrDefault(ai => ai.DonationItems.Any(di => di.DonationItemId == id));
+            if (auctionItem == null)
+            {
+                return HttpNotFound();
+            }
+
+            db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
+            var donationItem = auctionItem.DonationItems.First(di => di.DonationItemId == id);
+            auctionItem.DonationItems.Remove(donationItem);
+            auctionItem.UpdateDate = DateTime.Now;
+            auctionItem.UpdateBy = User.Identity.GetUserName();
+
+            db.Entry(auctionItem).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Edit", new { id = auctionItem.AuctionItemId });
+        }
+
+        
         // GET: AuctionItems/Delete/5
         [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Delete(int? id)
@@ -188,10 +215,44 @@ namespace GlobeAuction.Controllers
 
                     db.SaveChanges();
                     return RedirectToAction("Index");
+                case "AddToBasket":
+                    var existingAuctionItem = db.AuctionItems.FirstOrDefault(ai => ai.UniqueItemNumber == postedModel.BasketItemNumber);
+                    if (existingAuctionItem == null)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    db.Entry(existingAuctionItem).Collection(d => d.DonationItems).Load();
+                    foreach (var selectedDonation in selectedDonations)
+                    {
+                        existingAuctionItem.DonationItems.Add(selectedDonation);
+                    }
+                    db.Entry(existingAuctionItem).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Edit", new { id = existingAuctionItem.AuctionItemId });
             }
 
             return RedirectToAction("Index");
         }
+
+
+        // GET: Winners
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult Winners()
+        {
+            var auctionItems = db.AuctionItems.ToList();
+            
+            foreach (var ai in auctionItems)
+            {
+                db.Entry(ai).Collection(a => a.DonationItems).Load();
+            }
+
+            var model = new WinnersViewModel
+            {
+                AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList()
+            };
+            return View(model);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
