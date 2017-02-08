@@ -178,7 +178,17 @@ namespace GlobeAuction.Controllers
             DonationItem donationItem = db.DonationItems.Find(id);
             donationItem.IsDeleted = true;
             donationItem.UpdateBy = User.Identity.GetUserName();
-            db.SaveChanges();
+            if (string.IsNullOrEmpty(donationItem.Title)) donationItem.Title = "No Title";
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                var errors = ex.EntityValidationErrors.First().ValidationErrors.ToList();
+                throw;
+            }
             return RedirectToAction("Index", "AuctionItems");
         }
 
