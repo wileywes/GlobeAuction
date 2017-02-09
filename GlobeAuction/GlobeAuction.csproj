@@ -282,6 +282,10 @@
     <Compile Include="Migrations\201701201957103_AddDonationItemTitle.Designer.cs">
       <DependentUpon>201701201957103_AddDonationItemTitle.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702091420089_AuctionItemTitle.cs" />
+    <Compile Include="Migrations\201702091420089_AuctionItemTitle.Designer.cs">
+      <DependentUpon>201702091420089_AuctionItemTitle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\LogModels.cs" />
@@ -562,6 +566,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701201957103_AddDonationItemTitle.resx">
       <DependentUpon>201701201957103_AddDonationItemTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702091420089_AuctionItemTitle.resx">
+      <DependentUpon>201702091420089_AuctionItemTitle.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -26,6 +26,8 @@ namespace GlobeAuction.Helpers
             var description = items.Count == 1 ? items.First().Description :
                 "This basket includes:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine + Environment.NewLine, items.Select(i => i.Description));
 
+            var title = items.First().Title;
+
             return new AuctionItem
             {
                 UniqueItemNumber = uniqueId,
@@ -36,6 +38,7 @@ namespace GlobeAuction.Helpers
                 BidIncrement = (int)Math.Floor((decimal)startBid / 4),
                 Category = mostCommonCategory,
                 Description = description,
+                Title = title,
                 DonationItems = items
             };
         }

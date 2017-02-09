@@ -98,7 +98,7 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult Edit([Bind(Include = "AuctionItemId,UniqueItemNumber,Description,Category,StartingBid,BidIncrement,CreateDate,WinningBidderId,WinningBid")] AuctionItem auctionItem)
+        public ActionResult Edit([Bind(Include = "AuctionItemId,UniqueItemNumber,Title,Description,Category,StartingBid,BidIncrement,CreateDate,WinningBidderId,WinningBid")] AuctionItem auctionItem)
         {
             if (ModelState.IsValid)
             {
@@ -172,8 +172,7 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index");
         }
 
-
-        // POST: AuctionItems/Delete/5
+        
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
@@ -226,9 +225,54 @@ namespace GlobeAuction.Controllers
                     {
                         existingAuctionItem.DonationItems.Add(selectedDonation);
                     }
-                    db.Entry(existingAuctionItem).State = EntityState.Modified;
+                    existingAuctionItem.UpdateDate = DateTime.Now;
+                    existingAuctionItem.UpdateBy = username;
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = existingAuctionItem.AuctionItemId });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost, ActionName("SubmitSelectedAuctionItems")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult SubmitSelectedAuctionItems(ItemsViewModel postedModel)
+        {
+            var selectedAuctionIds = postedModel.SelectedAuctionItemIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToList();
+
+            if (!selectedAuctionIds.Any())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var selectedAuctionItems = db.AuctionItems.Where(ai => selectedAuctionIds.Contains(ai.UniqueItemNumber)).ToList();
+            if (!selectedAuctionItems.Any())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var username = User.Identity.GetUserName();
+            switch (postedModel.PostActionName)
+            {
+                case "RenumberAuctionItems":
+                    if (postedModel.StartingAuctionItemNumber <= 0)
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    var nextItemNum = postedModel.StartingAuctionItemNumber;
+                    foreach (var auctionItem in selectedAuctionItems.OrderBy(a => a.UniqueItemNumber))
+                    {
+                        auctionItem.UniqueItemNumber = nextItemNum;
+                        auctionItem.UpdateBy = username;
+                        auctionItem.UpdateDate = DateTime.Now;
+                        nextItemNum++;
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");

@@ -23,6 +23,7 @@
             <div class="printcontainer">
 
                 <h2>#@Html.DisplayFor(m => auctionItem.UniqueItemNumber)</h2>
+                <h2>#@Html.DisplayFor(m => auctionItem.Title)</h2>
                 <h3>@Html.DisplayFor(m => auctionItem.Description)</h3>
 
                 @if (auctionItem.DonationItems.All(d => d.DollarValue.HasValue))

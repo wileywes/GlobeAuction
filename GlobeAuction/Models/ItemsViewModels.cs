@@ -13,7 +13,9 @@ namespace GlobeAuction.Models
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
         public string PostActionName { get; set; }
         public string SelectedDonationItemIds { get; set; }
+        public string SelectedAuctionItemIds { get; set; }
         public int BasketItemNumber { get; set; }
+        public int StartingAuctionItemNumber { get; set; }
     }
 
     public class WinnersViewModel
@@ -38,6 +40,7 @@ namespace GlobeAuction.Models
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
+        public string HasDisplay { get; set; }
 
         public DonationItemViewModel()
         {
@@ -47,11 +50,12 @@ namespace GlobeAuction.Models
         {
             this.Category = item.Category;
             this.Title = item.Title;
-            this.Description = item.Description.TruncateTo(50);
+            this.Description = item.Description; //.TruncateTo(50);
             this.DollarValue = item.DollarValue;
             this.DonationItemId = item.DonationItemId;
             this.ExpirationDate = item.ExpirationDate;
-            this.Restrictions = item.Restrictions.TruncateTo(50);
+            this.Restrictions = item.Restrictions; //.TruncateTo(50);
+            this.HasDisplay = item.HasDisplay ? "Yes" : "No";
         }
     }
 
@@ -59,6 +63,7 @@ namespace GlobeAuction.Models
     {
         public int AuctionItemId { get; set; }
         public int UniqueItemNumber { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -74,7 +79,8 @@ namespace GlobeAuction.Models
         {
             this.AuctionItemId = i.AuctionItemId;
             this.UniqueItemNumber = i.UniqueItemNumber;
-            this.Description = i.Description.TruncateTo(50);
+            this.Title = i.Title;
+            this.Description = i.Description; //.TruncateTo(50);
             this.Category = i.Category;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
@@ -94,6 +100,8 @@ namespace GlobeAuction.Models
         [Required]
         [Index("IX_AuctionItem_UniqueItemNumber", 1, IsUnique = true)]
         public int UniqueItemNumber { get; set; }
+        [Required]
+        public string Title { get; set; }
         [Required]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
