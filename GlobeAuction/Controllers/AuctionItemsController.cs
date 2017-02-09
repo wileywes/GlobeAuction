@@ -176,9 +176,9 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedDonationItems(ItemsViewModel postedModel)
+        public ActionResult SubmitSelectedDonationItems(string donationItemsAction, string selectedDonationItemIds, int? basketItemNumber)
         {
-            var selectedDonationIds = postedModel.SelectedDonationItemIds
+            var selectedDonationIds = selectedDonationItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse);
 
@@ -196,7 +196,7 @@ namespace GlobeAuction.Controllers
             }
 
             var username = User.Identity.GetUserName();
-            switch (postedModel.PostActionName)
+            switch (donationItemsAction)
             {
                 case "MakeBasket":
                     var basket = ItemsHelper.CreateAuctionItemForDonations(nextUniqueId, selectedDonations, username);
@@ -215,7 +215,9 @@ namespace GlobeAuction.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 case "AddToBasket":
-                    var existingAuctionItem = db.AuctionItems.FirstOrDefault(ai => ai.UniqueItemNumber == postedModel.BasketItemNumber);
+                    if (!basketItemNumber.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var existingAuctionItem = db.AuctionItems.FirstOrDefault(ai => ai.UniqueItemNumber == basketItemNumber.Value);
                     if (existingAuctionItem == null)
                     {
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -237,9 +239,9 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedAuctionItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedAuctionItems(ItemsViewModel postedModel)
+        public ActionResult SubmitSelectedAuctionItems(string postActionName, string selectedAuctionItemIds, int? startingAuctionItemNumber)
         {
-            var selectedAuctionIds = postedModel.SelectedAuctionItemIds
+            var selectedAuctionIds = selectedAuctionItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToList();
@@ -256,14 +258,14 @@ namespace GlobeAuction.Controllers
             }
 
             var username = User.Identity.GetUserName();
-            switch (postedModel.PostActionName)
+            switch (postActionName)
             {
                 case "RenumberAuctionItems":
-                    if (postedModel.StartingAuctionItemNumber <= 0)
+                    var nextItemNum = startingAuctionItemNumber.GetValueOrDefault(0);
+                    if (nextItemNum <= 0)
                     {
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
-                    var nextItemNum = postedModel.StartingAuctionItemNumber;
                     foreach (var auctionItem in selectedAuctionItems.OrderBy(a => a.UniqueItemNumber))
                     {
                         auctionItem.UniqueItemNumber = nextItemNum;

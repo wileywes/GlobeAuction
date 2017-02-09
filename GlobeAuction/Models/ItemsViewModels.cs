@@ -11,11 +11,6 @@ namespace GlobeAuction.Models
     {
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
-        public string PostActionName { get; set; }
-        public string SelectedDonationItemIds { get; set; }
-        public string SelectedAuctionItemIds { get; set; }
-        public int BasketItemNumber { get; set; }
-        public int StartingAuctionItemNumber { get; set; }
     }
 
     public class WinnersViewModel

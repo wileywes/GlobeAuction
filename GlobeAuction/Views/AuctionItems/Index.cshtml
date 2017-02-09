@@ -28,9 +28,9 @@
 {
     @Html.AntiForgeryToken()
 
-    @Html.HiddenFor(m => m.PostActionName, new { id = "postActionName" });
-    @Html.HiddenFor(m => m.SelectedAuctionItemIds, new { id = "selectedAuctionItemIds" });
-    @Html.HiddenFor(m => m.StartingAuctionItemNumber, new { id = "startingAuctionItemNumber" });
+    @Html.Hidden("auctionItemsAction");
+    @Html.Hidden("selectedAuctionItemIds");
+    @Html.Hidden("startingAuctionItemNumber");
 
     <table class="table table-striped table-bordered" id="auctionItemsTable">
         <thead>
@@ -116,9 +116,9 @@
 {
     @Html.AntiForgeryToken()
 
-    @Html.HiddenFor(m => m.PostActionName, new { id = "postActionName" });
-    @Html.HiddenFor(m => m.SelectedDonationItemIds, new { id = "selectedDonationItemIds" });
-    @Html.HiddenFor(m => m.BasketItemNumber, new { id = "basketItemNumber" });
+    @Html.Hidden("donationItemsAction");
+    @Html.Hidden("selectedDonationItemIds");
+    @Html.Hidden("basketItemNumber");
 
     <table class="table table-striped table-bordered" id="donationItemsTable">
         <thead>
@@ -208,7 +208,7 @@
                             var startingItemNo = prompt("What Item No do you want to start with?");
                             if (startingItemNo != null) {
                                 $("#startingAuctionItemNumber").val(startingItemNo);
-                                $("#postActionName").val("RenumberAuctionItems");
+                                $("#auctionItemsAction").val("RenumberAuctionItems");
                                 $('#submitSelectedAuctionItemsForm').submit();
                             }
                         }
@@ -260,7 +260,7 @@
                             }
                             ids = ids.trimRight(',');
                             $("#selectedDonationItemIds").val(ids);
-                            $("#postActionName").val("MakeSingle");
+                            $("#donationItemsAction").val("MakeSingle");
                             $('#submitSelectedDonationItemsForm').submit();
                         }
                     }
@@ -279,7 +279,7 @@
                             }
                             ids = ids.trimRight(',');
                             $("#selectedDonationItemIds").val(ids);
-                            $("#postActionName").val("MakeBasket");
+                            $("#donationItemsAction").val("MakeBasket");
                             $('#submitSelectedDonationItemsForm').submit();
                         }
                     }
@@ -302,7 +302,7 @@
                             var basketId = prompt("Which Basket Item No (from above)?");
                             if (basketId != null) {
                                 $("#basketItemNumber").val(basketId);
-                                $("#postActionName").val("AddToBasket");
+                                $("#donationItemsAction").val("AddToBasket");
                                 $('#submitSelectedDonationItemsForm').submit();
                             }
                         }
