@@ -199,6 +199,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuctionItemsController.cs" />
+    <Compile Include="Controllers\IpnController.cs" />
     <Compile Include="Controllers\LogFilesController.cs" />
     <Compile Include="Controllers\BiddersController.cs" />
     <Compile Include="Controllers\DonationItemsController.cs" />
@@ -507,6 +508,7 @@
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\AuctionItems\PrintBidSheets.cshtml" />
     <Content Include="Views\AuctionItems\Winners.cshtml" />
+    <Content Include="Views\Ipn\TestPayPalHereIpn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -571,6 +573,7 @@
       <DependentUpon>201702091420089_AuctionItemTitle.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

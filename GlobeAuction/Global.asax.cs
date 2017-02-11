@@ -30,6 +30,9 @@ namespace GlobeAuction
         {
             var lastException = Server.GetLastError();
             var request = HttpContext.Current.Request;
+
+            if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
+
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
             var msg = string.Format("{0} {1}", request.Url, lastException);
 

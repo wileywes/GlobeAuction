@@ -1,0 +1,49 @@
+﻿@model GlobeAuction.Models.BidderForPayPal
+
+@{
+    ViewBag.Title = "PayPal Here IPN Test";
+}
+
+@using (Html.BeginForm("Receive", "Ipn"))
+{
+    <input type="hidden" name="mc_gross" value="1.10" />
+    <input type="hidden" name="protection_eligibility" value="Ineligible" />
+    <input type="hidden" name="payer_id" value="XXXXX" />
+    <input type="hidden" name="tax" value="0.00" />
+    <input type="hidden" name="payment_date" value="10%3A56%3A10+Mar+05%2C+2013+PST" />
+    <input type="hidden" name="cc_input_method" value="Swipe" />
+    <input type="hidden" name="payment_status" value="Completed" />
+    <input type="hidden" name="payment_method" value="credit_card" />
+    <input type="hidden" name="invoice_id" value="XXXX-XXX" />
+    <input type="hidden" name="geolocation" value="XX.37588990114492+-XX1.921036809166" />
+    <input type="hidden" name="charset" value="ISO-8859-1" />
+    <input type="hidden" name="first_name" value="XXXX" />
+    <input type="hidden" name="mc_fee" value="0.03" />
+    <input type="hidden" name="notify_version" value="3.7" />
+    <input type="hidden" name="custom" value="" />
+    <input type="hidden" name="payer_status" value="unverified" />
+    <input type="hidden" name="business" value="xxxxx%40hotmail.com" />
+    <input type="hidden" name="quantity" value="1" />
+    <input type="hidden" name="verify_sign" value="A.7n6Acd75CB8FdbeZyRGF.BoVPlAh1DpDw5NsPgku3fVBbOvyXeZP64" />
+    <input type="hidden" name="discount_amount" value="0.00" />
+    <input type="hidden" name="txn_id" value="XXXXCX" />
+    <input type="hidden" name="payment_type" value="instant" />
+    <input type="hidden" name="last_name" value="XXXXX" />
+    <input type="hidden" name="receiver_email" value="XXXXXX%40hotmail.com" />
+    <input type="hidden" name="payment_fee" value="0.03" />
+    <input type="hidden" name="receiver_id" value="XXXXXXX" />
+    <input type="hidden" name="txn_type" value="paypal_here" />
+    <input type="hidden" name="item_name" value="" />
+    <input type="hidden" name="buyer_signature" value="yes" />
+    <input type="hidden" name="mc_currency" value="USD" />
+    <input type="hidden" name="item_number" value="" />
+    <input type="hidden" name="residence_country" value="US" />
+    <input type="hidden" name="receipt_id" value="XXXX-XXXX-XXXX-XXX" />
+    <input type="hidden" name="handling_amount" value="0.00" />
+    <input type="hidden" name="transaction_subject" value="" />
+    <input type="hidden" name="invoice_number" value="XXXXXX" />
+    <input type="hidden" name="payment_gross" value="1.10" />
+    <input type="hidden" name="shipping" value="0.00" />
+
+    <input type="submit" />
+}
