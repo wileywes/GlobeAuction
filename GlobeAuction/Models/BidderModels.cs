@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web.Mvc;
 
 namespace GlobeAuction.Models
 {
@@ -97,9 +96,11 @@ namespace GlobeAuction.Models
         public int BidderId { get; set; }
 
         [Required]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required]
@@ -111,16 +112,20 @@ namespace GlobeAuction.Models
         public string Email { get; set; }
 
         [DataType(DataType.PostalCode)]
+        [Display(Name = "Zip")]
         public string ZipCode { get; set; }
 
         public List<AuctionGuest> AuctionGuests { get; set; }
         public List<Student> Students { get; set; }
 
+        [Display(Name = "Registration Date")]
         public DateTime CreateDate { get; set; }
+
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
 
         [Required]
+        [Display(Name = "Pay Reminder Sent")]
         public bool IsPaymentReminderSent { get; set; }
     }
 
@@ -154,53 +159,5 @@ namespace GlobeAuction.Models
         public string HomeroomTeacher { get; set; }
 
         public Bidder Bidder { get; set; }
-    }
-
-    public class PayPalTransaction
-    {
-        [Required]
-        public int PayPalTransactionId { get; set; }
-        [Required]
-        public DateTime PaymentDate { get; set; }
-        [Required]
-        public string PayerId { get; set; }
-        [Required]
-        public decimal PaymentGross { get; set; }
-        [Required]
-        public string PaymentType { get; set; }
-        [Required]
-        public string PayerEmail { get; set; }
-        [Required]
-        public string PayerStatus { get; set; }
-        [Required]
-        public string TxnId { get; set; }
-        [Required]
-        public string PaymentStatus { get; set; }
-
-        public bool WasPaymentSuccessful {  get { return PaymentStatus == "Completed"; } }
-
-        public PayPalTransaction(FormCollection form)
-        {
-            //https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/#individual-items-variables
-            /*
-"payment_date"
-"payer_id" - "F22UAR3MXJBFU"
-"payment_gross"
-"payment_type"
-"payer_email"
-"payer_status" = "VERIFIED"
-"txn_id"
-"item_name"
-"payment_status" = "Completed"
-             */
-            PaymentDate = DateTime.Now;
-            PayerId = form["payer_id"];
-            PaymentGross = decimal.Parse(form["payment_gross"]);
-            PaymentType = form["payment_type"];
-            PayerEmail = form["payer_email"];
-            PayerStatus = form["payer_status"];
-            TxnId = form["txn_id"];
-            PaymentStatus = form["payment_status"];
-        }
     }
 }

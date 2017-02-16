@@ -56,5 +56,6 @@ namespace GlobeAuction.Models
         public System.Data.Entity.DbSet<GlobeAuction.Models.AuctionGuest> AuctionGuests { get; set; }
         public System.Data.Entity.DbSet<GlobeAuction.Models.Student> Students { get; set; }
         public DbSet<PayPalTransaction> PayPalTransactions { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
     }
 }

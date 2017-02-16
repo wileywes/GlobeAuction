@@ -17,6 +17,12 @@ namespace GlobeAuction.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult TestTicketPurchaseIpn()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public HttpStatusCodeResult Receive(FormCollection form)

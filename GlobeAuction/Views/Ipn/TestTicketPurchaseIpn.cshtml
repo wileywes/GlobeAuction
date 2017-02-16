@@ -1,0 +1,54 @@
+﻿@model GlobeAuction.Models.BidderForPayPal
+
+@{
+    ViewBag.Title = "Ticket Purchase IPN Test";
+}
+
+@using (Html.BeginForm("Receive", "Ipn"))
+{
+    <input type="hidden" name="mc_gross" value="0.07" />
+    <input type="hidden" name="protection_eligibility" value="Eligible" />
+    <input type="hidden" name="address_status" value="confirmed" />
+    <input type="hidden" name="item_number1" value="" />
+    <input type="hidden" name="item_number2" value="" />
+    <input type="hidden" name="payer_id" value="UT83ED8JWLWYE" />
+    <input type="hidden" name="address_street" value="10 Kingstone Rd" />
+    <input type="hidden" name="payment_date" value="06:15:35 Feb 13, 2017 PST" />
+    <input type="hidden" name="payment_status" value="Completed" />
+    <input type="hidden" name="charset" value="windows-1252" />
+    <input type="hidden" name="address_zip" value="30002" />
+    <input type="hidden" name="first_name" value="Michele" />
+    <input type="hidden" name="mc_fee" value="0.03" />
+    <input type="hidden" name="address_country_code" value="US" />
+    <input type="hidden" name="address_name" value="Michele Ritz" />
+    <input type="hidden" name="notify_version" value="3.8" />
+    <input type="hidden" name="custom" value="21" />
+    <input type="hidden" name="payer_status" value="verified" />
+    <input type="hidden" name="business" value="board@globeacademyfoundation.org" />
+    <input type="hidden" name="address_country" value="United States" />
+    <input type="hidden" name="num_cart_items" value="2" />
+    <input type="hidden" name="address_city" value="Avondale Estates" />
+    <input type="hidden" name="verify_sign" value="AJw0ZLqa4p.J4OaqOIAZhE.SQm4RAgpuuYqvRzJuYqENr.mbRy24ajLe" />
+    <input type="hidden" name="payer_email" value="me@me.com" />
+    <input type="hidden" name="txn_id" value="6SG17663A7082193W" />
+    <input type="hidden" name="payment_type" value="instant" />
+    <input type="hidden" name="last_name" value="Ritz" />
+    <input type="hidden" name="address_state" value="GA" />
+    <input type="hidden" name="item_name1" value="Ultimate Ticket (includes beer and wine)" />
+    <input type="hidden" name="receiver_email" value="board@globeacademyfoundation.org" />
+    <input type="hidden" name="item_name2" value="Ultimate Ticket (includes beer and wine)" />
+    <input type="hidden" name="payment_fee" value="0.03" />
+    <input type="hidden" name="quantity1" value="1" />
+    <input type="hidden" name="quantity2" value="1" />
+    <input type="hidden" name="receiver_id" value="Z6MBQ8R8TQ64A" />
+    <input type="hidden" name="txn_type" value="cart" />
+    <input type="hidden" name="mc_gross_1" value="0.04" />
+    <input type="hidden" name="mc_currency" value="USD" />
+    <input type="hidden" name="mc_gross_2" value="0.03" />
+    <input type="hidden" name="residence_country" value="US" />
+    <input type="hidden" name="transaction_subject" value="" />
+    <input type="hidden" name="payment_gross" value="0.07" />
+    <input type="hidden" name="ipn_track_id" value="56ce28eaeb112" />
+
+    <input type="submit" />
+}
