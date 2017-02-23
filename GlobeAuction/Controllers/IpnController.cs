@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GlobeAuction.Helpers;
+using GlobeAuction.Models;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,6 +13,9 @@ namespace GlobeAuction.Controllers
 {
     public class IPNController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
+        private NLog.ILogger _logger = NLog.LogManager.GetCurrentClassLogger();
+
         [AllowAnonymous]
         public ActionResult TestPayPalHereIpn()
         {
@@ -27,17 +32,19 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public HttpStatusCodeResult Receive(FormCollection form)
         {
+            var ppTrans = new PayPalTransaction(form);
+
             //Store the IPN received from PayPal
-            LogRequest(form);
+            LogRequest(ppTrans);
 
             //Fire and forget verification task
-            Task.Run(() => VerifyTask(Request));
+            Task.Run(() => VerifyTask(Request, ppTrans));
 
             //Reply back a 200 code
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private void VerifyTask(HttpRequestBase ipnRequest)
+        private void VerifyTask(HttpRequestBase ipnRequest, PayPalTransaction ppTrans)
         {
             var verificationResponse = string.Empty;
 
@@ -69,24 +76,27 @@ namespace GlobeAuction.Controllers
             catch (Exception exception)
             {
                 //Capture exception for manual investigation
-                NLog.LogManager.GetCurrentClassLogger().Error(exception, "Unable to process IPN: " + exception.Message);
+                _logger.Error(exception, "Unable to process IPN: " + exception.Message);
             }
 
-            ProcessVerificationResponse(verificationResponse);
+            ProcessVerificationResponse(verificationResponse, ppTrans);
         }
 
 
-        private void LogRequest(FormCollection form)
+        private void LogRequest(PayPalTransaction ppTrans)
         {
             // Persist the request values into a database or temporary data store
-            var logger = NLog.LogManager.GetCurrentClassLogger();
-            var msg = "PayPal IPN: " + Environment.NewLine + string.Join(Environment.NewLine, form.AllKeys.Select(k => string.Format("{0}={1}", k, form[k])));
-            logger.Info(msg);
+            //var logger = _logger;
+            //var msg = "PayPal IPN: " + Environment.NewLine + string.Join(Environment.NewLine, form.AllKeys.Select(k => string.Format("{0}={1}", k, form[k])));
+            //logger.Info(msg);
+            
+            db.PayPalTransactions.Add(ppTrans);
+            db.SaveChanges(); //go ahead and record the transaction
         }
 
-        private void ProcessVerificationResponse(string verificationResponse)
+        private void ProcessVerificationResponse(string verificationResponse, PayPalTransaction ppTrans)
         {
-            NLog.LogManager.GetCurrentClassLogger().Info("IPN Verify Response = " + verificationResponse);
+            _logger.Info("IPN Verify Response = " + verificationResponse);
 
             if (verificationResponse.Equals("VERIFIED"))
             {
@@ -95,14 +105,32 @@ namespace GlobeAuction.Controllers
                 // check that Receiver_email is your Primary PayPal email
                 // check that Payment_amount/Payment_currency are correct
                 // process payment
+                if (ppTrans.TransactionType == PayPalTransactionType.BidderCart)
+                {
+                    var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
+                    if (!bidderId.HasValue)
+                    {
+                        _logger.Error("Unable to find bidder ID from PP Trans Id {0}", ppTrans.TxnId);
+                        return;
+                    }
+
+                    Bidder bidder = db.Bidders.Find(bidderId.Value);
+                    if (bidder == null)
+                    {
+                        _logger.Error("Unable to find bidder ID {1} for PP Trans Id {0}", ppTrans.TxnId, bidderId.Value);
+                        return;
+                    }
+
+                    new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+                }
             }
             else if (verificationResponse.Equals("INVALID"))
             {
-                //Log for manual investigation
+                _logger.Error("Invalid Ipn in PP Trans ID {0}", ppTrans.TxnId);
             }
             else
             {
-                //Log error
+                _logger.Error("Unrecognized validation response [{0}] for PP Trans ID {1}", verificationResponse, ppTrans.TxnId);
             }
         }
     }

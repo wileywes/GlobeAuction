@@ -12,7 +12,7 @@
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="redirectForm">
     <input type="hidden" name="cmd" value="_cart" />
     <input type="hidden" name="upload" value="1" />
-    <input type="hidden" name="custom" value="@Model.BidderId" />
+    <input type="hidden" name="custom" value="Bidder:@Model.BidderId" />
     <input type="hidden" name="business" value="@ViewBag.PayPalBusiness" />
     <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Bidders", null, Request.Url.Scheme, null)" />     
     <input type="hidden" name="rm" value="2" />

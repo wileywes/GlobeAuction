@@ -146,35 +146,19 @@ namespace GlobeAuction.Controllers
             db.PayPalTransactions.Add(ppTrans);
             db.SaveChanges(); //go ahead and record the transaction
 
-            var bidderIdStr = form["custom"];
-            if (string.IsNullOrEmpty(bidderIdStr))
+            var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
+            if (!bidderId.HasValue)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var id = int.Parse(bidderIdStr);
-            Bidder bidder = db.Bidders.Find(id);
+
+            Bidder bidder = db.Bidders.Find(bidderId.Value);
             if (bidder == null)
             {
                 return HttpNotFound();
             }
-            
-            db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
 
-            if (ppTrans.WasPaymentSuccessful)
-            {
-                var paymentLeft = ppTrans.PaymentGross;
-
-                foreach (var guest in bidder.AuctionGuests)
-                {
-                    var priceToUseUp = Math.Min(guest.TicketPrice, paymentLeft);
-                    guest.TicketPricePaid = priceToUseUp;
-                    guest.TicketTransaction = ppTrans;
-                    paymentLeft -= priceToUseUp;
-                }
-                db.SaveChanges();
-
-                new EmailHelper().SendBidderPaymentConfirmation(bidder, ppTrans);
-            }
+            new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
 
             return View(bidder);
         }

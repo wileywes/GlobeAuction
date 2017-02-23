@@ -199,6 +199,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuctionItemsController.cs" />
+    <Compile Include="Controllers\InvoicesController.cs" />
     <Compile Include="Controllers\IpnController.cs" />
     <Compile Include="Controllers\LogFilesController.cs" />
     <Compile Include="Controllers\BiddersController.cs" />
@@ -211,6 +212,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BackgroundMaintenance.cs" />
+    <Compile Include="Helpers\BidderRepository.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\ItemsHelper.cs" />
@@ -515,6 +517,11 @@
     <Content Include="Views\AuctionItems\Winners.cshtml" />
     <Content Include="Views\Ipn\TestPayPalHereIpn.cshtml" />
     <Content Include="Views\Ipn\TestTicketPurchaseIpn.cshtml" />
+    <Content Include="Views\Invoices\Create.cshtml" />
+    <Content Include="Views\Invoices\Delete.cshtml" />
+    <Content Include="Views\Invoices\Details.cshtml" />
+    <Content Include="Views\Invoices\Edit.cshtml" />
+    <Content Include="Views\Invoices\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -97,6 +97,7 @@ custom=
             TxnId = form["txn_id"];
             PaymentStatus = form["payment_status"];
             Custom = form["custom"];
+            IpnTrackId = form["ipn_track_id"];
 
             TransactionType = PayPalTransactionType.Unknown;
             if (form.AllKeys.Contains("txn_type"))

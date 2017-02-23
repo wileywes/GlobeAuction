@@ -12,12 +12,12 @@ using Microsoft.AspNet.Identity;
 
 namespace GlobeAuction.Controllers
 {
+    [Authorize(Roles = AuctionRoles.CanEditItems)]
     public class AuctionItemsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: AuctionItems
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Index()
         {
             var auctionItems = db.AuctionItems.ToList();
@@ -38,7 +38,6 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: AuctionItems/Details/5
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -55,7 +54,6 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: AuctionItems/PrintBidSheets?auctionItemIds=1,2,3
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult PrintBidSheets(string auctionItemIds)
         {
             if (string.IsNullOrEmpty(auctionItemIds))
@@ -75,7 +73,6 @@ namespace GlobeAuction.Controllers
         }
         
         // GET: AuctionItems/Edit/5
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -97,7 +94,6 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Edit([Bind(Include = "AuctionItemId,UniqueItemNumber,Title,Description,Category,StartingBid,BidIncrement,CreateDate,WinningBidderId,WinningBid")] AuctionItem auctionItem)
         {
             if (ModelState.IsValid)
@@ -115,7 +111,6 @@ namespace GlobeAuction.Controllers
 
         // POST: AuctionItems/RemoveFromBasket/5
         [HttpGet]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult RemoveFromBasket(int? id)
         {
             if (id == null)
@@ -141,7 +136,6 @@ namespace GlobeAuction.Controllers
 
         
         // GET: AuctionItems/Delete/5
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -160,7 +154,6 @@ namespace GlobeAuction.Controllers
         // POST: AuctionItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult DeleteConfirmed(int id)
         {
             AuctionItem auctionItem = db.AuctionItems.Find(id);
@@ -175,7 +168,6 @@ namespace GlobeAuction.Controllers
         
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult SubmitSelectedDonationItems(string donationItemsAction, string selectedDonationItemIds, int? basketItemNumber)
         {
             var selectedDonationIds = selectedDonationItemIds
@@ -238,7 +230,6 @@ namespace GlobeAuction.Controllers
 
         [HttpPost, ActionName("SubmitSelectedAuctionItems")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult SubmitSelectedAuctionItems(string postActionName, string selectedAuctionItemIds, int? startingAuctionItemNumber)
         {
             var selectedAuctionIds = selectedAuctionItemIds
