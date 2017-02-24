@@ -270,24 +270,27 @@ namespace GlobeAuction.Controllers
 
             return RedirectToAction("Index");
         }
-
-
-        // GET: Winners
+                
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult Winners()
         {
-            var auctionItems = db.AuctionItems.ToList();
-            
-            foreach (var ai in auctionItems)
-            {
-                db.Entry(ai).Collection(a => a.DonationItems).Load();
-            }
+            AddAuctionItemCategoryControlInfo(null);
 
-            var model = new WinnersViewModel
-            {
-                AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList()
-            };
-            return View(model);
+            return View(new WinnersViewModel());
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult GetNextAuctionItemWithNoWinner(string selectedCategory, int currentAuctionItemId)
+        {
+            var nextItem = db.AuctionItems.FirstOrDefault(ai =>
+                ai.WinningBidderId.HasValue == false &&
+                ai.Category == selectedCategory &&
+                ai.UniqueItemNumber > currentAuctionItemId);
+            
+            return Json(
+                new { hasNext = nextItem != null, nextItem = nextItem },
+                JsonRequestBehavior.AllowGet
+            );
         }
 
 
@@ -302,15 +305,20 @@ namespace GlobeAuction.Controllers
 
         private void AddAuctionItemControlInfo(AuctionItem item)
         {
+            AddAuctionItemCategoryControlInfo(item != null ? item.Category : null);
+        }
+
+        private void AddAuctionItemCategoryControlInfo(string selectedCategory)
+        {
             var auctionItemCategories = AuctionConstants.DonationItemCategories.Select(c => new SelectListItem { Text = c, Value = c }).ToList();
 
             //additional categories for auction items
             auctionItemCategories.Add(new SelectListItem { Text = "Live", Value = "Live" });
             auctionItemCategories.Add(new SelectListItem { Text = "Teacher Treasures", Value = "Teacher Treasures" });
 
-            if (item != null && !string.IsNullOrEmpty(item.Category))
+            if (!string.IsNullOrEmpty(selectedCategory))
             {
-                var selected = auctionItemCategories.FirstOrDefault(c => c.Value.Equals(item.Category));
+                var selected = auctionItemCategories.FirstOrDefault(c => c.Value.Equals(selectedCategory));
                 if (selected != null) selected.Selected = true;
             }
 

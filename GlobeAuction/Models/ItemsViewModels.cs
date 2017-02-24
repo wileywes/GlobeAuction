@@ -15,7 +15,8 @@ namespace GlobeAuction.Models
 
     public class WinnersViewModel
     {
-        public List<AuctionItemViewModel> AuctionItems { get; set; }
+        public string SelectedCategory { get; set; }
+        public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
     }
 
     public class DonationItemViewModel
