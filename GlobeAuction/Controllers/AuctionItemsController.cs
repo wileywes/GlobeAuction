@@ -280,19 +280,77 @@ namespace GlobeAuction.Controllers
         }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
-        public ActionResult GetNextAuctionItemWithNoWinner(string selectedCategory, int currentAuctionItemId)
+        public ActionResult GetNextAuctionItemWithNoWinner(string selectedCategory, int currentUniqueItemNumber)
         {
-            var nextItem = db.AuctionItems.FirstOrDefault(ai =>
-                ai.WinningBidderId.HasValue == false &&
-                ai.Category == selectedCategory &&
-                ai.UniqueItemNumber > currentAuctionItemId);
+            var nextItem = db.AuctionItems.Where(ai =>
+                    ai.WinningBidderId.HasValue == false &&
+                    ai.Category == selectedCategory &&
+                    ai.UniqueItemNumber > currentUniqueItemNumber)
+                .OrderBy(ai => ai.UniqueItemNumber)
+                .FirstOrDefault();
             
+            if (nextItem == null)
+            {
+                return Json(new { hasNext = false }, JsonRequestBehavior.AllowGet);
+            }
             return Json(
-                new { hasNext = nextItem != null, nextItem = nextItem },
+                new {
+                    hasNext = true,
+                    auctionItemId = nextItem.AuctionItemId,
+                    title = nextItem.Title,
+                    description = nextItem.Description,
+                    uniqueItemNumber = nextItem.UniqueItemNumber
+                },
                 JsonRequestBehavior.AllowGet
             );
         }
 
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult SaveAuctionItemWinner(int auctionItemId, int uniqueItemNumber, string winningBidderId, string winningAmount)
+        {
+            int winningBidderIdInt, winningAmountInt;
+
+            if (!int.TryParse(winningBidderId, out winningBidderIdInt))
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Winning Bidder ID must be a whole number." }, JsonRequestBehavior.AllowGet);
+            }
+            if (!int.TryParse(winningAmount, out winningAmountInt))
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Winning Bid Amount must be a whole number." }, JsonRequestBehavior.AllowGet);
+            }
+
+            var auctionItem = db.AuctionItems.FirstOrDefault(ai =>
+                ai.AuctionItemId == auctionItemId &&
+                ai.UniqueItemNumber == uniqueItemNumber);
+
+            if (auctionItem == null)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Unable to find auction item." }, JsonRequestBehavior.AllowGet);
+            }
+            if (auctionItem.WinningBidderId.HasValue && auctionItem.WinningBidderId.Value != winningBidderIdInt)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
+            }
+            if (auctionItem.WinningBid.HasValue && auctionItem.WinningBid.Value != winningAmountInt)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + " for " + winningAmountInt.ToString("C") + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
+            }
+
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == winningBidderIdInt);
+
+            if (bidder == null)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Unable to find bidder " + winningBidderIdInt + "." }, JsonRequestBehavior.AllowGet);
+            }
+
+            auctionItem.WinningBid = winningAmountInt;
+            auctionItem.WinningBidderId = bidder.BidderId;
+            auctionItem.UpdateBy =  User.Identity.GetUserName();
+            auctionItem.UpdateDate = DateTime.Now;
+            db.SaveChanges();
+
+            return Json(new { wasSuccessful = true }, JsonRequestBehavior.AllowGet);
+        }
 
         protected override void Dispose(bool disposing)
         {
