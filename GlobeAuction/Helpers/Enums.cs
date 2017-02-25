@@ -30,12 +30,12 @@ namespace GlobeAuction.Models
     {
         public static readonly List<string> DonationItemCategories = new List<string>
         {
-            "Restaurant Gift Card",
-            "Tickets and Memberships",
-            "Experiences and Getaways",
+            "Gift Card Grab",
+            "Experiences and Entertainment",
+            "Getaways",
             "Health, Beauty and Fitness",
-            "Camps and Kids Stuff",
-            "Home and Services",
+            "Children's Corner",
+            "Home Goods and Services",
             "Teacher Treasure",
             "GLOBE Perks"
         };

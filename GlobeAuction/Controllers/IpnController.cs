@@ -36,9 +36,8 @@ namespace GlobeAuction.Controllers
 
             //Store the IPN received from PayPal
             LogRequest(ppTrans);
-
-            //Fire and forget verification task
-            Task.Run(() => VerifyTask(Request, ppTrans));
+            
+            VerifyTask(Request, ppTrans);
 
             //Reply back a 200 code
             return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -96,41 +95,49 @@ namespace GlobeAuction.Controllers
 
         private void ProcessVerificationResponse(string verificationResponse, PayPalTransaction ppTrans)
         {
-            _logger.Info("IPN Verify Response = " + verificationResponse);
-
-            if (verificationResponse.Equals("VERIFIED"))
+            try
             {
-                // check that Payment_status=Completed
-                // check that Txn_id has not been previously processed
-                // check that Receiver_email is your Primary PayPal email
-                // check that Payment_amount/Payment_currency are correct
-                // process payment
-                if (ppTrans.TransactionType == PayPalTransactionType.BidderCart)
+                _logger.Info("IPN Verify Response = " + verificationResponse);
+
+                if (verificationResponse.Equals("VERIFIED"))
                 {
-                    var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
-                    if (!bidderId.HasValue)
+                    // check that Payment_status=Completed
+                    // check that Txn_id has not been previously processed
+                    // check that Receiver_email is your Primary PayPal email
+                    // check that Payment_amount/Payment_currency are correct
+                    // process payment
+                    if (ppTrans.TransactionType == PayPalTransactionType.BidderCart)
                     {
-                        _logger.Error("Unable to find bidder ID from PP Trans Id {0}", ppTrans.TxnId);
-                        return;
-                    }
+                        var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
+                        if (!bidderId.HasValue)
+                        {
+                            _logger.Error("Unable to find bidder ID from PP Trans Id {0}", ppTrans.TxnId);
+                            return;
+                        }
 
-                    Bidder bidder = db.Bidders.Find(bidderId.Value);
-                    if (bidder == null)
-                    {
-                        _logger.Error("Unable to find bidder ID {1} for PP Trans Id {0}", ppTrans.TxnId, bidderId.Value);
-                        return;
-                    }
+                        Bidder bidder = db.Bidders.Find(bidderId.Value);
+                        if (bidder == null)
+                        {
+                            _logger.Error("Unable to find bidder ID {1} for PP Trans Id {0}", ppTrans.TxnId, bidderId.Value);
+                            return;
+                        }
 
-                    new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+                        new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+                        _logger.Info("Updated payment for bidder ID {0} via IPN", bidderId.Value);
+                    }
+                }
+                else if (verificationResponse.Equals("INVALID"))
+                {
+                    _logger.Error("Invalid Ipn in PP Trans ID {0}", ppTrans.TxnId);
+                }
+                else
+                {
+                    _logger.Error("Unrecognized validation response [{0}] for PP Trans ID {1}", verificationResponse, ppTrans.TxnId);
                 }
             }
-            else if (verificationResponse.Equals("INVALID"))
+            catch (Exception exc)
             {
-                _logger.Error("Invalid Ipn in PP Trans ID {0}", ppTrans.TxnId);
-            }
-            else
-            {
-                _logger.Error("Unrecognized validation response [{0}] for PP Trans ID {1}", verificationResponse, ppTrans.TxnId);
+                _logger.Error(exc, "Unable to process IPN response [{0}] for PP Trans ID {1}: {2}", verificationResponse, ppTrans.TxnId, exc.ToString());
             }
         }
     }

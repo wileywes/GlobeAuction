@@ -159,6 +159,7 @@ namespace GlobeAuction.Controllers
             }
 
             new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
 
             return View(bidder);
         }

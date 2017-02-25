@@ -16,6 +16,7 @@
     <input type="hidden" name="business" value="@ViewBag.PayPalBusiness" />
     <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Bidders", null, Request.Url.Scheme, null)" />     
     <input type="hidden" name="rm" value="2" />
+    <input type="hidden" name="notify_url" value="@Url.Action("Receive", "Ipn", null, Request.Url.Scheme, null)" />
 
     @for (int i = 0; i < Model.Tickets.Count; i++)
     {
