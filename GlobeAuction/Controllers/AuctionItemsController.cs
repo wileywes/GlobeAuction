@@ -372,7 +372,6 @@ namespace GlobeAuction.Controllers
 
             //additional categories for auction items
             auctionItemCategories.Add(new SelectListItem { Text = "Live", Value = "Live" });
-            auctionItemCategories.Add(new SelectListItem { Text = "Teacher Treasures", Value = "Teacher Treasures" });
 
             if (!string.IsNullOrEmpty(selectedCategory))
             {

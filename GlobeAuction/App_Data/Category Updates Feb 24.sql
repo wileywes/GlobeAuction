@@ -14,3 +14,6 @@ UPDATE DonationItems SET Category='Gift Card Grab' WHERE Category='Restaurant Gi
 
 UPDATE AuctionItems SET Category='Experiences and Entertainment' WHERE Category='Tickets and Memberships'
 UPDATE DonationItems SET Category='Experiences and Entertainment' WHERE Category='Tickets and Memberships'
+
+UPDATE AuctionItems SET Category='Teacher Treasures' WHERE Category='Teacher Treasure'
+UPDATE DonationItems SET Category='Teacher Treasures' WHERE Category='Teacher Treasure'

@@ -37,7 +37,8 @@ namespace GlobeAuction.Models
             "Children's Corner",
             "Home Goods and Services",
             "Teacher Treasure",
-            "GLOBE Perks"
+            "GLOBE Perks",
+            "Class Art"
         };
 
         public static readonly List<string> TeacherNames = new List<string>
