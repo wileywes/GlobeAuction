@@ -7,9 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using GlobeAuction.Models;
+using GlobeAuction.Helpers;
 
 namespace GlobeAuction.Controllers
 {
+    [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
     public class InvoicesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -34,26 +36,72 @@ namespace GlobeAuction.Controllers
             }
             return View(invoice);
         }
-
-        // GET: Invoices/Create
-        public ActionResult Create()
+        
+        [AllowAnonymous]
+        public ActionResult Checkout()
         {
-            return View();
+            return View(new InvoiceLookupModel());
         }
 
-        // POST: Invoices/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        // POST: AuctionItems/Delete/5
+        [HttpPost, ActionName("Checkout")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "InvoiceId,IsPaid,WasMarkedPaidManually,CreateDate,UpdateDate,UpdateBy")] Invoice invoice)
+        [AllowAnonymous]
+        public ActionResult CheckoutConfirmed(InvoiceLookupModel invoiceLookupModel)
         {
             if (ModelState.IsValid)
             {
-                db.Invoices.Add(invoice);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var bidder = db.Bidders.FirstOrDefault(b =>
+                    b.BidderId == invoiceLookupModel.BidderId &&
+                    b.LastName.Equals(invoiceLookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
+                    b.ZipCode == invoiceLookupModel.ZipCode);
+
+                if (bidder == null)
+                {
+                    ModelState.AddModelError("bidderId", "No bidder was found matching this information.");
+                }
+                else
+                {
+                    var winnings = db.AuctionItems.Where(ai => ai.WinningBidderId == invoiceLookupModel.BidderId).ToList();
+
+                    if (winnings.Any())
+                    {
+                        var invoice = new InvoiceRepository(db).CreateInvoice(bidder, winnings);
+
+                        return RedirectToAction("Review", new { bid = bidder.BidderId, iid = invoice.InvoiceId });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("bidderId", "At this time there are no auction items recorded as being won by you.");
+                    }
+                }
             }
+
+            return View(invoiceLookupModel);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Review(int bid, int iid)
+        {
+            //check they are
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bid);
+            if (bidder == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid);
+            if (invoice == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            db.Entry(invoice).Reference(i => i.Bidder).Load();
+            if (invoice.Bidder.BidderId != bid)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            db.Entry(invoice).Collection(i => i.AuctionItems).Load();
 
             return View(invoice);
         }

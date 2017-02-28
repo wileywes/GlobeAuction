@@ -1,0 +1,71 @@
+﻿@model GlobeAuction.Models.Invoice
+
+@{
+    ViewBag.Title = "Confirm Your Winnings";
+}
+
+<h2>Please review the details below for accuracy</h2>
+
+<div>
+    <h4>Your Information</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Paddle No.
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bidder.BidderId)
+        </dd>
+
+        <dt>
+            Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bidder.FirstName)
+            @Html.DisplayFor(model => model.Bidder.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Bidder.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bidder.Email)
+        </dd>
+    </dl>
+
+    <h4>Items You Won</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt></dt>
+        <dd>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Item No</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.AuctionItems)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => item.UniqueItemNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.WinningBid)
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </dd>
+    </dl>
+</div>
