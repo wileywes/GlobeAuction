@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using GlobeAuction.Models;
 using GlobeAuction.Helpers;
+using System.Configuration;
 
 namespace GlobeAuction.Controllers
 {
@@ -54,7 +55,7 @@ namespace GlobeAuction.Controllers
                 var bidder = db.Bidders.FirstOrDefault(b =>
                     b.BidderId == invoiceLookupModel.BidderId &&
                     b.LastName.Equals(invoiceLookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
-                    b.ZipCode == invoiceLookupModel.ZipCode);
+                    b.Email.Equals(invoiceLookupModel.Email, StringComparison.OrdinalIgnoreCase));
 
                 if (bidder == null)
                 {
@@ -62,13 +63,14 @@ namespace GlobeAuction.Controllers
                 }
                 else
                 {
+                    //TODO: only pull items not on an invoice already
                     var winnings = db.AuctionItems.Where(ai => ai.WinningBidderId == invoiceLookupModel.BidderId).ToList();
 
                     if (winnings.Any())
                     {
                         var invoice = new InvoiceRepository(db).CreateInvoice(bidder, winnings);
 
-                        return RedirectToAction("Review", new { bid = bidder.BidderId, iid = invoice.InvoiceId });
+                        return RedirectToAction("Review", new { bid = bidder.BidderId, email = bidder.Email });
                     }
                     else
                     {
@@ -81,30 +83,80 @@ namespace GlobeAuction.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Review(int bid, int iid)
+        public ActionResult Review(int bid, string email)
         {
             //check they are
-            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bid);
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
             if (bidder == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid);
+
+            var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId);
+            
+            foreach(var invoice in invoicesForBidder)
+            {
+                db.Entry(invoice).Collection(i => i.AuctionItems).Load();
+                db.Entry(invoice).Reference(i => i.PaymentTransaction).Load();
+                db.Entry(invoice).Reference(i => i.Bidder).Load();
+            }
+
+            var viewModel = new InvoicesForBidderViewModel(bidder, invoicesForBidder);
+            
+            return View(viewModel);
+        }
+
+
+        [AllowAnonymous]
+        public ActionResult RedirectToPayPal(int bid, string email, int iid)
+        {
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            if (bidder == null)
+            {
+                return HttpNotFound();
+            }
+
+            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Bidder.BidderId == bidder.BidderId);
             if (invoice == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return HttpNotFound();
             }
 
             db.Entry(invoice).Reference(i => i.Bidder).Load();
-            if (invoice.Bidder.BidderId != bid)
+            db.Entry(invoice).Reference(i => i.AuctionItems).Load();
+
+            ViewBag.PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
+
+            return View(invoice);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult PayPalComplete(FormCollection form)
+        {
+            var ppTrans = new PayPalTransaction(form);
+            db.PayPalTransactions.Add(ppTrans);
+            db.SaveChanges(); //go ahead and record the transaction
+
+            var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
+            if (!bidderId.HasValue)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            db.Entry(invoice).Collection(i => i.AuctionItems).Load();
+            Bidder bidder = db.Bidders.Find(bidderId.Value);
+            if (bidder == null)
+            {
+                return HttpNotFound();
+            }
 
-            return View(invoice);
+            new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
+
+            return View(bidder);
         }
+
+
 
         // GET: Invoices/Edit/5
         public ActionResult Edit(int? id)

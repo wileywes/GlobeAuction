@@ -344,13 +344,17 @@ namespace GlobeAuction.Controllers
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                NLog.LogManager.GetCurrentClassLogger().Info("ExternalLoginCallback: logininfo is null");
+                NLog.LogManager.GetCurrentClassLogger().Info("ExternalLoginCallback attempt could not proceed because logininfo is null");
                 return RedirectToAction("Login");
             }
 
             // Sign in the user with this external login provider if the user already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            NLog.LogManager.GetCurrentClassLogger().Info("ExternalLoginCallback: result is " + result);
+
+            if (result != SignInStatus.Success)
+            {
+                NLog.LogManager.GetCurrentClassLogger().Info("ExternalLoginCallback: result is " + result);
+            }
 
             switch (result)
             {

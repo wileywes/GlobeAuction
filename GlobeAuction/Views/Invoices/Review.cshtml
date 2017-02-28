@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.Invoice
+﻿@model GlobeAuction.Models.InvoicesForBidderViewModel
 
 @{
     ViewBag.Title = "Confirm Your Winnings";
@@ -13,59 +13,90 @@
         <dt>
             Paddle No.
         </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.Bidder.BidderId)
+            @Html.DisplayFor(model => model.BidderId)
         </dd>
 
         <dt>
             Name
         </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.Bidder.FirstName)
-            @Html.DisplayFor(model => model.Bidder.LastName)
+            @Html.DisplayFor(model => model.BidderName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Bidder.Email)
+            Email
         </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.Bidder.Email)
+            @Html.DisplayFor(model => model.BidderEmail)
         </dd>
     </dl>
 
     <h4>Items You Won</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt></dt>
-        <dd>
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Item No</th>
-                        <th>Title</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.AuctionItems)
+
+    @if (Model.Invoices.Any())
+    {
+        @foreach (var invoice in Model.Invoices.OrderBy(i => i.IsPaid))
+        {
+            <h3>
+                Invoice #@invoice.InvoiceId -
+                @if (invoice.IsPaid)
+                {
+                    <span style="color:darkgreen">Paid</span>
+                    @if (invoice.PaymentTransaction != null)
                     {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(m => item.UniqueItemNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.Title)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => item.WinningBid)
-                        </td>
-                    </tr>
+                        <span style="color:darkgreen"> - Transaction ID @invoice.PaymentTransaction.TxnId</span>
                     }
-                </tbody>
-            </table>
-        </dd>
-    </dl>
+                }
+                else
+                {
+                    <span style="color:darkred">Unpaid</span>
+                    @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, iid = invoice.InvoiceId },
+                        htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                }
+            </h3>
+            <dl class="dl-horizontal">
+                <dt></dt>
+                <dd>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item No</th>
+                                <th>Category</th>
+                                <th>Title</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in invoice.AuctionItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(m => item.UniqueItemNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Category)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.WinningBid)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </dd>
+            </dl>
+            <br />
+        }
+    }
+    else
+    {
+        <div class="alert-info alert">
+            There are currently no items that are recorded in the system as won by you.  If the auction has closed and you believe this to be an error please see a volunteer for help.
+        </div>
+    }
 </div>

@@ -19,7 +19,8 @@ namespace GlobeAuction.Helpers
         {
             db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
 
-            if (ppTrans.WasPaymentSuccessful)
+            //only apply the ticket payment if there are un-paid tickets and the PP trans was successful
+            if (ppTrans.WasPaymentSuccessful && bidder.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false))
             {
                 var paymentLeft = ppTrans.PaymentGross;
 

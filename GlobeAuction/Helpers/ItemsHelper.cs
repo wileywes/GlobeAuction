@@ -42,5 +42,18 @@ namespace GlobeAuction.Helpers
                 DonationItems = items
             };
         }
+
+        public static string GetItemNameForPayPalCart(AuctionItem item)
+        {
+            return $"Auction Item #{item.UniqueItemNumber}: {item.Title}";
+        }
+
+        public static void GetAuctionItemInfoFromPayPalCartItemName(string payPalCartItemName, out int uniqueItemNumber, out string titlePart)
+        {
+            var noPrefix = payPalCartItemName.Replace("Auction Item #", "");
+            var parts = noPrefix.Split(':');
+            uniqueItemNumber = int.Parse(parts[0]);
+            titlePart = parts[1].TrimStart();
+        }
     }
 }
