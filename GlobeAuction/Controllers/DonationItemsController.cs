@@ -34,8 +34,6 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(donationItem).Reference(d => d.Donor).Load();
-            db.Entry(donationItem).Reference(d => d.Solicitor).Load();
             return View(donationItem);
         }
 
@@ -121,8 +119,6 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(donationItem).Reference(d => d.Donor).Load();
-            db.Entry(donationItem).Reference(d => d.Solicitor).Load();
             AddDonationItemControlInfo(donationItem);
             return View(donationItem);
         }
@@ -147,8 +143,6 @@ namespace GlobeAuction.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index", "AuctionItems");
             }
-            db.Entry(donationItem).Reference(d => d.Donor).Load();
-            db.Entry(donationItem).Reference(d => d.Solicitor).Load();
             AddDonationItemControlInfo(donationItem);
             return View(donationItem);
         }
@@ -165,8 +159,6 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(donationItem).Reference(d => d.Donor).Load();
-            db.Entry(donationItem).Reference(d => d.Solicitor).Load();
             return View(donationItem);
         }
 

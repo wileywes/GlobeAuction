@@ -57,5 +57,7 @@ namespace GlobeAuction.Models
         public System.Data.Entity.DbSet<GlobeAuction.Models.Student> Students { get; set; }
         public DbSet<PayPalTransaction> PayPalTransactions { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<StoreItem> StoreItems { get; set; }
+        public DbSet<StoreItemPurchase> StoreItemPurchases { get; set; }
     }
 }

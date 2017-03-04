@@ -116,12 +116,14 @@ namespace GlobeAuction.Models
         /// <summary>
         /// List of items in this buyable group - could be 1 or more donation items
         /// </summary>
-        public List<DonationItem> DonationItems { get; set; }
+        public virtual List<DonationItem> DonationItems { get; set; }
         
         public int? WinningBidderId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? WinningBid { get; set; }
+
+        public virtual Invoice Invoice { get; set; }
     }
 
     public class DonationItem
@@ -154,8 +156,8 @@ namespace GlobeAuction.Models
         public string UpdateBy { get; set; }
         public bool IsDeleted { get; set; }
 
-        public Solicitor Solicitor { get; set; }
-        public Donor Donor { get; set; }
+        public virtual Solicitor Solicitor { get; set; }
+        public virtual Donor Donor { get; set; }
 
         public DonationItem Clone()
         {
@@ -199,7 +201,7 @@ namespace GlobeAuction.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        public List<DonationItem> DonationItems { get; set; }
+        public virtual List<DonationItem> DonationItems { get; set; }
     }
 
     public class Solicitor
@@ -220,6 +222,6 @@ namespace GlobeAuction.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        public List<DonationItem> DonationItems { get; set; }
+        public virtual List<DonationItem> DonationItems { get; set; }
     }
 }

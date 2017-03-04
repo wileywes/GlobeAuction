@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.Bidder
+﻿@model GlobeAuction.Models.BidderViewModel
 
 @{
     ViewBag.Title = "Bidder Details";
@@ -98,6 +98,24 @@
                         Model.AuctionGuests[i].LastName,
                         Model.AuctionGuests[i].TicketType,
                         Model.AuctionGuests[i].TicketPricePaid.GetValueOrDefault(0))
+            </dd>
+        }
+    </dl>
+
+    <h4>Additional Purchases(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @for (int i = 0; i < Model.StoreItemPurchases.Count; i++)
+        {
+            <dt>
+                @Html.Label("Item " + (i + 1))
+            </dt>
+
+            <dd>
+                @string.Format("{0} - {1:C} (paid {2:C})",
+                        Model.StoreItemPurchases[i].StoreItem.Title,
+                        Model.StoreItemPurchases[i].StoreItem.Price,
+                        Model.StoreItemPurchases[i].PricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>

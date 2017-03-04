@@ -20,12 +20,11 @@ namespace GlobeAuction.Models
 
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
-
-        [Required]
-        public Bidder Bidder { get; set; }
-
-        public List<AuctionItem> AuctionItems { get; set; }
-        public PayPalTransaction PaymentTransaction { get; set; }
+        
+        public virtual Bidder Bidder { get; set; }
+        public virtual List<AuctionItem> AuctionItems { get; set; }
+        public virtual List<StoreItemPurchase> StoreItems { get; set; }
+        public virtual PayPalTransaction PaymentTransaction { get; set; }
     }
     
     public enum PayPalTransactionType
@@ -70,6 +69,11 @@ namespace GlobeAuction.Models
         public string Custom { get; set; }
 
         public bool WasPaymentSuccessful { get { return PaymentStatus == "Completed"; } }
+
+        public PayPalTransaction()
+        {
+            //empty constructor for AutoMapper
+        }
 
         public PayPalTransaction(FormCollection form)
         {

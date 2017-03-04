@@ -35,7 +35,8 @@ namespace GlobeAuction.Helpers
 
                     var biddersThatHaveNotPaid = db.Bidders
                         .Where(b => b.CreateDate < oneDayAgo 
-                                && b.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false)
+                                && b.AuctionGuests.Any(g => g.TicketPrice > 0) //only nudge if they have non-free tickets
+                                && b.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false) //only nudge if at least one ticket isn't paid
                                 && b.IsPaymentReminderSent == false)
                         .ToList();
 

@@ -4,10 +4,14 @@
     ViewBag.Title = "Confirm Your Winnings";
 }
 
-<h2>Please review the details below for accuracy</h2>
 
 <div>
-    <h4>Your Information</h4>
+    <br/>
+    <div class="alert alert-info">
+        Please review the details below for accuracy.  You can pay any outstanding invoices and review items you've already paid for.
+    </div>
+
+    <h3>Your Information</h3>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -32,19 +36,19 @@
         </dd>
     </dl>
 
-    <h4>Items You Won</h4>
+    <h3>Items You Won</h3>
     <hr />
 
     @if (Model.Invoices.Any())
     {
-        @foreach (var invoice in Model.Invoices.OrderBy(i => i.IsPaid))
+        foreach (var invoice in Model.Invoices.OrderBy(i => i.IsPaid))
         {
-            <h3>
+            <h4>
                 Invoice #@invoice.InvoiceId -
                 @if (invoice.IsPaid)
                 {
                     <span style="color:darkgreen">Paid</span>
-                    @if (invoice.PaymentTransaction != null)
+                    if (invoice.PaymentTransaction != null)
                     {
                         <span style="color:darkgreen"> - Transaction ID @invoice.PaymentTransaction.TxnId</span>
                     }
@@ -53,9 +57,9 @@
                 {
                     <span style="color:darkred">Unpaid</span>
                     @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, iid = invoice.InvoiceId },
-                        htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                        htmlAttributes: new { @class = "btn btn-gold" })
                 }
-            </h3>
+            </h4>
             <dl class="dl-horizontal">
                 <dt></dt>
                 <dd>

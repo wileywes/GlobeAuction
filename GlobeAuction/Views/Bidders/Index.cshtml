@@ -37,7 +37,13 @@
                 @Html.DisplayNameFor(model => model.TicketsPaid)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalTicketCostPaid)
+                @Html.DisplayNameFor(model => model.ItemsCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemsPaid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPaid)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsPaymentReminderSent)
@@ -74,7 +80,13 @@
                     @Html.DisplayFor(modelItem => item.TicketsPaid)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TotalTicketCostPaid)
+                    @Html.DisplayFor(modelItem => item.ItemsCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemsPaid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPaid)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsPaymentReminderSent)

@@ -23,12 +23,7 @@ namespace GlobeAuction.Controllers
             var auctionItems = db.AuctionItems.ToList();
             var donationItemIdsInAuctionItem = db.AuctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
             var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
-
-            foreach (var ai in auctionItems)
-            {
-                db.Entry(ai).Collection(a => a.DonationItems).Load();
-            }
-
+            
             var model = new ItemsViewModel
             {
                 AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList(),
@@ -49,7 +44,6 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
             return View(auctionItem);
         }
 
@@ -63,12 +57,7 @@ namespace GlobeAuction.Controllers
             var ids = auctionItemIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(id => int.Parse(id)).ToList();
 
             var auctionItems = db.AuctionItems.Where(ai => ids.Contains(ai.UniqueItemNumber)).ToList();
-
-            foreach (var ai in auctionItems)
-            {
-                db.Entry(ai).Collection(a => a.DonationItems).Load();
-            }
-
+            
             return View(auctionItems);
         }
         
@@ -84,7 +73,6 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
             AddAuctionItemControlInfo(auctionItem);
             return View(auctionItem);
         }
@@ -122,8 +110,7 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-
-            db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
+            
             var donationItem = auctionItem.DonationItems.First(di => di.DonationItemId == id);
             auctionItem.DonationItems.Remove(donationItem);
             auctionItem.UpdateDate = DateTime.Now;
@@ -147,7 +134,6 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
             return View(auctionItem);
         }
 
@@ -157,7 +143,6 @@ namespace GlobeAuction.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             AuctionItem auctionItem = db.AuctionItems.Find(id);
-            db.Entry(auctionItem).Collection(d => d.DonationItems).Load();
             auctionItem.DonationItems.Clear();            
 
             db.AuctionItems.Remove(auctionItem);
@@ -214,7 +199,6 @@ namespace GlobeAuction.Controllers
                     {
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
-                    db.Entry(existingAuctionItem).Collection(d => d.DonationItems).Load();
                     foreach (var selectedDonation in selectedDonations)
                     {
                         existingAuctionItem.DonationItems.Add(selectedDonation);
@@ -336,7 +320,7 @@ namespace GlobeAuction.Controllers
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + " for " + winningAmountInt.ToString("C") + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
 
-            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == winningBidderIdInt);
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == winningBidderIdInt);
 
             if (bidder == null)
             {

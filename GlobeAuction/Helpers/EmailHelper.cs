@@ -34,7 +34,7 @@ namespace GlobeAuction.Helpers
         {
             var path = GetTemplateFilePath(inlinedTemplateName);
             var content = File.ReadAllText(path);
-            
+
             return content;
         }
 
@@ -44,6 +44,13 @@ namespace GlobeAuction.Helpers
                 .Where(g => g.TicketPricePaid.HasValue)
                 .Select(g => new Tuple<string, decimal>(g.TicketType, g.TicketPricePaid.Value))
                 .ToList();
+
+            if (bidder.StoreItemPurchases.Any())
+            {
+                lines.AddRange(bidder.StoreItemPurchases
+                    .Where(s => s.IsPaid)
+                    .Select(s => new Tuple<string, decimal>(s.StoreItem.Title, s.PricePaid.Value)));
+            }
 
             var body = GetInvoiceEmail(trans.PaymentGross,
                 bidder.FirstName + " " + bidder.LastName,
@@ -66,7 +73,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("Address3", address3, body);
 
             var linesHtml = string.Empty;
-            foreach(var line in lines)
+            foreach (var line in lines)
             {
                 linesHtml += ReplaceToken("LineName", line.Item1, ReplaceToken("LinePrice", line.Item2.ToString("C"), lineTemplate));
             }

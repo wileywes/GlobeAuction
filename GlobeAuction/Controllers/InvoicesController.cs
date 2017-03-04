@@ -20,7 +20,9 @@ namespace GlobeAuction.Controllers
         // GET: Invoices
         public ActionResult Index()
         {
-            return View(db.Invoices.ToList());
+            var invoices = db.Invoices.ToList();
+            var viewModels = invoices.Select(i => new InvoiceListViewModel(i));
+            return View(viewModels);
         }
 
         // GET: Invoices/Details/5
@@ -53,6 +55,7 @@ namespace GlobeAuction.Controllers
             if (ModelState.IsValid)
             {
                 var bidder = db.Bidders.FirstOrDefault(b =>
+                    b.IsDeleted == false &&
                     b.BidderId == invoiceLookupModel.BidderId &&
                     b.LastName.Equals(invoiceLookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
                     b.Email.Equals(invoiceLookupModel.Email, StringComparison.OrdinalIgnoreCase));
@@ -63,19 +66,11 @@ namespace GlobeAuction.Controllers
                 }
                 else
                 {
-                    //TODO: only pull items not on an invoice already
-                    var winnings = db.AuctionItems.Where(ai => ai.WinningBidderId == invoiceLookupModel.BidderId).ToList();
+                    Invoice invoice;
+                    var result = new InvoiceRepository(db).TryCreateInvoiceForWonItemsNotAlreadyOnInvoice(bidder, out invoice);
 
-                    if (winnings.Any())
-                    {
-                        var invoice = new InvoiceRepository(db).CreateInvoice(bidder, winnings);
-
-                        return RedirectToAction("Review", new { bid = bidder.BidderId, email = bidder.Email });
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("bidderId", "At this time there are no auction items recorded as being won by you.");
-                    }
+                    //send to review page regardless of whether or not we just created a new invoice
+                    return RedirectToAction("Review", new { bid = bidder.BidderId, email = bidder.Email });
                 }
             }
 
@@ -86,21 +81,14 @@ namespace GlobeAuction.Controllers
         public ActionResult Review(int bid, string email)
         {
             //check they are
-            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
             if (bidder == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId);
+            var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId).ToList();
             
-            foreach(var invoice in invoicesForBidder)
-            {
-                db.Entry(invoice).Collection(i => i.AuctionItems).Load();
-                db.Entry(invoice).Reference(i => i.PaymentTransaction).Load();
-                db.Entry(invoice).Reference(i => i.Bidder).Load();
-            }
-
             var viewModel = new InvoicesForBidderViewModel(bidder, invoicesForBidder);
             
             return View(viewModel);
@@ -110,7 +98,7 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult RedirectToPayPal(int bid, string email, int iid)
         {
-            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
             if (bidder == null)
             {
                 return HttpNotFound();
@@ -121,10 +109,7 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-
-            db.Entry(invoice).Reference(i => i.Bidder).Load();
-            db.Entry(invoice).Reference(i => i.AuctionItems).Load();
-
+            
             ViewBag.PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 
             return View(invoice);
@@ -210,6 +195,22 @@ namespace GlobeAuction.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Invoice invoice = db.Invoices.Find(id);
+
+            if (invoice == null)
+            {
+                return HttpNotFound();
+            }
+
+            foreach(var sip in db.StoreItemPurchases.Where(p => p.Invoice.InvoiceId == id))
+            {
+                sip.Invoice = null;
+            }
+
+            foreach (var ai in db.AuctionItems.Where(p => p.Invoice.InvoiceId == id))
+            {
+                ai.Invoice = null;
+            }
+
             db.Invoices.Remove(invoice);
             db.SaveChanges();
             return RedirectToAction("Index");

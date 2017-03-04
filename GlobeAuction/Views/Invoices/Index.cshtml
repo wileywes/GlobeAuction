@@ -1,16 +1,16 @@
-﻿@model IEnumerable<GlobeAuction.Models.Invoice>
+﻿@model IEnumerable<GlobeAuction.Models.InvoiceListViewModel>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Invoices";
 }
 
-<h2>Index</h2>
+<h2>Generated Invoices</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.InvoiceId)
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.IsPaid)
         </th>
@@ -18,13 +18,16 @@
             @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CreateDate)
+            @Html.DisplayNameFor(model => model.BidderId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UpdateDate)
+            @Html.DisplayNameFor(model => model.BidderName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UpdateBy)
+            @Html.DisplayNameFor(model => model.CountOfAuctionItems)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvoiceTotal)
         </th>
         <th></th>
     </tr>
@@ -32,19 +35,25 @@
 @foreach (var item in Model) {
     <tr>
         <td>
+            @Html.DisplayFor(modelItem => item.InvoiceId)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.IsPaid)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.WasMarkedPaidManually)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CreateDate)
+            @Html.DisplayFor(modelItem => item.BidderId)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.UpdateDate)
+            @Html.DisplayFor(modelItem => item.BidderName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.UpdateBy)
+            @Html.DisplayFor(modelItem => item.CountOfAuctionItems)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InvoiceTotal)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.InvoiceId }) |

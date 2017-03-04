@@ -44,6 +44,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
@@ -192,6 +196,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -206,6 +211,7 @@
     <Compile Include="Controllers\DonationItemsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\StoreItemsController.cs" />
     <Compile Include="Controllers\TicketTypesController.cs" />
     <Compile Include="Controllers\UsersAdminController.cs" />
     <Compile Include="Global.asax.cs">
@@ -294,11 +300,24 @@
     <Compile Include="Migrations\201702132149267_InvoiceAndIpn.Designer.cs">
       <DependentUpon>201702132149267_InvoiceAndIpn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703021336170_AddStoreItem.cs" />
+    <Compile Include="Migrations\201703021336170_AddStoreItem.Designer.cs">
+      <DependentUpon>201703021336170_AddStoreItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703021340120_ChangeStoreItemPriceToDecimal.cs" />
+    <Compile Include="Migrations\201703021340120_ChangeStoreItemPriceToDecimal.Designer.cs">
+      <DependentUpon>201703021340120_ChangeStoreItemPriceToDecimal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703032146225_SoftDeleteBidders.cs" />
+    <Compile Include="Migrations\201703032146225_SoftDeleteBidders.Designer.cs">
+      <DependentUpon>201703032146225_SoftDeleteBidders.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
     <Compile Include="Models\InvoiceViewModels.cs" />
     <Compile Include="Models\LogModels.cs" />
+    <Compile Include="Models\StoreItemModels.cs" />
     <Compile Include="Models\TicketModels.cs" />
     <Compile Include="Models\ItemsViewModels.cs" />
     <Compile Include="Models\BidderModels.cs" />
@@ -526,6 +545,11 @@
     <Content Include="Views\Invoices\Index.cshtml" />
     <Content Include="Views\Invoices\RedirectToPayPal.cshtml" />
     <Content Include="Views\Invoices\PayPalComplete.cshtml" />
+    <Content Include="Views\StoreItems\Create.cshtml" />
+    <Content Include="Views\StoreItems\Delete.cshtml" />
+    <Content Include="Views\StoreItems\Details.cshtml" />
+    <Content Include="Views\StoreItems\Edit.cshtml" />
+    <Content Include="Views\StoreItems\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -591,6 +615,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702132149267_InvoiceAndIpn.resx">
       <DependentUpon>201702132149267_InvoiceAndIpn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703021336170_AddStoreItem.resx">
+      <DependentUpon>201703021336170_AddStoreItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703021340120_ChangeStoreItemPriceToDecimal.resx">
+      <DependentUpon>201703021340120_ChangeStoreItemPriceToDecimal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703032146225_SoftDeleteBidders.resx">
+      <DependentUpon>201703032146225_SoftDeleteBidders.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

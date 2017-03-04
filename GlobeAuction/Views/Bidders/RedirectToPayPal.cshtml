@@ -18,10 +18,11 @@
     <input type="hidden" name="rm" value="2" />
     <input type="hidden" name="notify_url" value="@Url.Action("Receive", "Ipn", null, Request.Url.Scheme, null)" />
 
-    @for (int i = 0; i < Model.Tickets.Count; i++)
+    @for (int i = 0; i < Model.LineItems.Count; i++)
     {
-        <input type="hidden" name="item_name_@(i+1)" value="@Model.Tickets[i].Name" />
-        <input type="hidden" name="amount_@(i+1)" value="@Model.Tickets[i].Price" />
+        <input type="hidden" name="item_name_@(i+1)" value="@Model.LineItems[i].Name" />
+        <input type="hidden" name="amount_@(i+1)" value="@Model.LineItems[i].Price" />
+        <input type="hidden" name="quantity_@(i+1)" value="@Model.LineItems[i].Quantity" />
     }
 
     <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">

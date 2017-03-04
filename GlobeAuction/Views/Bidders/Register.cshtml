@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.Bidder
+﻿@model GlobeAuction.Models.BidderViewModel
 
 @{
     ViewBag.Title = "Register";
@@ -112,6 +112,34 @@
         }
         <br />
 
+        <h4>Raffle Tickets</h4>
+        <hr />
+        <div>
+            Go ahead and get your raffle tickets for amazing prizes like Four (4) Park Hopper tickets to Disney World
+            and a Big Green Egg package.
+        </div>
+        <div class="row form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">Raffle Package</div>
+            <div class="col-md-2">Quantity</div>
+        </div>
+        @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+        {
+            <div class="row form-group">
+                <div class="control-label col-md-2"></div>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(model => Model.StoreItemPurchases[i].StoreItemId, (IEnumerable<SelectListItem>)ViewBag.StoreItems,
+                                    "Select a Raffle Ticket", new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].StoreItemId, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-2">
+                    @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        <br />
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" name="submitButton" value="Submit and Proceed to Ticket Purchase" class="btn btn-default" />
@@ -153,5 +181,21 @@
     });
     $("#LastName").blur(function () {
         $guestLastName.val(this.value);
+    });
+
+    $('#StoreItemPurchases_0__StoreItemId').change(function () {
+        $('#StoreItemPurchases_0__Quantity').val('1');
+    });
+    $('#StoreItemPurchases_1__StoreItemId').change(function () {
+        $('#StoreItemPurchases_1__Quantity').val('1');
+    });
+    $('#StoreItemPurchases_2__StoreItemId').change(function () {
+        $('#StoreItemPurchases_2__Quantity').val('1');
+    });
+    $('#StoreItemPurchases_3__StoreItemId').change(function () {
+        $('#StoreItemPurchases_3__Quantity').val('1');
+    });
+    $('#StoreItemPurchases_4__StoreItemId').change(function () {
+        $('#StoreItemPurchases_4__Quantity').val('1');
     });
 </script>

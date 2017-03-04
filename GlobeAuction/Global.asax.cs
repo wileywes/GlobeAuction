@@ -1,7 +1,5 @@
 ﻿using GlobeAuction.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -19,6 +17,7 @@ namespace GlobeAuction
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             IdentityConfig.SetupIdentity();
+            AutoMapperConfig.RegisterMappings();
 
             DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfHasValueAttribute), typeof(RequiredIfHasValueValidator));
 

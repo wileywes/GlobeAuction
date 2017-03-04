@@ -35,8 +35,17 @@ namespace GlobeAuction.Models
         [Display(Name = "Tickets Paid For")]
         public int TicketsPaid { get; set; }
 
-        [Display(Name = "Tickets Cost Paid")]
-        public decimal TotalTicketCostPaid { get; set; }
+
+        [Display(Name = "Items")]
+        public int ItemsCount { get; set; }
+
+        [Display(Name = "Items Paid For")]
+        public int ItemsPaid { get; set; }
+
+
+        [Display(Name = "Total Paid")]
+        public decimal TotalPaid { get; set; }
+
 
         [Display(Name = "Pay Reminder Sent")]
         public bool IsPaymentReminderSent{ get; set; }
@@ -55,11 +64,20 @@ namespace GlobeAuction.Models
             IsPaymentReminderSent = b.IsPaymentReminderSent;
             CreateDate = b.CreateDate;
 
+            TotalPaid = 0;
+
             if (b.AuctionGuests.Any())
             {
                 GuestCount = b.AuctionGuests.Count;
                 TicketsPaid = b.AuctionGuests.Count(g => g.IsTicketPaid);
-                TotalTicketCostPaid = b.AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0));
+                TotalPaid += b.AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0));
+            }
+
+            if (b.StoreItemPurchases.Any())
+            {
+                ItemsCount = b.StoreItemPurchases.Count;
+                ItemsPaid = b.StoreItemPurchases.Count(g => g.IsPaid);
+                TotalPaid += b.StoreItemPurchases.Sum(g => g.PricePaid.GetValueOrDefault(0));
             }
         }
     }
@@ -67,7 +85,7 @@ namespace GlobeAuction.Models
     public class BidderForPayPal
     {
         public int BidderId { get; set; }
-        public List<BidderTicket> Tickets { get; set; }
+        public List<BidderPaymentLineItem> LineItems { get; set; }
 
         public BidderForPayPal(Bidder bidder)
         {
@@ -75,23 +93,88 @@ namespace GlobeAuction.Models
             
             if (bidder.AuctionGuests == null || !bidder.AuctionGuests.Any()) throw new ApplicationException("No auction guests found");
 
-            Tickets = bidder.AuctionGuests.Select(g => new BidderTicket(g)).ToList();
+            LineItems = bidder.AuctionGuests.Select(g => new BidderPaymentLineItem(g.TicketType, g.TicketPrice, 1)).ToList();
+            LineItems.AddRange(bidder.StoreItemPurchases.Select(s => new BidderPaymentLineItem(s.StoreItem.Title, s.StoreItem.Price, s.Quantity)));
         }
     }
 
-    public class BidderTicket
+    public class BidderPaymentLineItem
     {
         public string Name { get; set; }
         public decimal Price { get; set; }
+        public int Quantity { get; set; }
 
-        public BidderTicket(AuctionGuest guest)
+        public BidderPaymentLineItem(string name, decimal price, int quantity)
         {
-            Name = guest.TicketType;
-            Price = guest.TicketPrice;
+            Name = name;
+            Price = price;
+            Quantity = quantity;
         }
     }
 
     public class Bidder
+    {
+        public int BidderId { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+        public string Phone { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [DataType(DataType.PostalCode)]
+        public string ZipCode { get; set; }
+                
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public string UpdateBy { get; set; }
+        public bool IsDeleted { get; set; }
+
+        [Required]
+        public bool IsPaymentReminderSent { get; set; }
+
+        //children
+        public virtual List<AuctionGuest> AuctionGuests { get; set; }
+        public virtual List<Student> Students { get; set; }
+        public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
+    }
+
+    public class AuctionGuest
+    {
+        public int AuctionGuestId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string TicketType { get; set; }
+        public decimal TicketPrice { get; set; }
+
+        [DataType(DataType.Currency)]
+        public decimal? TicketPricePaid { get; set; }
+
+        public bool IsTicketPaid {  get { return TicketPricePaid.HasValue; } }
+
+        public virtual Bidder Bidder { get; set; }
+        public virtual PayPalTransaction TicketTransaction { get; set; }
+    }
+
+    public class Student
+    {
+        public int StudentId { get; set; }
+        public string HomeroomTeacher { get; set; }
+
+        public virtual Bidder Bidder { get; set; }
+    }
+
+
+
+    public class BidderViewModel
     {
         public int BidderId { get; set; }
 
@@ -115,8 +198,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Zip")]
         public string ZipCode { get; set; }
 
-        public List<AuctionGuest> AuctionGuests { get; set; }
-        public List<Student> Students { get; set; }
+        public List<AuctionGuestViewModel> AuctionGuests { get; set; }
+        public List<StudentViewModel> Students { get; set; }
+        public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
 
         [Display(Name = "Registration Date")]
         public DateTime CreateDate { get; set; }
@@ -129,7 +213,7 @@ namespace GlobeAuction.Models
         public bool IsPaymentReminderSent { get; set; }
     }
 
-    public class AuctionGuest
+    public class AuctionGuestViewModel
     {
         public int AuctionGuestId { get; set; }
 
@@ -147,17 +231,24 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? TicketPricePaid { get; set; }
 
-        public bool IsTicketPaid {  get { return TicketPricePaid.HasValue; } }
+        public bool IsTicketPaid { get { return TicketPricePaid.HasValue; } }
 
-        public Bidder Bidder { get; set; }
-        public PayPalTransaction TicketTransaction { get; set; }
+        public AuctionGuestViewModel()
+        { }
     }
 
-    public class Student
+    public class StudentViewModel
     {
         public int StudentId { get; set; }
         public string HomeroomTeacher { get; set; }
 
-        public Bidder Bidder { get; set; }
+        public StudentViewModel()
+        { }
+
+        public StudentViewModel(Student s)
+        {
+            this.StudentId = s.StudentId;
+            this.HomeroomTeacher = s.HomeroomTeacher;
+        }
     }
 }

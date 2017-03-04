@@ -1,9 +1,15 @@
 ﻿using GlobeAuction.Models;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace GlobeAuction.Helpers
 {
+    public enum InvoiceCreateResultType
+    {
+        Success,
+        NoRemainingItems
+    }
+
     public class InvoiceRepository
     {
         private ApplicationDbContext db;
@@ -13,11 +19,24 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        public Invoice CreateInvoice(Bidder bidder, List<AuctionItem> auctionItems)
+
+        public InvoiceCreateResultType TryCreateInvoiceForWonItemsNotAlreadyOnInvoice(Bidder bidder, out Invoice invoice)
         {
-            var newInvoice = new Invoice
+            var winnings = db.AuctionItems.Where(ai =>
+                    ai.WinningBidderId.HasValue &&
+                    ai.WinningBidderId.Value == bidder.BidderId &&
+                    ai.Invoice == null
+                ).ToList();
+
+            if (!winnings.Any())
             {
-                AuctionItems = auctionItems,
+                invoice = null;
+                return InvoiceCreateResultType.NoRemainingItems;
+            }
+
+            invoice = new Invoice
+            {
+                AuctionItems = winnings,
                 Bidder = bidder,
                 CreateDate = DateTime.Now,
                 IsPaid = false,
@@ -25,10 +44,10 @@ namespace GlobeAuction.Helpers
                 UpdateDate = DateTime.Now
             };
 
-            db.Invoices.Add(newInvoice);
+            db.Invoices.Add(invoice);
             db.SaveChanges();
 
-            return newInvoice;
+            return InvoiceCreateResultType.Success;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -10,6 +11,7 @@ using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
 using System.Configuration;
 using GlobeAuction.Helpers;
+using System.Data.Entity.Validation;
 
 namespace GlobeAuction.Controllers
 {
@@ -21,12 +23,8 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditBidders)]
         public ActionResult Index()
         {
-            var bidders = db.Bidders.ToList();
+            var bidders = db.Bidders.Where(b => b.IsDeleted == false).ToList();
 
-            foreach (var bidder in bidders)
-            {
-                db.Entry(bidder).Collection(a => a.AuctionGuests).Load();
-            }
             var models = bidders.Select(b => new BidderForList(b)).ToList();
             
             return View(models);
@@ -46,22 +44,23 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            db.Entry(bidder).Collection(b => b.Students).Load();
-            db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
-            return View(bidder);
+            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            return View(viewModel);
         }
 
         // GET: Bidders/Register
         [AllowAnonymous]
         public ActionResult Register()
         {
-            var bidder = new Bidder
-            {
-                AuctionGuests = new List<AuctionGuest>(Enumerable.Repeat(new AuctionGuest(), 6)),
-                Students = new List<Student>(Enumerable.Repeat(new Student(), 4)),
-            };
             AddBidderControlInfo();
-            return View(bidder);
+            var newBidder = new BidderViewModel()
+            {
+                AuctionGuests = new List<AuctionGuestViewModel>(Enumerable.Repeat(new AuctionGuestViewModel(), 6)),
+                Students = new List<StudentViewModel>(Enumerable.Repeat(new StudentViewModel(), 4)),
+                StoreItemPurchases = new List<StoreItemPurchaseViewModel>(Enumerable.Repeat(new StoreItemPurchaseViewModel(), 5)),
+            };
+
+            return View(newBidder);
         }
 
         // POST: Bidders/Register
@@ -70,18 +69,30 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register([Bind(Exclude = "BidderId")] Bidder bidder, string submitButton)
+        public ActionResult Register([Bind(Exclude = "BidderId")] BidderViewModel bidderViewModel, string submitButton)
         {
             if (ModelState.IsValid)
             {
+                var bidder = Mapper.Map<Bidder>(bidderViewModel);
+
                 bidder.CreateDate = bidder.UpdateDate = DateTime.Now;
                 bidder.UpdateBy = bidder.Email;
 
                 //strip out dependents that weren't filled in
-                bidder.Students = bidder.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).ToList();
-                bidder.AuctionGuests = bidder.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).ToList();
+                bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
+                bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
 
-                foreach(var guest in bidder.AuctionGuests)
+                //TODO: double chekc
+                bidder.StoreItemPurchases = bidderViewModel.StoreItemPurchases
+                    .Where(s => s.Quantity.GetValueOrDefault(0) > 0 && s.StoreItemId.GetValueOrDefault(-1) >= 0)
+                    .Select(s =>
+                    {
+                        var newStorePurcahse = Mapper.Map<StoreItemPurchase>(s);
+                        newStorePurcahse.StoreItem = db.StoreItems.Find(s.StoreItemId.Value);
+                        return newStorePurcahse;
+                    }).ToList();
+
+                foreach (var guest in bidder.AuctionGuests)
                 {
                     var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
                     guest.TicketType = ticketType.Name;
@@ -98,7 +109,7 @@ namespace GlobeAuction.Controllers
             }
 
             AddBidderControlInfo();
-            return View(bidder);
+            return View(bidderViewModel);
         }
         
         [AllowAnonymous]
@@ -114,9 +125,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
-
-            //before we redirect, make sure we have the latest prices on the current tickets configuration
+                        //before we redirect, make sure we have the latest prices on the current tickets configuration
             var ticketTypes = db.TicketTypes.ToList();
             var changesMade = false;
             foreach(var guest in bidder.AuctionGuests)
@@ -161,7 +170,21 @@ namespace GlobeAuction.Controllers
             new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
 
-            return View(bidder);
+            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            return View(viewModel);
+        }
+
+
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult MarkBidderPaid(int bidderId, int ppTransId)
+        {
+            var ppTrans = db.PayPalTransactions.Find(ppTransId);
+            var bidder = db.Bidders.Find(bidderId);
+            if (ppTrans == null || bidder == null) return HttpNotFound();
+            
+            new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " manually via MarkBidderPaid");
+            return RedirectToAction("Index", "Logs");
         }
 
         // GET: Bidders/Edit/5
@@ -178,9 +201,8 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            db.Entry(bidder).Collection(b => b.Students).Load();
-            db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
-            return View(bidder);
+            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            return View(viewModel);
         }
 
         // POST: Bidders/Edit/5
@@ -189,13 +211,21 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [Authorize(Roles = AuctionRoles.CanEditBidders)]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Exclude = "UpdateBy,UpdateDate")] Bidder bidder)
+        public ActionResult Edit([Bind(Exclude = "UpdateBy,UpdateDate")] BidderViewModel bidderViewModel)
         {
             if (ModelState.IsValid)
             {
+                //load store items back in
+                /*if (bidderViewModel.StoreItemPurchases != null && bidderViewModel.StoreItemPurchases.Any())
+                {
+                    bidderViewModel.StoreItemPurchases.ForEach(p => p.StoreItem = Mapper.Map<StoreItemViewModel>(db.StoreItems.Find(p.StoreItemId.Value)));
+                }*/
+
+                var bidder = Mapper.Map<Bidder>(bidderViewModel);
+
                 bidder.UpdateBy = User.Identity.GetUserName();
                 bidder.UpdateDate = DateTime.Now;
-
+                
                 foreach(var g in bidder.AuctionGuests)
                 {
                     db.Entry(g).State = EntityState.Modified;
@@ -206,11 +236,29 @@ namespace GlobeAuction.Controllers
                 }
 
                 db.Entry(bidder).State = EntityState.Modified;
-                
-                db.SaveChanges();
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                                ve.PropertyName, ve.ErrorMessage);
+                        }
+                    }
+                    throw;
+                }
+
                 return RedirectToAction("Index");
             }
-            return View(bidder);
+            return View(bidderViewModel);
         }
 
         // GET: Bidders/Delete/5
@@ -226,9 +274,9 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(bidder).Collection(b => b.Students).Load();
-            db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
-            return View(bidder);
+
+            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            return View(viewModel);
         }
 
         // POST: Bidders/Delete/5
@@ -238,14 +286,7 @@ namespace GlobeAuction.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Bidder bidder = db.Bidders.Find(id);
-
-            db.Entry(bidder).Collection(b => b.Students).Load();
-            db.Entry(bidder).Collection(b => b.AuctionGuests).Load();
-
-            db.AuctionGuests.RemoveRange(bidder.AuctionGuests);
-            db.Students.RemoveRange(bidder.Students);
-            db.Bidders.Remove(bidder);
-
+            bidder.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -261,6 +302,7 @@ namespace GlobeAuction.Controllers
 
         private void AddBidderControlInfo()
         {
+            //TICKETS
             var ticketTypes = db.TicketTypes.ToList();
 
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
@@ -272,6 +314,21 @@ namespace GlobeAuction.Controllers
             ViewBag.TicketTypes = ticketTypes
                 .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
 
+
+            //STORE ITEMS
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration).ToList();
+
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            {
+                //remove admin-only ticket types
+                storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
+            }
+
+            ViewBag.StoreItems = storeItems
+                .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Title, t.Price), Value = t.StoreItemId.ToString() }).ToList();
+
+
+            //TEACHER NAMES
             ViewBag.TeacherNames = AuctionConstants.TeacherNames
                 .Select(t => new SelectListItem { Text = t, Value = t });
         }

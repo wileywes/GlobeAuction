@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.Bidder
+﻿@model GlobeAuction.Models.BidderViewModel
 
 @{
     ViewBag.Title = "Edit Bidder";
@@ -87,7 +87,7 @@
                 @Html.DisplayFor(model => model.UpdateBy, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
-
+        <br />
 
 
         <h4>Student(s) Information</h4>
@@ -96,13 +96,16 @@
             <div class="col-md-2"></div>
             <div class="col-md-10">@Html.Label("Homeroom Teacher")</div>
         </div>
-        @for (var i = 0; i < Model.Students.Count; i++)
+        @if (Model.Students != null)
         {
-            @Html.HiddenFor(m => Model.Students[i].StudentId)
-            <div class="row form-group">
-                <div class="control-label col-md-2">Child @(i + 1)</div>
-                <div class="col-md-10">@Html.EditorFor(m => Model.Students[i].HomeroomTeacher, new { htmlAttributes = new { @class = "form-control" } })</div>
-            </div>
+            for (var i = 0; i < Model.Students.Count; i++)
+            {
+                @Html.HiddenFor(m => Model.Students[i].StudentId)
+                <div class="row form-group">
+                    <div class="control-label col-md-2">Child @(i + 1)</div>
+                    <div class="col-md-10">@Html.EditorFor(m => Model.Students[i].HomeroomTeacher, new { htmlAttributes = new { @class = "form-control" } })</div>
+                </div>
+            }
         }
         <br />
 
@@ -114,20 +117,52 @@
             <div class="col-md-2">@Html.Label("Last Name")</div>
             <div class="col-md-2">@Html.Label("Ticket Type")</div>
         </div>
-        @for (var i = 0; i < Model.AuctionGuests.Count; i++)
+        @if (Model.AuctionGuests != null)
         {
-            @Html.HiddenFor(m => Model.AuctionGuests[i].AuctionGuestId)
-            <div class="row form-group">
-                <div class="control-label col-md-2">Guest @(i + 1)</div>
-                <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
-                <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
-                <div class="col-md-2">
-                    @Html.DisplayFor(model => Model.AuctionGuests[i].TicketType)
-                    @Html.HiddenFor(model => Model.AuctionGuests[i].TicketType)
+            for (var i = 0; i < Model.AuctionGuests.Count; i++)
+            {
+                @Html.HiddenFor(m => Model.AuctionGuests[i].AuctionGuestId)
+                <div class="row form-group">
+                    <div class="control-label col-md-2">Guest @(i + 1)</div>
+                    <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                    <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(model => Model.AuctionGuests[i].TicketType)
+                        @Html.HiddenFor(model => Model.AuctionGuests[i].TicketType)
+                    </div>
                 </div>
-            </div>
+            }
         }
         <br />
+
+
+        <h4>Additional Purchase(s)</h4>
+        <hr />
+        <div class="row form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-2">@Html.Label("Title")</div>
+            <div class="col-md-2">@Html.Label("Quantity")</div>
+            <div class="col-md-2">@Html.Label("Price Paid")</div>
+        </div>
+        @if (Model.StoreItemPurchases != null)
+        {
+            for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+            {
+                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItemPurchaseId)
+                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItemId)
+                <div class="row form-group">
+                    <div class="col-md-2"></div>
+                    <div class="control-label col-md-2">@Html.DisplayFor(model => Model.StoreItemPurchases[i].StoreItem.Title)</div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].Quantity)
+                    </div>
+                    <div class="col-md-2">@Html.DisplayFor(m => Model.StoreItemPurchases[i].PricePaid, new { htmlAttributes = new { @class = "form-control" } })</div>
+                </div>
+            }
+        }
+        <br />
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
