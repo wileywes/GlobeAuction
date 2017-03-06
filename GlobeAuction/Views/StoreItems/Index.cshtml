@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GlobeAuction.Models.StoreItem>
+﻿@model IEnumerable<GlobeAuction.Models.StoreItemViewModel>
 
 @{
     ViewBag.Title = "Store Items";
@@ -11,8 +11,12 @@
 </p>
 <table class="table">
     <tr>
+        <th></th>
         <th>
             @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Price)
@@ -32,32 +36,42 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CanPurchaseInBidderRegistration)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CanPurchaseInAuctionCheckout)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CanPurchaseInStore)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OnlyVisibleToAdmins)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.StoreItemId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.StoreItemId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.StoreItemId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@Url.Content(item.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CanPurchaseInBidderRegistration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CanPurchaseInAuctionCheckout)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CanPurchaseInStore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OnlyVisibleToAdmins)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.StoreItemId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.StoreItemId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.StoreItemId })
+            </td>
+        </tr>
+    }
 
 </table>

@@ -89,7 +89,7 @@
             <div class="col-md-2"></div>
             <div class="col-md-2">@Html.Label("First Name")</div>
             <div class="col-md-2">@Html.Label("Last Name")</div>
-            <div class="col-md-2">@Html.Label("Ticket Type")</div>
+            <div class="col-md-6">@Html.Label("Ticket Type")</div>
         </div>
         @for (var i = 0; i < Model.AuctionGuests.Count; i++)
         {
@@ -103,7 +103,7 @@
                     @Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => Model.AuctionGuests[i].LastName, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-6">
                     @Html.DropDownListFor(model => Model.AuctionGuests[i].TicketType, (IEnumerable<SelectListItem>)ViewBag.TicketTypes,
                                     "Select a Ticket Type", new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => Model.AuctionGuests[i].TicketType, "", new { @class = "text-danger" })
@@ -114,23 +114,36 @@
 
         <h4>Raffle Tickets</h4>
         <hr />
-        <div>
-            Go ahead and get your raffle tickets for amazing prizes like Four (4) Park Hopper tickets to Disney World
-            and a Big Green Egg package.
-        </div>
+        <p>
+            Go ahead and get your raffle tickets now!  Enter the quantity you want or leave blank if you want to purchase later.
+        </p>
+        <br />
         <div class="row form-group">
             <div class="col-md-2"></div>
-            <div class="col-md-4">Raffle Package</div>
-            <div class="col-md-2">Quantity</div>
+            <div class="col-md-6">@Html.Label("Raffle Package")</div>
+            <div class="col-md-2">@Html.Label("Price")</div>
+            <div class="col-md-2">@Html.Label("Quantity")</div>
         </div>
         @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
         {
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+
             <div class="row form-group">
-                <div class="control-label col-md-2"></div>
-                <div class="col-md-4">
-                    @Html.DropDownListFor(model => Model.StoreItemPurchases[i].StoreItemId, (IEnumerable<SelectListItem>)ViewBag.StoreItems,
-                                    "Select a Raffle Ticket", new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].StoreItemId, "", new { @class = "text-danger" })
+                <div class="col-md-2">
+                    @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                    {
+                        <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
+                    }
+                </div>
+                <div class="col-md-6">
+                    <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
+                    <br/>
+                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                </div>
+                <div class="col-md-2">
+                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
                 </div>
                 <div class="col-md-2">
                     @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })

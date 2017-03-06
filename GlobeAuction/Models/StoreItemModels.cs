@@ -9,7 +9,14 @@ namespace GlobeAuction.Models
         public int StoreItemId { get; set; }
 
         [Required]
+        [StringLength(500)]
         public string Title { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
 
         [Required]
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -45,7 +52,13 @@ namespace GlobeAuction.Models
         [StringLength(500)]
         [Index("IX_StoreItem_Title", IsUnique = true)]
         public string Title { get; set; }
-        
+
+        [Required]
+        public string Description { get; set; }
+
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
+
         [Required]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Price { get; set; }
@@ -72,12 +85,8 @@ namespace GlobeAuction.Models
         public int StoreItemPurchaseId { get; set; }
 
         public StoreItemViewModel StoreItem { get; set; }
-
-        [RequiredIfHasValue("Quantity", ErrorMessage = "You must select an item if entering a quantity to purchase.")]
-        public int? StoreItemId { get; set;  }
-
-        [RequiredIfHasValue("StoreItemId", ErrorMessage = "Quantity is required if you select an item to purchase.")]
-        public int? Quantity { get; set; }
+        
+        public int Quantity { get; set; }
 
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}")]

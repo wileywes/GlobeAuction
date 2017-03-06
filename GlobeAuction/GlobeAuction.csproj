@@ -312,6 +312,10 @@
     <Compile Include="Migrations\201703032146225_SoftDeleteBidders.Designer.cs">
       <DependentUpon>201703032146225_SoftDeleteBidders.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703051216409_StoreItemDescAndImageUrl.cs" />
+    <Compile Include="Migrations\201703051216409_StoreItemDescAndImageUrl.Designer.cs">
+      <DependentUpon>201703051216409_StoreItemDescAndImageUrl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -363,6 +367,8 @@
     <Content Include="Content\Images\image_home.jpg" />
     <Content Include="Content\Images\logo_web.jpg" />
     <Content Include="Content\Images\logo_web_50.jpg" />
+    <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
+    <Content Include="Content\Images\StoreItems\disney logo.jpg" />
     <Content Include="Content\Images\web_auction 2017_preview.jpg" />
     <Content Include="Content\Images\when_box.jpg" />
     <Content Include="Content\Images\where_box.jpg" />
@@ -624,6 +630,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703032146225_SoftDeleteBidders.resx">
       <DependentUpon>201703032146225_SoftDeleteBidders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051216409_StoreItemDescAndImageUrl.resx">
+      <DependentUpon>201703051216409_StoreItemDescAndImageUrl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

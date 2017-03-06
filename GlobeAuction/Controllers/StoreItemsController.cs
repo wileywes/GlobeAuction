@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -19,7 +20,9 @@ namespace GlobeAuction.Controllers
         // GET: StoreItems
         public ActionResult Index()
         {
-            return View(db.StoreItems.ToList());
+            var models = db.StoreItems.ToList().Select(i => Mapper.Map<StoreItemViewModel>(i))
+                .ToList() ?? new List<StoreItemViewModel>();
+            return View(models);
         }
 
         // GET: StoreItems/Details/5
@@ -34,13 +37,15 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            return View(storeItem);
+
+            var model = Mapper.Map<StoreItemViewModel>(storeItem);
+            return View(model);
         }
 
         // GET: StoreItems/Create
         public ActionResult Create()
         {
-            return View();
+            return View(new StoreItemViewModel());
         }
 
         // POST: StoreItems/Create
@@ -48,10 +53,11 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Exclude = "StoreItemId,CreateDate,UpdateDate,UpdateBy")] StoreItem storeItem)
+        public ActionResult Create([Bind(Exclude = "StoreItemId,CreateDate,UpdateDate,UpdateBy")] StoreItemViewModel storeItemViewModel)
         {
             if (ModelState.IsValid)
             {
+                var storeItem = Mapper.Map<StoreItem>(storeItemViewModel);
                 storeItem.CreateDate = storeItem.UpdateDate = DateTime.Now;
                 storeItem.UpdateBy = User.Identity.GetUserName();
 
@@ -60,7 +66,7 @@ namespace GlobeAuction.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(storeItem);
+            return View(storeItemViewModel);
         }
 
         // GET: StoreItems/Edit/5
@@ -75,7 +81,8 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            return View(storeItem);
+            var model = Mapper.Map<StoreItemViewModel>(storeItem);
+            return View(model);
         }
 
         // POST: StoreItems/Edit/5
@@ -83,10 +90,11 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Exclude = "UpdateDate,UpdateBy")] StoreItem storeItem)
+        public ActionResult Edit([Bind(Exclude = "UpdateDate,UpdateBy")] StoreItemViewModel storeItemViewModel)
         {
             if (ModelState.IsValid)
             {
+                var storeItem = Mapper.Map<StoreItem>(storeItemViewModel);
                 storeItem.UpdateDate = DateTime.Now;
                 storeItem.UpdateBy = User.Identity.GetUserName();
 
@@ -94,7 +102,7 @@ namespace GlobeAuction.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(storeItem);
+            return View(storeItemViewModel);
         }
 
         // GET: StoreItems/Delete/5
@@ -109,7 +117,8 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            return View(storeItem);
+            var model = Mapper.Map<StoreItemViewModel>(storeItem);
+            return View(model);
         }
 
         // POST: StoreItems/Delete/5

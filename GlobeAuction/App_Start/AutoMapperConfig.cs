@@ -17,9 +17,7 @@ namespace GlobeAuction
                 c.CreateMap<Student, StudentViewModel>();
                 c.CreateMap<StudentViewModel, Student>();
 
-                c.CreateMap<StoreItemPurchase, StoreItemPurchaseViewModel>()
-                    .ForMember(dest => dest.StoreItemId,
-                               opts => opts.MapFrom(src => src.StoreItem.StoreItemId));
+                c.CreateMap<StoreItemPurchase, StoreItemPurchaseViewModel>();
                 c.CreateMap<StoreItemPurchaseViewModel, StoreItemPurchase>();
 
                 c.CreateMap<StoreItem, StoreItemViewModel>();

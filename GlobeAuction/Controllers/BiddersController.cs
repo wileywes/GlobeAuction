@@ -52,12 +52,23 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration).ToList();
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            {
+                //remove admin-only ticket types
+                storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
+            }
+            var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
+
             AddBidderControlInfo();
             var newBidder = new BidderViewModel()
             {
                 AuctionGuests = new List<AuctionGuestViewModel>(Enumerable.Repeat(new AuctionGuestViewModel(), 6)),
                 Students = new List<StudentViewModel>(Enumerable.Repeat(new StudentViewModel(), 4)),
-                StoreItemPurchases = new List<StoreItemPurchaseViewModel>(Enumerable.Repeat(new StoreItemPurchaseViewModel(), 5)),
+                StoreItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
+                {
+                    StoreItem = si
+                }).ToList()
             };
 
             return View(newBidder);
@@ -84,13 +95,9 @@ namespace GlobeAuction.Controllers
 
                 //TODO: double chekc
                 bidder.StoreItemPurchases = bidderViewModel.StoreItemPurchases
-                    .Where(s => s.Quantity.GetValueOrDefault(0) > 0 && s.StoreItemId.GetValueOrDefault(-1) >= 0)
-                    .Select(s =>
-                    {
-                        var newStorePurcahse = Mapper.Map<StoreItemPurchase>(s);
-                        newStorePurcahse.StoreItem = db.StoreItems.Find(s.StoreItemId.Value);
-                        return newStorePurcahse;
-                    }).ToList();
+                    .Where(s => s.Quantity > 0)
+                    .Select(s => Mapper.Map<StoreItemPurchase>(s))
+                    .ToList();
 
                 foreach (var guest in bidder.AuctionGuests)
                 {
@@ -314,20 +321,7 @@ namespace GlobeAuction.Controllers
             ViewBag.TicketTypes = ticketTypes
                 .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
 
-
-            //STORE ITEMS
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration).ToList();
-
-            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
-            {
-                //remove admin-only ticket types
-                storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
-            }
-
-            ViewBag.StoreItems = storeItems
-                .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Title, t.Price), Value = t.StoreItemId.ToString() }).ToList();
-
-
+            
             //TEACHER NAMES
             ViewBag.TeacherNames = AuctionConstants.TeacherNames
                 .Select(t => new SelectListItem { Text = t, Value = t });
