@@ -92,12 +92,16 @@ namespace GlobeAuction.Controllers
                 //strip out dependents that weren't filled in
                 bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                 bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
-
-                //TODO: double chekc
+                
                 bidder.StoreItemPurchases = bidderViewModel.StoreItemPurchases
                     .Where(s => s.Quantity > 0)
                     .Select(s => Mapper.Map<StoreItemPurchase>(s))
                     .ToList();
+
+                foreach(var sip in bidder.StoreItemPurchases)
+                {
+                    db.Entry(sip.StoreItem).State = EntityState.Unchanged;
+                }
 
                 foreach (var guest in bidder.AuctionGuests)
                 {
