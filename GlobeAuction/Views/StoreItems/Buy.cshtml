@@ -1,0 +1,115 @@
+﻿@model GlobeAuction.Models.BuyViewModel
+
+@{
+    ViewBag.Title = "Buy";
+}
+
+<h2>Purchase Additional Items for the Auction</h2>
+<br />
+
+<p>
+    If you haven't registered for the auction yet, you can do that and purchase raffle tickets
+    @Html.ActionLink("here", "Register", "Bidders") .
+    If you have already registered and just need to buy some tickets for the awesome raffle drawings, you can do that below.
+</p>
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Items Available for Purchase</h4>
+        <hr />
+        <div class="row form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-6">@Html.Label("Raffle Package")</div>
+            <div class="col-md-2">@Html.Label("Price")</div>
+            <div class="col-md-2">@Html.Label("Quantity")</div>
+        </div>
+        @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+        {
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+
+            <div class="row form-group">
+                <div class="col-md-2">
+                    @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                    {
+                        <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
+                    }
+                </div>
+                <div class="col-md-6">
+                    <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
+                    <br />
+                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                </div>
+                <div class="col-md-2">
+                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                </div>
+                <div class="col-md-2">
+                    @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        <br />
+
+        <h4>Your Contact Information</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" name="submitButton" value="Buy Now" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

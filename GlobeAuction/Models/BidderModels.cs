@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 
 namespace GlobeAuction.Models
@@ -85,26 +86,28 @@ namespace GlobeAuction.Models
     public class BidderForPayPal
     {
         public int BidderId { get; set; }
-        public List<BidderPaymentLineItem> LineItems { get; set; }
+        public string PayPalBusiness { get; set; }
+        public List<PayPalPaymentLine> LineItems { get; set; }
 
         public BidderForPayPal(Bidder bidder)
         {
             BidderId = bidder.BidderId;
-            
+            PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
+
             if (bidder.AuctionGuests == null || !bidder.AuctionGuests.Any()) throw new ApplicationException("No auction guests found");
 
-            LineItems = bidder.AuctionGuests.Select(g => new BidderPaymentLineItem(g.TicketType, g.TicketPrice, 1)).ToList();
-            LineItems.AddRange(bidder.StoreItemPurchases.Select(s => new BidderPaymentLineItem(s.StoreItem.Title, s.StoreItem.Price, s.Quantity)));
+            LineItems = bidder.AuctionGuests.Select(g => new PayPalPaymentLine(g.TicketType, g.TicketPrice, 1)).ToList();
+            LineItems.AddRange(bidder.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.StoreItem.Price, s.Quantity)));
         }
     }
 
-    public class BidderPaymentLineItem
+    public class PayPalPaymentLine
     {
         public string Name { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
 
-        public BidderPaymentLineItem(string name, decimal price, int quantity)
+        public PayPalPaymentLine(string name, decimal price, int quantity)
         {
             Name = name;
             Price = price;

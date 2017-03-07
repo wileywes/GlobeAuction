@@ -59,11 +59,14 @@ namespace GlobeAuction
                appId: ConfigurationManager.AppSettings["FacebookAppID"],
                appSecret: ConfigurationManager.AppSettings["FacebookAppSecret"]);
 
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            var google = new GoogleOAuth2AuthenticationOptions()
             {
                 ClientId = ConfigurationManager.AppSettings["GoogleClientID"],
-                ClientSecret = ConfigurationManager.AppSettings["GoogleSecret"]
-            });
+                ClientSecret = ConfigurationManager.AppSettings["GoogleSecret"],
+                Provider = new GoogleOAuth2AuthenticationProvider()
+            };
+            google.Scope.Add("email");
+            app.UseGoogleAuthentication(google);
         }
     }
 }

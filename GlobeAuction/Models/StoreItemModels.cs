@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -119,5 +120,30 @@ namespace GlobeAuction.Models
         public virtual PayPalTransaction PurchaseTransaction { get; set; }
         public virtual Invoice Invoice { get; set; }
         public virtual Bidder Bidder { get; set; }
+    }
+
+    public class BuyViewModel
+    {
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+        public string Phone { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [DataType(DataType.PostalCode)]
+        [Display(Name = "Zip")]
+        public string ZipCode { get; set; }
+
+        public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
     }
 }

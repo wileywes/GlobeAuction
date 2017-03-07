@@ -56,7 +56,7 @@
                 else
                 {
                     <span style="color:darkred">Unpaid</span>
-                    @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, iid = invoice.InvoiceId },
+                    @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email },
                         htmlAttributes: new { @class = "btn btn-gold" })
                 }
             </h4>

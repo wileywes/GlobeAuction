@@ -171,9 +171,6 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -195,21 +192,5 @@
     });
     $("#LastName").blur(function () {
         $guestLastName.val(this.value);
-    });
-
-    $('#StoreItemPurchases_0__StoreItemId').change(function () {
-        $('#StoreItemPurchases_0__Quantity').val('1');
-    });
-    $('#StoreItemPurchases_1__StoreItemId').change(function () {
-        $('#StoreItemPurchases_1__Quantity').val('1');
-    });
-    $('#StoreItemPurchases_2__StoreItemId').change(function () {
-        $('#StoreItemPurchases_2__Quantity').val('1');
-    });
-    $('#StoreItemPurchases_3__StoreItemId').change(function () {
-        $('#StoreItemPurchases_3__Quantity').val('1');
-    });
-    $('#StoreItemPurchases_4__StoreItemId').change(function () {
-        $('#StoreItemPurchases_4__Quantity').val('1');
     });
 </script>

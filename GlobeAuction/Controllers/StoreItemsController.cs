@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
+using GlobeAuction.Helpers;
 
 namespace GlobeAuction.Controllers
 {
@@ -16,6 +17,43 @@ namespace GlobeAuction.Controllers
     public class StoreItemsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        [AllowAnonymous]
+        public ActionResult Buy()
+        {
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration).ToList();
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            {
+                //remove admin-only ticket types
+                storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
+            }
+            var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
+            
+            var viewModel = new BuyViewModel()
+            {
+                StoreItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
+                {
+                    StoreItem = si
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+        
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Buy(BuyViewModel buyViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var invoice = new InvoiceRepository(db).CreateInvoiceForStoreItems(buyViewModel);
+
+                return RedirectToAction("RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Email });
+            }
+            
+            return View(buyViewModel);
+        }
 
         // GET: StoreItems
         public ActionResult Index()

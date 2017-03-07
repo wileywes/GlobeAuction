@@ -13,7 +13,7 @@
     <input type="hidden" name="cmd" value="_cart" />
     <input type="hidden" name="upload" value="1" />
     <input type="hidden" name="custom" value="Bidder:@Model.BidderId" />
-    <input type="hidden" name="business" value="@ViewBag.PayPalBusiness" />
+    <input type="hidden" name="business" value="@Model.PayPalBusiness" />
     <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Bidders", null, Request.Url.Scheme, null)" />     
     <input type="hidden" name="rm" value="2" />
     <input type="hidden" name="notify_url" value="@Url.Action("Receive", "Ipn", null, Request.Url.Scheme, null)" />

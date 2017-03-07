@@ -61,6 +61,29 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Ticket Confirmation", body);
         }
 
+        public void SendInvoicePaymentConfirmation(Invoice invoice)
+        {
+            var lines = invoice.AuctionItems
+                .Where(g => g.WinningBid.HasValue)
+                .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
+                .ToList();
+
+            if (invoice.StoreItemPurchases.Any())
+            {
+                lines.AddRange(invoice.StoreItemPurchases
+                    .Where(s => s.IsPaid)
+                    .Select(s => new Tuple<string, decimal>(s.StoreItem.Title, s.PricePaid.Value)));
+            }
+
+            var body = GetInvoiceEmail(invoice.PaymentTransaction.PaymentGross,
+                invoice.FirstName + " " + invoice.LastName,
+                "Invoice ID " + invoice.InvoiceId,
+                "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,
+                lines);
+
+            SendEmail(invoice.Email, "Order Confirmation", body);
+        }
+
         private string GetInvoiceEmail(decimal totalPaid, string address1, string address2, string address3, List<Tuple<string, decimal>> lines)
         {
             var body = GetEmailBody("invoicePaid");

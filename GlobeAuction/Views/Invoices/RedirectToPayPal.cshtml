@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.Invoice
+﻿@model GlobeAuction.Models.InvoiceForPayPal
 
 @{
     ViewBag.Title = "Please wait...";
@@ -13,15 +13,16 @@
     <input type="hidden" name="cmd" value="_cart" />
     <input type="hidden" name="upload" value="1" />
     <input type="hidden" name="custom" value="Invoice:@Model.InvoiceId" />
-    <input type="hidden" name="business" value="@ViewBag.PayPalBusiness" />
+    <input type="hidden" name="business" value="@Model.PayPalBusiness" />
     <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Invoices", null, Request.Url.Scheme, null)" />     
     <input type="hidden" name="rm" value="2" />
     <input type="hidden" name="notify_url" value="@Url.Action("Receive", "Ipn", null, Request.Url.Scheme, null)" />
 
-    @for (int i = 0; i < Model.AuctionItems.Count; i++)
+    @for (int i = 0; i < Model.LineItems.Count; i++)
     {
-        <input type="hidden" name="item_name_@(i+1)" value="@ItemsHelper.GetItemNameForPayPalCart(Model.AuctionItems[i])" />
-        <input type="hidden" name="amount_@(i+1)" value="@Model.AuctionItems[i].WinningBid.Value" />
+        <input type="hidden" name="item_name_@(i+1)" value="@Model.LineItems[i].Name" />
+        <input type="hidden" name="amount_@(i+1)" value="@Model.LineItems[i].Price" />
+        <input type="hidden" name="quantity_@(i+1)" value="@Model.LineItems[i].Quantity" />
     }
 
     <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">

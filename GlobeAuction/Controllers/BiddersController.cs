@@ -153,8 +153,7 @@ namespace GlobeAuction.Controllers
                 db.SaveChanges();
 
             var viewModel = new BidderForPayPal(bidder);
-            ViewBag.PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
-
+            
             return View(viewModel);
         }
 

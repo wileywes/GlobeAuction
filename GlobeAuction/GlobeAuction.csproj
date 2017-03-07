@@ -316,6 +316,10 @@
     <Compile Include="Migrations\201703051216409_StoreItemDescAndImageUrl.Designer.cs">
       <DependentUpon>201703051216409_StoreItemDescAndImageUrl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703070502461_InvoiceForStoreItems.cs" />
+    <Compile Include="Migrations\201703070502461_InvoiceForStoreItems.Designer.cs">
+      <DependentUpon>201703070502461_InvoiceForStoreItems.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -556,6 +560,7 @@
     <Content Include="Views\StoreItems\Details.cshtml" />
     <Content Include="Views\StoreItems\Edit.cshtml" />
     <Content Include="Views\StoreItems\Index.cshtml" />
+    <Content Include="Views\StoreItems\Buy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -633,6 +638,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703051216409_StoreItemDescAndImageUrl.resx">
       <DependentUpon>201703051216409_StoreItemDescAndImageUrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070502461_InvoiceForStoreItems.resx">
+      <DependentUpon>201703070502461_InvoiceForStoreItems.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

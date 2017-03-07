@@ -93,26 +93,19 @@ namespace GlobeAuction.Controllers
             
             return View(viewModel);
         }
-
-
+        
         [AllowAnonymous]
-        public ActionResult RedirectToPayPal(int bid, string email, int iid)
+        public ActionResult RedirectToPayPal(int iid, string email)
         {
-            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
-            if (bidder == null)
-            {
-                return HttpNotFound();
-            }
-
-            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Bidder.BidderId == bidder.BidderId);
+            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Email != null && i.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
             if (invoice == null)
             {
                 return HttpNotFound();
             }
-            
-            ViewBag.PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 
-            return View(invoice);
+            var model = new InvoiceForPayPal(invoice);
+
+            return View(model);
         }
 
         [AllowAnonymous]
@@ -123,24 +116,23 @@ namespace GlobeAuction.Controllers
             db.PayPalTransactions.Add(ppTrans);
             db.SaveChanges(); //go ahead and record the transaction
 
-            var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
-            if (!bidderId.HasValue)
+            var invoiceId = InvoiceRepository.GetInvoiceIdFromTransaction(ppTrans);
+            if (!invoiceId.HasValue)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Bidder bidder = db.Bidders.Find(bidderId.Value);
-            if (bidder == null)
+            var invoice = db.Invoices.Find(invoiceId);
+            if (invoice == null)
             {
                 return HttpNotFound();
             }
 
-            new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
-            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
+            new InvoiceRepository(db).ApplyPaymentToInvoice(ppTrans, invoice);
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice  " + invoice.InvoiceId + " via cart post-back");
 
-            return View(bidder);
+            return View(invoice);
         }
-
 
 
         // GET: Invoices/Edit/5

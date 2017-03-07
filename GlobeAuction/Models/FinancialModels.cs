@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -23,10 +24,42 @@ namespace GlobeAuction.Models
         
         public virtual Bidder Bidder { get; set; }
         public virtual List<AuctionItem> AuctionItems { get; set; }
-        public virtual List<StoreItemPurchase> StoreItems { get; set; }
+        public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
         public virtual PayPalTransaction PaymentTransaction { get; set; }
+        
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string Phone { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [Display(Name = "Zip")]
+        public string ZipCode { get; set; }
     }
+
     
+    public class InvoiceForPayPal
+    {
+        public int InvoiceId { get; set; }
+        public string PayPalBusiness { get; set; }
+        public List<PayPalPaymentLine> LineItems { get; set; }
+
+        public InvoiceForPayPal(Invoice invoice)
+        {
+            InvoiceId = invoice.InvoiceId;
+            PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
+
+            LineItems = invoice.AuctionItems.Select(g => new PayPalPaymentLine(g.Title, g.WinningBid.Value, 1)).ToList();
+            LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.StoreItem.Price, s.Quantity)));
+        }
+    }
+
     public enum PayPalTransactionType
     {
         BidderCart,
