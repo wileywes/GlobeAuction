@@ -296,7 +296,7 @@ namespace GlobeAuction.Controllers
 
             if (!int.TryParse(winningBidderId, out winningBidderIdInt))
             {
-                return Json(new { wasSuccessful = false, errorMsg = "Winning Bidder ID must be a whole number." }, JsonRequestBehavior.AllowGet);
+                return Json(new { wasSuccessful = false, errorMsg = "Winning Bidder # must be a whole number." }, JsonRequestBehavior.AllowGet);
             }
             if (!int.TryParse(winningAmount, out winningAmountInt))
             {

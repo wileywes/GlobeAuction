@@ -125,6 +125,25 @@ namespace GlobeAuction.Controllers
                         new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
                         _logger.Info("Updated payment for bidder ID {0} via IPN", bidderId.Value);
                     }
+                    else if (ppTrans.TransactionType == PayPalTransactionType.InvoiceCart)
+                    {
+                        var invoiceId = InvoiceRepository.GetInvoiceIdFromTransaction(ppTrans);
+                        if (!invoiceId.HasValue)
+                        {
+                            _logger.Error("Unable to find invoice ID from PP Trans Id {0}", ppTrans.TxnId);
+                            return;
+                        }
+
+                        var invoice = db.Invoices.Find(invoiceId.Value);
+                        if (invoice == null)
+                        {
+                            _logger.Error("Unable to find invoice ID {1} for PP Trans Id {0}", ppTrans.TxnId, invoiceId.Value);
+                            return;
+                        }
+
+                        new InvoiceRepository(db).ApplyPaymentToInvoice(ppTrans, invoice);
+                        _logger.Info("Updated payment for invoice ID {0} via IPN", invoiceId.Value);
+                    }
                 }
                 else if (verificationResponse.Equals("INVALID"))
                 {

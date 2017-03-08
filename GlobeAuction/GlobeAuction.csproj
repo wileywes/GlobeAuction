@@ -371,6 +371,9 @@
     <Content Include="Content\Images\image_home.jpg" />
     <Content Include="Content\Images\logo_web.jpg" />
     <Content Include="Content\Images\logo_web_50.jpg" />
+    <Content Include="Content\Images\payicon.gif" />
+    <Content Include="Content\Images\payicon.jpg" />
+    <Content Include="Content\Images\payicon.png" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />
     <Content Include="Content\Images\web_auction 2017_preview.jpg" />

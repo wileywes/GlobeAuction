@@ -66,11 +66,8 @@ namespace GlobeAuction.Controllers
                 }
                 else
                 {
-                    Invoice invoice;
-                    var result = new InvoiceRepository(db).TryCreateInvoiceForWonItemsNotAlreadyOnInvoice(bidder, out invoice);
-
-                    //send to review page regardless of whether or not we just created a new invoice
-                    return RedirectToAction("Review", new { bid = bidder.BidderId, email = bidder.Email });
+                    //send to review page once we've verified who they are
+                    return RedirectToAction("ReviewBidderWinnings", new { bid = bidder.BidderId, email = bidder.Email });
                 }
             }
 
@@ -78,7 +75,7 @@ namespace GlobeAuction.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Review(int bid, string email)
+        public ActionResult ReviewBidderWinnings(int bid, string email)
         {
             //check they are
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
@@ -88,8 +85,9 @@ namespace GlobeAuction.Controllers
             }
 
             var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId).ToList();
+            var auctionWinningsForBidderNotInInvoice = db.AuctionItems.Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null).ToList();
             
-            var viewModel = new InvoicesForBidderViewModel(bidder, invoicesForBidder);
+            var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice);
             
             return View(viewModel);
         }
