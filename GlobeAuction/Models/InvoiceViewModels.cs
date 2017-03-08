@@ -26,6 +26,7 @@ namespace GlobeAuction.Models
         public string BidderEmail { get; set; }
 
         public List<Invoice> Invoices { get; set; }
+        public List<AuctionItemViewModel> AuctionItemsNotInInvoice { get; set; }
 
         public ReviewBidderWinningsViewModel(Bidder bidder, IEnumerable<Invoice> invoices, IEnumerable<AuctionItem> auctionWinningsForBidderNotInInvoice)
         {
@@ -34,6 +35,7 @@ namespace GlobeAuction.Models
             BidderEmail = bidder.Email;
 
             Invoices = (invoices ?? new List<Invoice>()).ToList();
+            AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new AuctionItemViewModel(a)).ToList();
         }
     }
 
@@ -43,8 +45,9 @@ namespace GlobeAuction.Models
         public bool IsPaid { get; set; }
         public bool WasMarkedPaidManually { get; set; }
 
-        public int BidderId { get; set; }
-        public string BidderName { get; set; }
+        public int? BidderId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
 
         [Display(Name = "# Items")]
         public int CountOfAuctionItems { get; set; }
@@ -55,8 +58,10 @@ namespace GlobeAuction.Models
 
         public InvoiceListViewModel(Invoice invoice)
         {
-            BidderId = invoice.Bidder.BidderId;
-            BidderName = invoice.Bidder.FirstName + "  " + invoice.Bidder.LastName;
+            if (invoice.Bidder != null) BidderId = invoice.Bidder.BidderId;
+
+            Name = invoice.FirstName + "  " + invoice.LastName;
+            Email = invoice.Email;
 
             InvoiceId = invoice.InvoiceId;
             IsPaid = invoice.IsPaid;

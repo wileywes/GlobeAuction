@@ -77,7 +77,7 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult ReviewBidderWinnings(int bid, string email)
         {
-            //check they are
+            //check they are who they say they are
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
             if (bidder == null)
             {
@@ -90,6 +90,28 @@ namespace GlobeAuction.Controllers
             var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice);
             
             return View(viewModel);
+        }
+
+        [AllowAnonymous]
+        public ActionResult MakeInvoiceFromWinnings(int bid, string email, string auctionItemIdsCsv)
+        {
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            if (bidder == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var auctionItemIds = auctionItemIdsCsv.Split(new[] { ',' }).Select(int.Parse);
+            var winnings = db.AuctionItems.Where(ai => auctionItemIds.Contains(ai.AuctionItemId) &&
+                    ai.WinningBidderId.HasValue && 
+                    ai.WinningBidderId.Value == bidder.BidderId && 
+                    ai.Invoice == null).ToList();
+
+            if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var invoice = new InvoiceRepository(db).CreateInvoiceForAuctionItems(bidder, winnings);
+
+            return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = email });
         }
         
         [AllowAnonymous]

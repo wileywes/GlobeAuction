@@ -320,6 +320,10 @@
     <Compile Include="Migrations\201703070502461_InvoiceForStoreItems.Designer.cs">
       <DependentUpon>201703070502461_InvoiceForStoreItems.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703080531343_WinningBidDecimal.cs" />
+    <Compile Include="Migrations\201703080531343_WinningBidDecimal.Designer.cs">
+      <DependentUpon>201703080531343_WinningBidDecimal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -371,9 +375,7 @@
     <Content Include="Content\Images\image_home.jpg" />
     <Content Include="Content\Images\logo_web.jpg" />
     <Content Include="Content\Images\logo_web_50.jpg" />
-    <Content Include="Content\Images\payicon.gif" />
     <Content Include="Content\Images\payicon.jpg" />
-    <Content Include="Content\Images\payicon.png" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />
     <Content Include="Content\Images\web_auction 2017_preview.jpg" />
@@ -553,7 +555,7 @@
     <Content Include="Views\Ipn\TestTicketPurchaseIpn.cshtml" />
     <Content Include="Views\Invoices\Checkout.cshtml" />
     <Content Include="Views\Invoices\Delete.cshtml" />
-    <Content Include="Views\Invoices\Review.cshtml" />
+    <Content Include="Views\Invoices\ReviewBidderWinnings.cshtml" />
     <Content Include="Views\Invoices\Edit.cshtml" />
     <Content Include="Views\Invoices\Index.cshtml" />
     <Content Include="Views\Invoices\RedirectToPayPal.cshtml" />
@@ -644,6 +646,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703070502461_InvoiceForStoreItems.resx">
       <DependentUpon>201703070502461_InvoiceForStoreItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703080531343_WinningBidDecimal.resx">
+      <DependentUpon>201703080531343_WinningBidDecimal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

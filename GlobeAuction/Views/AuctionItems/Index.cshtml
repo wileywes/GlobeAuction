@@ -51,6 +51,9 @@
                     # Items
                 </th>
                 <th>
+                    Total Value
+                </th>
+                <th>
                     Starting Bid
                 </th>
                 <th>
@@ -82,7 +85,10 @@
                         @Html.DisplayFor(modelItem => item.Category)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.DonationItems.Count)
+                        @Html.DisplayFor(modelItem => item.DonationItemsCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.StartingBid)

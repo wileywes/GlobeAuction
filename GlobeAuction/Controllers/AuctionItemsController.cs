@@ -292,13 +292,14 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult SaveAuctionItemWinner(int auctionItemId, int uniqueItemNumber, string winningBidderId, string winningAmount)
         {
-            int winningBidderIdInt, winningAmountInt;
+            int winningBidderIdInt;
+            decimal winningAmountDecimal;
 
             if (!int.TryParse(winningBidderId, out winningBidderIdInt))
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Winning Bidder # must be a whole number." }, JsonRequestBehavior.AllowGet);
             }
-            if (!int.TryParse(winningAmount, out winningAmountInt))
+            if (!decimal.TryParse(winningAmount, out winningAmountDecimal))
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Winning Bid Amount must be a whole number." }, JsonRequestBehavior.AllowGet);
             }
@@ -315,9 +316,9 @@ namespace GlobeAuction.Controllers
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
-            if (auctionItem.WinningBid.HasValue && auctionItem.WinningBid.Value != winningAmountInt)
+            if (auctionItem.WinningBid.HasValue && auctionItem.WinningBid.Value != winningAmountDecimal)
             {
-                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + " for " + winningAmountInt.ToString("C") + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
+                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + " for " + winningAmountDecimal.ToString("C") + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
 
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == winningBidderIdInt);
@@ -327,7 +328,7 @@ namespace GlobeAuction.Controllers
                 return Json(new { wasSuccessful = false, errorMsg = "Unable to find bidder " + winningBidderIdInt + "." }, JsonRequestBehavior.AllowGet);
             }
 
-            auctionItem.WinningBid = winningAmountInt;
+            auctionItem.WinningBid = winningAmountDecimal;
             auctionItem.WinningBidderId = bidder.BidderId;
             auctionItem.UpdateBy =  User.Identity.GetUserName();
             auctionItem.UpdateDate = DateTime.Now;

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace GlobeAuction.Helpers
 {
@@ -18,10 +17,16 @@ namespace GlobeAuction.Helpers
             if (!items.Any()) throw new ApplicationException("You must select at least one donation item");
 
             var totalDollarValue = items.Sum(i => i.DollarValue.GetValueOrDefault(0));
-            var startBid = (int)Math.Floor(totalDollarValue * 0.4);
+            var startBid = Math.Floor(totalDollarValue * 0.4);
+            startBid = Math.Round(startBid / 5.0) * 5;
             var mostCommonCategory = items.GroupBy(i => i.Category)
                 .OrderByDescending(g => g.Count())
                 .First().Key;
+
+            int bidIncrement;
+            if (startBid < 50) bidIncrement = 5;
+            else if (startBid <= 100) bidIncrement = 10;
+            else bidIncrement = 20;
 
             var description = items.Count == 1 ? items.First().Description :
                 "This basket includes:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine + Environment.NewLine, items.Select(i => i.Description));
@@ -34,8 +39,8 @@ namespace GlobeAuction.Helpers
                 CreateDate = DateTime.Now,
                 UpdateDate = DateTime.Now,
                 UpdateBy = username,
-                StartingBid = startBid,
-                BidIncrement = (int)Math.Floor((decimal)startBid / 4),
+                StartingBid = (int)startBid,
+                BidIncrement = bidIncrement,
                 Category = mostCommonCategory,
                 Description = description,
                 Title = title,
