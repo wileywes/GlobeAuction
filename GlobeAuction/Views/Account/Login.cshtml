@@ -1,10 +1,16 @@
 ﻿@using GlobeAuction.Models
 @model LoginViewModel
 @{
-    ViewBag.Title = "Log in";
+    ViewBag.Title = "Log in to Volunteers Site";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
+
+<div class="alert-info alert">
+    This login is only intended for auction volunteers that are working on the volunteers team.  If you are just attending the auction or buying raffle tickets
+    you do NOT need to create a login here.
+</div>
+
 <div class="row">
     <div class="col-md-8">
         <section id="loginForm">

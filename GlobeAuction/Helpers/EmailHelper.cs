@@ -140,6 +140,11 @@ namespace GlobeAuction.Helpers
 
         public void SendEmail(string to, string subject, string body)
         {
+            SendEmail(to, subject, body, true);
+        }
+
+        public void SendEmail(string to, string subject, string body, bool includeAllEmailBcc)
+        {
             var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
             {
                 Body = body,

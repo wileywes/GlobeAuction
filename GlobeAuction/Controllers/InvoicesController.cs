@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using GlobeAuction.Models;
 using GlobeAuction.Helpers;
 using System.Configuration;
+using Microsoft.AspNet.Identity;
 
 namespace GlobeAuction.Controllers
 {
@@ -21,7 +22,7 @@ namespace GlobeAuction.Controllers
         public ActionResult Index()
         {
             var invoices = db.Invoices.ToList();
-            var viewModels = invoices.Select(i => new InvoiceListViewModel(i));
+            var viewModels = invoices.Select(i => new InvoiceListViewModel(i)).ToList();
             return View(viewModels);
         }
 
@@ -153,40 +154,9 @@ namespace GlobeAuction.Controllers
 
             return View(invoice);
         }
-
-
-        // GET: Invoices/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Invoice invoice = db.Invoices.Find(id);
-            if (invoice == null)
-            {
-                return HttpNotFound();
-            }
-            return View(invoice);
-        }
-
-        // POST: Invoices/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "InvoiceId,IsPaid,WasMarkedPaidManually,CreateDate,UpdateDate,UpdateBy")] Invoice invoice)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(invoice).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(invoice);
-        }
-
+        
         // GET: Invoices/Delete/5
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -204,6 +174,7 @@ namespace GlobeAuction.Controllers
         // POST: Invoices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult DeleteConfirmed(int id)
         {
             Invoice invoice = db.Invoices.Find(id);
@@ -215,11 +186,13 @@ namespace GlobeAuction.Controllers
 
             foreach(var sip in db.StoreItemPurchases.Where(p => p.Invoice.InvoiceId == id))
             {
-                sip.Invoice = null;
+                //remove store item purchase
+                db.StoreItemPurchases.Remove(sip);
             }
 
             foreach (var ai in db.AuctionItems.Where(p => p.Invoice.InvoiceId == id))
             {
+                //detach auction items
                 ai.Invoice = null;
             }
 

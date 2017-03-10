@@ -83,6 +83,8 @@ namespace GlobeAuction.Models
         [Required]
         public string PayerId { get; set; }
         [Required]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal PaymentGross { get; set; }
         [Required]
         public string PaymentType { get; set; }

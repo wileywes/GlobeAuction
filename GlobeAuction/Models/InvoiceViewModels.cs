@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 
 namespace GlobeAuction.Models
 {
@@ -41,34 +40,54 @@ namespace GlobeAuction.Models
 
     public class InvoiceListViewModel
     {
+        [Display(Name = "Invoice #")]
         public int InvoiceId { get; set; }
+
+        [Display(Name = "Paid")]
         public bool IsPaid { get; set; }
+
+        [Display(Name = "Paid Marked Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
+        [Display(Name = "Bidder #")]
         public int? BidderId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
 
         [Display(Name = "# Items")]
-        public int CountOfAuctionItems { get; set; }
+        public int CountOfItems { get; set; }
 
+        [Display(Name = "Total")]
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal InvoiceTotal { get; set; }
 
+        [Display(Name = "Total Paid")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal InvoiceTotalPaid { get; set; }
+
         public InvoiceListViewModel(Invoice invoice)
         {
             if (invoice.Bidder != null) BidderId = invoice.Bidder.BidderId;
-
+            
             Name = invoice.FirstName + "  " + invoice.LastName;
             Email = invoice.Email;
-
             InvoiceId = invoice.InvoiceId;
             IsPaid = invoice.IsPaid;
             WasMarkedPaidManually = invoice.WasMarkedPaidManually;
 
-            CountOfAuctionItems = invoice.AuctionItems.Count;
-            InvoiceTotal = invoice.AuctionItems.Any() ? invoice.AuctionItems.Sum(i => i.WinningBid.Value) : 0;
+            invoice.AuctionItems = invoice.AuctionItems ?? new List<AuctionItem>();
+            invoice.StoreItemPurchases = invoice.StoreItemPurchases ?? new List<StoreItemPurchase>();
+
+            CountOfItems = invoice.AuctionItems.Count + invoice.StoreItemPurchases.Count;
+            InvoiceTotal = invoice.AuctionItems.Any() ? invoice.AuctionItems.Sum(i => i.WinningBid.GetValueOrDefault(0)) : 0;
+            InvoiceTotal += invoice.StoreItemPurchases.Any() ? invoice.StoreItemPurchases.Sum(i => i.StoreItem.Price) : 0;
+
+            if (invoice.PaymentTransaction != null)
+            {
+                InvoiceTotalPaid = invoice.PaymentTransaction.PaymentGross;
+            }
         }
     }
 }

@@ -556,7 +556,6 @@
     <Content Include="Views\Invoices\Checkout.cshtml" />
     <Content Include="Views\Invoices\Delete.cshtml" />
     <Content Include="Views\Invoices\ReviewBidderWinnings.cshtml" />
-    <Content Include="Views\Invoices\Edit.cshtml" />
     <Content Include="Views\Invoices\Index.cshtml" />
     <Content Include="Views\Invoices\RedirectToPayPal.cshtml" />
     <Content Include="Views\Invoices\PayPalComplete.cshtml" />
@@ -566,6 +565,7 @@
     <Content Include="Views\StoreItems\Edit.cshtml" />
     <Content Include="Views\StoreItems\Index.cshtml" />
     <Content Include="Views\StoreItems\Buy.cshtml" />
+    <Content Include="Views\Invoices\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

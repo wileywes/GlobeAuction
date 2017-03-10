@@ -27,7 +27,7 @@
             @Html.DisplayNameFor(model => model.Email)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CountOfAuctionItems)
+            @Html.DisplayNameFor(model => model.CountOfItems)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.InvoiceTotal)
@@ -35,38 +35,41 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.InvoiceId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsPaid)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.WasMarkedPaidManually)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BidderId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CountOfAuctionItems)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.InvoiceTotal)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.InvoiceId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.InvoiceId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.InvoiceId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPaid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WasMarkedPaidManually)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BidderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CountOfItems)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceTotal)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
+                @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
+                }
+            </td>
+        </tr>
+    }
 
 </table>

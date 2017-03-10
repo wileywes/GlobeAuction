@@ -4,22 +4,20 @@
     ViewBag.Title = "Buy";
 }
 
-<h2>Purchase Additional Items for the Auction</h2>
+<h2>Purchase Raffle Tickets for the Auction</h2>
 <br />
 
 <p>
     If you haven't registered for the auction yet, you can do that and purchase raffle tickets
-    @Html.ActionLink("here", "Register", "Bidders") .
+    @Html.ActionLink("here in registration", "Register", "Bidders") .
     If you have already registered or just need raffle tickets, you can do that below.
 </p>
-<br />
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Items Available for Purchase</h4>
         <hr />
         <div class="row form-group">
             <div class="col-md-2"></div>

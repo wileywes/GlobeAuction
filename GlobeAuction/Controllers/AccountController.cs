@@ -509,6 +509,10 @@ namespace GlobeAuction.Controllers
 
             public override void ExecuteResult(ControllerContext context)
             {
+                // this line fixed the problem with returing null
+                //context.RequestContext.HttpContext.Response.SuppressFormsAuthenticationRedirect = true;
+                context.HttpContext.Session.RemoveAll();
+
                 var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
                 if (UserId != null)
                 {

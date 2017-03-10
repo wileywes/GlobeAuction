@@ -44,7 +44,7 @@
             Auction Winnings - 
             <span style="color:darkred;font-weight:bold">Unpaid</span>
             @Html.ActionLink("Pay Now", "MakeInvoiceFromWinnings", "Invoices", new { bid = Model.BidderId, email = Model.BidderEmail, auctionItemIdsCsv = string.Join(",", Model.AuctionItemsNotInInvoice.Select(a => a.AuctionItemId)) },
-                htmlAttributes: new { @class = "btn btn-gold" })
+                htmlAttributes: new { @class = "btn btn-default" })
         </h4>
         <dl class="dl-horizontal">
             <dt></dt>
@@ -93,7 +93,7 @@
                 Invoice #@invoice.InvoiceId -
                 <span style="color:darkred;font-weight:bold">Unpaid</span>
                 @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email },
-        htmlAttributes: new { @class = "btn btn-gold" })
+        htmlAttributes: new { @class = "btn btn-default" })
             </h4>
             <dl class="dl-horizontal">
                 <dt></dt>

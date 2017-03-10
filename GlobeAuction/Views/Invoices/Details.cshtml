@@ -1,0 +1,196 @@
+﻿@model GlobeAuction.Models.Invoice
+
+@{
+    ViewBag.Title = "Invoice Details";
+}
+
+<h2>Invoice Details</h2>
+
+<div>
+    <h4>Contact Information</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.InvoiceId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InvoiceId)
+        </dd>
+
+        @if (Model.Bidder != null)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Bidder.BidderId)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Bidder.BidderId)
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsPaid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WasMarkedPaidManually)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdateDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UpdateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdateBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UpdateBy)
+        </dd>
+
+    </dl>
+
+    <h4>Auction Item(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.AuctionItems)
+        {
+            <dt>
+                @Html.Label("Item # " + item.UniqueItemNumber)
+            </dt>
+            <dd>
+                @string.Format("{0} ({1:C})",
+                        item.Title,
+                        item.WinningBid)
+            </dd>
+        }
+    </dl>
+
+    <h4>Additional Purchase(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.StoreItemPurchases)
+        {
+            <dt></dt>
+            <dd>
+                @string.Format("{0} - {1} - {2} (paid {3:C})",
+                        item.StoreItem.Title,
+                        item.Quantity,
+                        item.StoreItem.Price,
+                        item.PricePaid)
+            </dd>
+        }
+    </dl>
+
+    <h4>Payment Transaction</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @if (Model.PaymentTransaction == null)
+        {
+            <dt></dt>
+            <dd>
+                @Html.Label("No payment has been made yet")
+            </dd>
+        }
+        else
+        {
+            <dt>
+                @Html.DisplayNameFor(m => Model.PaymentTransaction.TxnId)
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => Model.PaymentTransaction.TxnId)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(m => Model.PaymentTransaction.PaymentDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => Model.PaymentTransaction.PaymentDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(m => Model.PaymentTransaction.PaymentGross)
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => Model.PaymentTransaction.PaymentGross)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(m => Model.PaymentTransaction.PayerEmail)
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => Model.PaymentTransaction.PayerEmail)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(m => Model.PaymentTransaction.TransactionType)
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => Model.PaymentTransaction.TransactionType)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(m => Model.PaymentTransaction.NotificationType)
+            </dt>
+            <dd>
+                @Html.DisplayFor(m => Model.PaymentTransaction.NotificationType)
+            </dd>
+        }
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
