@@ -566,6 +566,7 @@
     <Content Include="Views\StoreItems\Index.cshtml" />
     <Content Include="Views\StoreItems\Buy.cshtml" />
     <Content Include="Views\Invoices\Details.cshtml" />
+    <Content Include="Views\UsersAdmin\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

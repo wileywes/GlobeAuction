@@ -56,11 +56,11 @@
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditTickets))
                         {
-                            <li>@Html.ActionLink("Store", "Index", "StoreItems")</li>
                             <li>@Html.ActionLink("Tickets", "Index", "TicketTypes")</li>
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                         {
+                            <li>@Html.ActionLink("Store", "Index", "StoreItems")</li>
                             <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>
                             <li>@Html.ActionLink("Logs", "Index", "LogFiles")</li>
                         }
