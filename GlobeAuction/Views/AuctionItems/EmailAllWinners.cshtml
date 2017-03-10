@@ -1,0 +1,23 @@
+﻿@model GlobeAuction.Models.EmailAllWinnersViewModel
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
+@{
+    ViewBag.Title = "Email All Winners";
+}
+
+<h2>Email All Winners</h2>
+
+@if (Model.WasSuccessful)
+{
+    <div class="alert-success alert">
+        The system sent <b>@Model.EmailsSent.Value</b> emails to the winners with a link to pay.
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        @Model.ErrorMessage
+    </div>
+}

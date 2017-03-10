@@ -84,6 +84,47 @@ namespace GlobeAuction.Helpers
             SendEmail(invoice.Email, "Order Confirmation", body);
         }
 
+        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink)
+        {
+            var lines = winnings
+                .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
+                .ToList();
+
+            var totalOwed = winnings.Sum(i => i.WinningBid.Value);
+            var body = GetAuctionWinningsNudgeEmailEmail(winnings.Count,
+                totalOwed, payLink,
+                bidder.FirstName + " " + bidder.LastName,
+                "Bidder # " + bidder.BidderId,
+                lines);
+
+            SendEmail(bidder.Email, "Auction Checkout", body);
+        }
+
+        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines)
+        {
+            var body = GetEmailBody("auctionWinningsNudge");
+            var lineTemplate = GetEmailBody("invoiceLine");
+
+            body = ReplaceToken("SiteName", _siteName, body);
+            body = ReplaceToken("ItemCount", itemCount.ToString(), body);
+            body = ReplaceToken("TotalOwed", totalOwed.ToString("C"), body);
+            body = ReplaceToken("PayLink", payLink, body);
+            body = ReplaceToken("Address1", address1, body);
+            body = ReplaceToken("Address2", address2, body);
+
+            var linesHtml = string.Empty;
+            foreach (var line in lines)
+            {
+                linesHtml += ReplaceToken("LineName", line.Item1, ReplaceToken("LinePrice", line.Item2.ToString("C"), lineTemplate));
+            }
+
+            body = ReplaceToken("InvoiceLines", linesHtml, body);
+            body = ReplaceToken("SiteUrl", _siteUrl, body);
+            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+
+            return body;
+        }
+
         private string GetInvoiceEmail(decimal totalPaid, string address1, string address2, string address3, List<Tuple<string, decimal>> lines)
         {
             var body = GetEmailBody("invoicePaid");

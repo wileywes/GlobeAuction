@@ -12,11 +12,46 @@ namespace GlobeAuction.Models
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
     }
+    
+    public class WinnerViewModel
+    {
+        public int BidderId { get; set; }
 
-    public class WinnersViewModel
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+        
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        public List<AuctionItemViewModel> ItemsWon { get; set; }
+
+        public WinnerViewModel(Bidder bidder, List<AuctionItem> itemsWon)
+        {
+            this.BidderId = bidder.BidderId;
+            this.FirstName = bidder.FirstName;
+            this.LastName = bidder.LastName;
+            this.Email = bidder.Email;
+            this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i)).ToList();
+        }
+    }
+
+    public class EnterWinnersViewModel
     {
         public string SelectedCategory { get; set; }
         public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
+    }
+
+    public class EmailAllWinnersViewModel
+    {
+        public bool WasSuccessful { get; set; }
+        public string ErrorMessage { get; set; }
+        public int? EmailsSent { get; set; }
     }
 
     public class DonationItemViewModel

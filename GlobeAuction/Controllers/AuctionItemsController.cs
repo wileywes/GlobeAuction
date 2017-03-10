@@ -254,13 +254,61 @@ namespace GlobeAuction.Controllers
 
             return RedirectToAction("Index");
         }
-                
+
+        private Dictionary<Bidder, List<AuctionItem>> GetWinningsByBidder()
+        {
+            var itemsWon = db.AuctionItems
+                .Where(ai => ai.WinningBid.HasValue && ai.WinningBidderId.HasValue)
+                .ToList();
+
+            var uniqueBidderIds = itemsWon.Select(i => i.WinningBidderId.Value).Distinct().ToList();
+            var bidders = db.Bidders.Where(b => uniqueBidderIds.Contains(b.BidderId)).ToList();
+
+            return bidders.ToDictionary(b => b, b => itemsWon.Where(i => i.WinningBidderId.Value == b.BidderId).ToList());
+        }
+
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult Winners()
         {
+            var winningsByBidder = GetWinningsByBidder();
+            var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Key, wbb.Value)).ToList();
+            return View(models);
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult PrintAllPackSlips()
+        {
+            var winningsByBidder = GetWinningsByBidder();
+            var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Key, wbb.Value)).ToList();
+            return View(models);
+        }
+        
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult EmailAllWinners()
+        {
+            var winningsByBidder = GetWinningsByBidder();
+            var emailHelper = new EmailHelper();
+            foreach(var winner in winningsByBidder)
+            {
+                var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Key.BidderId, email = winner.Key.Email }, Request.Url.Scheme);
+                emailHelper.SendAuctionWinningsPaymentNudge(winner.Key, winner.Value, payLink);
+            }
+
+            var model = new EmailAllWinnersViewModel
+            {
+                WasSuccessful = true,
+                EmailsSent = winningsByBidder.Count
+            };
+
+            return View(model);
+        }        
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult EnterWinners()
+        {
             AddAuctionItemCategoryControlInfo(null);
 
-            return View(new WinnersViewModel());
+            return View(new EnterWinnersViewModel());
         }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
@@ -316,7 +364,7 @@ namespace GlobeAuction.Controllers
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
-            if (auctionItem.WinningBid.HasValue && auctionItem.WinningBid.Value != winningAmountDecimal)
+            if (auctionItem.WinningBidderId.HasValue && auctionItem.WinningBid.HasValue && auctionItem.WinningBid.Value != winningAmountDecimal)
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + " for " + winningAmountDecimal.ToString("C") + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }

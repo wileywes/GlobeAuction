@@ -32,6 +32,11 @@ namespace GlobeAuction.Controllers
         public RoleManager<IdentityRole> RoleManager { get; private set; }
         public ApplicationDbContext db { get; private set; }
         
+        public ActionResult AdminFunctions()
+        {
+            return View();
+        }
+
         public async Task<ActionResult> Index()
         {
             //must to ToList() to close out the DataReader from Users

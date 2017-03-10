@@ -1,0 +1,45 @@
+﻿@model IEnumerable<GlobeAuction.Models.WinnerViewModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body style="padding-top:0px; padding-bottom:0px">
+
+    <div class="container body-content">
+        @foreach (var winner in Model)
+        {
+            <div class="printcontainer">
+
+                <h2>Bidder # @Html.DisplayFor(m => winner.BidderId)</h2>
+                <h3>@Html.DisplayFor(m => winner.FirstName) @Html.DisplayFor(m => winner.LastName)</h3>
+                <h3>@Html.DisplayFor(m => winner.Email)</h3>
+
+                <table class="table table-bordered table-striped">
+                    @foreach (var item in winner.ItemsWon)
+                    {
+                        <tr>
+                            <td>@item.UniqueItemNumber</td>
+                            <td>@item.Category</td>
+                            <td>@item.Title</td>
+                            <td>@item.WinningBid.Value</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    </div>
+
+</body>
+</html>

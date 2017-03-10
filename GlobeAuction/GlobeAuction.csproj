@@ -355,6 +355,7 @@
     <Content Include="Content\EmailTemplates\inlined\bidderNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\alert.html" />
     <Content Include="Content\EmailTemplates\inlined\invoiceLine.html" />
+    <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudge.html" />
     <Content Include="Content\EmailTemplates\inlined\invoicePaid.html" />
     <Content Include="Content\EmailTemplates\inlined\billing.html" />
     <Content Include="Content\EmailTemplates\styles.css" />
@@ -550,7 +551,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\AuctionItems\PrintBidSheets.cshtml" />
-    <Content Include="Views\AuctionItems\Winners.cshtml" />
+    <Content Include="Views\AuctionItems\EnterWinners.cshtml" />
     <Content Include="Views\Ipn\TestPayPalHereIpn.cshtml" />
     <Content Include="Views\Ipn\TestTicketPurchaseIpn.cshtml" />
     <Content Include="Views\Invoices\Checkout.cshtml" />
@@ -567,6 +568,10 @@
     <Content Include="Views\StoreItems\Buy.cshtml" />
     <Content Include="Views\Invoices\Details.cshtml" />
     <Content Include="Views\UsersAdmin\Delete.cshtml" />
+    <Content Include="Views\AuctionItems\Winners.cshtml" />
+    <Content Include="Views\AuctionItems\PrintAllPackSlips.cshtml" />
+    <Content Include="Views\UsersAdmin\AdminFunctions.cshtml" />
+    <Content Include="Views\AuctionItems\EmailAllWinners.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

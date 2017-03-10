@@ -36,7 +36,6 @@
                 @if (Request.IsAuthenticated)
                 {
                     <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Donate", "Create", "DonationItems")</li>
                         <li>@Html.ActionLink("Pay", "Checkout", "Invoices")</li>
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                         {
@@ -60,9 +59,7 @@
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                         {
-                            <li>@Html.ActionLink("Store", "Index", "StoreItems")</li>
-                            <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>
-                            <li>@Html.ActionLink("Logs", "Index", "LogFiles")</li>
+                            <li>@Html.ActionLink("Admin", "AdminFunctions", "UsersAdmin")</li>
                         }
                     </ul>
                     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
