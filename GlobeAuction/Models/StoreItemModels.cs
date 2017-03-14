@@ -104,7 +104,10 @@ namespace GlobeAuction.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get { return Bidder == null ? Invoice.Email : Bidder.Email; } }
 
+        public string FullName { get { return Bidder == null ? Invoice.FirstName + " " + Invoice.LastName : Bidder.FirstName + " " + Bidder.LastName; } }
         public DateTime PurchaseDate { get { return Bidder == null ? Invoice.CreateDate : Bidder.CreateDate; } }
+
+        public string PurchaseType { get { return Bidder == null ? "Store" : "Bidder"; } }
 
         public virtual PayPalTransaction PurchaseTransaction { get; set; }
         public virtual Invoice Invoice { get; set; }
