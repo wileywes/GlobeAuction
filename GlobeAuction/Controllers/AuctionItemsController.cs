@@ -161,7 +161,7 @@ namespace GlobeAuction.Controllers
         
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitSelectedDonationItems(string donationItemsAction, string selectedDonationItemIds, int? basketItemNumber)
+        public ActionResult SubmitSelectedDonationItems(string donationItemsAction, string selectedDonationItemIds, int? basketItemNumber, int? numberOfCopies)
         {
             var selectedDonationIds = selectedDonationItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
@@ -215,6 +215,18 @@ namespace GlobeAuction.Controllers
                     existingAuctionItem.UpdateBy = username;
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = existingAuctionItem.AuctionItemId });
+                case "DuplicateDonationItems":
+                    if (!numberOfCopies.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    foreach (var selectedDonation in selectedDonations)
+                    {
+                        for (int i = 0; i < numberOfCopies.Value; i++)
+                        {
+                            db.DonationItems.Add(selectedDonation);
+                            db.SaveChanges();
+                        }
+                    }
+                    return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");
