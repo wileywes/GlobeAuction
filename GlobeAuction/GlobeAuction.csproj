@@ -324,6 +324,10 @@
     <Compile Include="Migrations\201703080531343_WinningBidDecimal.Designer.cs">
       <DependentUpon>201703080531343_WinningBidDecimal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703142040103_SoftDeleteStoreItem.cs" />
+    <Compile Include="Migrations\201703142040103_SoftDeleteStoreItem.Designer.cs">
+      <DependentUpon>201703142040103_SoftDeleteStoreItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -572,6 +576,7 @@
     <Content Include="Views\AuctionItems\PrintAllPackSlips.cshtml" />
     <Content Include="Views\UsersAdmin\AdminFunctions.cshtml" />
     <Content Include="Views\AuctionItems\EmailAllWinners.cshtml" />
+    <Content Include="Views\StoreItems\Purchases.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -655,6 +660,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703080531343_WinningBidDecimal.resx">
       <DependentUpon>201703080531343_WinningBidDecimal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703142040103_SoftDeleteStoreItem.resx">
+      <DependentUpon>201703142040103_SoftDeleteStoreItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

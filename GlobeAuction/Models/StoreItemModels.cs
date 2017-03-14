@@ -76,15 +76,21 @@ namespace GlobeAuction.Models
         [Required]
         public bool OnlyVisibleToAdmins { get; set; }
 
+        [Required]
+        public bool IsDeleted { get; set; }
+
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }        
+
+        public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
     }
 
     public class StoreItemPurchaseViewModel
     {
         public int StoreItemPurchaseId { get; set; }
 
+        [Required]
         public StoreItemViewModel StoreItem { get; set; }
         
         public int Quantity { get; set; }
@@ -95,6 +101,11 @@ namespace GlobeAuction.Models
 
         public bool IsPaid { get { return PricePaid.HasValue; } }
 
+        [DataType(DataType.EmailAddress)]
+        public string Email { get { return Bidder == null ? Invoice.Email : Bidder.Email; } }
+
+        public DateTime PurchaseDate { get { return Bidder == null ? Invoice.CreateDate : Bidder.CreateDate; } }
+
         public virtual PayPalTransaction PurchaseTransaction { get; set; }
         public virtual Invoice Invoice { get; set; }
         public virtual Bidder Bidder { get; set; }
@@ -104,8 +115,7 @@ namespace GlobeAuction.Models
     {
         [Required]
         public int StoreItemPurchaseId { get; set; }
-
-        [Required]
+        
         public virtual StoreItem StoreItem { get; set; }
 
         [Required]

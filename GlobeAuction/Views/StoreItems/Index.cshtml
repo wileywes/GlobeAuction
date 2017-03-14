@@ -9,6 +9,12 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+<p>
+    @Html.ActionLink("See Purchases", "Purchases")
+</p>
+
+
 <table class="table">
     <tr>
         <th></th>
@@ -42,7 +48,7 @@
             <td>
                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                 {
-                    <img src="@Url.Content(item.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
+                    <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
                 }
             </td>
             <td>

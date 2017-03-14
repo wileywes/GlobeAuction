@@ -38,6 +38,10 @@ namespace GlobeAuction.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             //fluent API hook-in here
+            modelBuilder.Entity<StoreItemPurchase>()
+                        .HasRequired(t => t.StoreItem)
+                        .WithMany(t => t.StoreItemPurchases)
+                        .WillCascadeOnDelete(false);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -89,7 +89,7 @@ namespace GlobeAuction.Controllers
             var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId).ToList();
             var auctionWinningsForBidderNotInInvoice = db.AuctionItems.Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null).ToList();
 
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout).ToList();
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout && s.IsDeleted == false).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanCheckoutWinners))
             {
                 //remove admin-only store items

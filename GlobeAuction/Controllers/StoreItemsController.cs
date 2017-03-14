@@ -13,7 +13,7 @@ using GlobeAuction.Helpers;
 
 namespace GlobeAuction.Controllers
 {
-    [Authorize(Roles = AuctionRoles.CanEditTickets)]
+    [Authorize(Roles = AuctionRoles.CanAdminUsers)]
     public class StoreItemsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -21,7 +21,7 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Buy()
         {
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration).ToList();
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
             {
                 //remove admin-only ticket types
@@ -58,8 +58,18 @@ namespace GlobeAuction.Controllers
         // GET: StoreItems
         public ActionResult Index()
         {
-            var models = db.StoreItems.ToList().Select(i => Mapper.Map<StoreItemViewModel>(i))
+            var models = db.StoreItems.Where(s => s.IsDeleted == false).ToList().Select(i => Mapper.Map<StoreItemViewModel>(i))
                 .ToList() ?? new List<StoreItemViewModel>();
+            return View(models);
+        }
+
+        // GET: StoreItems/Purchases
+        [Authorize]
+        public ActionResult Purchases()
+        {
+            var models = db.StoreItemPurchases.ToList()
+                .Select(i => Mapper.Map<StoreItemPurchaseViewModel>(i))
+                .ToList();
             return View(models);
         }
 
@@ -164,8 +174,8 @@ namespace GlobeAuction.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            StoreItem storeItem = db.StoreItems.Find(id);
-            db.StoreItems.Remove(storeItem);
+            var storeItem = db.StoreItems.Find(id);
+            storeItem.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

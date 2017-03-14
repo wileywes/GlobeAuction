@@ -52,7 +52,7 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration).ToList();
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
             {
                 //remove admin-only ticket types
@@ -225,12 +225,6 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                //load store items back in
-                /*if (bidderViewModel.StoreItemPurchases != null && bidderViewModel.StoreItemPurchases.Any())
-                {
-                    bidderViewModel.StoreItemPurchases.ForEach(p => p.StoreItem = Mapper.Map<StoreItemViewModel>(db.StoreItems.Find(p.StoreItemId.Value)));
-                }*/
-
                 var bidder = Mapper.Map<Bidder>(bidderViewModel);
 
                 bidder.UpdateBy = User.Identity.GetUserName();
