@@ -26,8 +26,14 @@ namespace GlobeAuction.Models
 
         public List<Invoice> Invoices { get; set; }
         public List<AuctionItemViewModel> AuctionItemsNotInInvoice { get; set; }
+        public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
 
-        public ReviewBidderWinningsViewModel(Bidder bidder, IEnumerable<Invoice> invoices, IEnumerable<AuctionItem> auctionWinningsForBidderNotInInvoice)
+        public ReviewBidderWinningsViewModel()
+        {
+            //empty constr for view binding
+        }
+
+        public ReviewBidderWinningsViewModel(Bidder bidder, IEnumerable<Invoice> invoices, IEnumerable<AuctionItem> auctionWinningsForBidderNotInInvoice, IEnumerable<StoreItemPurchaseViewModel> storeItems)
         {
             BidderId = bidder.BidderId;
             BidderName = bidder.FirstName + "  " + bidder.LastName;
@@ -35,6 +41,7 @@ namespace GlobeAuction.Models
 
             Invoices = (invoices ?? new List<Invoice>()).ToList();
             AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new AuctionItemViewModel(a)).ToList();
+            StoreItemPurchases = storeItems.ToList();
         }
     }
 
@@ -82,7 +89,7 @@ namespace GlobeAuction.Models
 
             CountOfItems = invoice.AuctionItems.Count + invoice.StoreItemPurchases.Count;
             InvoiceTotal = invoice.AuctionItems.Any() ? invoice.AuctionItems.Sum(i => i.WinningBid.GetValueOrDefault(0)) : 0;
-            InvoiceTotal += invoice.StoreItemPurchases.Any() ? invoice.StoreItemPurchases.Sum(i => i.StoreItem.Price) : 0;
+            InvoiceTotal += invoice.StoreItemPurchases.Any() ? invoice.StoreItemPurchases.Sum(i => i.StoreItem.Price * i.Quantity) : 0;
 
             if (invoice.PaymentTransaction != null)
             {

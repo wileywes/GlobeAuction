@@ -7,7 +7,7 @@
 <h2>Invoice Details</h2>
 
 <div>
-    <h4>Contact Information</h4>
+    <h4>Order Information</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -74,6 +74,13 @@
         </dd>
 
         <dt>
+            @Html.Label("Total Paid")
+        </dt>
+        <dd>
+            @((Model.PaymentTransaction == null ? 0m : Model.PaymentTransaction.PaymentGross).ToString("C"))
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
         </dt>
         <dd>
@@ -126,11 +133,11 @@
         {
             <dt></dt>
             <dd>
-                @string.Format("{0} - {1} - {2} (paid {3:C})",
+                @string.Format("{0} - {1} - {2:C} (paid {3:C})",
                         item.StoreItem.Title,
                         item.Quantity,
                         item.StoreItem.Price,
-                        item.PricePaid)
+                        item.PricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>

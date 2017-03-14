@@ -30,8 +30,12 @@
                 Email
             </th>
             <th>
-                Items
+                Auction Item(s)
             </th>
+            <th>
+                All Paid For
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -62,6 +66,12 @@
                         }
                     </table>
                 </td>
+                <td>
+                    @Html.DisplayFor(m => winner.AreWinningsAllPaidFor)
+                </td>
+                <td>
+                    @Html.ActionLink("Checkout", "ReviewBidderWinnings", "Invoices", new { bid = winner.BidderId, email = winner.Email }, null)
+                </td>
             </tr>
         }
     </tbody>
@@ -69,15 +79,7 @@
 
 
 <script type="text/javascript">
-
-    function getSelectedRows(data) {
-        var ids = '';
-        for (var i = 0; i < data.length ; i++) {
-            ids += data[i][0] + ',';
-        }
-        return ids.trimRight(',');
-    }
-
+    
     var isAdmin = false;
 
     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))

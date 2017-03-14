@@ -1,75 +1,101 @@
 ﻿@model IEnumerable<GlobeAuction.Models.InvoiceListViewModel>
 
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
 @{
     ViewBag.Title = "Invoices";
 }
 
 <h2>Generated Invoices</h2>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.InvoiceId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsPaid)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BidderId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CountOfItems)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.InvoiceTotal)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+<table class="table table-striped table-bordered" id="invoicesTable">
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.InvoiceId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPaid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WasMarkedPaidManually)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BidderId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CountOfItems)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InvoiceTotal)
-            </td>
-            <td>
-                @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
-                @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
-                {
-                    @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
-                }
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPaid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BidderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CountOfItems)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceTotal)
+            </th>
+            <th></th>
         </tr>
-    }
+    </thead>
+    <tbody>
 
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsPaid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WasMarkedPaidManually)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BidderId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CountOfItems)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceTotal)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
+                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
+                {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var invoicesDataTable = $('#invoicesTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ],
+            select: {
+                style: 'os'
+            }
+        });
+    });
+</script>

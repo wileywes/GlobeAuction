@@ -22,11 +22,12 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings)
+        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases)
         {
             var invoice = new Invoice
             {
                 AuctionItems = winnings,
+                StoreItemPurchases = storeItemPurchases,
                 Bidder = bidder,
                 CreateDate = DateTime.Now,
                 IsPaid = false,
@@ -78,8 +79,7 @@ namespace GlobeAuction.Helpers
         }
         
         public void ApplyPaymentToInvoice(PayPalTransaction ppTrans, Invoice invoice)
-        {
-            //only apply the ticket payment if there are un-paid tickets and the PP trans was successful
+        {            
             if (ppTrans.WasPaymentSuccessful && invoice.IsPaid == false)
             {
                 invoice.PaymentTransaction = ppTrans;

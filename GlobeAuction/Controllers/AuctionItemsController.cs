@@ -86,12 +86,20 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                auctionItem.UpdateDate = DateTime.Now;
-                auctionItem.UpdateBy = User.Identity.GetUserName();
+                var isAuctionOnInvoiceAlready = db.AuctionItems.Any(ai => ai.AuctionItemId == auctionItem.AuctionItemId && ai.Invoice != null);
+                if (isAuctionOnInvoiceAlready)
+                {
+                    ModelState.AddModelError("uniqueItemNumber", "Cannot change the item once it's on an invoice.  If this is just testing you can delete the invoice to free up the item again.");
+                }
+                else
+                {
+                    auctionItem.UpdateDate = DateTime.Now;
+                    auctionItem.UpdateBy = User.Identity.GetUserName();
 
-                db.Entry(auctionItem).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                    db.Entry(auctionItem).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
             AddAuctionItemControlInfo(auctionItem);
             return View(auctionItem);
@@ -176,7 +184,7 @@ namespace GlobeAuction.Controllers
             switch (donationItemsAction)
             {
                 case "MakeBasket":
-                    var basket = ItemsHelper.CreateAuctionItemForDonations(nextUniqueId, selectedDonations, username);
+                    var basket = ItemsRepository.CreateAuctionItemForDonations(nextUniqueId, selectedDonations, username);
                     db.AuctionItems.Add(basket);
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = basket.AuctionItemId });
@@ -184,7 +192,7 @@ namespace GlobeAuction.Controllers
                 case "MakeSingle":
                     foreach(var selectedDonation in selectedDonations)
                     {
-                        var auctionItem = ItemsHelper.CreateAuctionItemForDonation(nextUniqueId, selectedDonation, username);
+                        var auctionItem = ItemsRepository.CreateAuctionItemForDonation(nextUniqueId, selectedDonation, username);
                         db.AuctionItems.Add(auctionItem);
                         nextUniqueId++;
                     }
@@ -255,49 +263,39 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index");
         }
 
-        private Dictionary<Bidder, List<AuctionItem>> GetWinningsByBidder()
-        {
-            var itemsWon = db.AuctionItems
-                .Where(ai => ai.WinningBid.HasValue && ai.WinningBidderId.HasValue)
-                .ToList();
-
-            var uniqueBidderIds = itemsWon.Select(i => i.WinningBidderId.Value).Distinct().ToList();
-            var bidders = db.Bidders.Where(b => uniqueBidderIds.Contains(b.BidderId)).ToList();
-
-            return bidders.ToDictionary(b => b, b => itemsWon.Where(i => i.WinningBidderId.Value == b.BidderId).ToList());
-        }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult Winners()
         {
-            var winningsByBidder = GetWinningsByBidder();
-            var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Key, wbb.Value)).ToList();
+            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult PrintAllPackSlips()
         {
-            var winningsByBidder = GetWinningsByBidder();
-            var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Key, wbb.Value)).ToList();
+            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }
         
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult EmailAllWinners()
         {
-            var winningsByBidder = GetWinningsByBidder();
+            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
             var emailHelper = new EmailHelper();
-            foreach(var winner in winningsByBidder)
+            var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false).ToList();
+            foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
-                var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Key.BidderId, email = winner.Key.Email }, Request.Url.Scheme);
-                emailHelper.SendAuctionWinningsPaymentNudge(winner.Key, winner.Value, payLink);
+                var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
+                emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink);
             }
 
             var model = new EmailAllWinnersViewModel
             {
                 WasSuccessful = true,
-                EmailsSent = winningsByBidder.Count
+                EmailsSent = winnersToEmail.Count
             };
 
             return View(model);
@@ -360,15 +358,11 @@ namespace GlobeAuction.Controllers
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Unable to find auction item." }, JsonRequestBehavior.AllowGet);
             }
-            if (auctionItem.WinningBidderId.HasValue && auctionItem.WinningBidderId.Value != winningBidderIdInt)
+            if (auctionItem.WinningBidderId.HasValue || auctionItem.WinningBid.HasValue)
             {
-                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
+                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already marked as won.  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
-            if (auctionItem.WinningBidderId.HasValue && auctionItem.WinningBid.HasValue && auctionItem.WinningBid.Value != winningAmountDecimal)
-            {
-                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already won by bidder " + auctionItem.WinningBidderId.Value + " for " + winningAmountDecimal.ToString("C") + ".  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
-            }
-
+            
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == winningBidderIdInt);
 
             if (bidder == null)

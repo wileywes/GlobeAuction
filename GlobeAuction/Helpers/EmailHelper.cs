@@ -193,9 +193,10 @@ namespace GlobeAuction.Helpers
                 Subject = subject
             };
 
-            if (!string.IsNullOrEmpty(_allEmailBcc))
+            if (!string.IsNullOrEmpty(_allEmailBcc) && includeAllEmailBcc)
             {
-                msg.Bcc.Add(_allEmailBcc);
+                var addresses = _allEmailBcc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                addresses.ToList().ForEach(a => msg.Bcc.Add(a));
             }
 
             var smtp = new SmtpClient("smtp.gmail.com", 587)

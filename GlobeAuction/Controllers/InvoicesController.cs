@@ -10,6 +10,7 @@ using GlobeAuction.Models;
 using GlobeAuction.Helpers;
 using System.Configuration;
 using Microsoft.AspNet.Identity;
+using AutoMapper;
 
 namespace GlobeAuction.Controllers
 {
@@ -87,22 +88,36 @@ namespace GlobeAuction.Controllers
 
             var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId).ToList();
             var auctionWinningsForBidderNotInInvoice = db.AuctionItems.Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null).ToList();
-            
-            var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice);
+
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout).ToList();
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanCheckoutWinners))
+            {
+                //remove admin-only store items
+                storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
+            }
+            var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
+            var storeItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
+            {
+                StoreItem = si
+            });
+
+            var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice, storeItemPurchases);
             
             return View(viewModel);
         }
 
+        [HttpPost, ActionName("ReviewBidderWinnings")]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult MakeInvoiceFromWinnings(int bid, string email, string auctionItemIdsCsv)
+        public ActionResult ReviewBidderWinningsPayNow(ReviewBidderWinningsViewModel model)
         {
-            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == model.BidderId && b.Email.Equals(model.BidderEmail, StringComparison.OrdinalIgnoreCase));
             if (bidder == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var auctionItemIds = auctionItemIdsCsv.Split(new[] { ',' }).Select(int.Parse);
+            var auctionItemIds = model.AuctionItemsNotInInvoice.Select(i => i.AuctionItemId).ToList();
             var winnings = db.AuctionItems.Where(ai => auctionItemIds.Contains(ai.AuctionItemId) &&
                     ai.WinningBidderId.HasValue && 
                     ai.WinningBidderId.Value == bidder.BidderId && 
@@ -110,9 +125,18 @@ namespace GlobeAuction.Controllers
 
             if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var invoice = new InvoiceRepository(db).CreateInvoiceForAuctionItems(bidder, winnings);
+            var storeItemPurchases = model.StoreItemPurchases
+                .Where(sip => sip.Quantity > 0)
+                .Select(sip =>
+                new StoreItemPurchase
+                {
+                    Quantity = sip.Quantity,
+                    StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId)
+                }).ToList();
 
-            return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = email });
+            var invoice = new InvoiceRepository(db).CreateInvoiceForAuctionItems(bidder, winnings, storeItemPurchases);
+
+            return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = invoice.Email });
         }
         
         [AllowAnonymous]
@@ -151,6 +175,12 @@ namespace GlobeAuction.Controllers
 
             new InvoiceRepository(db).ApplyPaymentToInvoice(ppTrans, invoice);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice  " + invoice.InvoiceId + " via cart post-back");
+
+            if (invoice.AuctionItems.Any() && invoice.Bidder != null)
+            {
+                //go to auction review page if there were auction winnings in this order
+                return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email });
+            }
 
             return View(invoice);
         }

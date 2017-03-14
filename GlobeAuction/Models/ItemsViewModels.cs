@@ -29,6 +29,8 @@ namespace GlobeAuction.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
+        public bool AreWinningsAllPaidFor { get; set; }
+
         public List<AuctionItemViewModel> ItemsWon { get; set; }
 
         public WinnerViewModel(Bidder bidder, List<AuctionItem> itemsWon)
@@ -38,6 +40,7 @@ namespace GlobeAuction.Models
             this.LastName = bidder.LastName;
             this.Email = bidder.Email;
             this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i)).ToList();
+            AreWinningsAllPaidFor = itemsWon.All(w => w.Invoice != null && w.Invoice.IsPaid);
         }
     }
 
@@ -107,6 +110,11 @@ namespace GlobeAuction.Models
         public int? WinningBidderId { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? WinningBid { get; set; }
+
+        public AuctionItemViewModel()
+        {
+            //empty for model binding
+        }
 
         public AuctionItemViewModel(AuctionItem i)
         {

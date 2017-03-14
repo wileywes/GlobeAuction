@@ -5,8 +5,15 @@ using System.Linq;
 
 namespace GlobeAuction.Helpers
 {
-    public class ItemsHelper
+    public class ItemsRepository
     {
+        private ApplicationDbContext db;
+
+        public ItemsRepository(ApplicationDbContext context)
+        {
+            db = context;
+        }
+
         public static AuctionItem CreateAuctionItemForDonation(int uniqueId, DonationItem item, string username)
         {
             return CreateAuctionItemForDonations(uniqueId, new List <DonationItem> { item }, username);
@@ -60,5 +67,36 @@ namespace GlobeAuction.Helpers
             uniqueItemNumber = int.Parse(parts[0]);
             titlePart = parts[1].TrimStart();
         }
+
+        public List<WinningsByBidder> GetWinningsByBidder()
+        {
+            var itemsWon = db.AuctionItems
+                .Where(ai => ai.WinningBid.HasValue && ai.WinningBidderId.HasValue)
+                .ToList();
+
+            var uniqueBidderIds = itemsWon.Select(i => i.WinningBidderId.Value).Distinct().ToList();
+            var bidders = db.Bidders.Where(b => uniqueBidderIds.Contains(b.BidderId)).ToList();
+
+            var results = new List<WinningsByBidder>();
+            foreach (var b in bidders)
+            {
+                var winnings = itemsWon.Where(i => i.WinningBidderId.Value == b.BidderId).ToList();
+                var allPaidFor = winnings.All(w => w.Invoice != null && w.Invoice.IsPaid);
+                results.Add(new WinningsByBidder
+                {
+                    AreWinningsAllPaidFor = allPaidFor,
+                    Bidder = b,
+                    Winnings = winnings
+                });
+            }
+            return results;
+        }
+    }
+
+    public class WinningsByBidder
+    {
+        public Bidder Bidder { get; set; }
+        public List<AuctionItem> Winnings { get; set; }
+        public bool AreWinningsAllPaidFor { get; set; }
     }
 }

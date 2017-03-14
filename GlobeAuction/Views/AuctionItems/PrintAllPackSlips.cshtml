@@ -27,7 +27,7 @@
                 <h3>@Html.DisplayFor(m => winner.Email)</h3>
 
                 <table class="table table-bordered table-striped">
-                    @foreach (var item in winner.ItemsWon)
+                    @foreach (var item in winner.ItemsWon.OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
                     {
                         <tr>
                             <td>@item.UniqueItemNumber</td>

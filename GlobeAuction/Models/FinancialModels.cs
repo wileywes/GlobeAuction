@@ -10,23 +10,28 @@ namespace GlobeAuction.Models
     public class Invoice
     {
         [Required]
+        [Display(Name = "Invoice #")]
         public int InvoiceId { get; set; }
         [Required]
+        [Display(Name = "Is Paid")]
         public bool IsPaid { get; set; }
         [Required]
+        [Display(Name = "Marked Paid Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
         [Display(Name = "Registration Date")]
         public DateTime CreateDate { get; set; }
 
+        [Display(Name = "Update Date")]
         public DateTime UpdateDate { get; set; }
+        [Display(Name = "Updated By")]
         public string UpdateBy { get; set; }
-        
+
         public virtual Bidder Bidder { get; set; }
         public virtual List<AuctionItem> AuctionItems { get; set; }
         public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
         public virtual PayPalTransaction PaymentTransaction { get; set; }
-        
+
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
@@ -41,9 +46,20 @@ namespace GlobeAuction.Models
 
         [Display(Name = "Zip")]
         public string ZipCode { get; set; }
+
+        public decimal Total
+        {
+            get
+            {
+                var total = 0m;
+                if (AuctionItems.Any()) total = AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0));
+                if (StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(0));
+                return total;
+            }
+        }
     }
 
-    
+
     public class InvoiceForPayPal
     {
         public int InvoiceId { get; set; }

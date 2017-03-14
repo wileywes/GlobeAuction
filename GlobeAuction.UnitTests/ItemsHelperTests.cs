@@ -19,7 +19,7 @@ namespace GlobeAuction.UnitTests
                 Description = "test desc"
             };
 
-            var auctionItem = ItemsHelper.CreateAuctionItemForDonation(1, item, "wes");
+            var auctionItem = ItemsRepository.CreateAuctionItemForDonation(1, item, "wes");
 
             Assert.That(auctionItem.UniqueItemNumber, Is.EqualTo(1));
             Assert.That(auctionItem.Title, Is.EqualTo(item.Title));
@@ -71,7 +71,7 @@ namespace GlobeAuction.UnitTests
                 }
             };
 
-            var auctionItem = ItemsHelper.CreateAuctionItemForDonations(1, items, "wes");
+            var auctionItem = ItemsRepository.CreateAuctionItemForDonations(1, items, "wes");
 
             Assert.That(auctionItem.UniqueItemNumber, Is.EqualTo(1));
             Assert.That(auctionItem.StartingBid, Is.EqualTo(195));
@@ -106,7 +106,7 @@ namespace GlobeAuction.UnitTests
                 }
             };
 
-            var auctionItem = ItemsHelper.CreateAuctionItemForDonations(1, items, "wes");
+            var auctionItem = ItemsRepository.CreateAuctionItemForDonations(1, items, "wes");
 
             Assert.That(auctionItem.UniqueItemNumber, Is.EqualTo(1));
             Assert.That(auctionItem.StartingBid, Is.EqualTo(105));
