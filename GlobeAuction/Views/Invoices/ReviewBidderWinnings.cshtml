@@ -85,10 +85,8 @@
                                 </tr>
                             }
                             <tr>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
+                                <td></td>
+                                <td></td>
                                 <td align="right">
                                     <b>Total:</b>
                                 </td>
@@ -143,7 +141,14 @@
             <dl class="dl-horizontal">
                 <dt></dt>
                 <dd>
-                    <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-lg" />
+                    @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                    {
+                        <input type="submit" name="submitButton" value="Confirm and Get Total" class="btn btn-default btn-lg" />
+                    }
+                    else
+                    {
+                        <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-lg" />
+                    }
                 </dd>
             </dl>
         }
@@ -168,6 +173,11 @@
             {
                 <span style="color:darkred;font-weight:bold">Unpaid</span>
                 @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email }, htmlAttributes: new { @class = "btn btn-default" })
+
+                @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                {
+                    @Html.ActionLink("Paid in Person", "PaidInPerson", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email }, htmlAttributes: new { @class = "btn btn-default" })
+                }
             }
         </h4>
         <dl class="dl-horizontal">

@@ -54,13 +54,21 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult CheckoutConfirmed(InvoiceLookupModel invoiceLookupModel)
         {
+            var requireEmailMatch = true;
+
+            if (Request.IsAuthenticated && !User.IsInRole(AuctionRoles.CanCheckoutWinners))
+            {
+                invoiceLookupModel.Email = "fake@fake.com";
+                requireEmailMatch = false;
+            }
+
             if (ModelState.IsValid)
             {
                 var bidder = db.Bidders.FirstOrDefault(b =>
                     b.IsDeleted == false &&
                     b.BidderId == invoiceLookupModel.BidderId &&
                     b.LastName.Equals(invoiceLookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
-                    b.Email.Equals(invoiceLookupModel.Email, StringComparison.OrdinalIgnoreCase));
+                    (!requireEmailMatch || b.Email.Equals(invoiceLookupModel.Email, StringComparison.OrdinalIgnoreCase)));
 
                 if (bidder == null)
                 {
@@ -109,7 +117,7 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("ReviewBidderWinnings")]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult ReviewBidderWinningsPayNow(ReviewBidderWinningsViewModel model)
+        public ActionResult ReviewBidderWinningsPayNow(ReviewBidderWinningsViewModel model, string submitButton)
         {
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == model.BidderId && b.Email.Equals(model.BidderEmail, StringComparison.OrdinalIgnoreCase));
             if (bidder == null)
@@ -136,9 +144,15 @@ namespace GlobeAuction.Controllers
 
             var invoice = new InvoiceRepository(db).CreateInvoiceForAuctionItems(bidder, winnings, storeItemPurchases);
 
+            if (submitButton == "Confirm and Get Total")
+            {
+                //go back to page, this time we'll have the order total
+                return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email });
+            }
+            
             return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = invoice.Email });
         }
-        
+
         [AllowAnonymous]
         public ActionResult RedirectToPayPal(int iid, string email)
         {
@@ -151,6 +165,20 @@ namespace GlobeAuction.Controllers
             var model = new InvoiceForPayPal(invoice);
 
             return View(model);
+        }
+        
+        public ActionResult PaidInPerson(int iid, string email)
+        {
+            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Email != null && i.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+            if (invoice == null)
+            {
+                return HttpNotFound();
+            }
+
+            new InvoiceRepository(db).MarkPaidManually(invoice, User.Identity.GetUserName());
+
+            //TODO: redirect
+            return View();
         }
 
         [AllowAnonymous]

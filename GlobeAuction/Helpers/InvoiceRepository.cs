@@ -84,6 +84,8 @@ namespace GlobeAuction.Helpers
             {
                 invoice.PaymentTransaction = ppTrans;
                 invoice.IsPaid = true;
+                invoice.UpdateDate = DateTime.Now;
+                invoice.UpdateBy = ppTrans.PayerEmail;
 
                 var paymentLeft = ppTrans.PaymentGross;
                 
@@ -98,7 +100,22 @@ namespace GlobeAuction.Helpers
 
                 db.SaveChanges();
 
-                new EmailHelper().SendInvoicePaymentConfirmation(invoice);
+                new EmailHelper().SendInvoicePaymentConfirmation(invoice, false);
+            }
+        }
+
+        public void MarkPaidManually(Invoice invoice, string username)
+        {
+            if (invoice.IsPaid == false)
+            {
+                invoice.IsPaid = true;
+                invoice.WasMarkedPaidManually = true;
+                invoice.UpdateBy = username;
+                invoice.UpdateDate = DateTime.Now;
+
+                db.SaveChanges();
+
+                new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
             }
         }
 

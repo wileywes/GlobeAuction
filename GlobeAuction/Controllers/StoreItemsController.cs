@@ -21,7 +21,7 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Buy()
         {
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false).ToList();
+            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInStore && s.IsDeleted == false).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
             {
                 //remove admin-only ticket types

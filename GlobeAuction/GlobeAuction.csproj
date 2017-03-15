@@ -220,6 +220,7 @@
     <Compile Include="Helpers\BackgroundMaintenance.cs" />
     <Compile Include="Helpers\BidderRepository.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
+    <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\InvoiceRepository.cs" />
     <Compile Include="Helpers\ItemsHelper.cs" />

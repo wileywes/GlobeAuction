@@ -61,7 +61,7 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Ticket Confirmation", body);
         }
 
-        public void SendInvoicePaymentConfirmation(Invoice invoice)
+        public void SendInvoicePaymentConfirmation(Invoice invoice, bool paidManually)
         {
             var lines = invoice.AuctionItems
                 .Where(g => g.WinningBid.HasValue)
@@ -74,11 +74,11 @@ namespace GlobeAuction.Helpers
                     .Where(s => s.IsPaid)
                     .Select(s => new Tuple<string, decimal>(s.StoreItem.Title, s.PricePaid.Value)));
             }
-
+            
             var body = GetInvoiceEmail(invoice.PaymentTransaction.PaymentGross,
                 invoice.FirstName + " " + invoice.LastName,
                 "Invoice ID " + invoice.InvoiceId,
-                "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,
+                paidManually ? "Paid in Person" : "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,
                 lines);
 
             SendEmail(invoice.Email, "Order Confirmation", body);

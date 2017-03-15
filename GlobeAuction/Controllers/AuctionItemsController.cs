@@ -311,7 +311,7 @@ namespace GlobeAuction.Controllers
             };
 
             return View(model);
-        }        
+        }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult EnterWinners()

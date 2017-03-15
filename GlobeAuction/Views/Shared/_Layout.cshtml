@@ -45,19 +45,15 @@
                         {
                             <li>@Html.ActionLink("Bidders", "Index", "Bidders")</li>
                         }
-                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners))
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners) || User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
                         {
                             <li>@Html.ActionLink("Winners", "Winners", "AuctionItems")</li>
                         }
-                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                         {
                             <li>@Html.ActionLink("Invoices", "Index", "Invoices")</li>
                         }
-                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditTickets))
-                        {
-                            <li>@Html.ActionLink("Tickets", "Index", "TicketTypes")</li>
-                        }
-                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
+                        @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) || User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditTickets))
                         {
                             <li>@Html.ActionLink("Admin", "AdminFunctions", "UsersAdmin")</li>
                         }
