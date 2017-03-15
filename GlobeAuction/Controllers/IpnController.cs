@@ -34,6 +34,9 @@ namespace GlobeAuction.Controllers
         {
             var ppTrans = new PayPalTransaction(form);
 
+            //var msg = "PayPal IPN: " + Environment.NewLine + string.Join(Environment.NewLine, form.AllKeys.Select(k => string.Format("{0}={1}", k, form[k])));
+            //_logger.Info(msg);
+
             //Store the IPN received from PayPal
             LogRequest(ppTrans);
             
@@ -84,11 +87,7 @@ namespace GlobeAuction.Controllers
 
         private void LogRequest(PayPalTransaction ppTrans)
         {
-            // Persist the request values into a database or temporary data store
-            //var logger = _logger;
-            //var msg = "PayPal IPN: " + Environment.NewLine + string.Join(Environment.NewLine, form.AllKeys.Select(k => string.Format("{0}={1}", k, form[k])));
-            //logger.Info(msg);
-            
+            // Persist the request values into a database or temporary data store            
             db.PayPalTransactions.Add(ppTrans);
             db.SaveChanges(); //go ahead and record the transaction
         }

@@ -106,8 +106,6 @@ namespace GlobeAuction.Models
         {
             get
             {
-                return Bidder.Email;
-
                 if (Bidder != null) return Bidder.Email;
                 if (Invoice != null) return Invoice.Email;
                 return string.Empty;
