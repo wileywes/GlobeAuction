@@ -28,6 +28,12 @@ namespace GlobeAuction.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult TestIpnFromPayPalQs()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public HttpStatusCodeResult Receive(FormCollection form)
@@ -100,6 +106,9 @@ namespace GlobeAuction.Controllers
 
                 if (verificationResponse.Equals("VERIFIED"))
                 {
+                    //leave if the payment wasn't successful
+                    if (!ppTrans.WasPaymentSuccessful) return;
+
                     // check that Payment_status=Completed
                     // check that Txn_id has not been previously processed
                     // check that Receiver_email is your Primary PayPal email

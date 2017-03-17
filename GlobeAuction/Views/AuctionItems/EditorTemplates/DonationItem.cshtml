@@ -19,10 +19,11 @@
     <td>
         @Html.DisplayFor(m => m.DollarValue)
     </td>
-    @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Edit")
-    {
-        <td class="text-nowrap">
-            @Html.ActionLink("Remove From Basket", "RemoveFromBasket", new { id = Model.DonationItemId })
-        </td>
-    }
+    <td class="text-nowrap">
+        @Html.ActionLink("Edit", "Edit", "DonationItems", new { id = Model.DonationItemId }, null)
+        @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Edit")
+        {
+            @:| @Html.ActionLink("Remove From Basket", "RemoveFromBasket", new { id = Model.DonationItemId })
+        }
+    </td>
 </tr>

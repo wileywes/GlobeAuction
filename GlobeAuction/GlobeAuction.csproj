@@ -329,6 +329,14 @@
     <Compile Include="Migrations\201703142040103_SoftDeleteStoreItem.Designer.cs">
       <DependentUpon>201703142040103_SoftDeleteStoreItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703172231308_PayPalPayerStatusNullable.cs" />
+    <Compile Include="Migrations\201703172231308_PayPalPayerStatusNullable.Designer.cs">
+      <DependentUpon>201703172231308_PayPalPayerStatusNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703172303429_IsDonationItemGiftCard.cs" />
+    <Compile Include="Migrations\201703172303429_IsDonationItemGiftCard.Designer.cs">
+      <DependentUpon>201703172303429_IsDonationItemGiftCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -578,6 +586,7 @@
     <Content Include="Views\UsersAdmin\AdminFunctions.cshtml" />
     <Content Include="Views\AuctionItems\EmailAllWinners.cshtml" />
     <Content Include="Views\StoreItems\Purchases.cshtml" />
+    <Content Include="Views\Ipn\TestIpnFromPayPalQs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -664,6 +673,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703142040103_SoftDeleteStoreItem.resx">
       <DependentUpon>201703142040103_SoftDeleteStoreItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703172231308_PayPalPayerStatusNullable.resx">
+      <DependentUpon>201703172231308_PayPalPayerStatusNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703172303429_IsDonationItemGiftCard.resx">
+      <DependentUpon>201703172303429_IsDonationItemGiftCard.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

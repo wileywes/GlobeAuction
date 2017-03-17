@@ -243,3 +243,7 @@ tr.shown td.details-control {
 .table-striped > tbody > tr.selected:nth-child(odd) > th {
   background-color: #A0AEC9;
 }
+
+.table-banded-header {
+  background-color: #f9f9f9;
+}

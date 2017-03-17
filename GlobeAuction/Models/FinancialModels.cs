@@ -125,7 +125,7 @@ namespace GlobeAuction.Models
         public string PaymentType { get; set; }
         [Required]
         public string PayerEmail { get; set; }
-        [Required]
+
         public string PayerStatus { get; set; }
         [Required]
         public string TxnId { get; set; }

@@ -75,6 +75,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
         public string HasDisplay { get; set; }
+        public bool IsGiftCard { get; set; }
 
         public DonationItemViewModel()
         {
@@ -90,6 +91,7 @@ namespace GlobeAuction.Models
             this.ExpirationDate = item.ExpirationDate;
             this.Restrictions = item.Restrictions; //.TruncateTo(50);
             this.HasDisplay = item.HasDisplay ? "Yes" : "No";
+            this.IsGiftCard = item.IsGiftCard;
         }
     }
 
@@ -104,9 +106,14 @@ namespace GlobeAuction.Models
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
-        public int DonationItemsCount { get; set; }
+
+        public List<DonationItemViewModel> DonationItems { get; set; }
+
+        public int DonationItemsCount { get { return DonationItems.Count; } }
+
         [DisplayFormat(DataFormatString = "{0:C}")]
-        public int DonationItemsTotalValue { get; set; }
+        public int DonationItemsTotalValue { get { return DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0)); } }
+
         public int? WinningBidderId { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? WinningBid { get; set; }
@@ -125,8 +132,7 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
-            this.DonationItemsCount = i.DonationItems.Count;
-            this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
+            this.DonationItems = i.DonationItems.Select(d => new DonationItemViewModel(d)).ToList();
             this.WinningBid = i.WinningBid;
             this.WinningBidderId = i.WinningBidderId;
         }
@@ -201,6 +207,9 @@ namespace GlobeAuction.Models
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
         public bool IsDeleted { get; set; }
+
+        [Required]
+        public bool IsGiftCard { get; set; }
 
         public virtual Solicitor Solicitor { get; set; }
         public virtual Donor Donor { get; set; }

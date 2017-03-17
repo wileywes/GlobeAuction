@@ -1,0 +1,34 @@
+﻿@model GlobeAuction.Models.BidderForPayPal
+
+@{
+    ViewBag.Title = "PayPal Exampple IPN";
+}
+
+@using (Html.BeginForm("Receive", "Ipn", FormMethod.Post, new { id = "ipnForm" }))
+{
+    <input type="submit" name="Submit" />
+}
+
+
+<script type='text/javascript'>
+    var qs = 'mc_gross=-25.00&protection_eligibility=Eligible&item_number1=&payer_id=88F2VTB2K89QC&address_street=779 dunleith court&payment_date=06:04:07 Mar 17, 2017 PDT&payment_status=Refunded&charset=windows-1252&address_zip=30083&mc_shipping=0.00&mc_handling=0.00&first_name=Holly&mc_fee=-0.55&address_country_code=US&address_name=Holly Zook-Gill&notify_version=3.8&reason_code=refund&custom=Bidder:302&business=board@globeacademyfoundation.org&address_country=United States&mc_handling1=0.00&address_city=stone mountain&verify_sign=A8SKEyFJtpw0I2pUVRQ9wRhpVLh9AF2RdDFU-6Qbx5.MHlxrpdFeZya.&payer_email=hollyzookgill@comcast.net&mc_shipping1=0.00&tax1=0.00&parent_txn_id=8MP12587X55535718&txn_id=9EB63477SC267992H&payment_type=instant&last_name=Zook-Gill&address_state=GA&item_name1=Staff Discounted Ticket&receiver_email=board@globeacademyfoundation.org&payment_fee=-0.55&shipping_discount=0.00&quantity1=1&receiver_id=Z6MBQ8R8TQ64A&insurance_amount=0.00&discount=0.00&mc_gross_1=25.00&mc_currency=USD&residence_country=US&shipping_method=Default&transaction_subject=&payment_gross=-25.00&ipn_track_id=b63dc029647a';
+
+    $("#ipnForm").submit(function (eventObj) {
+
+        var fieldArray = qs.split('&');
+
+        for (i = 0; i < fieldArray.length; i++) {
+            var field = fieldArray[i];
+            var parts = field.split('=');
+            var name = parts[0];
+            var value = parts[1];
+            
+            $('<input />').attr('type', 'hidden')
+                .attr('name', name)
+                .attr('value', value)
+                .appendTo(this);
+        }
+
+        return true;
+    });
+</script>

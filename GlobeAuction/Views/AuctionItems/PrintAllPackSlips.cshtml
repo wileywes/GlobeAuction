@@ -24,17 +24,26 @@
 
                 <h2>Bidder # @Html.DisplayFor(m => winner.BidderId)</h2>
                 <h3>@Html.DisplayFor(m => winner.FirstName) @Html.DisplayFor(m => winner.LastName)</h3>
-                <h3>@Html.DisplayFor(m => winner.Email)</h3>
                 <br/>
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered">
                     @foreach (var item in winner.ItemsWon.OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
                     {
-                        <tr>
+                        <tr class="table-banded-header">
                             <td>@item.UniqueItemNumber</td>
                             <td>@item.Category</td>
                             <td>@item.Title</td>
-                            <td>@item.WinningBid.Value</td>
+                            <td>@item.Description</td>
                         </tr>
+
+                        foreach (var di in item.DonationItems)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@(di.IsGiftCard ? "* Gift Card *" : "")</td>
+                                <td>@di.Title</td>
+                                <td>@di.Description</td>
+                            </tr>
+                        }
                     }
                 </table>
             </div>
