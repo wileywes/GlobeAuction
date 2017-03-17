@@ -39,7 +39,10 @@ namespace GlobeAuction.Models
         [Display(Name = "Only for Admins")]
         public bool OnlyVisibleToAdmins { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
     }

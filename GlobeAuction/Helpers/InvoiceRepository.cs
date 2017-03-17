@@ -22,7 +22,7 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases)
+        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, bool markedManually, string updatedBy)
         {
             var invoice = new Invoice
             {
@@ -31,7 +31,7 @@ namespace GlobeAuction.Helpers
                 Bidder = bidder,
                 CreateDate = DateTime.Now,
                 IsPaid = false,
-                UpdateBy = bidder.FirstName + "  " + bidder.LastName,
+                UpdateBy = updatedBy,
                 UpdateDate = DateTime.Now,
                 Email = bidder.Email,
                 FirstName = bidder.FirstName,
@@ -40,8 +40,25 @@ namespace GlobeAuction.Helpers
                 ZipCode = bidder.ZipCode
             };
 
+            if (markedManually)
+            {
+                invoice.IsPaid = true;
+                invoice.WasMarkedPaidManually = true;
+                invoice.UpdateBy = updatedBy;
+                
+                foreach (var storeItem in invoice.StoreItemPurchases)
+                {
+                    storeItem.PricePaid = storeItem.StoreItem.Price * storeItem.Quantity;
+                }
+            }
+
             db.Invoices.Add(invoice);
             db.SaveChanges();
+
+            if (markedManually)
+            {
+                new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
+            }
 
             return invoice;
         }
@@ -69,7 +86,7 @@ namespace GlobeAuction.Helpers
                 FirstName = buyModel.FirstName,
                 LastName = buyModel.LastName,
                 Phone = buyModel.Phone,
-                ZipCode = buyModel.ZipCode                
+                ZipCode = buyModel.ZipCode
             };
 
             db.Invoices.Add(invoice);
@@ -77,9 +94,9 @@ namespace GlobeAuction.Helpers
 
             return invoice;
         }
-        
+
         public void ApplyPaymentToInvoice(PayPalTransaction ppTrans, Invoice invoice)
-        {            
+        {
             if (ppTrans.WasPaymentSuccessful && invoice.IsPaid == false)
             {
                 invoice.PaymentTransaction = ppTrans;
@@ -88,7 +105,7 @@ namespace GlobeAuction.Helpers
                 invoice.UpdateBy = ppTrans.PayerEmail;
 
                 var paymentLeft = ppTrans.PaymentGross;
-                
+
                 foreach (var storeItem in invoice.StoreItemPurchases)
                 {
                     var lineExtendedPrice = storeItem.StoreItem.Price * storeItem.Quantity;
@@ -101,21 +118,6 @@ namespace GlobeAuction.Helpers
                 db.SaveChanges();
 
                 new EmailHelper().SendInvoicePaymentConfirmation(invoice, false);
-            }
-        }
-
-        public void MarkPaidManually(Invoice invoice, string username)
-        {
-            if (invoice.IsPaid == false)
-            {
-                invoice.IsPaid = true;
-                invoice.WasMarkedPaidManually = true;
-                invoice.UpdateBy = username;
-                invoice.UpdateDate = DateTime.Now;
-
-                db.SaveChanges();
-
-                new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
             }
         }
 

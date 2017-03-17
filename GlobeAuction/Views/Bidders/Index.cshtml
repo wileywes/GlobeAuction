@@ -90,7 +90,7 @@
                     @Html.DisplayFor(modelItem => item.TotalPaid)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsPaymentReminderSent)
+                    @(item.IsPaymentReminderSent ? "Yes" : "No") 
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreateDate)

@@ -141,108 +141,122 @@
             <dl class="dl-horizontal">
                 <dt></dt>
                 <dd>
+                    <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-lg" />
+
                     @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
                     {
-                        <input type="submit" name="submitButton" value="Confirm and Get Total" class="btn btn-default btn-lg" />
-                    }
-                    else
-                    {
-                        <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid" class="btn btn-default btn-lg" />
                     }
                 </dd>
             </dl>
         }
+        else if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && Model.ShowManuallyPaidSuccess)
+        {
+            <div class="alert alert-success">
+                Invoice has been marked paid successfully.  Please
+                @Html.ActionLink("click here to checkout another winner", "Checkout", "Invoices") .
+            </div>
+        }
+        if (Model.ShowSelfPaySuccess)
+        {
+            <div class="alert alert-success">
+                Thank you for using Express Checkout and for supporting The GLOBE Academy.  You will receive a confirmation email
+                and your order details are also below.
+            </div>
+        }
     }
     <br />
 
-    <h3>Previous Orders</h3>
-    <hr />
-    @foreach (var invoice in Model.Invoices.OrderBy(i => i.IsPaid))
+    @if (Model.Invoices.Any())
     {
-        <h4>
-            Invoice #@invoice.InvoiceId -
-            @if (invoice.IsPaid)
-            {
-                <span style="color:darkgreen;font-weight:bold">Paid</span>
-                if (invoice.PaymentTransaction != null)
+        <h3>Previous Orders</h3>
+        <hr />
+        foreach (var invoice in Model.Invoices.OrderBy(i => i.IsPaid))
+        {
+            <h4>
+                Invoice #@invoice.InvoiceId -
+                @if (invoice.IsPaid)
                 {
-                    <span style="color:darkgreen"> - Transaction ID @invoice.PaymentTransaction.TxnId</span>
+                    <span style="color:darkgreen;font-weight:bold">Paid</span>
+                    if (invoice.PaymentTransaction != null)
+                    {
+                        <span style="color:darkgreen"> - Transaction ID @invoice.PaymentTransaction.TxnId</span>
+                    }
+                    else if (invoice.WasMarkedPaidManually)
+                    {
+                        <span style="color:darkgreen"> - Paid in Person</span>
+                    }
                 }
-            }
-            else
-            {
-                <span style="color:darkred;font-weight:bold">Unpaid</span>
-                @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email }, htmlAttributes: new { @class = "btn btn-default" })
-
-                @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                else
                 {
-                    @Html.ActionLink("Paid in Person", "PaidInPerson", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email }, htmlAttributes: new { @class = "btn btn-default" })
+                    <span style="color:darkred;font-weight:bold">Unpaid</span>
+                    @Html.ActionLink("Pay Now", "RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Bidder.Email }, htmlAttributes: new { @class = "btn btn-default" })
                 }
-            }
-        </h4>
-        <dl class="dl-horizontal">
-            <dt></dt>
-            <dd>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Item No</th>
-                            <th>Category</th>
-                            <th>Title</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in invoice.AuctionItems)
-                        {
+            </h4>
+            <dl class="dl-horizontal">
+                <dt></dt>
+                <dd>
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(m => item.UniqueItemNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(m => item.Category)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(m => item.Title)
-                                </td>
-                                <td>1</td>
-                                <td>
-                                    @Html.DisplayFor(m => item.WinningBid)
-                                </td>
+                                <th>Item No</th>
+                                <th>Category</th>
+                                <th>Title</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
                             </tr>
-                        }
-                        @foreach (var item in invoice.StoreItemPurchases)
-                        {
+                        </thead>
+                        <tbody>
+                            @foreach (var item in invoice.AuctionItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(m => item.UniqueItemNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Category)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Title)
+                                    </td>
+                                    <td>1</td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.WinningBid)
+                                    </td>
+                                </tr>
+                            }
+                            @foreach (var item in invoice.StoreItemPurchases)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.StoreItem.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Quantity)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.PricePaid)
+                                    </td>
+                                </tr>
+                            }
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td>
-                                    @Html.DisplayFor(m => item.StoreItem.Title)
+                                <td></td>
+                                <td align="right">
+                                    <b>Total:</b>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(m => item.Quantity)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(m => item.PricePaid)
+                                    @Html.DisplayFor(m => invoice.Total)
                                 </td>
                             </tr>
-                        }
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td align="right">
-                                <b>Total:</b>
-                            </td>
-                            <td>
-                                @Html.DisplayFor(m => invoice.Total)
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </dd>
-        </dl>
-        <br />
+                        </tbody>
+                    </table>
+                </dd>
+            </dl>
+            <br />
+        }
     }
 </div>

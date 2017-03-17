@@ -25,7 +25,7 @@
                 <h2>Bidder # @Html.DisplayFor(m => winner.BidderId)</h2>
                 <h3>@Html.DisplayFor(m => winner.FirstName) @Html.DisplayFor(m => winner.LastName)</h3>
                 <h3>@Html.DisplayFor(m => winner.Email)</h3>
-
+                <br/>
                 <table class="table table-bordered table-striped">
                     @foreach (var item in winner.ItemsWon.OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
                     {

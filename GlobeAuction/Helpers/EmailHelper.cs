@@ -38,6 +38,11 @@ namespace GlobeAuction.Helpers
             return content;
         }
 
+        private Tuple<string, decimal> GetStoreItemPurchaseLineString(StoreItemPurchase sip)
+        {
+            return new Tuple<string, decimal>(sip.StoreItem.Title + (sip.Quantity > 1 ? " x " + sip.Quantity : ""), sip.PricePaid.Value);
+        }
+
         public void SendBidderPaymentConfirmation(Bidder bidder, PayPalTransaction trans)
         {
             var lines = bidder.AuctionGuests
@@ -49,7 +54,7 @@ namespace GlobeAuction.Helpers
             {
                 lines.AddRange(bidder.StoreItemPurchases
                     .Where(s => s.IsPaid)
-                    .Select(s => new Tuple<string, decimal>(s.StoreItem.Title, s.PricePaid.Value)));
+                    .Select(GetStoreItemPurchaseLineString));
             }
 
             var body = GetInvoiceEmail(trans.PaymentGross,
@@ -72,10 +77,11 @@ namespace GlobeAuction.Helpers
             {
                 lines.AddRange(invoice.StoreItemPurchases
                     .Where(s => s.IsPaid)
-                    .Select(s => new Tuple<string, decimal>(s.StoreItem.Title, s.PricePaid.Value)));
+                    .Select(GetStoreItemPurchaseLineString));
             }
             
-            var body = GetInvoiceEmail(invoice.PaymentTransaction.PaymentGross,
+            var body = GetInvoiceEmail(
+                paidManually ? invoice.Total : invoice.PaymentTransaction.PaymentGross,
                 invoice.FirstName + " " + invoice.LastName,
                 "Invoice ID " + invoice.InvoiceId,
                 paidManually ? "Paid in Person" : "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,

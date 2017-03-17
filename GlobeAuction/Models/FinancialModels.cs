@@ -19,10 +19,12 @@ namespace GlobeAuction.Models
         [Display(Name = "Marked Paid Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
-        [Display(Name = "Registration Date")]
+        [Display(Name = "Create Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
 
         [Display(Name = "Update Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime UpdateDate { get; set; }
         [Display(Name = "Updated By")]
         public string UpdateBy { get; set; }
@@ -55,6 +57,23 @@ namespace GlobeAuction.Models
                 if (AuctionItems.Any()) total = AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0));
                 if (StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(0));
                 return total;
+            }
+        }
+
+        [Display(Name = "Total Paid")]
+        public decimal TotalPaid
+        {
+            get
+            {
+                if (PaymentTransaction != null)
+                {
+                    return PaymentTransaction.PaymentGross;
+                }
+                if (WasMarkedPaidManually)
+                {
+                    return Total;
+                }
+                return 0;
             }
         }
     }

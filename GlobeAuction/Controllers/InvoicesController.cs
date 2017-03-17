@@ -56,9 +56,8 @@ namespace GlobeAuction.Controllers
         {
             var requireEmailMatch = true;
 
-            if (Request.IsAuthenticated && !User.IsInRole(AuctionRoles.CanCheckoutWinners))
+            if (Request.IsAuthenticated && User.IsInRole(AuctionRoles.CanCheckoutWinners))
             {
-                invoiceLookupModel.Email = "fake@fake.com";
                 requireEmailMatch = false;
             }
 
@@ -85,7 +84,7 @@ namespace GlobeAuction.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult ReviewBidderWinnings(int bid, string email)
+        public ActionResult ReviewBidderWinnings(int bid, string email, bool? manualPaidSuccessful, bool? selfPaySuccessful)
         {
             //check they are who they say they are
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == bid && b.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
@@ -110,7 +109,10 @@ namespace GlobeAuction.Controllers
             });
 
             var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice, storeItemPurchases);
-            
+
+            viewModel.ShowManuallyPaidSuccess = manualPaidSuccessful.GetValueOrDefault(false);
+            viewModel.ShowSelfPaySuccess = selfPaySuccessful.GetValueOrDefault(false);
+
             return View(viewModel);
         }
 
@@ -142,12 +144,14 @@ namespace GlobeAuction.Controllers
                     StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId)
                 }).ToList();
 
-            var invoice = new InvoiceRepository(db).CreateInvoiceForAuctionItems(bidder, winnings, storeItemPurchases);
+            var markedManually = submitButton == "Invoice and Mark Paid";
 
-            if (submitButton == "Confirm and Get Total")
+            var invoice = new InvoiceRepository(db).CreateInvoiceForAuctionItems(bidder, winnings, storeItemPurchases,
+                markedManually, markedManually ? User.Identity.GetUserName() : bidder.Email);
+
+            if (markedManually)
             {
-                //go back to page, this time we'll have the order total
-                return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email });
+                return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, manualPaidSuccessful = true });
             }
             
             return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = invoice.Email });
@@ -167,20 +171,6 @@ namespace GlobeAuction.Controllers
             return View(model);
         }
         
-        public ActionResult PaidInPerson(int iid, string email)
-        {
-            var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Email != null && i.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
-            if (invoice == null)
-            {
-                return HttpNotFound();
-            }
-
-            new InvoiceRepository(db).MarkPaidManually(invoice, User.Identity.GetUserName());
-
-            //TODO: redirect
-            return View();
-        }
-
         [AllowAnonymous]
         [HttpPost]
         public ActionResult PayPalComplete(FormCollection form)
@@ -207,7 +197,7 @@ namespace GlobeAuction.Controllers
             if (invoice.AuctionItems.Any() && invoice.Bidder != null)
             {
                 //go to auction review page if there were auction winnings in this order
-                return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email });
+                return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, selfPaySuccessful = true });
             }
 
             return View(invoice);

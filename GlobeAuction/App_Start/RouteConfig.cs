@@ -25,6 +25,12 @@ namespace GlobeAuction
                 name: "Shop",
                 url: "shop",
                 defaults: new { controller = "StoreItems", action = "Buy" }
+                );
+
+            routes.MapRoute(
+                name: "Pay",
+                url: "pay",
+                defaults: new { controller = "Invoices", action = "Checkout" }
             );
 
             routes.MapRoute(

@@ -20,7 +20,7 @@
 @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
 {
     <h4>
-        @Html.ActionLink("Click here to Checkout Winners", "CheckoutWinners")
+        @Html.ActionLink("Click here to Checkout Winners", "Checkout", "Invoices")
     </h4>
     <br />
 }
@@ -78,7 +78,7 @@
                     </table>
                 </td>
                 <td>
-                    @Html.DisplayFor(m => winner.AreWinningsAllPaidFor)
+                    @(winner.AreWinningsAllPaidFor ? "Yes" : "No")
                 </td>
                 <td>
                     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))

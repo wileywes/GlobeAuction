@@ -14,7 +14,7 @@ namespace GlobeAuction.Helpers
             var user = "N/A";
             if (HttpContext.Current.User != null && HttpContext.Current.User.Identity != null) user = HttpContext.Current.User.Identity.GetUserName();
 
-            //if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
+            if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
 
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
             var msg = string.Format("User:{0} Url:{1} Error:{2}", user, request.Url, lastException);

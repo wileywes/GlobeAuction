@@ -36,6 +36,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.InvoiceTotal)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateDate)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,10 +51,10 @@
                     @Html.DisplayFor(modelItem => item.InvoiceId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsPaid)
+                    @(item.IsPaid ? "Yes" : "No")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.WasMarkedPaidManually)
+                    @(item.WasMarkedPaidManually ? "Yes" : "No")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.BidderId)
@@ -67,6 +70,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.InvoiceTotal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
                 </td>
                 <td>
                     @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |

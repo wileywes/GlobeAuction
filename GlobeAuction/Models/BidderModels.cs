@@ -52,6 +52,7 @@ namespace GlobeAuction.Models
         public bool IsPaymentReminderSent{ get; set; }
 
         [Display(Name = "Registration Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
 
         public BidderForList(Bidder b)
@@ -206,8 +207,10 @@ namespace GlobeAuction.Models
         public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
 
         [Display(Name = "Registration Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -27,6 +28,9 @@ namespace GlobeAuction.Models
         public List<Invoice> Invoices { get; set; }
         public List<AuctionItemViewModel> AuctionItemsNotInInvoice { get; set; }
         public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
+
+        public bool ShowManuallyPaidSuccess { get; set; }
+        public bool ShowSelfPaySuccess { get; set; }
 
         public ReviewBidderWinningsViewModel()
         {
@@ -74,6 +78,11 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal InvoiceTotalPaid { get; set; }
 
+        [Display(Name = "Create Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        public DateTime CreateDate { get; set; }
+
+
         public InvoiceListViewModel(Invoice invoice)
         {
             if (invoice.Bidder != null) BidderId = invoice.Bidder.BidderId;
@@ -83,6 +92,7 @@ namespace GlobeAuction.Models
             InvoiceId = invoice.InvoiceId;
             IsPaid = invoice.IsPaid;
             WasMarkedPaidManually = invoice.WasMarkedPaidManually;
+            CreateDate = invoice.CreateDate;
 
             invoice.AuctionItems = invoice.AuctionItems ?? new List<AuctionItem>();
             invoice.StoreItemPurchases = invoice.StoreItemPurchases ?? new List<StoreItemPurchase>();
@@ -94,6 +104,10 @@ namespace GlobeAuction.Models
             if (invoice.PaymentTransaction != null)
             {
                 InvoiceTotalPaid = invoice.PaymentTransaction.PaymentGross;
+            }
+            else if (invoice.WasMarkedPaidManually)
+            {
+                InvoiceTotalPaid = invoice.Total;
             }
         }
     }

@@ -74,10 +74,10 @@
         </dd>
 
         <dt>
-            @Html.Label("Total Paid")
+            @Html.DisplayNameFor(model => model.TotalPaid)
         </dt>
         <dd>
-            @((Model.PaymentTransaction == null ? 0m : Model.PaymentTransaction.PaymentGross).ToString("C"))
+            @Html.DisplayFor(model => model.TotalPaid)
         </dd>
 
         <dt>
@@ -149,7 +149,14 @@
         {
             <dt></dt>
             <dd>
-                @Html.Label("No payment has been made yet")
+                @if (Model.WasMarkedPaidManually)
+                {
+                    @Html.Label("Mark Paid in Person")
+                }
+                else
+                {
+                    @Html.Label("No payment has been made yet")
+                }
             </dd>
         }
         else

@@ -36,7 +36,6 @@
                 @if (Request.IsAuthenticated)
                 {
                     <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Pay", "Checkout", "Invoices")</li>
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                         {
                             <li>@Html.ActionLink("Items", "Index", "AuctionItems")</li>
@@ -79,6 +78,7 @@
                             <li><a href="/shop"><img src="~/Content/Images/payicon.jpg" width="107" height="99" class="hidden-xs" /><br />SHOP</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
+                            <li><a href="/pay"><img src="~/Content/Images/payicon.jpg" width="107" height="99" class="hidden-xs" /><br />PAY</a></li>
                             <li><a href="/donate"><img src="~/Content/Images/icon04.jpg" width="107" height="99" class="hidden-xs" /><br />DONATE</a></li>
                             <li><a href="/account/login" id="loginLink"><img src="~/Content/Images/icon03.jpg" width="107" height="99" class="hidden-xs" /><br />VOLUNTEERS</a></li>
                         </ul>
