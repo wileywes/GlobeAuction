@@ -16,19 +16,19 @@ namespace GlobeAuction.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private NLog.ILogger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        [AllowAnonymous]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult TestPayPalHereIpn()
         {
             return View();
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult TestTicketPurchaseIpn()
         {
             return View();
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult TestIpnFromPayPalQs()
         {
             return View();

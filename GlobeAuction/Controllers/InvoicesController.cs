@@ -14,12 +14,12 @@ using AutoMapper;
 
 namespace GlobeAuction.Controllers
 {
-    [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
     public class InvoicesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Invoices
+        [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult Index()
         {
             var invoices = db.Invoices.ToList();
@@ -28,6 +28,7 @@ namespace GlobeAuction.Controllers
         }
 
         // GET: Invoices/Details/5
+        [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult Details(int? id)
         {
             if (id == null)
