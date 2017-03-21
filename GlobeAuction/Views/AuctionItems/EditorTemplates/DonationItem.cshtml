@@ -19,6 +19,9 @@
     <td>
         @Html.DisplayFor(m => m.DollarValue)
     </td>
+    <td>
+        @Html.DisplayFor(m => m.IsGiftCard)
+    </td>
     <td class="text-nowrap">
         @Html.ActionLink("Edit", "Edit", "DonationItems", new { id = Model.DonationItemId }, null)
         @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Edit")
