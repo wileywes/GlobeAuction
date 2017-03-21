@@ -1,14 +1,17 @@
 ﻿
 --bidders with guests
-select b.*, g.FirstName as GuestFirst, g.LastName as GuestLast, g.TicketType, g.TicketPricePaid, s.HomeroomTeacher
+select b.*, g.FirstName as GuestFirst, g.LastName as GuestLast, g.TicketType, g.TicketPricePaid
 from Bidders b
 inner join AuctionGuests g on b.bidderid = g.bidder_bidderid
-inner join Students s on s.bidder_bidderid = b.bidderid
+where b.isDeleted = 0
 order by b.bidderid
 
 --bidders with homerooms
-select b.*, s.HomeroomTeacher
-from Bidders b
-inner join Students s on b.bidderid = s.bidder_bidderid
-order by b.bidderid
-
+select s.HomeroomTeacher, count(distinct b.BidderId) as NumberOfBidders,
+  count(*) as NumberOfGuests,
+  sum(g.ticketpricepaid) as TicketSales
+from Students s
+inner join Bidders b on b.bidderid = s.bidder_bidderid
+inner join AuctionGuests g on b.bidderid = g.bidder_bidderid
+where b.IsDeleted = 0
+group by HomeroomTeacher
