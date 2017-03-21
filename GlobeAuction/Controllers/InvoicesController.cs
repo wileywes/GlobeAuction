@@ -98,7 +98,7 @@ namespace GlobeAuction.Controllers
             var auctionWinningsForBidderNotInInvoice = db.AuctionItems.Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null).ToList();
 
             var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout && s.IsDeleted == false).ToList();
-            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanCheckoutWinners))
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))
             {
                 //remove admin-only store items
                 storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();

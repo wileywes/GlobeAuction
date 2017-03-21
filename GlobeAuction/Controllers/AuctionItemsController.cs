@@ -285,7 +285,7 @@ namespace GlobeAuction.Controllers
         }
 
 
-        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        [Authorize(Roles = AuctionRoles.CanEditWinners + "," + AuctionRoles.CanCheckoutWinners)]
         public ActionResult Winners()
         {
             var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
