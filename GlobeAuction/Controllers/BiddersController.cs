@@ -23,7 +23,10 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditBidders)]
         public ActionResult Index()
         {
-            var bidders = db.Bidders.Where(b => b.IsDeleted == false).ToList();
+            var bidders = db.Bidders
+                .Include(b => b.AuctionGuests)
+                .Include(b => b.StoreItemPurchases)
+                .Where(b => b.IsDeleted == false).ToList();
 
             var models = bidders.Select(b => new BidderForList(b)).ToList();
             

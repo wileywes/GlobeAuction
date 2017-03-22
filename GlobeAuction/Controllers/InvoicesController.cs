@@ -22,7 +22,13 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult Index()
         {
-            var invoices = db.Invoices.ToList();
+            var invoices = db.Invoices
+                .Include(i => i.AuctionItems)
+                .Include(i => i.Bidder)
+                .Include(i => i.PaymentTransaction)
+                .Include(i => i.StoreItemPurchases)
+                .Include("StoreItemPurchases.StoreItem")
+                .ToList();
             var viewModels = invoices.Select(i => new InvoiceListViewModel(i)).ToList();
             return View(viewModels);
         }
@@ -94,8 +100,17 @@ namespace GlobeAuction.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var invoicesForBidder = db.Invoices.Where(i => i.Bidder.BidderId == bidder.BidderId).ToList();
-            var auctionWinningsForBidderNotInInvoice = db.AuctionItems.Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null).ToList();
+            var invoicesForBidder = db.Invoices
+                .Include(i => i.AuctionItems)
+                .Include(i => i.PaymentTransaction)
+                .Include(i => i.StoreItemPurchases)
+                .Where(i => i.Bidder.BidderId == bidder.BidderId)
+                .ToList();
+
+            var auctionWinningsForBidderNotInInvoice = db.AuctionItems
+                .Include(a => a.DonationItems)
+                .Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null)
+                .ToList();
 
             var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout && s.IsDeleted == false).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))

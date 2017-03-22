@@ -1,6 +1,8 @@
 ﻿using GlobeAuction.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
 
 namespace GlobeAuction.Helpers
@@ -71,6 +73,7 @@ namespace GlobeAuction.Helpers
         public List<WinningsByBidder> GetWinningsByBidder()
         {
             var itemsWon = db.AuctionItems
+                .Include(a => a.Invoice)
                 .Where(ai => ai.WinningBid.HasValue && ai.WinningBidderId.HasValue)
                 .ToList();
 
