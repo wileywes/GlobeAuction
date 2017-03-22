@@ -19,7 +19,7 @@ namespace GlobeAuction.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         [AllowAnonymous]
-        public ActionResult Buy()
+        public ActionResult Buy(int? iid, string fullName)
         {
             var storeItems = db.StoreItems.Where(s => s.CanPurchaseInStore && s.IsDeleted == false).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
@@ -28,7 +28,7 @@ namespace GlobeAuction.Controllers
                 storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
             var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
-            
+
             var viewModel = new BuyViewModel()
             {
                 StoreItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
@@ -37,22 +37,61 @@ namespace GlobeAuction.Controllers
                 }).ToList()
             };
 
+            //if we just created an invoice then show the info
+            if (iid.HasValue)
+            {
+                viewModel.ShowInvoiceCreatedSuccessMessage = true;
+                viewModel.InvoiceIdCreated = iid.Value;
+                viewModel.InvoiceFullNameCreated = fullName;
+            };
+
             return View(viewModel);
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Buy(BuyViewModel buyViewModel)
+        public ActionResult Buy(BuyViewModel buyViewModel, string submitButton)
         {
             if (ModelState.IsValid)
             {
-                var invoice = new InvoiceRepository(db).CreateInvoiceForStoreItems(buyViewModel);
+                var markedManually = submitButton == "Invoice and Mark Paid";
+                var invoice = new InvoiceRepository(db).CreateInvoiceForStoreItems(buyViewModel,
+                    markedManually, markedManually ? User.Identity.GetUserName() : buyViewModel.Email);
+
+                if (markedManually)
+                {
+                    return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, fullName = invoice.FirstName + " " + invoice.LastName });
+                }
 
                 return RedirectToAction("RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Email });
             }
-            
+
             return View(buyViewModel);
+        }
+
+        [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
+        public ActionResult LookupBidder(int bidderId, string bidderLastName)
+        {
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bidderId && b.LastName.Equals(bidderLastName, StringComparison.OrdinalIgnoreCase));
+
+            if (bidder == null)
+            {
+                return Json(new { wasFound = false }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(
+                new
+                {
+                    wasFound = true,
+                    bidderId = bidder.BidderId,
+                    firstName = bidder.FirstName,
+                    lastName = bidder.LastName,
+                    phone = bidder.Phone,
+                    email = bidder.Email,
+                    zip = bidder.ZipCode,
+                },
+                JsonRequestBehavior.AllowGet
+            );
         }
 
         // GET: StoreItems

@@ -164,6 +164,8 @@ namespace GlobeAuction.Models
 
     public class BuyViewModel
     {
+        public int? BidderId { get; set; }
+        
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -185,5 +187,9 @@ namespace GlobeAuction.Models
         public string ZipCode { get; set; }
 
         public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
+
+        public bool ShowInvoiceCreatedSuccessMessage { get; set; }
+        public int? InvoiceIdCreated { get; set; }
+        public string InvoiceFullNameCreated { get; set; }
     }
 }

@@ -63,7 +63,7 @@ namespace GlobeAuction.Helpers
             return invoice;
         }
 
-        public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel)
+        public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, bool markedManually, string updatedBy)
         {
             var storeItemPurchases = buyModel.StoreItemPurchases
                 .Where(s => s.Quantity > 0)
@@ -86,8 +86,25 @@ namespace GlobeAuction.Helpers
                 FirstName = buyModel.FirstName,
                 LastName = buyModel.LastName,
                 Phone = buyModel.Phone,
-                ZipCode = buyModel.ZipCode
+                ZipCode = buyModel.ZipCode                
             };
+
+            if (markedManually)
+            {
+                invoice.IsPaid = true;
+                invoice.WasMarkedPaidManually = true;
+                invoice.UpdateBy = updatedBy;
+
+                foreach (var storeItem in invoice.StoreItemPurchases)
+                {
+                    storeItem.PricePaid = storeItem.StoreItem.Price * storeItem.Quantity;
+                }
+            }
+
+            if (buyModel.BidderId.GetValueOrDefault(-1) >= 0)
+            {
+                invoice.Bidder = db.Bidders.Find(buyModel.BidderId.Value);                
+            }
 
             db.Invoices.Add(invoice);
             db.SaveChanges();

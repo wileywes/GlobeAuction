@@ -7,6 +7,13 @@
 <h2>Purchase Raffle Tickets for the Auction</h2>
 <br />
 
+@if (Model.ShowInvoiceCreatedSuccessMessage)
+{
+    <div class="alert alert-success">
+        Successfully created invoice @Model.InvoiceIdCreated.GetValueOrDefault(0) for @Model.InvoiceFullNameCreated .  You can continue to enter
+        another raffle purchase below.
+    </div>
+}
 <p>
     If you haven't registered for the auction yet, you can do that and purchase raffle tickets
     @Html.ActionLink("here in registration", "Register", "Bidders") .
@@ -55,8 +62,38 @@
         }
         <br />
 
+        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+        {
+            <h4>Lookup Bidder</h4>
+            <hr />
+
+            <div class="alert alert-warning" style="display:none" id="divNoBidderFound">
+                Unable to find a matching bidder.  Try again or just enter the information in the "Your Contact Information" section.
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("bidderId")
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("bidderLastName")
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" class="btn btn-primary" id="btnLookupBidder" value="Lookup Bidder" />
+                </div>
+            </div>
+        }
+
+
         <h4>Your Contact Information</h4>
         <hr />
+        @Html.HiddenFor(m => m.BidderId)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -101,7 +138,16 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" name="submitButton" value="Buy Now" class="btn btn-default" />
+                @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                {
+                    <input type="submit" name="submitButton" value="Invoice and Mark Paid" class="btn btn-primary btn-lg" />
+                            <br /><br />
+                            <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
+                }
+                else
+                {
+                    <input type="submit" name="submitButton" value="Buy Now" class="btn btn-default" />
+                }
             </div>
         </div>
     </div>
@@ -111,3 +157,41 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+
+<script type="text/javascript">
+
+    $('#btnLookupBidder').click(function () {
+        var bidderId = $('#bidderId').val();
+        var bidderLastName = $('#bidderLastName').val();
+
+        if (bidderId == null || bidderLastName == '') {
+            alert('You must enter the bidder # and last name to do a lookup.')
+        }
+        else {
+            $('#winningBidderId').val('');
+            $('#winningBidAmount').val('');
+
+            $.getJSON('@Url.Action("LookupBidder")', { bidderId: bidderId, bidderLastName: bidderLastName }, function (bidderData) {
+                if (bidderData.wasFound) {
+                    $('#FirstName').val(bidderData.firstName);
+                    $('#LastName').val(bidderData.lastName);
+                    $('#Phone').val(bidderData.phone);
+                    $('#Email').val(bidderData.email);
+                    $('#ZipCode').val(bidderData.zip);
+                    $('#BidderId').val(bidderData.bidderId);
+                    $('#divNoBidderFound').hide();
+                }
+                else {
+                    $('#FirstName').val('');
+                    $('#LastName').val('');
+                    $('#Phone').val('');
+                    $('#Email').val('');
+                    $('#ZipCode').val('');
+                    $('#BidderId').val(-1);
+                    $('#divNoBidderFound').show();
+                }
+            });
+        }
+    });
+</script>
