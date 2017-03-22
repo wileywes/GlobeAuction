@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 
@@ -17,6 +18,22 @@ namespace GlobeAuction.Helpers
             if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
 
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+            if (lastException is DbEntityValidationException)
+            {
+                try
+                {
+                    var dbErrors = string.Join(Environment.NewLine,
+                        (lastException as DbEntityValidationException).EntityValidationErrors.SelectMany(e => e.ValidationErrors).Select(e => "Name=" + e.PropertyName + ", Error=" + e.ErrorMessage));
+
+                    lastException = new ApplicationException("DB Errors: " + dbErrors, lastException);
+                }
+                catch (Exception exc)
+                {
+                    logger.Warn("Unable to inspect DbEntityValidationException : " + exc);
+                }
+            }
+
             var msg = string.Format("User:{0} Url:{1} Error:{2}", user, request.Url, lastException);
 
             logger.Error(msg);
