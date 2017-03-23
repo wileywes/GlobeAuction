@@ -307,17 +307,26 @@ namespace GlobeAuction.Controllers
             var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
             var emailHelper = new EmailHelper();
             var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false).ToList();
+
+            var model = new EmailAllWinnersViewModel();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
-                var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
-                emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink);
-            }
+                //for (int i = 0; i < 100; i++)
+                //{
+                    try
+                    {
+                        var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
+                        emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink);
+                        model.EmailsSent++;
 
-            var model = new EmailAllWinnersViewModel
-            {
-                WasSuccessful = true,
-                EmailsSent = winnersToEmail.Count
-            };
+                    }
+                    catch (Exception exc)
+                    {
+                        model.EmailsFailed++;
+                        model.ErrorMessage = exc.Message;
+                    }
+                //}
+            }
 
             return View(model);
         }

@@ -12,12 +12,13 @@
 @if (Model.WasSuccessful)
 {
     <div class="alert-success alert">
-        The system sent <b>@Model.EmailsSent.Value</b> emails to the winners with a link to pay.
+        The system sent <b>@Model.EmailsSent</b> emails to the winners with a link to pay.
     </div>
 }
 else
 {
     <div class="alert alert-warning">
-        @Model.ErrorMessage
+        The system sent <b>@Model.EmailsSent</b> emails to the winners with a link to pay.
+        <b>@Model.EmailsFailed</b> winners could not be emailed due to a system error: @Model.ErrorMessage
     </div>
 }

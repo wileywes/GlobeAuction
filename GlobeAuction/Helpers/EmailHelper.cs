@@ -210,7 +210,8 @@ namespace GlobeAuction.Helpers
                 Credentials = new NetworkCredential(_gmailUsername, _gmailPassword),
                 EnableSsl = true
             };
-            smtp.Send(msg);
+
+            Utilities.RetryIt(attemptNum => smtp.Send(msg), "SendEmail", 3);
         }
     }
 }

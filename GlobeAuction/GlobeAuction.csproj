@@ -229,6 +229,7 @@
     <Compile Include="Helpers\RequiredIfAttribute.cs" />
     <Compile Include="Helpers\RequiredIfHasValueValidator.cs" />
     <Compile Include="Helpers\RequiredIfValidator.cs" />
+    <Compile Include="Helpers\Utilities.cs" />
     <Compile Include="Migrations\201610161158102_Initial.cs" />
     <Compile Include="Migrations\201610161158102_Initial.Designer.cs">
       <DependentUpon>201610161158102_Initial.cs</DependentUpon>
