@@ -63,7 +63,14 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => winner.BidderId)
+                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
+                    {
+                        @Html.ActionLink(winner.BidderId.ToString(), "Edit", "Bidders", new { id = winner.BidderId }, new { target = "_blank" })
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => winner.BidderId)
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => winner.FirstName)
@@ -82,7 +89,16 @@
                         @foreach (var item in winner.ItemsWon)
                         {
                             <tr>
-                                <td># @Html.DisplayFor(m => item.UniqueItemNumber)</td>
+                                <td>#
+                                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                                    {
+                                        @Html.ActionLink(item.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItemId }, new { target = "_blank" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(m => item.UniqueItemNumber)
+                                    }
+                                </td>
                                 <td>@Html.DisplayFor(m => item.Title)</td>
                                 <td>@Html.DisplayFor(m => item.WinningBid)</td>
                             </tr>
@@ -120,7 +136,7 @@
     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
     {
         @:isAdmin = true;
-            }
+                            }
 
     $(document).ready(function () {
         var auctionItemsDataTable = $('#winnersTable').dataTable({
