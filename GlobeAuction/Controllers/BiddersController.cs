@@ -96,7 +96,7 @@ namespace GlobeAuction.Controllers
                 bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                 bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
                 
-                bidder.StoreItemPurchases = bidderViewModel.StoreItemPurchases
+                bidder.StoreItemPurchases = (bidderViewModel.StoreItemPurchases ?? new List<StoreItemPurchaseViewModel>())
                     .Where(s => s.Quantity > 0)
                     .Select(s => Mapper.Map<StoreItemPurchase>(s))
                     .ToList();

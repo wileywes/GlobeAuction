@@ -65,7 +65,7 @@ namespace GlobeAuction.Helpers
 
         public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, bool markedManually, string updatedBy)
         {
-            var storeItemPurchases = buyModel.StoreItemPurchases
+            var storeItemPurchases = (buyModel.StoreItemPurchases ?? new List<StoreItemPurchaseViewModel>())
                 .Where(s => s.Quantity > 0)
                 .Select(s => Mapper.Map<StoreItemPurchase>(s))
                 .ToList();

@@ -151,7 +151,7 @@ namespace GlobeAuction.Controllers
 
             if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var storeItemPurchases = model.StoreItemPurchases
+            var storeItemPurchases = (model.StoreItemPurchases ?? new List<StoreItemPurchaseViewModel>())
                 .Where(sip => sip.Quantity > 0)
                 .Select(sip =>
                 new StoreItemPurchase
