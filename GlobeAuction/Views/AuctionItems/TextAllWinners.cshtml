@@ -1,0 +1,30 @@
+﻿@model GlobeAuction.Models.NotifyAllWinnersViewModel
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
+@{
+    ViewBag.Title = "Text All Winners";
+}
+
+<h2>Text All Winners</h2>
+
+@if (Model.WasSuccessful)
+{
+    <div class="alert-success alert">
+        The system sent <b>@Model.MessagesSent</b> text messages to the winners with a link to pay.
+        The winners have all been updated such that if you need to re-send messages again it will
+        only send to the winners that haven't been previously texted.
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        The system sent <b>@Model.MessagesSent</b> text messages to the winners with a link to pay.
+        <b>@Model.MessagesFailed</b> winners could not be texted due to a system error:         @Model.ErrorMessage
+        <br />
+        The "Texted" flags have been updated so you can do this action again in order to send messages
+        to the winners that could not be notified.  Note that we are limited in the number of texts
+        we can send at a time.
+    </div>
+}

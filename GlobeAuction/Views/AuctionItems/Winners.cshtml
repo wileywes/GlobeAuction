@@ -41,10 +41,19 @@
                 Email
             </th>
             <th>
+                Phone
+            </th>
+            <th>
                 Auction Item(s)
             </th>
             <th>
                 All Paid For
+            </th>
+            <th>
+                Emailed
+            </th>
+            <th>
+                Texted
             </th>
             <th></th>
         </tr>
@@ -66,6 +75,9 @@
                     @Html.DisplayFor(modelItem => winner.Email)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => winner.Phone)
+                </td>
+                <td>
                     <table class="table">
                         @foreach (var item in winner.ItemsWon)
                         {
@@ -81,6 +93,12 @@
                     @(winner.AreWinningsAllPaidFor ? "Yes" : "No")
                 </td>
                 <td>
+                    @(winner.IsCheckoutNudgeEmailSent ? "Yes" : "No")
+                </td>
+                <td>
+                    @(winner.IsCheckoutNudgeTextSent ? "Yes" : "No")
+                </td>
+                <td>
                     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                     {
                         @Html.ActionLink("Checkout", "ReviewBidderWinnings", "Invoices", new { bid = winner.BidderId, email = winner.Email }, null)
@@ -93,6 +111,9 @@
 
 
 <script type="text/javascript">
+
+    //expand the page space
+    $("#bodyContainer").removeClass("container");
 
     var isAdmin = false;
 
@@ -121,6 +142,17 @@
                     action: function (e, dt, node, config) {
                         if (isAdmin) {
                             window.open('/AuctionItems/EmailAllWinners', '_blank');
+                        }
+                        else {
+                            alert('Only administrators are allowed access to this function.')
+                        }
+                    }
+                },
+                {
+                    text: 'Text All Winners',
+                    action: function (e, dt, node, config) {
+                        if (isAdmin) {
+                            window.open('/AuctionItems/TextAllWinners', '_blank');
                         }
                         else {
                             alert('Only administrators are allowed access to this function.')

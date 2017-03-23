@@ -73,8 +73,16 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.2\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.1.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -84,6 +92,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -134,6 +146,10 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.1.1\lib\net451\Twilio.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -219,6 +235,7 @@
     </Compile>
     <Compile Include="Helpers\BackgroundMaintenance.cs" />
     <Compile Include="Helpers\BidderRepository.cs" />
+    <Compile Include="Helpers\SmsHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Helpers\Extensions.cs" />
@@ -229,6 +246,7 @@
     <Compile Include="Helpers\RequiredIfAttribute.cs" />
     <Compile Include="Helpers\RequiredIfHasValueValidator.cs" />
     <Compile Include="Helpers\RequiredIfValidator.cs" />
+    <Compile Include="Helpers\TinyUrlHelper.cs" />
     <Compile Include="Helpers\Utilities.cs" />
     <Compile Include="Migrations\201610161158102_Initial.cs" />
     <Compile Include="Migrations\201610161158102_Initial.Designer.cs">
@@ -337,6 +355,10 @@
     <Compile Include="Migrations\201703172303429_IsDonationItemGiftCard.cs" />
     <Compile Include="Migrations\201703172303429_IsDonationItemGiftCard.Designer.cs">
       <DependentUpon>201703172303429_IsDonationItemGiftCard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703231323003_BidderCheckoutNudgeFlags.cs" />
+    <Compile Include="Migrations\201703231323003_BidderCheckoutNudgeFlags.Designer.cs">
+      <DependentUpon>201703231323003_BidderCheckoutNudgeFlags.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -589,6 +611,7 @@
     <Content Include="Views\AuctionItems\EmailAllWinners.cshtml" />
     <Content Include="Views\StoreItems\Purchases.cshtml" />
     <Content Include="Views\Ipn\TestIpnFromPayPalQs.cshtml" />
+    <Content Include="Views\AuctionItems\TextAllWinners.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -681,6 +704,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703172303429_IsDonationItemGiftCard.resx">
       <DependentUpon>201703172303429_IsDonationItemGiftCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703231323003_BidderCheckoutNudgeFlags.resx">
+      <DependentUpon>201703231323003_BidderCheckoutNudgeFlags.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

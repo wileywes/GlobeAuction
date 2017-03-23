@@ -23,7 +23,7 @@ namespace GlobeAuction.Controllers
             var auctionItems = db.AuctionItems.Include(a => a.DonationItems).ToList();
             var donationItemIdsInAuctionItem = auctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
             var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
-            
+
             var model = new ItemsViewModel
             {
                 AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList(),
@@ -59,7 +59,7 @@ namespace GlobeAuction.Controllers
             var ids = auctionItemIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(id => int.Parse(id)).ToList();
 
             var auctionItems = db.AuctionItems.Where(ai => ids.Contains(ai.UniqueItemNumber)).ToList();
-            
+
             return View(auctionItems);
         }
 
@@ -123,7 +123,7 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             var donationItem = auctionItem.DonationItems.First(di => di.DonationItemId == id);
             auctionItem.DonationItems.Remove(donationItem);
             auctionItem.UpdateDate = DateTime.Now;
@@ -158,14 +158,14 @@ namespace GlobeAuction.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             AuctionItem auctionItem = db.AuctionItems.Find(id);
-            auctionItem.DonationItems.Clear();            
+            auctionItem.DonationItems.Clear();
 
             db.AuctionItems.Remove(auctionItem);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        
+
         [HttpPost, ActionName("SubmitSelectedDonationItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
@@ -198,7 +198,7 @@ namespace GlobeAuction.Controllers
                     return RedirectToAction("Edit", new { id = basket.AuctionItemId });
 
                 case "MakeSingle":
-                    foreach(var selectedDonation in selectedDonations)
+                    foreach (var selectedDonation in selectedDonations)
                     {
                         var auctionItem = ItemsRepository.CreateAuctionItemForDonation(nextUniqueId, selectedDonation, username);
                         db.AuctionItems.Add(auctionItem);
@@ -300,31 +300,66 @@ namespace GlobeAuction.Controllers
             var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }
-        
+
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult EmailAllWinners()
         {
             var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
             var emailHelper = new EmailHelper();
-            var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false).ToList();
+            var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false && w.Bidder.IsCheckoutNudgeEmailSent == false).ToList();
 
-            var model = new EmailAllWinnersViewModel();
+            var model = new NotifyAllWinnersViewModel();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
                 //for (int i = 0; i < 100; i++)
                 //{
-                    try
-                    {
-                        var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
-                        emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink);
-                        model.EmailsSent++;
+                try
+                {
+                    var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
+                    emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink);
+                    model.MessagesSent++;
+                    winner.Bidder.IsCheckoutNudgeEmailSent = true;
+                    db.SaveChanges();
+                }
+                catch (Exception exc)
+                {
+                    model.MessagesFailed++;
+                    model.ErrorMessage = exc.Message;
+                }
+                //}
+            }
 
-                    }
-                    catch (Exception exc)
-                    {
-                        model.EmailsFailed++;
-                        model.ErrorMessage = exc.Message;
-                    }
+            return View(model);
+        }
+
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult TextAllWinners()
+        {
+            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            var txtHelper = new SmsHelper();
+            var urlHelper = new TinyUrlHelper();
+            var winnersToNotify = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false && w.Bidder.IsCheckoutNudgeTextSent == false).ToList();
+
+            var model = new NotifyAllWinnersViewModel();
+            foreach (var winner in winnersToNotify)
+            {
+                //for (int i = 0; i < 100; i++)
+                //{
+                try
+                {
+                    var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
+                    var tinyUrl = urlHelper.GetTinyUrl(payLink);
+                    var body = "You won items!  Click here to checkout: " + tinyUrl;
+                    txtHelper.SendSms(winner.Bidder.Phone, body);
+                    model.MessagesSent++;
+                    winner.Bidder.IsCheckoutNudgeTextSent = true;
+                    db.SaveChanges();
+                }
+                catch (Exception exc)
+                {
+                    model.MessagesFailed++;
+                    model.ErrorMessage = exc.Message;
+                }
                 //}
             }
 
@@ -348,13 +383,14 @@ namespace GlobeAuction.Controllers
                     ai.UniqueItemNumber > currentUniqueItemNumber)
                 .OrderBy(ai => ai.UniqueItemNumber)
                 .FirstOrDefault();
-            
+
             if (nextItem == null)
             {
                 return Json(new { hasNext = false }, JsonRequestBehavior.AllowGet);
             }
             return Json(
-                new {
+                new
+                {
                     hasNext = true,
                     auctionItemId = nextItem.AuctionItemId,
                     title = nextItem.Title,
@@ -392,7 +428,7 @@ namespace GlobeAuction.Controllers
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already marked as won.  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
-            
+
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == winningBidderIdInt);
 
             if (bidder == null)
@@ -402,7 +438,7 @@ namespace GlobeAuction.Controllers
 
             auctionItem.WinningBid = winningAmountDecimal;
             auctionItem.WinningBidderId = bidder.BidderId;
-            auctionItem.UpdateBy =  User.Identity.GetUserName();
+            auctionItem.UpdateBy = User.Identity.GetUserName();
             auctionItem.UpdateDate = DateTime.Now;
             db.SaveChanges();
 

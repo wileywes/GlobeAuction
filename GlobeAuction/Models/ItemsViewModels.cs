@@ -29,7 +29,18 @@ namespace GlobeAuction.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+        public string Phone { get; set; }
+
         public bool AreWinningsAllPaidFor { get; set; }
+
+        [Required]
+        [Display(Name = "Checkout Email Sent")]
+        public bool IsCheckoutNudgeEmailSent { get; set; }
+        [Required]
+        [Display(Name = "Checkout Text Sent")]
+        public bool IsCheckoutNudgeTextSent { get; set; }
 
         public List<AuctionItemViewModel> ItemsWon { get; set; }
 
@@ -39,6 +50,9 @@ namespace GlobeAuction.Models
             this.FirstName = bidder.FirstName;
             this.LastName = bidder.LastName;
             this.Email = bidder.Email;
+            this.Phone = bidder.Phone;
+            this.IsCheckoutNudgeEmailSent = bidder.IsCheckoutNudgeEmailSent;
+            this.IsCheckoutNudgeTextSent = bidder.IsCheckoutNudgeTextSent;
             this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i)).ToList();
             AreWinningsAllPaidFor = itemsWon.All(w => w.Invoice != null && w.Invoice.IsPaid);
         }
@@ -50,12 +64,12 @@ namespace GlobeAuction.Models
         public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
     }
 
-    public class EmailAllWinnersViewModel
+    public class NotifyAllWinnersViewModel
     {
-        public bool WasSuccessful { get { return EmailsFailed == 0; } }
+        public bool WasSuccessful { get { return MessagesFailed == 0; } }
         public string ErrorMessage { get; set; }
-        public int EmailsSent { get; set; }
-        public int EmailsFailed { get; set; }
+        public int MessagesSent { get; set; }
+        public int MessagesFailed { get; set; }
     }
 
     public class DonationItemViewModel

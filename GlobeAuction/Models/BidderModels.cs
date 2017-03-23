@@ -145,6 +145,11 @@ namespace GlobeAuction.Models
         [Required]
         public bool IsPaymentReminderSent { get; set; }
 
+        [Required]
+        public bool IsCheckoutNudgeEmailSent { get; set; }
+        [Required]
+        public bool IsCheckoutNudgeTextSent { get; set; }
+
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
@@ -217,6 +222,13 @@ namespace GlobeAuction.Models
         [Required]
         [Display(Name = "Pay Reminder Sent")]
         public bool IsPaymentReminderSent { get; set; }
+
+        [Required]
+        [Display(Name = "Checkout Email Sent")]
+        public bool IsCheckoutNudgeEmailSent { get; set; }
+        [Required]
+        [Display(Name = "Checkout Text Sent")]
+        public bool IsCheckoutNudgeTextSent { get; set; }
     }
 
     public class AuctionGuestViewModel
