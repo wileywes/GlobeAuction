@@ -349,7 +349,7 @@ namespace GlobeAuction.Controllers
                 {
                     var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
                     var tinyUrl = urlHelper.GetTinyUrl(payLink);
-                    var body = "You won items!  Click here to checkout: " + tinyUrl;
+                    var body = "You won GLOBE Auction items!  Click here to checkout: " + tinyUrl;
                     txtHelper.SendSms(winner.Bidder.Phone, body);
                     model.MessagesSent++;
                     winner.Bidder.IsCheckoutNudgeTextSent = true;
