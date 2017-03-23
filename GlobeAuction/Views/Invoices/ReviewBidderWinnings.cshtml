@@ -155,13 +155,35 @@
                 </dd>
             </dl>
         }
-        else if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && Model.ShowManuallyPaidSuccess)
+        else
         {
-            <div class="alert alert-success">
-                Invoice has been marked paid successfully.  Please
-                @Html.ActionLink("click here to checkout another winner", "Checkout", "Invoices") .
-            </div>
+            if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+            {
+                if (Model.ShowManuallyPaidSuccess)
+                {
+                    <div class="alert alert-success">
+                        Invoice has been marked paid successfully.  Please
+                        @Html.ActionLink("click here to checkout another winner", "Checkout", "Invoices") .
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        Bidder has no items to pay for.  Please
+                        @Html.ActionLink("click here to checkout another winner", "Checkout", "Invoices") .
+                    </div>
+                }
+            }
+
+            if (!Model.Invoices.Any())
+            {
+                <h3>You have not won any items</h3>
+                <p>
+                    If you believe this is incorrect, please see a volunteer for help.
+                </p>
+            }
         }
+
         if (Model.ShowSelfPaySuccess)
         {
             <div class="alert alert-success">
@@ -267,14 +289,17 @@
 </div>
 
 
-<script type="text/javascript">
 
-    //expand the page space
-    $("#skipButton").click(function () {
-        if (confirm("Are you sure you want to skip payment for this person?  You should only do this if no payment was made."))
-        {
-            document.location = '@Url.Action("Checkout", "Invoices")';
-        }
-    });
+@if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+{
+    <script type="text/javascript">
 
-</script>
+        //expand the page space
+        $("#skipButton").click(function () {
+            if (confirm("Are you sure you want to skip payment for this person?  You should only do this if no payment was made.")) {
+                document.location = '@Url.Action("Checkout", "Invoices")';
+            }
+        });
+
+    </script>
+}
