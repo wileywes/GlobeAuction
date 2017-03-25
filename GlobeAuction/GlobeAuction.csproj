@@ -235,6 +235,7 @@
     </Compile>
     <Compile Include="Helpers\BackgroundMaintenance.cs" />
     <Compile Include="Helpers\BidderRepository.cs" />
+    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\SmsHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />

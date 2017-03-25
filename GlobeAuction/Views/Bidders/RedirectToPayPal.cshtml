@@ -4,33 +4,44 @@
     ViewBag.Title = "Please wait...";
 }
 
-<h3>Please wait while you are redirected to PayPal to complete purchase of tickets.  If you do not have a PayPal account click the 
-    "Pay with Debit or Credit Card" button.  Once you complete purchase please wait for PayPal to send you back to this website.</h3>
+@if (!Constants.IsTicketPurchaseEnabled)
+{
+    <div class="alert alert-info">
+        Registration has been closed.  Please purchase your tickets at the door.
+    </div>
+}
+else
+{
+    <h3>
+        Please wait while you are redirected to PayPal to complete purchase of tickets.  If you do not have a PayPal account click the
+        "Pay with Debit or Credit Card" button.  Once you complete purchase please wait for PayPal to send you back to this website.
+    </h3>
 
-<br />
+    <br />
 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="redirectForm">
-    <input type="hidden" name="cmd" value="_cart" />
-    <input type="hidden" name="upload" value="1" />
-    <input type="hidden" name="custom" value="Bidder:@Model.BidderId" />
-    <input type="hidden" name="business" value="@Model.PayPalBusiness" />
-    <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Bidders", null, Request.Url.Scheme, null)" />     
-    <input type="hidden" name="rm" value="2" />
-    <input type="hidden" name="notify_url" value="@Url.Action("Receive", "Ipn", null, Request.Url.Scheme, null)" />
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" id="redirectForm">
+        <input type="hidden" name="cmd" value="_cart" />
+        <input type="hidden" name="upload" value="1" />
+        <input type="hidden" name="custom" value="Bidder:@Model.BidderId" />
+        <input type="hidden" name="business" value="@Model.PayPalBusiness" />
+        <input type="hidden" name="return" value="@Url.Action("PayPalComplete", "Bidders", null, Request.Url.Scheme, null)" />
+        <input type="hidden" name="rm" value="2" />
+        <input type="hidden" name="notify_url" value="@Url.Action("Receive", "Ipn", null, Request.Url.Scheme, null)" />
 
-    @for (int i = 0; i < Model.LineItems.Count; i++)
-    {
-        <input type="hidden" name="item_name_@(i+1)" value="@Model.LineItems[i].Name" />
-        <input type="hidden" name="amount_@(i+1)" value="@Model.LineItems[i].Price" />
-        <input type="hidden" name="quantity_@(i+1)" value="@Model.LineItems[i].Quantity" />
-    }
+        @for (int i = 0; i < Model.LineItems.Count; i++)
+        {
+            <input type="hidden" name="item_name_@(i + 1)" value="@Model.LineItems[i].Name" />
+            <input type="hidden" name="amount_@(i + 1)" value="@Model.LineItems[i].Price" />
+            <input type="hidden" name="quantity_@(i + 1)" value="@Model.LineItems[i].Quantity" />
+        }
 
-    <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+        <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
 
-</form>
+    </form>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#redirectForm').submit();
-    });
-</script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#redirectForm').submit();
+        });
+    </script>
+}

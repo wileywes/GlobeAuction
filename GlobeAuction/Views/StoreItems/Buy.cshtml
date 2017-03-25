@@ -7,152 +7,160 @@
 <h2>Purchase Raffle Tickets for the Auction</h2>
 <br />
 
-@if (Model.ShowInvoiceCreatedSuccessMessage)
+@if (!Constants.IsTicketPurchaseEnabled)
 {
-    <div class="alert alert-success">
-        Successfully created invoice @Model.InvoiceIdCreated.GetValueOrDefault(0) for @Model.InvoiceFullNameCreated .  You can continue to enter
-        another raffle purchase below.
+    <div class="alert alert-info">
+        Raffle ticket purchase is no longer available.  Please purchase your tickets at the auction event.
     </div>
 }
-<p>
-    If you haven't registered for the auction yet, you can do that and purchase raffle tickets
-    @Html.ActionLink("here in registration", "Register", "Bidders") .
-    If you have already registered or just need raffle tickets, you can do that below.
-</p>
-
-@using (Html.BeginForm())
+else
 {
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
-        <div class="row form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-6">@Html.Label("Raffle Package")</div>
-            <div class="col-md-2">@Html.Label("Price")</div>
-            <div class="col-md-2">@Html.Label("Quantity")</div>
+    if (Model.ShowInvoiceCreatedSuccessMessage)
+    {
+        <div class="alert alert-success">
+            Successfully created invoice @Model.InvoiceIdCreated.GetValueOrDefault(0) for @Model.InvoiceFullNameCreated .  You can continue to enter
+            another raffle purchase below.
         </div>
-        @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
-        {
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+    }
+    <p>
+        If you haven't registered for the auction yet, you can do that and purchase raffle tickets
+        @Html.ActionLink("here in registration", "Register", "Bidders") .
+        If you have already registered or just need raffle tickets, you can do that below.
+    </p>
 
-            <div class="row form-group">
-                <div class="col-md-2">
-                    @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
-                    {
-                        <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
-                    }
-                </div>
-                <div class="col-md-6">
-                    <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
-                    <br />
-                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                </div>
-                <div class="col-md-2">
-                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                </div>
-                <div class="col-md-2">
-                    @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        }
-        <br />
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-        {
-            <h4>Lookup Bidder</h4>
+        <div class="form-horizontal">
             <hr />
+            <div class="row form-group">
+                <div class="col-md-2"></div>
+                <div class="col-md-6">@Html.Label("Raffle Package")</div>
+                <div class="col-md-2">@Html.Label("Price")</div>
+                <div class="col-md-2">@Html.Label("Quantity")</div>
+            </div>
+            @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+            {
+                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
+                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
 
-            <div class="alert alert-warning" style="display:none" id="divNoBidderFound">
-                Unable to find a matching bidder.  Try again or just enter the information in the "Your Contact Information" section.
+                <div class="row form-group">
+                    <div class="col-md-2">
+                        @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                        {
+                            <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
+                        <br />
+                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                    </div>
+                    <div class="col-md-2">
+                        @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            <br />
+
+            @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+            {
+                <h4>Lookup Bidder</h4>
+                <hr />
+
+                <div class="alert alert-warning" style="display:none" id="divNoBidderFound">
+                    Unable to find a matching bidder.  Try again or just enter the information in the "Your Contact Information" section.
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBox("bidderId")
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBox("bidderLastName")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" class="btn btn-primary" id="btnLookupBidder" value="Lookup Bidder" />
+                    </div>
+                </div>
+            }
+
+
+            <h4>Your Contact Information</h4>
+            <hr />
+            @Html.HiddenFor(m => m.BidderId)
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
             </div>
 
             <div class="form-group">
-                @Html.Label("Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBox("bidderId")
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                 </div>
             </div>
+
             <div class="form-group">
-                @Html.Label("Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBox("bidderLastName")
+                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                 </div>
             </div>
+
+            <div class="form-group">
+                @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <br />
+
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="button" class="btn btn-primary" id="btnLookupBidder" value="Lookup Bidder" />
+                    @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                    {
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid" class="btn btn-primary btn-lg" />
+                        <br /><br />
+                        <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
+                    }
+                    else
+                    {
+                        <input type="submit" name="submitButton" value="Buy Now" class="btn btn-default" />
+                    }
                 </div>
             </div>
-        }
-
-
-        <h4>Your Contact Information</h4>
-        <hr />
-        @Html.HiddenFor(m => m.BidderId)
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-            </div>
         </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <br />
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-                {
-                    <input type="submit" name="submitButton" value="Invoice and Mark Paid" class="btn btn-primary btn-lg" />
-                            <br /><br />
-                            <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
-                }
-                else
-                {
-                    <input type="submit" name="submitButton" value="Buy Now" class="btn btn-default" />
-                }
-            </div>
-        </div>
-    </div>
+    }
 }
-
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
