@@ -4,7 +4,7 @@
     ViewBag.Title = "Please wait...";
 }
 
-@if (!Constants.IsTicketPurchaseEnabled)
+@if (!Request.IsAuthenticated && !Constants.IsTicketPurchaseEnabled)
 {
     <div class="alert alert-info">
         Registration has been closed.  Please purchase your tickets at the door.

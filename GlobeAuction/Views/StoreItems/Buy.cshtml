@@ -7,7 +7,7 @@
 <h2>Purchase Raffle Tickets for the Auction</h2>
 <br />
 
-@if (!Constants.IsTicketPurchaseEnabled)
+@if (!Request.IsAuthenticated && !Constants.IsTicketPurchaseEnabled)
 {
     <div class="alert alert-info">
         Raffle ticket purchase is no longer available.  Please purchase your tickets at the auction event.

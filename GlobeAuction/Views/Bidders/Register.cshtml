@@ -7,7 +7,7 @@
 <h2>Register for the Auction</h2>
 <br />
 
-@if (!Constants.IsTicketPurchaseEnabled)
+@if (!Request.IsAuthenticated && !Constants.IsTicketPurchaseEnabled)
 {
     <div class="alert alert-info">
         Registration has been closed.  Please purchase your tickets at the door.
