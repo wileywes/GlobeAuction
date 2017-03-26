@@ -10,6 +10,9 @@ using System.Web;
 
 namespace GlobeAuction.Helpers
 {
+    /// <summary>
+    /// NOTE: GMail has a limit of 100 emails per day through SMTP
+    /// </summary>
     public class EmailHelper
     {
         private static readonly string _gmailUsername = ConfigurationManager.AppSettings["GmailAccountUsername"];

@@ -34,11 +34,16 @@ namespace GlobeAuction.Models
         public string Phone { get; set; }
 
         public bool AreWinningsAllPaidFor { get; set; }
-
+        
         [Required]
         [Display(Name = "Checkout Email Sent")]
         public bool IsCheckoutNudgeEmailSent { get; set; }
+
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         [Required]
+        public decimal? TotalUnpaid { get; set; }
+
         [Display(Name = "Checkout Text Sent")]
         public bool IsCheckoutNudgeTextSent { get; set; }
 
@@ -55,6 +60,11 @@ namespace GlobeAuction.Models
             this.IsCheckoutNudgeTextSent = bidder.IsCheckoutNudgeTextSent;
             this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i)).ToList();
             AreWinningsAllPaidFor = itemsWon.All(w => w.Invoice != null && w.Invoice.IsPaid);
+
+            if (!AreWinningsAllPaidFor)
+            {
+                TotalUnpaid = itemsWon.Where(w => w.Invoice == null || !w.Invoice.IsPaid).Sum(i => i.WinningBid.Value);
+            }
         }
     }
 

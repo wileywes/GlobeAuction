@@ -50,6 +50,9 @@
                 All Paid For
             </th>
             <th>
+                Total Unpaid
+            </th>
+            <th>
                 Emailed
             </th>
             <th>
@@ -107,6 +110,9 @@
                 </td>
                 <td>
                     @(winner.AreWinningsAllPaidFor ? "Yes" : "No")
+                </td>
+                <td>
+                    @Html.DisplayFor(m => winner.TotalUnpaid)
                 </td>
                 <td>
                     @(winner.IsCheckoutNudgeEmailSent ? "Yes" : "No")
