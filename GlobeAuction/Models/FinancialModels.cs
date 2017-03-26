@@ -123,10 +123,10 @@ namespace GlobeAuction.Models
         public decimal PaymentGross { get; set; }
         [Required]
         public string PaymentType { get; set; }
-        [Required]
-        public string PayerEmail { get; set; }
 
+        public string PayerEmail { get; set; }
         public string PayerStatus { get; set; }
+
         [Required]
         public string TxnId { get; set; }
         [Required]

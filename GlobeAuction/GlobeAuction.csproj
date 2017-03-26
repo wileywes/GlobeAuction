@@ -361,6 +361,10 @@
     <Compile Include="Migrations\201703231323003_BidderCheckoutNudgeFlags.Designer.cs">
       <DependentUpon>201703231323003_BidderCheckoutNudgeFlags.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703261204098_PayerEmailOptional.cs" />
+    <Compile Include="Migrations\201703261204098_PayerEmailOptional.Designer.cs">
+      <DependentUpon>201703261204098_PayerEmailOptional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -708,6 +712,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703231323003_BidderCheckoutNudgeFlags.resx">
       <DependentUpon>201703231323003_BidderCheckoutNudgeFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703261204098_PayerEmailOptional.resx">
+      <DependentUpon>201703261204098_PayerEmailOptional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

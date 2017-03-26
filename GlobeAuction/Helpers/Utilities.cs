@@ -7,11 +7,10 @@ namespace GlobeAuction.Helpers
     {
         public static void RetryIt(Action<int> function, string funcId, int maxAttempts)
         {
-            for (int attempt=0; attempt < maxAttempts; attempt++)
+            for (int attempt=1; attempt <= maxAttempts; attempt++)
             {
                 try
                 {
-                    attempt++;
                     function(attempt);
                     return;
                 }
@@ -21,7 +20,7 @@ namespace GlobeAuction.Helpers
 
                     Thread.Sleep(1000 * attempt);
 
-                    if (attempt >= maxAttempts)
+                    if (attempt == maxAttempts)
                         throw;
                 }
             }
