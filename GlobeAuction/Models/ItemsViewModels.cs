@@ -124,6 +124,8 @@ namespace GlobeAuction.Models
         
         public int DonationItemsCount { get; set; }
 
+        public bool HasPhysicalItem { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int DonationItemsTotalValue { get; set; }
 
@@ -146,6 +148,7 @@ namespace GlobeAuction.Models
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
             this.DonationItemsCount = i.DonationItems.Count;
+            this.HasPhysicalItem = i.DonationItems.Any(di => di.IsGiftCard == false);
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
             this.WinningBid = i.WinningBid;
             this.WinningBidderId = i.WinningBidderId;

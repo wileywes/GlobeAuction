@@ -1,10 +1,12 @@
 ﻿
+
 --bidders with guests
-select b.*, g.FirstName as GuestFirst, g.LastName as GuestLast, g.TicketType, g.TicketPricePaid
+select b.BidderId, b.FirstName, b.LastName, b.phone, b.Email, b.ZipCode, g.FirstName as GuestFirst, g.LastName as GuestLast, g.TicketType, g.TicketPricePaid
 from Bidders b
 inner join AuctionGuests g on b.bidderid = g.bidder_bidderid
 where b.isDeleted = 0
 order by b.bidderid
+
 
 --bidders with homerooms
 select s.HomeroomTeacher, count(distinct b.BidderId) as NumberOfBidders,

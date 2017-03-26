@@ -32,7 +32,7 @@
                             <td>@item.UniqueItemNumber</td>
                             <td>@item.Category</td>
                             <td>
-                                @(item.DonationItems.Any(di => di.IsGiftCard == false) ? "*" : string.Empty)
+                                @(item.HasPhysicalItem ? "*" : string.Empty)
                                 @item.Title
                             </td>
                             <td>@item.Description</td>
