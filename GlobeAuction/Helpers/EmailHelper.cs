@@ -93,7 +93,7 @@ namespace GlobeAuction.Helpers
             SendEmail(invoice.Email, "Order Confirmation", body);
         }
 
-        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink)
+        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
         {
             var lines = winnings
                 .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
@@ -104,14 +104,17 @@ namespace GlobeAuction.Helpers
                 totalOwed, payLink,
                 bidder.FirstName + " " + bidder.LastName,
                 "Bidder # " + bidder.BidderId,
-                lines);
+                lines,
+                isAfterEvent);
 
             SendEmail(bidder.Email, "Auction Checkout", body);
         }
 
-        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines)
+        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines, bool isAfterEvent)
         {
-            var body = GetEmailBody("auctionWinningsNudge");
+            var template = isAfterEvent ? "auctionWinningsNudgeAfterEvent" : "auctionWinningsNudge";
+            var body = GetEmailBody(template);
+
             var lineTemplate = GetEmailBody("invoiceLine");
 
             body = ReplaceToken("SiteName", _siteName, body);

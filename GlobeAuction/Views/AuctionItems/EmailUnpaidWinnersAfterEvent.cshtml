@@ -1,0 +1,24 @@
+﻿@model GlobeAuction.Models.NotifyAllWinnersViewModel
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
+@{
+    ViewBag.Title = "Email Unpaid Winners After Event";
+}
+
+<h2>Email Unpaid Winners After Event</h2>
+
+@if (Model.WasSuccessful)
+{
+    <div class="alert-success alert">
+        The system sent <b>@Model.MessagesSent</b> emails to the winners with a link to pay.
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        The system sent <b>@Model.MessagesSent</b> emails to the winners with a link to pay.
+        <b>@Model.MessagesFailed</b> winners could not be emailed due to a system error: @Model.ErrorMessage
+    </div>
+}

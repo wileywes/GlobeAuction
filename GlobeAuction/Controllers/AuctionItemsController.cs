@@ -305,31 +305,49 @@ namespace GlobeAuction.Controllers
         public ActionResult EmailAllWinners()
         {
             var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
-            var emailHelper = new EmailHelper();
             var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false && w.Bidder.IsCheckoutNudgeEmailSent == false).ToList();
 
             var model = new NotifyAllWinnersViewModel();
+            DoEmailWinners(winnersToEmail, model, false);
+
+            return View(model);
+        }
+
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult EmailUnpaidWinnersAfterEvent()
+        {
+            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false).ToList();
+
+            var model = new NotifyAllWinnersViewModel();
+            DoEmailWinners(winnersToEmail, model, true);
+
+            return View(model);
+        }
+
+        private void DoEmailWinners(List<WinningsByBidder> winnersToEmail, NotifyAllWinnersViewModel model, bool isAfterEvent)
+        {
+            var emailHelper = new EmailHelper();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
-                //for (int i = 0; i < 100; i++)
-                //{
                 try
                 {
                     var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
-                    emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink);
+                    emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink, isAfterEvent);
                     model.MessagesSent++;
-                    winner.Bidder.IsCheckoutNudgeEmailSent = true;
-                    db.SaveChanges();
+
+                    if (!isAfterEvent)
+                    {
+                        winner.Bidder.IsCheckoutNudgeEmailSent = true;
+                        db.SaveChanges();
+                    }
                 }
                 catch (Exception exc)
                 {
                     model.MessagesFailed++;
                     model.ErrorMessage = exc.Message;
                 }
-                //}
             }
-
-            return View(model);
         }
 
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]

@@ -394,10 +394,11 @@
     <Content Include="Content\EmailTemplates\alert.html" />
     <Content Include="Content\EmailTemplates\billing.html" />
     <Content Include="Content\EmailTemplates\inlined\action.html" />
+    <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudge.html" />
+    <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudgeAfterEvent.html" />
     <Content Include="Content\EmailTemplates\inlined\bidderNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\alert.html" />
     <Content Include="Content\EmailTemplates\inlined\invoiceLine.html" />
-    <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudge.html" />
     <Content Include="Content\EmailTemplates\inlined\invoicePaid.html" />
     <Content Include="Content\EmailTemplates\inlined\billing.html" />
     <Content Include="Content\EmailTemplates\styles.css" />
@@ -617,6 +618,7 @@
     <Content Include="Views\StoreItems\Purchases.cshtml" />
     <Content Include="Views\Ipn\TestIpnFromPayPalQs.cshtml" />
     <Content Include="Views\AuctionItems\TextAllWinners.cshtml" />
+    <Content Include="Views\AuctionItems\EmailUnpaidWinnersAfterEvent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
