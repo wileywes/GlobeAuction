@@ -139,7 +139,7 @@ namespace GlobeAuction.Models
         public string Custom { get; set; }
 
         public bool WasPaymentSuccessful { get { return PaymentStatus == "Completed"; } }
-
+        
         public PayPalTransaction()
         {
             //empty constructor for AutoMapper

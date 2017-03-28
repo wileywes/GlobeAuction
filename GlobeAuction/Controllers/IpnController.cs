@@ -38,21 +38,35 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public HttpStatusCodeResult Receive(FormCollection form)
         {
-            var ppTrans = new PayPalTransaction(form);
+            if (ShouldIgnoreIpn(form))
+            {
+                VerifyIpn(Request);
+                _logger.Info("Ignored IPN " + form["ipn_track_id"]);
+            }
+            else
+            {
+                var ppTrans = new PayPalTransaction(form);
+                
+                //Store the IPN received from PayPal
+                LogRequest(ppTrans);
 
-            //var msg = "PayPal IPN: " + Environment.NewLine + string.Join(Environment.NewLine, form.AllKeys.Select(k => string.Format("{0}={1}", k, form[k])));
-            //_logger.Info(msg);
-
-            //Store the IPN received from PayPal
-            LogRequest(ppTrans);
-            
-            VerifyTask(Request, ppTrans);
+                var verificationResponse = VerifyIpn(Request);
+                ProcessVerificationResponse(verificationResponse, ppTrans);
+            }
 
             //Reply back a 200 code
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private void VerifyTask(HttpRequestBase ipnRequest, PayPalTransaction ppTrans)
+        private bool ShouldIgnoreIpn(FormCollection form)
+        {
+            if (form["txn_type"] == "new_case" && form["case_type"] == "dispute")
+                return true;
+
+            return false;
+        }
+
+        private string VerifyIpn(HttpRequestBase ipnRequest)
         {
             var verificationResponse = string.Empty;
 
@@ -87,9 +101,8 @@ namespace GlobeAuction.Controllers
                 _logger.Error(exception, "Unable to process IPN: " + exception.Message);
             }
 
-            ProcessVerificationResponse(verificationResponse, ppTrans);
+            return verificationResponse;
         }
-
 
         private void LogRequest(PayPalTransaction ppTrans)
         {
