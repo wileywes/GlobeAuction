@@ -220,6 +220,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuctionItemsController.cs" />
+    <Compile Include="Controllers\DonorsController.cs" />
     <Compile Include="Controllers\InvoicesController.cs" />
     <Compile Include="Controllers\IpnController.cs" />
     <Compile Include="Controllers\LogFilesController.cs" />
@@ -364,6 +365,10 @@
     <Compile Include="Migrations\201703261204098_PayerEmailOptional.cs" />
     <Compile Include="Migrations\201703261204098_PayerEmailOptional.Designer.cs">
       <DependentUpon>201703261204098_PayerEmailOptional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705020141400_DonorTaxReceiptFlag.cs" />
+    <Compile Include="Migrations\201705020141400_DonorTaxReceiptFlag.Designer.cs">
+      <DependentUpon>201705020141400_DonorTaxReceiptFlag.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -619,6 +624,10 @@
     <Content Include="Views\Ipn\TestIpnFromPayPalQs.cshtml" />
     <Content Include="Views\AuctionItems\TextAllWinners.cshtml" />
     <Content Include="Views\AuctionItems\EmailUnpaidWinnersAfterEvent.cshtml" />
+    <Content Include="Views\Donors\Details.cshtml" />
+    <Content Include="Views\Donors\Edit.cshtml" />
+    <Content Include="Views\Donors\Index.cshtml" />
+    <Content Include="Views\Donors\EmailTaxReceipts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -717,6 +726,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703261204098_PayerEmailOptional.resx">
       <DependentUpon>201703261204098_PayerEmailOptional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705020141400_DonorTaxReceiptFlag.resx">
+      <DependentUpon>201705020141400_DonorTaxReceiptFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

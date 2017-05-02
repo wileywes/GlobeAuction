@@ -74,7 +74,7 @@ namespace GlobeAuction.Models
         public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
     }
 
-    public class NotifyAllWinnersViewModel
+    public class NotifyResultViewModel
     {
         public bool WasSuccessful { get { return MessagesFailed == 0; } }
         public string ErrorMessage { get; set; }
@@ -282,6 +282,8 @@ namespace GlobeAuction.Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        public bool HasTaxReceiptBeenEmailed { get; set; }
 
         public virtual List<DonationItem> DonationItems { get; set; }
     }

@@ -1,0 +1,34 @@
+﻿@model GlobeAuction.Models.NotifyResultViewModel
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
+@{
+    ViewBag.Title = "Email Tax Receipts to Donors";
+}
+
+<h2>Email Tax Receipts to Donors</h2>
+
+@if (Model.WasSuccessful)
+{
+    <div class="alert-success alert">
+        The system sent <b>@Model.MessagesSent</b> emails to donors.
+        The donors have all been updated such that if you need to re-send messages again it will
+        only send to the donors that haven't been previously emailed.
+        <br/>
+        Note that we only emailed donors with items that have dollar values.
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        The system sent <b>@Model.MessagesSent</b> emails to the donors.
+        <b>@Model.MessagesFailed</b> donors could not be emailed due to a system error: @Model.ErrorMessage
+        <br />
+        The "Emailed" flags have been updated so you can do this action again in order to send messages
+        to the donors that could not be notified.  Note that we are limited in the number of emails
+        we can send at a time so you might have to wait 24 hours to send more emails.
+        <br />
+        Note that we only emailed donors with items that have dollar values.
+    </div>
+}

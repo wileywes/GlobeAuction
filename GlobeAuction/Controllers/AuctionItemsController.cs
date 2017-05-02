@@ -307,7 +307,7 @@ namespace GlobeAuction.Controllers
             var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
             var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false && w.Bidder.IsCheckoutNudgeEmailSent == false).ToList();
 
-            var model = new NotifyAllWinnersViewModel();
+            var model = new NotifyResultViewModel();
             DoEmailWinners(winnersToEmail, model, false);
 
             return View(model);
@@ -319,13 +319,13 @@ namespace GlobeAuction.Controllers
             var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
             var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false).ToList();
 
-            var model = new NotifyAllWinnersViewModel();
+            var model = new NotifyResultViewModel();
             DoEmailWinners(winnersToEmail, model, true);
 
             return View(model);
         }
 
-        private void DoEmailWinners(List<WinningsByBidder> winnersToEmail, NotifyAllWinnersViewModel model, bool isAfterEvent)
+        private void DoEmailWinners(List<WinningsByBidder> winnersToEmail, NotifyResultViewModel model, bool isAfterEvent)
         {
             var emailHelper = new EmailHelper();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
@@ -358,7 +358,7 @@ namespace GlobeAuction.Controllers
             var urlHelper = new TinyUrlHelper();
             var winnersToNotify = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false && w.Bidder.IsCheckoutNudgeTextSent == false).ToList();
 
-            var model = new NotifyAllWinnersViewModel();
+            var model = new NotifyResultViewModel();
             foreach (var winner in winnersToNotify)
             {
                 //for (int i = 0; i < 100; i++)

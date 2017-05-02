@@ -64,5 +64,7 @@ namespace GlobeAuction.Models
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<StoreItem> StoreItems { get; set; }
         public DbSet<StoreItemPurchase> StoreItemPurchases { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.Donor> Donors { get; set; }
     }
 }

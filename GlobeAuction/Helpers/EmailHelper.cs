@@ -110,6 +110,15 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Auction Checkout", body);
         }
 
+        public void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude)
+        {
+            var body = "This is a test email receipt.";
+            itemsToInclude.ForEach(i => body += "<br/><br/>" + i.Title + " (" + i.DollarValue.Value.ToString("c") + ")");
+            var total = itemsToInclude.Sum(i => i.DollarValue.Value);
+
+            SendEmail("williams.wes@gmail.com", "TEST Donor Receipt", body);
+        }
+
         private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines, bool isAfterEvent)
         {
             var template = isAfterEvent ? "auctionWinningsNudgeAfterEvent" : "auctionWinningsNudge";
