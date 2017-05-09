@@ -80,7 +80,7 @@ namespace GlobeAuction.Controllers
                 try
                 {
                     //only include items that have value
-                    var itemsToInclude = donor.DonationItems.Where(d => d.DollarValue.HasValue).ToList();
+                    var itemsToInclude = donor.DonationItems.Where(d => d.DollarValue.HasValue && !d.IsDeleted).ToList();
 
                     //skip this guy if no items had a dollar value
                     if (!itemsToInclude.Any()) continue;

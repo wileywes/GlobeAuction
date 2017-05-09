@@ -20,6 +20,7 @@ namespace GlobeAuction.Helpers
         private static readonly string _siteName = ConfigurationManager.AppSettings["SiteName"];
         private static readonly string _siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
         private static readonly string _allEmailBcc = ConfigurationManager.AppSettings["AllEmailBcc"];
+        private static readonly string _donorReceiptEmailBcc = ConfigurationManager.AppSettings["DonorReceiptEmailBcc"];
         private readonly string _baseFilePath;
 
 
@@ -112,11 +113,32 @@ namespace GlobeAuction.Helpers
 
         public void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude)
         {
-            var body = "This is a test email receipt.";
-            itemsToInclude.ForEach(i => body += "<br/><br/>" + i.Title + " (" + i.DollarValue.Value.ToString("c") + ")");
-            var total = itemsToInclude.Sum(i => i.DollarValue.Value);
+            var body = GetDonorTaxReceiptEmail(itemsToInclude.Sum(i => i.DollarValue.Value),
+                donor.BusinessName,
+                itemsToInclude.Select(d => new Tuple<string, decimal>(d.Title, d.DollarValue.Value)).ToList());
 
-            SendEmail("williams.wes@gmail.com", "TEST Donor Receipt", body);
+            SendEmail("williams.wes@gmail.com", "Thanks for your contribution to \"An Evening Around the GLOBE\"", body, false, _donorReceiptEmailBcc);
+        }
+
+        private string GetDonorTaxReceiptEmail(decimal totalDonated, string donorName, List<Tuple<string, decimal>> donations)
+        {
+            var body = GetEmailBody("donorReceipt");
+
+            var lineTemplate = GetEmailBody("donorReceiptLine");
+            
+            body = ReplaceToken("DonationTotal", totalDonated.ToString("C"), body);
+            body = ReplaceToken("DonorName", donorName, body);
+            body = ReplaceToken("CurrentDate", DateTime.Now.Date.ToString("D"), body);
+
+            var linesHtml = string.Empty;
+            foreach (var line in donations)
+            {
+                linesHtml += ReplaceToken("LineName", line.Item1, ReplaceToken("LinePrice", line.Item2.ToString("C"), lineTemplate));
+            }
+
+            body = ReplaceToken("DonationLines", linesHtml, body);
+
+            return body;
         }
 
         private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines, bool isAfterEvent)
@@ -202,10 +224,10 @@ namespace GlobeAuction.Helpers
 
         public void SendEmail(string to, string subject, string body)
         {
-            SendEmail(to, subject, body, true);
+            SendEmail(to, subject, body, true, null);
         }
 
-        public void SendEmail(string to, string subject, string body, bool includeAllEmailBcc)
+        public void SendEmail(string to, string subject, string body, bool includeAllEmailBcc, string additionalBccList)
         {
             var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
             {
@@ -217,6 +239,12 @@ namespace GlobeAuction.Helpers
             if (!string.IsNullOrEmpty(_allEmailBcc) && includeAllEmailBcc)
             {
                 var addresses = _allEmailBcc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                addresses.ToList().ForEach(a => msg.Bcc.Add(a));
+            }
+
+            if (!string.IsNullOrEmpty(additionalBccList))
+            {
+                var addresses = additionalBccList.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 addresses.ToList().ForEach(a => msg.Bcc.Add(a));
             }
 
