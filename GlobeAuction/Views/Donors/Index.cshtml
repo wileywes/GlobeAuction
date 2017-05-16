@@ -80,7 +80,7 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.HasTaxReceiptBeenEmailed)
+                    @(item.HasTaxReceiptBeenEmailed ? "Yes" : "No")
                 </td>
                 <td>
                     @Html.DisplayFor(m => item.DonationItems.Count)
@@ -96,13 +96,13 @@
 
 
 <script type="text/javascript">
-    
+
     var isAdmin = false;
 
     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
     {
         @:isAdmin = true;
-                            }
+                                }
 
     $(document).ready(function () {
         var auctionItemsDataTable = $('#donorsTable').dataTable({
