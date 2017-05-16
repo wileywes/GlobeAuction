@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Web;
 
 namespace GlobeAuction.Helpers
@@ -113,11 +114,15 @@ namespace GlobeAuction.Helpers
 
         public void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude)
         {
+            var headerPath = Path.Combine(_baseFilePath, @"Content\EmailTemplates\inlined\thankyouheader.jpg");
             var body = GetDonorTaxReceiptEmail(itemsToInclude.Sum(i => i.DollarValue.Value),
                 donor.BusinessName,
                 itemsToInclude.Select(d => new Tuple<string, decimal>(d.Title, d.DollarValue.Value)).ToList());
 
-            SendEmail("williams.wes@gmail.com", "Thanks for your contribution to \"An Evening Around the GLOBE\"", body, false, _donorReceiptEmailBcc);
+            var imagesToEmbed = new Dictionary<string, string> { { "<!--%HeaderImage-->", headerPath } };
+
+            SendEmail(donor.Email, "Thanks for your contribution to \"An Evening Around the GLOBE\"", body, 
+                false, _donorReceiptEmailBcc, imagesToEmbed);
         }
 
         private string GetDonorTaxReceiptEmail(decimal totalDonated, string donorName, List<Tuple<string, decimal>> donations)
@@ -224,10 +229,11 @@ namespace GlobeAuction.Helpers
 
         public void SendEmail(string to, string subject, string body)
         {
-            SendEmail(to, subject, body, true, null);
+            SendEmail(to, subject, body, true, null, null);
         }
 
-        public void SendEmail(string to, string subject, string body, bool includeAllEmailBcc, string additionalBccList)
+        public void SendEmail(string to, string subject, string body, bool includeAllEmailBcc, string additionalBccList,
+            Dictionary<string, string> imagesToEmbedByTag)
         {
             var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
             {
@@ -248,6 +254,14 @@ namespace GlobeAuction.Helpers
                 addresses.ToList().ForEach(a => msg.Bcc.Add(a));
             }
 
+            if (imagesToEmbedByTag != null && imagesToEmbedByTag.Any())
+            {
+                foreach(var imgPair in imagesToEmbedByTag)
+                {
+                    AddEmbeddedImage(msg, imgPair.Key, imgPair.Value);
+                }
+            }
+
             var smtp = new SmtpClient("smtp.gmail.com", 587)
             {
                 Credentials = new NetworkCredential(_gmailUsername, _gmailPassword),
@@ -255,6 +269,19 @@ namespace GlobeAuction.Helpers
             };
 
             Utilities.RetryIt(attemptNum => smtp.Send(msg), "SendEmail", 3);
+        }
+
+        private void AddEmbeddedImage(MailMessage msg, string imageTagInHtmlBody, string imageFilePath)
+        {
+            var inline = new LinkedResource(imageFilePath);
+            inline.ContentId = Guid.NewGuid().ToString();
+            inline.ContentType = new ContentType("image/jpg");
+            msg.Body = msg.Body.Replace(imageTagInHtmlBody, @"<img src='cid:" + inline.ContentId + @"'/>");
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(msg.Body, null, MediaTypeNames.Text.Html);
+            alternateView.LinkedResources.Add(inline);
+
+            msg.AlternateViews.Add(alternateView);
         }
     }
 }

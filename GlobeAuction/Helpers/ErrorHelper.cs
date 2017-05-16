@@ -47,7 +47,7 @@ namespace GlobeAuction.Helpers
                     GetErrorParam("Referrer", request.UrlReferrer) +
                     GetErrorParam("Exception", lastException);
 
-                new EmailHelper().SendEmail("williams.wes@gmail.com", "Auction Site Error", body, false, null);
+                new EmailHelper().SendEmail("williams.wes@gmail.com", "Auction Site Error", body, false, null, null);
             }
             catch (Exception)
             { }

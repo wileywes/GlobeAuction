@@ -408,6 +408,7 @@
     <Content Include="Content\EmailTemplates\inlined\invoiceLine.html" />
     <Content Include="Content\EmailTemplates\inlined\invoicePaid.html" />
     <Content Include="Content\EmailTemplates\inlined\billing.html" />
+    <Content Include="Content\EmailTemplates\inlined\thankyouheader.jpg" />
     <Content Include="Content\EmailTemplates\styles.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
@@ -514,7 +515,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="App_Data\Secrets\AppSettingsSecrets.config" />
+    <Content Include="App_Data\Secrets\AppSettingsSecrets.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\fontawesome-webfont.woff" />
