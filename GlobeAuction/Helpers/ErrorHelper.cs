@@ -16,6 +16,7 @@ namespace GlobeAuction.Helpers
             if (HttpContext.Current.User != null && HttpContext.Current.User.Identity != null) user = HttpContext.Current.User.Identity.GetUserName();
 
             if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
+            if (lastException.Message.Contains("was not found or does not implement IController.")) return;
 
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
