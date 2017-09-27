@@ -17,6 +17,7 @@ namespace GlobeAuction.Helpers
 
             if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
             if (lastException.Message.Contains("was not found or does not implement IController.")) return;
+            if (lastException.Message.Contains("The requested resource can only be accessed via SSL")) return;
 
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
