@@ -2,6 +2,6 @@
 {
     public static  class Constants
     {
-        public const bool IsTicketPurchaseEnabled = false;
+        public const bool IsTicketPurchaseEnabled = true;
     }
 }

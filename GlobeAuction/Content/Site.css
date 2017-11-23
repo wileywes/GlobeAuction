@@ -1,7 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    color: #21375E;
+    color: #004f21;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -33,13 +33,13 @@ textarea {
 @media (min-width: 767px) {
     .navbar-logo {
         min-height: 152px;
-        background: url("/Content/Images/logo_web.jpg") center 0px no-repeat;
+        background: url("/Content/Images/logo_web.gif") center 0px no-repeat;
     }
 
     body {
         padding-top: 155px;
         padding-bottom: 20px;
-        color: #21375E;
+        color: #004f21;
     }
     
     .navbar-nav > li > a {
@@ -62,7 +62,7 @@ textarea {
 }
 
 .navbar {
-    background-color: #21375E;
+    background-color: #004f21;
 }
 
 .nav > li.disabled > a {

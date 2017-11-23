@@ -390,9 +390,13 @@
     <Content Include="App_Data\aspnet-GlobeAuction-20161005062405_log.ldf">
       <DependentUpon>aspnet-GlobeAuction-20161005062405.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\Backup and Create new tables for new year.sql" />
+    <Content Include="App_Data\Category Updates Feb 24.sql" />
     <Content Include="App_Data\Identity queries.sql" />
     <Content Include="App_Data\bootstrap-social.css" />
     <Content Include="App_Data\Reports for Team.sql" />
+    <Content Include="App_Data\Reseed Bidder IDs.sql" />
+    <Content Include="App_Data\Transaction queries.sql" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\EmailTemplates\action.html" />
@@ -420,14 +424,14 @@
     <Content Include="Content\Images\details_close.png" />
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\gold_color#.jpg" />
-    <Content Include="Content\Images\icon01.jpg" />
-    <Content Include="Content\Images\icon02.jpg" />
-    <Content Include="Content\Images\icon03.jpg" />
-    <Content Include="Content\Images\icon04.jpg" />
+    <Content Include="Content\Images\icon01.gif" />
+    <Content Include="Content\Images\icon02.gif" />
+    <Content Include="Content\Images\icon03.gif" />
+    <Content Include="Content\Images\icon04.gif" />
     <Content Include="Content\Images\image_home.jpg" />
-    <Content Include="Content\Images\logo_web.jpg" />
-    <Content Include="Content\Images\logo_web_50.jpg" />
-    <Content Include="Content\Images\payicon.jpg" />
+    <Content Include="Content\Images\logo_web.gif" />
+    <Content Include="Content\Images\logo_web_50.gif" />
+    <Content Include="Content\Images\payicon.gif" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />
     <Content Include="Content\Images\web_auction 2017_preview.jpg" />
