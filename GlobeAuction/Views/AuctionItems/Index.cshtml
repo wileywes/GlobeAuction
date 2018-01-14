@@ -26,6 +26,8 @@
 
 <p>
     @Html.ActionLink("Enter a New Donation", "Create", "DonationItems")
+    <br/>
+    <a href="#donationItemsAnchor">Donation Items List</a>
 </p>
 
 
@@ -120,6 +122,8 @@
 
 <br /><br />
 
+<a name="donationItemsAnchor"></a>
+
 <h2>Donation Items</h2>
 <p>These need to be set up for the auction and will then appear in the table above</p>
 
@@ -185,6 +189,7 @@
         var auctionItemsDataTable = $('#auctionItemsTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Bfrtip',
+            stateSave: true,
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -253,6 +258,7 @@
         $('#donationItemsTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Bfrtip',
+            stateSave: true,
             buttons: [
                 {
                     extend: 'excelHtml5',

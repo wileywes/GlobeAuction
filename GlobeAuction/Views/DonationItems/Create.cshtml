@@ -8,7 +8,7 @@
 <h2>Auction Donation</h2>
 
 <h4>Note: Items are due by February 13th. They can be dropped off in the front office of either campus clearly marked with your name and email. </h4>
-<br/>
+<br />
 
 @using (Html.BeginForm())
 {
@@ -59,6 +59,11 @@
 
         <h4>Donor Information</h4>
         <hr />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Copy From Solicitor" class="btn btn-sm" id="copyFromSolicitor" />
+            </div>
+        </div>
         <div class="form-group">
             @Html.MyLabelFor(model => model.Donor.BusinessName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -210,6 +215,17 @@
         </div>
     </div>
 }
+
+<script type="text/javascript">
+    $("#copyFromSolicitor").click(function () {
+        $(@Html.IdFor(m => m.Donor.ContactName)).val(
+            $(@Html.IdFor(m => m.Solicitor.FirstName)).val() + ' ' + $(@Html.IdFor(m => m.Solicitor.LastName)).val());
+        $(@Html.IdFor(m => m.Donor.Email)).val(
+            $(@Html.IdFor(m => m.Solicitor.Email)).val());
+        $(@Html.IdFor(m => m.Donor.Phone)).val(
+            $(@Html.IdFor(m => m.Solicitor.Phone)).val());
+    });
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
