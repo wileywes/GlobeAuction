@@ -71,9 +71,9 @@ namespace GlobeAuction.Controllers
         }
 
         [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
-        public ActionResult LookupBidder(int bidderId, string bidderLastName)
+        public ActionResult LookupBidder(int bidderNumber, string bidderLastName)
         {
-            var bidder = db.Bidders.FirstOrDefault(b => b.BidderId == bidderId && b.LastName.Equals(bidderLastName, StringComparison.OrdinalIgnoreCase));
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderNumber == bidderNumber && b.LastName.Equals(bidderLastName, StringComparison.OrdinalIgnoreCase));
 
             if (bidder == null)
             {
@@ -84,6 +84,7 @@ namespace GlobeAuction.Controllers
                 {
                     wasFound = true,
                     bidderId = bidder.BidderId,
+                    bidderNumber = bidder.BidderNumber,
                     firstName = bidder.FirstName,
                     lastName = bidder.LastName,
                     phone = bidder.Phone,

@@ -15,7 +15,12 @@ namespace GlobeAuction.Models
     
     public class WinnerViewModel
     {
+        [Display(Name = "ID")]
         public int BidderId { get; set; }
+
+        [Required]
+        [Display(Name = "Bidder #")]
+        public int BidderNumber { get; set; }
 
         [Required]
         [Display(Name = "First Name")]
@@ -52,6 +57,7 @@ namespace GlobeAuction.Models
         public WinnerViewModel(Bidder bidder, List<AuctionItem> itemsWon)
         {
             this.BidderId = bidder.BidderId;
+            this.BidderNumber = bidder.BidderNumber;
             this.FirstName = bidder.FirstName;
             this.LastName = bidder.LastName;
             this.Email = bidder.Email;

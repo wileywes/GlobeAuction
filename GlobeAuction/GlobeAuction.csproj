@@ -371,9 +371,9 @@
     <Compile Include="Migrations\201705020141400_DonorTaxReceiptFlag.Designer.cs">
       <DependentUpon>201705020141400_DonorTaxReceiptFlag.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801191410088_PaddleNumOnBidderTable.cs" />
-    <Compile Include="Migrations\201801191410088_PaddleNumOnBidderTable.Designer.cs">
-      <DependentUpon>201801191410088_PaddleNumOnBidderTable.cs</DependentUpon>
+    <Compile Include="Migrations\201801191452262_AddBidderNumberColumn.cs" />
+    <Compile Include="Migrations\201801191452262_AddBidderNumberColumn.Designer.cs">
+      <DependentUpon>201801191452262_AddBidderNumberColumn.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -744,8 +744,8 @@
     <EmbeddedResource Include="Migrations\201705020141400_DonorTaxReceiptFlag.resx">
       <DependentUpon>201705020141400_DonorTaxReceiptFlag.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801191410088_PaddleNumOnBidderTable.resx">
-      <DependentUpon>201801191410088_PaddleNumOnBidderTable.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801191452262_AddBidderNumberColumn.resx">
+      <DependentUpon>201801191452262_AddBidderNumberColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

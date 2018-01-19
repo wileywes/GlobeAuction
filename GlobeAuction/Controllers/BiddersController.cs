@@ -17,6 +17,7 @@ namespace GlobeAuction.Controllers
 {
     public class BiddersController : Controller
     {
+        private const int StartingBidderNumber = 500;
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Bidders
@@ -89,6 +90,8 @@ namespace GlobeAuction.Controllers
             {
                 var bidder = Mapper.Map<Bidder>(bidderViewModel);
 
+                var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(StartingBidderNumber - 1).Max() + 1;
+                bidder.BidderNumber = nextBidderNumber;
                 bidder.CreateDate = bidder.UpdateDate = DateTime.Now;
                 bidder.UpdateBy = bidder.Email;
 
@@ -295,6 +298,42 @@ namespace GlobeAuction.Controllers
             Bidder bidder = db.Bidders.Find(id);
             bidder.IsDeleted = true;
             db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost, ActionName("SubmitBiddersAction")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult SubmitBiddersAction(string biddersAction, string startingPaddleNumber)
+        {
+            switch (biddersAction)
+            {
+                case "RenumberBidderPaddles":
+                    var countOfBidders = db.Bidders.Count();
+                    var maxPaddleNumberNow = db.Bidders.Max(b => b.BidderNumber);
+                    var startingPaddleNumberInt = int.Parse(startingPaddleNumber);
+                    var startOfUpperSet = Math.Max(startingPaddleNumberInt + countOfBidders, maxPaddleNumberNow) + 1;
+
+                    var currentBidNum = startOfUpperSet;
+                    //set all of them up high first
+                    foreach (var bidder in db.Bidders)
+                    {
+                        bidder.BidderNumber = currentBidNum;
+                        currentBidNum++;
+                    }
+                    db.SaveChanges();
+
+                    //set them to the new values now
+                    currentBidNum = startingPaddleNumberInt;
+                    foreach (var bidder in db.Bidders.OrderBy(b => b.LastName).ThenBy(b => b.FirstName))
+                    {
+                        bidder.BidderNumber = currentBidNum;
+                        currentBidNum++;
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+            }
+
             return RedirectToAction("Index");
         }
 

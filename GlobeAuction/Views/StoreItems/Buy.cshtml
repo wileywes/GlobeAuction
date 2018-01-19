@@ -82,7 +82,7 @@ else
                 <div class="form-group">
                     @Html.Label("Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBox("bidderId")
+                        @Html.TextBox("bidderNumber")
                     </div>
                 </div>
                 <div class="form-group">
@@ -170,17 +170,17 @@ else
 <script type="text/javascript">
 
     $('#btnLookupBidder').click(function () {
-        var bidderId = $('#bidderId').val();
+        var bidderNumber = $('#bidderNumber').val();
         var bidderLastName = $('#bidderLastName').val();
 
-        if (bidderId == null || bidderLastName == '') {
+        if (bidderNumber == null || bidderLastName == '') {
             alert('You must enter the bidder # and last name to do a lookup.')
         }
         else {
             $('#winningBidderId').val('');
             $('#winningBidAmount').val('');
 
-            $.getJSON('@Url.Action("LookupBidder")', { bidderId: bidderId, bidderLastName: bidderLastName }, function (bidderData) {
+            $.getJSON('@Url.Action("LookupBidder")', { bidderNumber: bidderNumber, bidderLastName: bidderLastName }, function (bidderData) {
                 if (bidderData.wasFound) {
                     $('#FirstName').val(bidderData.firstName);
                     $('#LastName').val(bidderData.lastName);

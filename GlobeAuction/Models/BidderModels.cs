@@ -9,7 +9,12 @@ namespace GlobeAuction.Models
 {
     public class BidderForList
     {
+        [Display(Name = "ID")]
         public int BidderId { get; set; }
+
+        [Required]
+        [Display(Name = "Bidder #")]
+        public int BidderNumber { get; set; }
 
         [Required]
         [Display(Name ="First Name")]
@@ -59,6 +64,7 @@ namespace GlobeAuction.Models
         public BidderForList(Bidder b)
         {
             BidderId = b.BidderId;
+            BidderNumber = b.BidderNumber;
             FirstName = b.FirstName;
             LastName = b.LastName;
             Phone = b.Phone;
@@ -121,9 +127,8 @@ namespace GlobeAuction.Models
     {
         public int BidderId { get; set; }
         
-        //[Index("IX_Bidder_PaddleNumber", 1, IsUnique = true)]
-        //index custom-created in migration script to do filtered index
-        public int? PaddleNumber { get; set; }
+        [Index("IX_Bidder_BidderNumber", 1, IsUnique = true)]
+        public int BidderNumber { get; set; }
 
         [Required]
         public string FirstName { get; set; }
@@ -190,7 +195,12 @@ namespace GlobeAuction.Models
 
     public class BidderViewModel
     {
+        [Display(Name = "ID")]
         public int BidderId { get; set; }
+
+        [Required]
+        [Display(Name = "Bidder #")]
+        public int BidderNumber { get; set; }
 
         [Required]
         [Display(Name = "First Name")]

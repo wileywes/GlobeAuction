@@ -22,7 +22,7 @@
                 @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BidderId)
+                @Html.DisplayNameFor(model => model.BidderNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -57,7 +57,7 @@
                     @(item.WasMarkedPaidManually ? "Yes" : "No")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BidderId)
+                    @Html.DisplayFor(modelItem => item.BidderNumber)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)

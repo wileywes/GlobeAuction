@@ -71,7 +71,7 @@
                     @Html.DisplayFor(modelItem => item.PurchaseType)
                 </td>
                 <td>
-                    @(item.Bidder != null ? item.Bidder.BidderId.ToString() : "")
+                    @(item.Bidder != null ? item.Bidder.BidderNumber.ToString() : "")
                 </td>
                 <td>
                     @(item.Invoice != null ? item.Invoice.InvoiceId.ToString() : "")

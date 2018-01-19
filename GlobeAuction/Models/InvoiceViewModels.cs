@@ -9,7 +9,7 @@ namespace GlobeAuction.Models
     {
         [Required]
         [Display(Name = "Bidder #")]
-        public int? BidderId { get; set; }
+        public int? BidderNumber { get; set; }
         [Required]
         public string LastName { get; set; }
         [Required]
@@ -19,8 +19,9 @@ namespace GlobeAuction.Models
 
     public class ReviewBidderWinningsViewModel
     {
-        [Display(Name = "Bidder #")]
         public int BidderId { get; set; }
+        [Display(Name = "Bidder #")]
+        public int BidderNumber { get; set; }
         public string BidderName { get; set; }
         [DataType(DataType.EmailAddress)]
         public string BidderEmail { get; set; }
@@ -40,6 +41,7 @@ namespace GlobeAuction.Models
         public ReviewBidderWinningsViewModel(Bidder bidder, IEnumerable<Invoice> invoices, IEnumerable<AuctionItem> auctionWinningsForBidderNotInInvoice, IEnumerable<StoreItemPurchaseViewModel> storeItems)
         {
             BidderId = bidder.BidderId;
+            BidderNumber = bidder.BidderNumber;
             BidderName = bidder.FirstName + "  " + bidder.LastName;
             BidderEmail = bidder.Email;
 
@@ -60,8 +62,11 @@ namespace GlobeAuction.Models
         [Display(Name = "Paid Marked Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
-        [Display(Name = "Bidder #")]
         public int? BidderId { get; set; }
+
+        [Display(Name = "Bidder #")]
+        public int? BidderNumber { get; set; }
+
         public string Name { get; set; }
         public string Email { get; set; }
 
@@ -85,7 +90,11 @@ namespace GlobeAuction.Models
 
         public InvoiceListViewModel(Invoice invoice)
         {
-            if (invoice.Bidder != null) BidderId = invoice.Bidder.BidderId;
+            if (invoice.Bidder != null)
+            {
+                BidderId = invoice.Bidder.BidderId;
+                BidderNumber = invoice.Bidder.BidderNumber;
+            }
             
             Name = invoice.FirstName + "  " + invoice.LastName;
             Email = invoice.Email;

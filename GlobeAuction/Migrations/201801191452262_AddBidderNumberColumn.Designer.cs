@@ -7,13 +7,13 @@ namespace GlobeAuction.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class PaddleNumOnBidderTable : IMigrationMetadata
+    public sealed partial class AddBidderNumberColumn : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(PaddleNumOnBidderTable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddBidderNumberColumn));
         
         string IMigrationMetadata.Id
         {
-            get { return "201801191410088_PaddleNumOnBidderTable"; }
+            get { return "201801191452262_AddBidderNumberColumn"; }
         }
         
         string IMigrationMetadata.Source

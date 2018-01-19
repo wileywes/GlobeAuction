@@ -72,7 +72,7 @@ namespace GlobeAuction.Controllers
             {
                 var bidder = db.Bidders.FirstOrDefault(b =>
                     b.IsDeleted == false &&
-                    b.BidderId == invoiceLookupModel.BidderId &&
+                    b.BidderNumber == invoiceLookupModel.BidderNumber &&
                     b.LastName.Equals(invoiceLookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
                     (!requireEmailMatch || b.Email.Equals(invoiceLookupModel.Email, StringComparison.OrdinalIgnoreCase)));
 

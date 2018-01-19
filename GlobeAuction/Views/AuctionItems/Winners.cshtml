@@ -68,11 +68,11 @@
                 <td>
                     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
                     {
-                        @Html.ActionLink(winner.BidderId.ToString(), "Edit", "Bidders", new { id = winner.BidderId }, new { target = "_blank" })
+                        @Html.ActionLink(winner.BidderNumber.ToString(), "Edit", "Bidders", new { id = winner.BidderId }, new { target = "_blank" })
                     }
                     else
                     {
-                        @Html.DisplayFor(modelItem => winner.BidderId)
+                        @Html.DisplayFor(modelItem => winner.BidderNumber)
                     }
                 </td>
                 <td>

@@ -24,6 +24,13 @@ namespace GlobeAuction.Models
         public decimal Price { get; set; }
 
         [Required]
+        public int Quantity { get; set; }
+
+        [Required]
+        [Display(Name = "Is Raffle Ticket")]
+        public bool IsRaffleTicket { get; set; }
+
+        [Required]
         [Display(Name = "Can Purchase in Bidder Registration")]
         public bool CanPurchaseInBidderRegistration { get; set; }
 
@@ -66,6 +73,12 @@ namespace GlobeAuction.Models
         [Required]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Price { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
+        public bool IsRaffleTicket { get; set; }
 
         [Required]
         public bool CanPurchaseInBidderRegistration { get; set; }
