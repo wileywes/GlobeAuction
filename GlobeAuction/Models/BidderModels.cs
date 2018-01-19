@@ -121,8 +121,9 @@ namespace GlobeAuction.Models
     {
         public int BidderId { get; set; }
         
-        [Index("IX_Bidder_PaddleNumber", 1, IsUnique = true)]
-        public int PaddleNumber { get; set; }
+        //[Index("IX_Bidder_PaddleNumber", 1, IsUnique = true)]
+        //index custom-created in migration script to do filtered index
+        public int? PaddleNumber { get; set; }
 
         [Required]
         public string FirstName { get; set; }

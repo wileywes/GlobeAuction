@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -369,6 +370,10 @@
     <Compile Include="Migrations\201705020141400_DonorTaxReceiptFlag.cs" />
     <Compile Include="Migrations\201705020141400_DonorTaxReceiptFlag.Designer.cs">
       <DependentUpon>201705020141400_DonorTaxReceiptFlag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801191410088_PaddleNumOnBidderTable.cs" />
+    <Compile Include="Migrations\201801191410088_PaddleNumOnBidderTable.Designer.cs">
+      <DependentUpon>201801191410088_PaddleNumOnBidderTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -738,6 +743,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705020141400_DonorTaxReceiptFlag.resx">
       <DependentUpon>201705020141400_DonorTaxReceiptFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801191410088_PaddleNumOnBidderTable.resx">
+      <DependentUpon>201801191410088_PaddleNumOnBidderTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
