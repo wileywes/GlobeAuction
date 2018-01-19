@@ -243,7 +243,7 @@
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\InvoiceRepository.cs" />
-    <Compile Include="Helpers\ItemsHelper.cs" />
+    <Compile Include="Helpers\ItemsRepository.cs" />
     <Compile Include="Helpers\LabelExtensions.cs" />
     <Compile Include="Helpers\RequiredIfHasValueAttribute.cs" />
     <Compile Include="Helpers\RequiredIfAttribute.cs" />
@@ -374,6 +374,10 @@
     <Compile Include="Migrations\201801191452262_AddBidderNumberColumn.cs" />
     <Compile Include="Migrations\201801191452262_AddBidderNumberColumn.Designer.cs">
       <DependentUpon>201801191452262_AddBidderNumberColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801192024087_AddRaffleTicketFlagToStoreItem.cs" />
+    <Compile Include="Migrations\201801192024087_AddRaffleTicketFlagToStoreItem.Designer.cs">
+      <DependentUpon>201801192024087_AddRaffleTicketFlagToStoreItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -746,6 +750,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801191452262_AddBidderNumberColumn.resx">
       <DependentUpon>201801191452262_AddBidderNumberColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801192024087_AddRaffleTicketFlagToStoreItem.resx">
+      <DependentUpon>201801192024087_AddRaffleTicketFlagToStoreItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

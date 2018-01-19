@@ -1,4 +1,5 @@
-﻿using GlobeAuction.Models;
+﻿using AutoMapper;
+using GlobeAuction.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -93,6 +94,41 @@ namespace GlobeAuction.Helpers
                 });
             }
             return results;
+        }
+
+        public List<StoreItemPurchase> GetStorePurchasesWithIndividualizedRaffleTickets(List<StoreItemPurchaseViewModel> purchaseViewModels)
+        {
+            var purchasesToReturn = new List<StoreItemPurchase>();
+
+            if (purchaseViewModels != null)
+            {
+                foreach (var storeItemPurchase in purchaseViewModels.Where(s => s.Quantity > 0))
+                {
+                    if (storeItemPurchase.StoreItem.IsRaffleTicket)
+                    {
+                        //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
+                        for (int i = 0; i < storeItemPurchase.Quantity; i++)
+                        {
+                            var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
+                            lineItem.Quantity = 1;
+                            purchasesToReturn.Add(lineItem);
+                        }
+                    }
+                    else
+                    {
+                        var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
+                        purchasesToReturn.Add(lineItem);
+                    }
+                }
+            }
+
+            //reload StoreItem info from the database so we aren't modifying it (there's got to be a better way to do this)
+            foreach(var sip in purchasesToReturn)
+            {
+                sip.StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId);
+            }
+
+            return purchasesToReturn;
         }
     }
 

@@ -35,6 +35,9 @@
                 @Html.DisplayNameFor(m => m.PurchaseType)
             </th>
             <th>
+                Raffle #
+            </th>
+            <th>
                 Bidder #
             </th>
             <th>
@@ -45,38 +48,41 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StoreItem.Title)
-                </td>
-                <td>
-                    @(item.IsPaid ? "Yes" : "No")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PricePaid)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PurchaseDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PurchaseType)
-                </td>
-                <td>
-                    @(item.Bidder != null ? item.Bidder.BidderNumber.ToString() : "")
-                </td>
-                <td>
-                    @(item.Invoice != null ? item.Invoice.InvoiceId.ToString() : "")
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StoreItem.Title)
+            </td>
+            <td>
+                @(item.IsPaid ? "Yes" : "No")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePaid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PurchaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PurchaseType)
+            </td>
+            <td>
+                @(item.StoreItem.IsRaffleTicket && item.IsPaid ? item.StoreItemPurchaseId.ToString("D8") : string.Empty)
+            </td>
+            <td>
+                @(item.Bidder != null ? item.Bidder.BidderNumber.ToString() : "")
+            </td>
+            <td>
+                @(item.Invoice != null ? item.Invoice.InvoiceId.ToString() : "")
+            </td>
+        </tr>
         }
     </tbody>
 </table>

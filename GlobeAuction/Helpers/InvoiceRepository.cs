@@ -65,16 +65,8 @@ namespace GlobeAuction.Helpers
 
         public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, bool markedManually, string updatedBy)
         {
-            var storeItemPurchases = (buyModel.StoreItemPurchases ?? new List<StoreItemPurchaseViewModel>())
-                .Where(s => s.Quantity > 0)
-                .Select(s => Mapper.Map<StoreItemPurchase>(s))
-                .ToList();
-
-            foreach (var sip in storeItemPurchases)
-            {
-                db.Entry(sip.StoreItem).State = EntityState.Unchanged;
-            }
-
+            var storeItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(buyModel.StoreItemPurchases);
+            
             var invoice = new Invoice
             {
                 StoreItemPurchases = storeItemPurchases,

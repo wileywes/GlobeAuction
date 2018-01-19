@@ -17,7 +17,6 @@ namespace GlobeAuction.Controllers
 {
     public class BiddersController : Controller
     {
-        private const int StartingBidderNumber = 500;
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Bidders
@@ -56,20 +55,20 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false).ToList();
+            var raffleItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false && s.IsRaffleTicket).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
             {
                 //remove admin-only ticket types
-                storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
+                raffleItems = raffleItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
-            var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
+            var availableRaffleItems = raffleItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
 
             AddBidderControlInfo();
             var newBidder = new BidderViewModel()
             {
                 AuctionGuests = new List<AuctionGuestViewModel>(Enumerable.Repeat(new AuctionGuestViewModel(), 6)),
                 Students = new List<StudentViewModel>(Enumerable.Repeat(new StudentViewModel(), 4)),
-                StoreItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
+                StoreItemPurchases = availableRaffleItems.Select(si => new StoreItemPurchaseViewModel
                 {
                     StoreItem = si
                 }).ToList()
@@ -90,7 +89,7 @@ namespace GlobeAuction.Controllers
             {
                 var bidder = Mapper.Map<Bidder>(bidderViewModel);
 
-                var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(StartingBidderNumber - 1).Max() + 1;
+                var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
                 bidder.BidderNumber = nextBidderNumber;
                 bidder.CreateDate = bidder.UpdateDate = DateTime.Now;
                 bidder.UpdateBy = bidder.Email;
@@ -98,17 +97,9 @@ namespace GlobeAuction.Controllers
                 //strip out dependents that weren't filled in
                 bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                 bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
+
+                bidder.StoreItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(bidderViewModel.StoreItemPurchases);
                 
-                bidder.StoreItemPurchases = (bidderViewModel.StoreItemPurchases ?? new List<StoreItemPurchaseViewModel>())
-                    .Where(s => s.Quantity > 0)
-                    .Select(s => Mapper.Map<StoreItemPurchase>(s))
-                    .ToList();
-
-                foreach(var sip in bidder.StoreItemPurchases)
-                {
-                    db.Entry(sip.StoreItem).State = EntityState.Unchanged;
-                }
-
                 foreach (var guest in bidder.AuctionGuests)
                 {
                     var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));

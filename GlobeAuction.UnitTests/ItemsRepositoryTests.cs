@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace GlobeAuction.UnitTests
 {
     [TestFixture]
-    public class ItemsHelperTests
+    public class ItemsRepositoryTests
     {
         [Test]
         public void CreateAuctionItemForDonation_SingleItem()
