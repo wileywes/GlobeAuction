@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
 using System.Linq;
 
@@ -119,6 +120,9 @@ namespace GlobeAuction.Models
     public class Bidder
     {
         public int BidderId { get; set; }
+        
+        [Index("IX_Bidder_PaddleNumber", 1, IsUnique = true)]
+        public int PaddleNumber { get; set; }
 
         [Required]
         public string FirstName { get; set; }
