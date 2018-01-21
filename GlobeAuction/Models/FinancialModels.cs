@@ -55,7 +55,7 @@ namespace GlobeAuction.Models
             {
                 var total = 0m;
                 if (AuctionItems.Any()) total = AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0));
-                if (StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(0));
+                if (StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(sip.StoreItem.Price * sip.Quantity));
                 return total;
             }
         }

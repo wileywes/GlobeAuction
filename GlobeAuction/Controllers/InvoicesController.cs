@@ -156,7 +156,7 @@ namespace GlobeAuction.Controllers
                 .Select(sip =>
                 new StoreItemPurchase
                 {
-                    Quantity = sip.Quantity,
+                    Quantity = sip.Quantity,                    
                     StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId)
                 }).ToList();
 
@@ -171,6 +171,66 @@ namespace GlobeAuction.Controllers
             }
             
             return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = invoice.Email });
+        }
+
+        [AllowAnonymous]
+        public ActionResult RemoveAuctionItemFromUnpaidInvoice(int invoiceId, int auctionItemId)
+        {
+            var invoice = db.Invoices.Find(invoiceId);
+            if (invoice == null) return HttpNotFound();
+            if (invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            //grab a copy before we delete the invoice
+            var bidId = invoice.Bidder.BidderId;
+            var bidEmail = invoice.Bidder.Email;
+
+            var item = db.AuctionItems.FirstOrDefault(ai => ai.Invoice != null && ai.Invoice.InvoiceId == invoiceId && ai.AuctionItemId == auctionItemId);
+            if (item == null)
+            {
+                return HttpNotFound();
+            }
+
+            item.Invoice = null;
+            invoice.AuctionItems.Remove(invoice.AuctionItems.First(ai => ai.AuctionItemId == auctionItemId));
+
+            //delete the invoice entirely if there are no more lines on it
+            if (invoice.AuctionItems.Count == 0 && invoice.StoreItemPurchases.Count == 0)
+            {
+                db.Invoices.Remove(invoice);
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
+        }
+
+        [AllowAnonymous]
+        public ActionResult RemoveStoreItemFromUnpaidInvoice(int invoiceId, int sipId)
+        {
+            var invoice = db.Invoices.Find(invoiceId);
+            if (invoice == null) return HttpNotFound();
+            if (invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            //grab a copy before we delete the invoice
+            var bidId = invoice.Bidder.BidderId;
+            var bidEmail = invoice.Bidder.Email;
+
+            var item = invoice.StoreItemPurchases.FirstOrDefault(sip => sip.StoreItemPurchaseId == sipId);
+            if (item == null)
+            {
+                return HttpNotFound();
+            }
+
+            db.StoreItemPurchases.Remove(item);
+
+            //delete the invoice entirely if there are no more lines on it
+            if (invoice.AuctionItems.Count == 0 && invoice.StoreItemPurchases.Count == 0)
+            {
+                db.Invoices.Remove(invoice);
+            }
+
+            db.SaveChanges();
+
+            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
         }
 
         [AllowAnonymous]

@@ -8,6 +8,9 @@ namespace GlobeAuction
         {
             AutoMapper.Mapper.Initialize(c =>
             {
+                c.CreateMap<AuctionItem, AuctionItemViewModel>();
+                c.CreateMap<AuctionItemViewModel, AuctionItem>();
+
                 c.CreateMap<Bidder, BidderViewModel>();
                 c.CreateMap<BidderViewModel, Bidder>();
 

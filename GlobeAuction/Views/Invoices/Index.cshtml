@@ -76,8 +76,9 @@
                 </td>
                 <td>
                     @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
-                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
-                {
+                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) || //admins can delete paid invoices too
+                        (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && item.IsPaid == false))
+                    {
                         @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
                     }
                 </td>

@@ -64,7 +64,7 @@ namespace GlobeAuction.Models
             this.Phone = bidder.Phone;
             this.IsCheckoutNudgeEmailSent = bidder.IsCheckoutNudgeEmailSent;
             this.IsCheckoutNudgeTextSent = bidder.IsCheckoutNudgeTextSent;
-            this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i)).ToList();
+            this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i, bidder.BidderNumber)).ToList();
             AreWinningsAllPaidFor = itemsWon.All(w => w.Invoice != null && w.Invoice.IsPaid);
 
             if (!AreWinningsAllPaidFor)
@@ -137,7 +137,8 @@ namespace GlobeAuction.Models
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
-        
+
+        public List<DonationItem> DonationItems { get; set; }
         public int DonationItemsCount { get; set; }
 
         public bool HasPhysicalItem { get; set; }
@@ -145,7 +146,8 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int DonationItemsTotalValue { get; set; }
 
-        public int? WinningBidderId { get; set; }
+        //winner info
+        public int? WinningBidderNumber { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? WinningBid { get; set; }
 
@@ -154,7 +156,7 @@ namespace GlobeAuction.Models
             //empty for model binding
         }
 
-        public AuctionItemViewModel(AuctionItem i)
+        public AuctionItemViewModel(AuctionItem i, int? winningBidderNumber)
         {
             this.AuctionItemId = i.AuctionItemId;
             this.UniqueItemNumber = i.UniqueItemNumber;
@@ -163,11 +165,12 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
+            this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;
             this.HasPhysicalItem = i.DonationItems.Any(di => di.IsGiftCard == false);
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
             this.WinningBid = i.WinningBid;
-            this.WinningBidderId = i.WinningBidderId;
+            this.WinningBidderNumber = winningBidderNumber;
         }
     }
 

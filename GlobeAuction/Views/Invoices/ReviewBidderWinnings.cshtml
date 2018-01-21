@@ -231,6 +231,10 @@
                                 <th>Title</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
+                                @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                                {
+                                    <th></th>
+                                }
                             </tr>
                         </thead>
                         <tbody>
@@ -250,6 +254,12 @@
                                     <td>
                                         @Html.DisplayFor(m => item.WinningBid)
                                     </td>
+                                    @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                                    {
+                                        <td class="text-nowrap">
+                                            @Html.ActionLink("Remove", "RemoveAuctionItemFromUnpaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, auctionItemId = item.AuctionItemId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                        </td>
+                                    }
                                 </tr>
                             }
                             @foreach (var item in invoice.StoreItemPurchases)
@@ -264,8 +274,14 @@
                                         @Html.DisplayFor(m => item.Quantity)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(m => item.PricePaid)
+                                        @((item.PricePaid ?? item.StoreItem.Price).ToString("C"))
                                     </td>
+                                    @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                                    {
+                                        <td class="text-nowrap">
+                                            @Html.ActionLink("Remove", "RemoveStoreItemFromUnpaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, sipId = item.StoreItemPurchaseId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                        </td>
+                                    }
                                 </tr>
                             }
                             <tr>

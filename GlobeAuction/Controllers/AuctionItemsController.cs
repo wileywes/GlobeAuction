@@ -24,9 +24,22 @@ namespace GlobeAuction.Controllers
             var donationItemIdsInAuctionItem = auctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
             var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
 
+            var bidderIdToNumber = db.Bidders.ToDictionary(b => b.BidderId, b => b.BidderNumber);
+
             var model = new ItemsViewModel
             {
-                AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList(),
+                AuctionItems = auctionItems.Select(i =>
+                {
+                    int? bidderNumber = null;
+                    if (i.WinningBidderId.HasValue)
+                    {
+                        if (bidderIdToNumber.ContainsKey(i.WinningBidderId.Value))
+                            bidderNumber = bidderIdToNumber[i.WinningBidderId.Value];
+                        else
+                            bidderNumber = bidderNumber;
+                    }
+                    return new AuctionItemViewModel(i, bidderNumber);
+                }).ToList(),
                 DonationsNotInAuctionItem = donationItemsNotInAuctionItem.Select(d => new DonationItemViewModel(d)).ToList()
             };
             return View(model);
@@ -76,8 +89,14 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            AddAuctionItemControlInfo(auctionItem);
-            return View(auctionItem);
+            int? bidderNumber = null;
+            if (auctionItem.WinningBidderId.HasValue)
+            {
+                bidderNumber = db.Bidders.First(b => b.BidderId == auctionItem.WinningBidderId.Value).BidderNumber;
+            }
+            var viewModel = new AuctionItemViewModel(auctionItem, bidderNumber);
+            AddAuctionItemControlInfo(viewModel);
+            return View(viewModel);
         }
 
         // POST: AuctionItems/Edit/5
@@ -86,27 +105,49 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult Edit([Bind(Include = "AuctionItemId,UniqueItemNumber,Title,Description,Category,StartingBid,BidIncrement,CreateDate,WinningBidderId,WinningBid")] AuctionItem auctionItem)
+        public ActionResult Edit(AuctionItemViewModel auctionItemModel)
         {
             if (ModelState.IsValid)
             {
-                var isAuctionOnInvoiceAlready = db.AuctionItems.Any(ai => ai.AuctionItemId == auctionItem.AuctionItemId && ai.Invoice != null);
-                if (isAuctionOnInvoiceAlready)
+                var auctionItem = db.AuctionItems.FirstOrDefault(ai => ai.AuctionItemId == auctionItemModel.AuctionItemId);
+                if (auctionItem == null) return HttpNotFound();
+
+                if (auctionItem.Invoice != null)
                 {
                     ModelState.AddModelError("uniqueItemNumber", "Cannot change the item once it's on an invoice.  If this is just testing you can delete the invoice to free up the item again.");
                 }
                 else
                 {
-                    auctionItem.UpdateDate = DateTime.Now;
-                    auctionItem.UpdateBy = User.Identity.GetUserName();
+                    int? winBidderId = null;
+                    if (auctionItemModel.WinningBidderNumber.HasValue)
+                    {
+                        var bidder = db.Bidders.FirstOrDefault(b => b.BidderNumber == auctionItemModel.WinningBidderNumber.Value);
+                        if (bidder == null)
+                        {
+                            ModelState.AddModelError("winningBidderNumber", "This winning bidder number is not recognized.  Make sure you are using the paddle number and not the bidder ID");
+                            AddAuctionItemControlInfo(auctionItemModel);
+                            return View(auctionItemModel);
+                        }
+                        winBidderId = bidder.BidderId;
+                    }
 
-                    db.Entry(auctionItem).State = EntityState.Modified;
+                    //only update the fields from the model that were shown on the page
+                    auctionItem.UniqueItemNumber = auctionItemModel.UniqueItemNumber;
+                    auctionItem.Title = auctionItemModel.Title;
+                    auctionItem.Description = auctionItemModel.Description;
+                    auctionItem.Category = auctionItemModel.Category;
+                    auctionItem.StartingBid = auctionItemModel.StartingBid;
+                    auctionItem.BidIncrement = auctionItemModel.BidIncrement;
+                    auctionItem.WinningBidderId = winBidderId;
+                    auctionItem.WinningBid = auctionItemModel.WinningBid;
+                    auctionItem.UpdateDate = DateTime.Now;
+                    auctionItem.UpdateBy = User.Identity.GetUserName();                    
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }
-            AddAuctionItemControlInfo(auctionItem);
-            return View(auctionItem);
+            AddAuctionItemControlInfo(auctionItemModel);
+            return View(auctionItemModel);
         }
 
         // POST: AuctionItems/RemoveFromBasket/5
@@ -472,7 +513,7 @@ namespace GlobeAuction.Controllers
             base.Dispose(disposing);
         }
 
-        private void AddAuctionItemControlInfo(AuctionItem item)
+        private void AddAuctionItemControlInfo(AuctionItemViewModel item)
         {
             AddAuctionItemCategoryControlInfo(item != null ? item.Category : null);
         }
