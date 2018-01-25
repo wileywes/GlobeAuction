@@ -438,8 +438,7 @@
     <Content Include="Content\Images\icon03.gif" />
     <Content Include="Content\Images\icon04.gif" />
     <Content Include="Content\Images\image_home.jpg" />
-    <Content Include="Content\Images\logo_web.gif" />
-    <Content Include="Content\Images\logo_web_50.gif" />
+    <Content Include="Content\Images\logo_web_shamrock.gif" />
     <Content Include="Content\Images\payicon.gif" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />

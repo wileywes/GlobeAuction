@@ -33,7 +33,7 @@ textarea {
 @media (min-width: 767px) {
     .navbar-logo {
         min-height: 152px;
-        background: url("/Content/Images/logo_web.gif") center 0px no-repeat;
+        background: url("/Content/Images/logo_web_shamrock.gif") center 0px no-repeat;
     }
 
     body {
