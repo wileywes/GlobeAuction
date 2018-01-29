@@ -9,7 +9,8 @@ namespace GlobeAuction.Helpers
     {
         private static readonly string _twilioAccountSid = ConfigurationManager.AppSettings["TwilioAccountSid"];
         private static readonly string _twilioAuthToken = ConfigurationManager.AppSettings["TwilioAuthToken"];
-        private static readonly string _twilioPhoneFrom = ConfigurationManager.AppSettings["TwilioPhoneFrom"];
+        //private static readonly string _twilioPhoneFrom = ConfigurationManager.AppSettings["TwilioPhoneFrom"];
+        private static readonly string _copilotSid = ConfigurationManager.AppSettings["TwilioCopilotServiceSid"];
 
         public void SendSms(string toPhone, string body)
         {
@@ -17,7 +18,7 @@ namespace GlobeAuction.Helpers
 
             var message = MessageResource.Create(
                 to: new PhoneNumber(toPhone),
-                from: new PhoneNumber(_twilioPhoneFrom),
+                messagingServiceSid: _copilotSid,
                 body: body);            
         }
     }
