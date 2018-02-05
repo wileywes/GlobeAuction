@@ -436,6 +436,7 @@
     <Content Include="Content\Images\payicon.gif" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />
+    <Content Include="Content\Images\StoreItems\SamsungTablet.jpg" />
     <Content Include="Content\Images\web_auction 2017_preview.jpg" />
     <Content Include="Content\Images\when_box.jpg" />
     <Content Include="Content\Images\where_box.jpg" />
