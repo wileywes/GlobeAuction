@@ -141,7 +141,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.WinningBidderId = winBidderId;
                     auctionItem.WinningBid = auctionItemModel.WinningBid;
                     auctionItem.UpdateDate = DateTime.Now;
-                    auctionItem.UpdateBy = User.Identity.GetUserName();
+                    auctionItem.UpdateBy = User.Identity.GetUserName();                    
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -349,18 +349,39 @@ namespace GlobeAuction.Controllers
             var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false && w.Bidder.IsCheckoutNudgeEmailSent == false).ToList();
 
             var model = new NotifyResultViewModel();
-            var msgUnderPayLink = "Then Use Express Checkout to get your items";
+            DoEmailWinners(winnersToEmail, model, false);
+
+            return View(model);
+        }
+
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult EmailUnpaidWinnersAfterEvent()
+        {
+            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            var winnersToEmail = winningsByBidder.Where(w => w.AreWinningsAllPaidFor == false).ToList();
+
+            var model = new NotifyResultViewModel();
+            DoEmailWinners(winnersToEmail, model, true);
+
+            return View(model);
+        }
+
+        private void DoEmailWinners(List<WinningsByBidder> winnersToEmail, NotifyResultViewModel model, bool isAfterEvent)
+        {
             var emailHelper = new EmailHelper();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
                 try
                 {
                     var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
-                    emailHelper.SendAuctionWinningsPaymentNudge(winner, payLink, msgUnderPayLink);
+                    emailHelper.SendAuctionWinningsPaymentNudge(winner.Bidder, winner.Winnings, payLink, isAfterEvent);
                     model.MessagesSent++;
-                    
-                    winner.Bidder.IsCheckoutNudgeEmailSent = true;
-                    db.SaveChanges();
+
+                    if (!isAfterEvent)
+                    {
+                        winner.Bidder.IsCheckoutNudgeEmailSent = true;
+                        db.SaveChanges();
+                    }
                 }
                 catch (Exception exc)
                 {
@@ -368,10 +389,8 @@ namespace GlobeAuction.Controllers
                     model.ErrorMessage = exc.Message;
                 }
             }
-
-            return View(model);
         }
-        
+
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult TextAllWinners()
         {
@@ -383,24 +402,24 @@ namespace GlobeAuction.Controllers
             var model = new NotifyResultViewModel();
             foreach (var winner in winnersToNotify)
             {
-                for (int i = 0; i < 100; i++)
+                //for (int i = 0; i < 100; i++)
+                //{
+                try
                 {
-                    try
-                    {
-                        var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
-                        var tinyUrl = urlHelper.GetTinyUrl(payLink);
-                        var body = "You won GLOBE Auction items!  Click here to checkout: " + tinyUrl;
-                        txtHelper.SendSms(winner.Bidder.Phone, body);
-                        model.MessagesSent++;
-                        winner.Bidder.IsCheckoutNudgeTextSent = true;
-                        db.SaveChanges();
-                    }
-                    catch (Exception exc)
-                    {
-                        model.MessagesFailed++;
-                        model.ErrorMessage = exc.Message;
-                    }
+                    var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
+                    var tinyUrl = urlHelper.GetTinyUrl(payLink);
+                    var body = "You won GLOBE Auction items!  Click here to checkout: " + tinyUrl;
+                    txtHelper.SendSms(winner.Bidder.Phone, body);
+                    model.MessagesSent++;
+                    winner.Bidder.IsCheckoutNudgeTextSent = true;
+                    db.SaveChanges();
                 }
+                catch (Exception exc)
+                {
+                    model.MessagesFailed++;
+                    model.ErrorMessage = exc.Message;
+                }
+                //}
             }
 
             return View(model);

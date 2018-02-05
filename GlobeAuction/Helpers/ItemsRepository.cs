@@ -86,12 +86,9 @@ namespace GlobeAuction.Helpers
             {
                 var winnings = itemsWon.Where(i => i.WinningBidderId.Value == b.BidderId).ToList();
                 var allPaidFor = winnings.All(w => w.Invoice != null && w.Invoice.IsPaid);
-                var arePartiallyPaidFor = !allPaidFor && winnings.Any(w => w.Invoice != null && w.Invoice.IsPaid);
-
                 results.Add(new WinningsByBidder
                 {
                     AreWinningsAllPaidFor = allPaidFor,
-                    AreWinningsPartiallyPaidFor = arePartiallyPaidFor,
                     Bidder = b,
                     Winnings = winnings
                 });
@@ -140,6 +137,5 @@ namespace GlobeAuction.Helpers
         public Bidder Bidder { get; set; }
         public List<AuctionItem> Winnings { get; set; }
         public bool AreWinningsAllPaidFor { get; set; }
-        public bool AreWinningsPartiallyPaidFor { get; set; }
     }
 }

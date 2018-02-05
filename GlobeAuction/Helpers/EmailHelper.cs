@@ -100,36 +100,21 @@ namespace GlobeAuction.Helpers
             SendEmail(invoice.Email, "Order Confirmation", body);
         }
 
-        public void SendAuctionWinningsPaymentNudge(WinningsByBidder info, string payLink, string messageUnderPayLink)
+        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
         {
-            var winnings = info.Winnings;
-            var bidder = info.Bidder;
+            var lines = winnings
+                .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
+                .ToList();
 
-            if (info.AreWinningsAllPaidFor)
-            {
-                //TODO
-            }
-            else if (info.AreWinningsPartiallyPaidFor)
-            {
-                //TODO
-            }
-            else
-            {
-                //all items are unpaid
-                var lines = winnings
-                    .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
-                    .ToList();
+            var totalOwed = winnings.Sum(i => i.WinningBid.Value);
+            var body = GetAuctionWinningsNudgeEmailEmail(winnings.Count,
+                totalOwed, payLink,
+                bidder.FirstName + " " + bidder.LastName,
+                "Bidder # " + bidder.BidderId,
+                lines,
+                isAfterEvent);
 
-                var totalOwed = winnings.Sum(i => i.WinningBid.Value);
-                var body = GetAuctionWinningsNudgeNonePaid(winnings.Count,
-                    totalOwed, payLink,
-                    bidder.FirstName + " " + bidder.LastName,
-                    "Bidder # " + bidder.BidderNumber,
-                    lines,
-                    messageUnderPayLink);
-
-                SendEmail(bidder.Email, "Auction Checkout", body);
-            }
+            SendEmail(bidder.Email, "Auction Checkout", body);
         }
 
         public void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude)
@@ -166,9 +151,9 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetAuctionWinningsNudgeNonePaid(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines, string msgUnderPayLink)
+        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines, bool isAfterEvent)
         {
-            var template = "auctionWinningsNudgeNonePaid";
+            var template = isAfterEvent ? "auctionWinningsNudgeAfterEvent" : "auctionWinningsNudge";
             var body = GetEmailBody(template);
 
             var lineTemplate = GetEmailBody("invoiceLine");
@@ -179,7 +164,6 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("PayLink", payLink, body);
             body = ReplaceToken("Address1", address1, body);
             body = ReplaceToken("Address2", address2, body);
-            body = ReplaceToken("MessageUnderPayLink", msgUnderPayLink, body);
 
             var linesHtml = string.Empty;
             foreach (var line in lines)

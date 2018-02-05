@@ -181,6 +181,17 @@
                             alert('Only administrators are allowed access to this function.')
                         }
                     }
+                },
+                {
+                    text: 'Email Unpaid Winners After Event',
+                    action: function (e, dt, node, config) {
+                        if (isAdmin) {
+                            window.open('/AuctionItems/EmailUnpaidWinnersAfterEvent', '_blank');
+                        }
+                        else {
+                            alert('Only administrators are allowed access to this function.')
+                        }
+                    }
                 }
             ],
             select: {
