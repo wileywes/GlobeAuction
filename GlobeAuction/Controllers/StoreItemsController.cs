@@ -5,15 +5,16 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
 using GlobeAuction.Helpers;
+using System.Web;
+using System.IO;
 
 namespace GlobeAuction.Controllers
 {
-    [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+    [Authorize(Roles = AuctionRoles.CanEditItems)]
     public class StoreItemsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -21,12 +22,22 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Buy(int? iid, string fullName)
         {
-            var storeItems = db.StoreItems.Where(s => s.CanPurchaseInStore && s.IsDeleted == false).ToList();
+            var storeItems = db.StoreItems
+                .Include(si => si.StoreItemPurchases)
+                .Where(s => s.CanPurchaseInStore && s.IsDeleted == false)
+                .ToList();
+
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
             {
                 //remove admin-only ticket types
                 storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
+
+            //filter out items with no more quantity
+            storeItems = storeItems
+                .Where(si => si.Quantity == 0 || si.Quantity > (si.StoreItemPurchases?.Sum(sip => sip.Quantity) ?? 0))
+                .ToList();
+
             var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
 
             var viewModel = new BuyViewModel()
@@ -98,8 +109,19 @@ namespace GlobeAuction.Controllers
         // GET: StoreItems
         public ActionResult Index()
         {
-            var models = db.StoreItems.Where(s => s.IsDeleted == false).ToList().Select(i => Mapper.Map<StoreItemViewModel>(i))
-                .ToList() ?? new List<StoreItemViewModel>();
+            var models = db.StoreItems
+                .Include(si => si.StoreItemPurchases)
+                .Where(s => s.IsDeleted == false)
+                .ToList() //evaluate the DB query first before moving into model handling
+                .Select(i =>
+                {
+                    var listItem = Mapper.Map<StoreItemsListViewModel>(i);
+                    listItem.UnpaidPurchaseCount = i.StoreItemPurchases.Where(sip => !sip.IsPaid).Count();
+                    listItem.PaidPurchaseCount = i.StoreItemPurchases.Where(sip => sip.IsPaid).Count();
+                    return listItem;
+                })
+                .ToList();
+
             return View(models);
         }
 
@@ -217,6 +239,55 @@ namespace GlobeAuction.Controllers
             var storeItem = db.StoreItems.Find(id);
             storeItem.IsDeleted = true;
             db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+
+        [HttpPost, ActionName("SubmitSelectedStoreItems")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult SubmitSelectedStoreItems(string storeItemsAction, string selectedStoreItemIds, int? storeItemIdForUpload, IEnumerable<HttpPostedFileBase> files)
+        {
+            var selectedStoreItems = selectedStoreItemIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .Select(id => db.StoreItems.Find(id))
+                .ToList();
+
+            var username = User.Identity.GetUserName();
+            switch (storeItemsAction)
+            {
+                case "MoveToAuction":
+                    if (!selectedStoreItems.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    new ItemsRepository(db).MoveStoreItemsBackToDonations(selectedStoreItems, username);
+                    return RedirectToAction("Index", "AuctionItems");
+                case "ShowInStore":
+                    if (!selectedStoreItems.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    selectedStoreItems.ForEach(si => si.CanPurchaseInStore = true);
+                    db.SaveChanges();
+                    break;
+                case "UploadImage":
+                    //image upload
+                    const string pathBase = "~/Content/images/StoreItems";
+                    if (!storeItemIdForUpload.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var storeItem = db.StoreItems.Find(storeItemIdForUpload.Value);
+                    if (storeItem == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var file = files.FirstOrDefault(f => f != null && f.ContentLength > 0);
+                    if (file == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var fileName = Path.GetFileName(file.FileName);
+                    var path = Path.Combine(Server.MapPath(pathBase), fileName);
+                    file.SaveAs(path);
+
+                    storeItem.ImageUrl = pathBase + "/" + fileName;
+                    db.SaveChanges();
+                    break;
+            }
+
             return RedirectToAction("Index");
         }
 

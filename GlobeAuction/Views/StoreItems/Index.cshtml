@@ -1,4 +1,7 @@
-﻿@model IEnumerable<GlobeAuction.Models.StoreItemViewModel>
+﻿@model IEnumerable<GlobeAuction.Models.StoreItemsListViewModel>
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
 
 @{
     ViewBag.Title = "Store Items";
@@ -7,89 +10,191 @@
 <h2>Store Items</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-
-<p>
-    @Html.ActionLink("See Purchases", "Purchases")
-</p>
-
-
-<table class="table">
-    <tr>
-        <th></th>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsRaffleTicket)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CanPurchaseInBidderRegistration)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CanPurchaseInAuctionCheckout)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CanPurchaseInStore)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.OnlyVisibleToAdmins)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+    <table>
         <tr>
-            <td>
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                    <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsRaffleTicket)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CanPurchaseInBidderRegistration)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CanPurchaseInAuctionCheckout)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CanPurchaseInStore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OnlyVisibleToAdmins)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.StoreItemId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.StoreItemId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.StoreItemId })
-            </td>
+            <td>@Html.ActionLink("Create New", "Create") &nbsp; &nbsp;</td>
+            <td><a href="/shop" target="_blank">See the Store</a> &nbsp; &nbsp;</td>
+            <td>@Html.ActionLink("See Purchases", "Purchases")</td>
         </tr>
+    </table>
+</p>
+
+@using (Html.BeginForm("SubmitSelectedStoreItems", "StoreItems", FormMethod.Post, new { id = "submitSelectedStoreItemsForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Hidden("storeItemIdForUpload");
+    @Html.Hidden("storeItemsAction");
+    @Html.Hidden("selectedStoreItemIds");
+
+    <table class="table table-striped table-bordered" id="storeItemsTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.StoreItemId)
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Quantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaidPurchaseCount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UnpaidPurchaseCount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsRaffleTicket)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CanPurchaseInBidderRegistration)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CanPurchaseInAuctionCheckout)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CanPurchaseInStore)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OnlyVisibleToAdmins)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StoreItemId)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
+                        }
+                        else
+                        {
+                            <input type="file" name="files" id="file@(item.StoreItemId)" onchange="javascript:uploadImage(@(item.StoreItemId));" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaidPurchaseCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UnpaidPurchaseCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsRaffleTicket)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CanPurchaseInBidderRegistration)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CanPurchaseInAuctionCheckout)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CanPurchaseInStore)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OnlyVisibleToAdmins)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.StoreItemId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.StoreItemId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.StoreItemId })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+<script type="text/javascript">
+
+    //expand the page space
+    $("#bodyContainer").removeClass("container");
+
+    function getSelectedRows(data) {
+        var ids = '';
+        for (var i = 0; i < data.length; i++) {
+            ids += data[i][0] + ',';
+        }
+        return ids.trimRight(',');
     }
 
-</table>
+    function uploadImage(storeItemId) {
+        $("#storeItemIdForUpload").val(storeItemId);        
+        $("#storeItemsAction").val("UploadImage");
+        $('#submitSelectedStoreItemsForm').submit();
+    }
+
+    $(document).ready(function () {
+        $('#storeItemsTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                },
+                {
+                    text: 'Move to Auction',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows for this action.');
+                        }
+                        else {
+                            $("#selectedStoreItemIds").val(getSelectedRows(data));
+                            $("#storeItemsAction").val("MoveToAuction");
+                            $('#submitSelectedStoreItemsForm').submit();
+                        }
+                    }
+                },
+                {
+                    text: 'Show In Store',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows for this action.');
+                        }
+                        else {
+                            $("#selectedStoreItemIds").val(getSelectedRows(data));
+                            $("#storeItemsAction").val("ShowInStore");
+                            $('#submitSelectedStoreItemsForm').submit();
+                        }
+                    }
+                }
+            ],
+            select: {
+                style: 'os'
+            }
+        });
+    });
+</script>

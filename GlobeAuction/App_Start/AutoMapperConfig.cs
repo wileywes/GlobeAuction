@@ -24,6 +24,8 @@ namespace GlobeAuction
                 c.CreateMap<StoreItemPurchaseViewModel, StoreItemPurchase>();
 
                 c.CreateMap<StoreItem, StoreItemViewModel>();
+                c.CreateMap<StoreItem, StoreItemsListViewModel>();
+
                 c.CreateMap<StoreItemViewModel, StoreItem>();
             });
         }

@@ -1,20 +1,5 @@
 ﻿@model GlobeAuction.Models.ItemsViewModel
 
-<!--
-<link href="~/Content/dataTables.bootstrap.css" rel="stylesheet" />
-<script src="~/Scripts/jquery.dataTables.min.js"></script>
-<script src="~/Scripts/dataTables.bootstrap.js"></script>
-
-<link href="~/Content/buttons.dataTables.min.css" rel="stylesheet" />
-<script src="~/Scripts/dataTables.buttons.min.js"></script>
-
-<link href="~/Content/select.dataTables.min.css" rel="stylesheet" />
-<script src="~/Scripts/dataTables.select.min.js"></script>
-
-<script src="~/Scripts/jszip.min.js"></script>
-<script src="~/Scripts/buttons.html5.min.js"></script>
--->
-
 <link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
 <script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
 
@@ -25,9 +10,13 @@
 <h2>Auction Items</h2>
 
 <p>
-    @Html.ActionLink("Enter a New Donation", "Create", "DonationItems")
-    <br/>
-    <a href="#donationItemsAnchor">Donation Items List</a>
+    <table>
+        <tr>
+            <td>@Html.ActionLink("Enter a New Donation", "Create", "DonationItems") &nbsp; &nbsp;</td>
+            <td>@Html.ActionLink("Store Items List", "Index", "StoreItems") &nbsp; &nbsp;</td>
+            <td><a href="#donationItemsAnchor">Donation Items List</a></td>
+        </tr>
+    </table>    
 </p>
 
 
@@ -340,6 +329,23 @@
                             if (numOfCopies != null) {
                                 $("#numberOfCopies").val(numOfCopies);
                                 $("#donationItemsAction").val("DuplicateDonationItems");
+                                $('#submitSelectedDonationItemsForm').submit();
+                            }
+                        }
+                    }
+                },
+                {
+                    text: 'Move to Store',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows for this action.');
+                        }
+                        else {
+                            $("#selectedDonationItemIds").val(getSelectedRows(data));
+                            
+                            if (confirm("Are you sure?  This will move these items out of the auction items into the store for the catalog.")) {
+                                $("#donationItemsAction").val("MoveDonationItemsToStore");
                                 $('#submitSelectedDonationItemsForm').submit();
                             }
                         }

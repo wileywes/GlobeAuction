@@ -276,6 +276,9 @@ namespace GlobeAuction.Controllers
                         }
                     }
                     return RedirectToAction("Index");
+                case "MoveDonationItemsToStore":
+                    new ItemsRepository(db).CreateStoreItemsForDonations(selectedDonations, username);
+                    return RedirectToAction("Index", "StoreItems");
             }
 
             return RedirectToAction("Index");

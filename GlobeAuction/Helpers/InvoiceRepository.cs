@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using GlobeAuction.Models;
+﻿using GlobeAuction.Models;
 using System;
-using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,7 +43,7 @@ namespace GlobeAuction.Helpers
                 invoice.IsPaid = true;
                 invoice.WasMarkedPaidManually = true;
                 invoice.UpdateBy = updatedBy;
-                
+
                 foreach (var storeItem in invoice.StoreItemPurchases)
                 {
                     storeItem.PricePaid = storeItem.StoreItem.Price * storeItem.Quantity;
@@ -66,7 +64,7 @@ namespace GlobeAuction.Helpers
         public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, bool markedManually, string updatedBy)
         {
             var storeItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(buyModel.StoreItemPurchases);
-            
+
             var invoice = new Invoice
             {
                 StoreItemPurchases = storeItemPurchases,
@@ -78,7 +76,7 @@ namespace GlobeAuction.Helpers
                 FirstName = buyModel.FirstName,
                 LastName = buyModel.LastName,
                 Phone = buyModel.Phone,
-                ZipCode = buyModel.ZipCode                
+                ZipCode = buyModel.ZipCode
             };
 
             if (markedManually)
@@ -95,7 +93,14 @@ namespace GlobeAuction.Helpers
 
             if (buyModel.BidderId.GetValueOrDefault(-1) >= 0)
             {
-                invoice.Bidder = db.Bidders.Find(buyModel.BidderId.Value);                
+                invoice.Bidder = db.Bidders.Find(buyModel.BidderId.Value);
+            }
+            else
+            {
+                //look for exact match by last name and email address automatically
+                invoice.Bidder = db.Bidders.FirstOrDefault(b => b.LastName.Equals(buyModel.LastName, StringComparison.OrdinalIgnoreCase) &&
+                            b.Email.Equals(buyModel.Email, StringComparison.OrdinalIgnoreCase) &&
+                            b.IsDeleted == false);
             }
 
             db.Invoices.Add(invoice);

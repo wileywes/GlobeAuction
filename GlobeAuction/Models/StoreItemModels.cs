@@ -54,6 +54,12 @@ namespace GlobeAuction.Models
         public string UpdateBy { get; set; }
     }
 
+    public class StoreItemsListViewModel : StoreItemViewModel
+    {
+        public int UnpaidPurchaseCount { get; set; }
+        public int PaidPurchaseCount { get; set; }
+    }
+
     public class StoreItem
     {
         public int StoreItemId { get; set; }
@@ -61,7 +67,6 @@ namespace GlobeAuction.Models
         [Required]
         [Column(TypeName = "VARCHAR")]
         [StringLength(500)]
-        [Index("IX_StoreItem_Title", IsUnique = true)]
         public string Title { get; set; }
 
         [Required]
@@ -97,9 +102,12 @@ namespace GlobeAuction.Models
 
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
-        public string UpdateBy { get; set; }        
+        public string UpdateBy { get; set; }
 
         public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
+
+        //reference to donation item that the StoreItem was copied from.  Null for items not converted from donation items
+        public virtual DonationItem DonationItemCopiedFrom { get; set; }
     }
 
     public class StoreItemPurchaseViewModel
@@ -108,7 +116,7 @@ namespace GlobeAuction.Models
 
         [Required]
         public StoreItemViewModel StoreItem { get; set; }
-        
+
         public int Quantity { get; set; }
 
         [DataType(DataType.Currency)]
@@ -158,7 +166,7 @@ namespace GlobeAuction.Models
     {
         [Required]
         public int StoreItemPurchaseId { get; set; }
-        
+
         public virtual StoreItem StoreItem { get; set; }
 
         [Required]
@@ -178,7 +186,7 @@ namespace GlobeAuction.Models
     public class BuyViewModel
     {
         public int? BidderId { get; set; }
-        
+
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }

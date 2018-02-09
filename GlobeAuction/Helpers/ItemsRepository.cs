@@ -19,7 +19,7 @@ namespace GlobeAuction.Helpers
 
         public static AuctionItem CreateAuctionItemForDonation(int uniqueId, DonationItem item, string username)
         {
-            return CreateAuctionItemForDonations(uniqueId, new List <DonationItem> { item }, username);
+            return CreateAuctionItemForDonations(uniqueId, new List<DonationItem> { item }, username);
         }
 
         public static AuctionItem CreateAuctionItemForDonations(int uniqueId, List<DonationItem> items, string username)
@@ -56,6 +56,66 @@ namespace GlobeAuction.Helpers
                 Title = title,
                 DonationItems = items
             };
+        }
+
+        public void CreateStoreItemsForDonations(List<DonationItem> items, string username)
+        {
+            if (!items.Any()) throw new ApplicationException("You must select at least one donation item");
+
+            var donationItemIdsThatAlreadyHaveStoreItems = db.StoreItems
+                .Where(si => si.DonationItemCopiedFrom != null)
+                .ToList() //run the DB query
+                .ToDictionary(si => si.DonationItemCopiedFrom.DonationItemId, si => si.StoreItemId);
+
+            foreach(var donation in items)
+            {
+                if (donationItemIdsThatAlreadyHaveStoreItems.ContainsKey(donation.DonationItemId))
+                {
+                    var storeItemId = donationItemIdsThatAlreadyHaveStoreItems[donation.DonationItemId];
+                    var storeItem = db.StoreItems.Find(storeItemId);
+                    storeItem.IsDeleted = false;
+                }
+                else
+                {
+                    var storeItem = new StoreItem
+                    {
+                        CanPurchaseInAuctionCheckout = false,
+                        CanPurchaseInBidderRegistration = false,
+                        CanPurchaseInStore = false,
+                        CreateDate = DateTime.Now,
+                        Description = donation.Description,
+                        IsDeleted = false,
+                        IsRaffleTicket = false,
+                        OnlyVisibleToAdmins = false,
+                        Price = donation.DollarValue.GetValueOrDefault(9999),
+                        Quantity = 1,
+                        Title = donation.Title,
+                        UpdateBy = username,
+                        UpdateDate = DateTime.Now
+                    };
+
+                    storeItem.DonationItemCopiedFrom = donation;
+                    db.StoreItems.Add(storeItem);
+                }
+
+                donation.IsDeleted = true;
+            }
+            db.SaveChanges();
+        }
+
+        public void MoveStoreItemsBackToDonations(List<StoreItem> items, string username)
+        {
+            if (!items.Any()) throw new ApplicationException("You must select at least one store item");
+            
+            foreach (var storeItem in items)
+            {
+                if (storeItem.DonationItemCopiedFrom != null)
+                {
+                    storeItem.IsDeleted = true;
+                    storeItem.DonationItemCopiedFrom.IsDeleted = false;
+                }
+            }
+            db.SaveChanges();
         }
 
         public static string GetItemNameForPayPalCart(AuctionItem item)
@@ -123,7 +183,7 @@ namespace GlobeAuction.Helpers
             }
 
             //reload StoreItem info from the database so we aren't modifying it (there's got to be a better way to do this)
-            foreach(var sip in purchasesToReturn)
+            foreach (var sip in purchasesToReturn)
             {
                 sip.StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId);
             }
