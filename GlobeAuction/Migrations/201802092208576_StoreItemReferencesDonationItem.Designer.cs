@@ -7,13 +7,13 @@ namespace GlobeAuction.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class StoreItemRefsDonation : IMigrationMetadata
+    public sealed partial class StoreItemReferencesDonationItem : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(StoreItemRefsDonation));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(StoreItemReferencesDonationItem));
         
         string IMigrationMetadata.Id
         {
-            get { return "201802081329113_StoreItemRefsDonation"; }
+            get { return "201802092208576_StoreItemReferencesDonationItem"; }
         }
         
         string IMigrationMetadata.Source

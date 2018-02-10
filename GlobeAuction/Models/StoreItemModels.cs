@@ -107,7 +107,7 @@ namespace GlobeAuction.Models
         public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
 
         //reference to donation item that the StoreItem was copied from.  Null for items not converted from donation items
-        public virtual DonationItem DonationItemCopiedFrom { get; set; }
+        public virtual DonationItem DonationItem { get; set; }
     }
 
     public class StoreItemPurchaseViewModel

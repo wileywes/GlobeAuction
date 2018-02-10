@@ -63,9 +63,9 @@ namespace GlobeAuction.Helpers
             if (!items.Any()) throw new ApplicationException("You must select at least one donation item");
 
             var donationItemIdsThatAlreadyHaveStoreItems = db.StoreItems
-                .Where(si => si.DonationItemCopiedFrom != null)
+                .Where(si => si.DonationItem != null)
                 .ToList() //run the DB query
-                .ToDictionary(si => si.DonationItemCopiedFrom.DonationItemId, si => si.StoreItemId);
+                .ToDictionary(si => si.DonationItem.DonationItemId, si => si.StoreItemId);
 
             foreach(var donation in items)
             {
@@ -94,7 +94,7 @@ namespace GlobeAuction.Helpers
                         UpdateDate = DateTime.Now
                     };
 
-                    storeItem.DonationItemCopiedFrom = donation;
+                    storeItem.DonationItem = donation;
                     db.StoreItems.Add(storeItem);
                 }
 
@@ -109,10 +109,10 @@ namespace GlobeAuction.Helpers
             
             foreach (var storeItem in items)
             {
-                if (storeItem.DonationItemCopiedFrom != null)
+                if (storeItem.DonationItem != null)
                 {
                     storeItem.IsDeleted = true;
-                    storeItem.DonationItemCopiedFrom.IsDeleted = false;
+                    storeItem.DonationItem.IsDeleted = false;
                 }
             }
             db.SaveChanges();

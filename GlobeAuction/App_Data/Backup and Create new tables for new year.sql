@@ -1,6 +1,5 @@
-﻿EXEC sp_rename 'AuctionGuests', 'AuctionGuests_2017';
-GO
-select * into AuctionGuests from AuctionGuests_2017 where 1 = 0;
+﻿select * into AuctionGuests_2017 from AuctionGuests;
+DELETE from AuctionGuests;
 GO
 
 EXEC sp_rename 'AuctionItems', 'AuctionItems_2017';

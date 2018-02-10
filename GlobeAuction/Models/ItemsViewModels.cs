@@ -216,6 +216,7 @@ namespace GlobeAuction.Models
 
     public class DonationItem
     {
+        [Key]
         public int DonationItemId { get; set; }
 
         [Required]

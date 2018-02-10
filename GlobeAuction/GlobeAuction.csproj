@@ -379,13 +379,9 @@
     <Compile Include="Migrations\201801192024087_AddRaffleTicketFlagToStoreItem.Designer.cs">
       <DependentUpon>201801192024087_AddRaffleTicketFlagToStoreItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201802081329113_StoreItemRefsDonation.cs" />
-    <Compile Include="Migrations\201802081329113_StoreItemRefsDonation.Designer.cs">
-      <DependentUpon>201802081329113_StoreItemRefsDonation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802081345094_StoreItemTitleNotUnique.cs" />
-    <Compile Include="Migrations\201802081345094_StoreItemTitleNotUnique.Designer.cs">
-      <DependentUpon>201802081345094_StoreItemTitleNotUnique.cs</DependentUpon>
+    <Compile Include="Migrations\201802092208576_StoreItemReferencesDonationItem.cs" />
+    <Compile Include="Migrations\201802092208576_StoreItemReferencesDonationItem.Designer.cs">
+      <DependentUpon>201802092208576_StoreItemReferencesDonationItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -407,6 +403,7 @@
     <Content Include="App_Data\aspnet-GlobeAuction-20161005062405_log.ldf">
       <DependentUpon>aspnet-GlobeAuction-20161005062405.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\fix bad backup.sql" />
     <Content Include="App_Data\Backup and Create new tables for new year.sql" />
     <Content Include="App_Data\Category Updates Feb 24.sql" />
     <Content Include="App_Data\Identity queries.sql" />
@@ -760,11 +757,8 @@
     <EmbeddedResource Include="Migrations\201801192024087_AddRaffleTicketFlagToStoreItem.resx">
       <DependentUpon>201801192024087_AddRaffleTicketFlagToStoreItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802081329113_StoreItemRefsDonation.resx">
-      <DependentUpon>201802081329113_StoreItemRefsDonation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802081345094_StoreItemTitleNotUnique.resx">
-      <DependentUpon>201802081345094_StoreItemTitleNotUnique.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201802092208576_StoreItemReferencesDonationItem.resx">
+      <DependentUpon>201802092208576_StoreItemReferencesDonationItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
