@@ -236,9 +236,18 @@ namespace GlobeAuction.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            var username = User.Identity.GetUserName();
             var storeItem = db.StoreItems.Find(id);
-            storeItem.IsDeleted = true;
-            db.SaveChanges();
+
+            if (storeItem.DonationItem != null)
+            {
+                new ItemsRepository(db).MoveStoreItemsBackToDonations(new List<StoreItem> { storeItem }, username);
+            }
+            else
+            {
+                storeItem.IsDeleted = true;
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 
