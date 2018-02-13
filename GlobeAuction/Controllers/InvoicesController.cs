@@ -220,6 +220,12 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
+            //add the quantity back if it's not a raffle ticket
+            if (item.StoreItem.IsRaffleTicket == false)
+            {
+                item.StoreItem.Quantity += item.Quantity;
+            }
+                    
             db.StoreItemPurchases.Remove(item);
 
             //delete the invoice entirely if there are no more lines on it
@@ -308,8 +314,14 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            foreach(var sip in db.StoreItemPurchases.Where(p => p.Invoice.InvoiceId == id))
+            foreach(var sip in db.StoreItemPurchases.Where(p => p.Invoice.InvoiceId == id).ToList())
             {
+                //add the quantity back if it's not a raffle ticket
+                if (sip.StoreItem.IsRaffleTicket == false)
+                {
+                    sip.StoreItem.Quantity += sip.Quantity;
+                }
+
                 //remove store item purchase
                 db.StoreItemPurchases.Remove(sip);
             }

@@ -182,10 +182,16 @@ namespace GlobeAuction.Helpers
                 }
             }
 
-            //reload StoreItem info from the database so we aren't modifying it (there's got to be a better way to do this)
             foreach (var sip in purchasesToReturn)
             {
+                //reload StoreItem info from the database so we aren't modifying it (there's got to be a better way to do this)
                 sip.StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId);
+
+                //if item isn't a raffle ticket with unlimited quantity then decrement the available quantity on the store item
+                if (sip.StoreItem.IsRaffleTicket == false)
+                {
+                    sip.StoreItem.Quantity -= sip.Quantity;
+                }
             }
 
             return purchasesToReturn;

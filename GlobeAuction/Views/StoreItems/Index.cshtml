@@ -99,7 +99,14 @@
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Quantity)
+                        @if (item.IsRaffleTicket)
+                        {
+                            <span>Unlimited</span>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PaidPurchaseCount)
@@ -148,7 +155,7 @@
     }
 
     function uploadImage(storeItemId) {
-        $("#storeItemIdForUpload").val(storeItemId);        
+        $("#storeItemIdForUpload").val(storeItemId);
         $("#storeItemsAction").val("UploadImage");
         $('#submitSelectedStoreItemsForm').submit();
     }

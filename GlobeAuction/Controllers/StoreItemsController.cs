@@ -23,7 +23,6 @@ namespace GlobeAuction.Controllers
         public ActionResult Buy(int? iid, string fullName)
         {
             var storeItems = db.StoreItems
-                .Include(si => si.StoreItemPurchases)
                 .Where(s => s.CanPurchaseInStore && s.IsDeleted == false)
                 .ToList();
 
@@ -35,7 +34,7 @@ namespace GlobeAuction.Controllers
 
             //filter out items with no more quantity
             storeItems = storeItems
-                .Where(si => si.Quantity == 0 || si.Quantity > (si.StoreItemPurchases?.Sum(sip => sip.Quantity) ?? 0))
+                .Where(si => si.IsRaffleTicket || si.Quantity > 0)
                 .ToList();
 
             var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
@@ -109,15 +108,17 @@ namespace GlobeAuction.Controllers
         // GET: StoreItems
         public ActionResult Index()
         {
+            var purchases = db.StoreItemPurchases.ToList();
+
             var models = db.StoreItems
-                .Include(si => si.StoreItemPurchases)
                 .Where(s => s.IsDeleted == false)
                 .ToList() //evaluate the DB query first before moving into model handling
                 .Select(i =>
                 {
                     var listItem = Mapper.Map<StoreItemsListViewModel>(i);
-                    listItem.UnpaidPurchaseCount = i.StoreItemPurchases.Where(sip => !sip.IsPaid).Count();
-                    listItem.PaidPurchaseCount = i.StoreItemPurchases.Where(sip => sip.IsPaid).Count();
+                    var itemPurchases = purchases.Where(sip => sip.StoreItem.StoreItemId == i.StoreItemId).ToList();
+                    listItem.UnpaidPurchaseCount = itemPurchases.Where(sip => !sip.IsPaid).Count();
+                    listItem.PaidPurchaseCount = itemPurchases.Where(sip => sip.IsPaid).Count();
                     return listItem;
                 })
                 .ToList();
@@ -250,9 +251,7 @@ namespace GlobeAuction.Controllers
             }
             return RedirectToAction("Index");
         }
-
-
-
+        
         [HttpPost, ActionName("SubmitSelectedStoreItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]

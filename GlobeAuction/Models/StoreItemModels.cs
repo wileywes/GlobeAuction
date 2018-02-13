@@ -24,6 +24,7 @@ namespace GlobeAuction.Models
         public decimal Price { get; set; }
 
         [Required]
+        [Display(Name = "Available Quantity")]
         public int Quantity { get; set; }
 
         [Required]
