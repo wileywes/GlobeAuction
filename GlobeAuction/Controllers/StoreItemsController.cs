@@ -112,6 +112,7 @@ namespace GlobeAuction.Controllers
 
             var models = db.StoreItems
                 .Where(s => s.IsDeleted == false)
+                .Include(s => s.BundleComponents)
                 .ToList() //evaluate the DB query first before moving into model handling
                 .Select(i =>
                 {
@@ -156,7 +157,9 @@ namespace GlobeAuction.Controllers
         // GET: StoreItems/Create
         public ActionResult Create()
         {
-            return View(new StoreItemViewModel());
+            var model = new StoreItemViewModel();
+            model.BundleComponents = Enumerable.Repeat(new BundleComponent(), 5).ToList();
+            return View(model);
         }
 
         // POST: StoreItems/Create
@@ -171,8 +174,28 @@ namespace GlobeAuction.Controllers
                 var storeItem = Mapper.Map<StoreItem>(storeItemViewModel);
                 storeItem.CreateDate = storeItem.UpdateDate = DateTime.Now;
                 storeItem.UpdateBy = User.Identity.GetUserName();
+                ApplyBundleComponentsFromViewToModel(storeItemViewModel, storeItem);
+
+                if (storeItem.IsBundleParent)
+                {
+                    //make sure prices add up
+                    var totalBundlePrices = storeItem.BundleComponents.Sum(c => c.ComponentUnitPrice * c.Quantity);
+                    var itemPrice = storeItem.Price;
+                    if (totalBundlePrices != itemPrice)
+                    {
+                        ModelState.AddModelError("price", $"The sum of the price of components must equal the total price of the item.  Total of components is {totalBundlePrices:C} while item price is {itemPrice:C}");
+                        return View(storeItemViewModel);
+                    }
+                }
 
                 db.StoreItems.Add(storeItem);
+                db.SaveChanges();
+
+                //point components to store item after save
+                if (storeItem.IsBundleParent)
+                {
+                    storeItem.BundleComponents.ForEach(c => c.BundleParent = storeItem);
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -196,6 +219,12 @@ namespace GlobeAuction.Controllers
             return View(model);
         }
 
+        private void ApplyBundleComponentsFromViewToModel(StoreItemViewModel storeItemViewModel, StoreItem storeItem)
+        {
+            storeItem.BundleComponents = storeItemViewModel?.BundleComponents.Where(c => c.StoreItemId > 0 && c.Quantity > 0).ToList();
+            storeItem.IsBundleParent = storeItem.BundleComponents.Any();
+        }
+
         // POST: StoreItems/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -208,6 +237,16 @@ namespace GlobeAuction.Controllers
                 var storeItem = Mapper.Map<StoreItem>(storeItemViewModel);
                 storeItem.UpdateDate = DateTime.Now;
                 storeItem.UpdateBy = User.Identity.GetUserName();
+                ApplyBundleComponentsFromViewToModel(storeItemViewModel, storeItem);
+
+                //point components to store item after save
+                if (storeItem.IsBundleParent)
+                {
+                    foreach (var comp in storeItem.BundleComponents)
+                    {
+                        comp.BundleParent = storeItem;                        
+                    }
+                }
 
                 db.Entry(storeItem).State = EntityState.Modified;
                 db.SaveChanges();

@@ -12,7 +12,7 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
-    @if(Request.IsAuthenticated)
+    @if (Request.IsAuthenticated)
     {
         <style type="text/css">
             body {
@@ -51,6 +51,7 @@
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                         {
                             <li>@Html.ActionLink("Invoices", "Index", "Invoices")</li>
+                            <li>@Html.ActionLink("Store", "Index", "StoreItems")</li>
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) || User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditTickets))
                         {

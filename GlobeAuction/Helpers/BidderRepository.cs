@@ -30,7 +30,7 @@ namespace GlobeAuction.Helpers
 
                 foreach (var storeItem in bidder.StoreItemPurchases)
                 {
-                    var lineExtendedPrice = storeItem.StoreItem.Price * storeItem.Quantity;
+                    var lineExtendedPrice = storeItem.Price * storeItem.Quantity;
                     var priceToUseUp = Math.Min(lineExtendedPrice, paymentLeft);
                     storeItem.PricePaid = priceToUseUp;
                     storeItem.PurchaseTransaction = ppTrans;

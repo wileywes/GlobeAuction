@@ -164,19 +164,48 @@ namespace GlobeAuction.Helpers
             {
                 foreach (var storeItemPurchase in purchaseViewModels.Where(s => s.Quantity > 0))
                 {
+                    storeItemPurchase.StoreItem = Mapper.Map<StoreItemViewModel>(db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId));
+
                     if (storeItemPurchase.StoreItem.IsRaffleTicket)
                     {
-                        //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
-                        for (int i = 0; i < storeItemPurchase.Quantity; i++)
+                        if (storeItemPurchase.StoreItem.BundleComponents != null && storeItemPurchase.StoreItem.BundleComponents.Any())
                         {
-                            var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
-                            lineItem.Quantity = 1;
-                            purchasesToReturn.Add(lineItem);
+                            foreach(var component in storeItemPurchase.StoreItem.BundleComponents)
+                            {
+                                var componentStoreItem = db.StoreItems.Find(component.StoreItemId);
+                                var totalQtyForThisTicket = component.Quantity * storeItemPurchase.Quantity;
+
+                                //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
+                                for (int i = 0; i < totalQtyForThisTicket; i++)
+                                {
+                                    var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
+                                    lineItem.StoreItem = componentStoreItem;
+                                    lineItem.Quantity = 1;
+                                    lineItem.Price = component.ComponentUnitPrice;
+                                    purchasesToReturn.Add(lineItem);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var storeItemPurchased = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
+
+                            //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
+                            for (int i = 0; i < storeItemPurchase.Quantity; i++)
+                            {
+                                var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
+                                lineItem.StoreItem = storeItemPurchased;
+                                lineItem.Quantity = 1;
+                                lineItem.Price = storeItemPurchased.Price;
+                                purchasesToReturn.Add(lineItem);
+                            }
                         }
                     }
                     else
                     {
                         var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
+                        lineItem.StoreItem = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
+                        lineItem.Price = storeItemPurchase.Price;
                         purchasesToReturn.Add(lineItem);
                     }
                 }
@@ -184,9 +213,6 @@ namespace GlobeAuction.Helpers
 
             foreach (var sip in purchasesToReturn)
             {
-                //reload StoreItem info from the database so we aren't modifying it (there's got to be a better way to do this)
-                sip.StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId);
-
                 //if item isn't a raffle ticket with unlimited quantity then decrement the available quantity on the store item
                 if (sip.StoreItem.IsRaffleTicket == false)
                 {

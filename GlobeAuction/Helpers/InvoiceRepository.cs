@@ -46,7 +46,7 @@ namespace GlobeAuction.Helpers
 
                 foreach (var storeItem in invoice.StoreItemPurchases)
                 {
-                    storeItem.PricePaid = storeItem.StoreItem.Price * storeItem.Quantity;
+                    storeItem.PricePaid = storeItem.Price * storeItem.Quantity;
                 }
             }
 
@@ -85,9 +85,9 @@ namespace GlobeAuction.Helpers
                 invoice.WasMarkedPaidManually = true;
                 invoice.UpdateBy = updatedBy;
 
-                foreach (var storeItem in invoice.StoreItemPurchases)
+                foreach (var sip in invoice.StoreItemPurchases)
                 {
-                    storeItem.PricePaid = storeItem.StoreItem.Price * storeItem.Quantity;
+                    sip.PricePaid = sip.Price * sip.Quantity;
                 }
             }
 
@@ -122,7 +122,7 @@ namespace GlobeAuction.Helpers
 
                 foreach (var storeItem in invoice.StoreItemPurchases)
                 {
-                    var lineExtendedPrice = storeItem.StoreItem.Price * storeItem.Quantity;
+                    var lineExtendedPrice = storeItem.Price * storeItem.Quantity;
                     var priceToUseUp = Math.Min(lineExtendedPrice, paymentLeft);
                     storeItem.PricePaid = priceToUseUp;
                     storeItem.PurchaseTransaction = ppTrans;

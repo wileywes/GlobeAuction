@@ -238,6 +238,9 @@ namespace GlobeAuction.Controllers
 
                 db.Entry(bidder).State = EntityState.Modified;
 
+                //don't try to save StoreItemPurchases - just reload from DB
+                bidder.StoreItemPurchases = db.Bidders.Find(bidderViewModel.BidderId).StoreItemPurchases;
+
                 try
                 {
                     db.SaveChanges();

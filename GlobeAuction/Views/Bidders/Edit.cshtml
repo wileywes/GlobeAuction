@@ -163,40 +163,19 @@
 
         <h4>Additional Purchase(s)</h4>
         <hr />
-        <div class="row form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-6">@Html.Label("Raffle Package")</div>
-            <div class="col-md-2">@Html.Label("Price")</div>
-            <div class="col-md-2">@Html.Label("Quantity")</div>
-        </div>
-        @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
-        {
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-            @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-
-            <div class="row form-group">
-                <div class="col-md-2">
-                    @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
-                    {
-                        <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
-                    }
-                </div>
-                <div class="col-md-6">
-                    <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
-                    <br />
-                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                </div>
-                <div class="col-md-2">
-                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                </div>
-                <div class="col-md-2">
-                    @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        }
+        <dl class="dl-horizontal">
+            @foreach (var item in Model.StoreItemPurchases)
+            {
+                <dt></dt>
+                <dd>
+                    @string.Format("{0} - {1} - {2:C} (paid {3:C})",
+                                         item.StoreItem.Title,
+                                        (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                                        item.StoreItem.Price,
+                                        item.PricePaid.GetValueOrDefault(0))
+                </dd>
+            }
+        </dl>
         <br />
 
 

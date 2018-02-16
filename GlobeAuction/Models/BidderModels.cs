@@ -105,7 +105,7 @@ namespace GlobeAuction.Models
             if (bidder.AuctionGuests == null || !bidder.AuctionGuests.Any()) throw new ApplicationException("No auction guests found");
 
             LineItems = bidder.AuctionGuests.Select(g => new PayPalPaymentLine(g.TicketType, g.TicketPrice, 1)).ToList();
-            LineItems.AddRange(bidder.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.StoreItem.Price, s.Quantity)));
+            LineItems.AddRange(bidder.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
         }
     }
 

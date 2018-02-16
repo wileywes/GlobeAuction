@@ -44,6 +44,11 @@ namespace GlobeAuction.Models
                         .WithMany(t => t.StoreItemPurchases)
                         .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<StoreItem>()
+                .HasMany(g => g.BundleComponents)
+                .WithRequired()
+                .WillCascadeOnDelete(false);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -63,6 +68,7 @@ namespace GlobeAuction.Models
         public DbSet<PayPalTransaction> PayPalTransactions { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<StoreItem> StoreItems { get; set; }
+        public DbSet<BundleComponent> BundleComponents { get; set; }
         public DbSet<StoreItemPurchase> StoreItemPurchases { get; set; }
 
         public System.Data.Entity.DbSet<GlobeAuction.Models.Donor> Donors { get; set; }

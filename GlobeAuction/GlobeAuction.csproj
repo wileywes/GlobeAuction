@@ -383,6 +383,22 @@
     <Compile Include="Migrations\201802092208576_StoreItemReferencesDonationItem.Designer.cs">
       <DependentUpon>201802092208576_StoreItemReferencesDonationItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802132301027_BundleStoreItemsAndRecordPriceWithSip.cs" />
+    <Compile Include="Migrations\201802132301027_BundleStoreItemsAndRecordPriceWithSip.Designer.cs">
+      <DependentUpon>201802132301027_BundleStoreItemsAndRecordPriceWithSip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802142350433_BundleComponentsFKsToStoreItem.cs" />
+    <Compile Include="Migrations\201802142350433_BundleComponentsFKsToStoreItem.Designer.cs">
+      <DependentUpon>201802142350433_BundleComponentsFKsToStoreItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802151331118_BundleParentNotRequired.cs" />
+    <Compile Include="Migrations\201802151331118_BundleParentNotRequired.Designer.cs">
+      <DependentUpon>201802151331118_BundleParentNotRequired.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802161335124_UnitPriceForBundleComponent.cs" />
+    <Compile Include="Migrations\201802161335124_UnitPriceForBundleComponent.Designer.cs">
+      <DependentUpon>201802161335124_UnitPriceForBundleComponent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -759,6 +775,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802092208576_StoreItemReferencesDonationItem.resx">
       <DependentUpon>201802092208576_StoreItemReferencesDonationItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802132301027_BundleStoreItemsAndRecordPriceWithSip.resx">
+      <DependentUpon>201802132301027_BundleStoreItemsAndRecordPriceWithSip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802142350433_BundleComponentsFKsToStoreItem.resx">
+      <DependentUpon>201802142350433_BundleComponentsFKsToStoreItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802151331118_BundleParentNotRequired.resx">
+      <DependentUpon>201802151331118_BundleParentNotRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802161335124_UnitPriceForBundleComponent.resx">
+      <DependentUpon>201802161335124_UnitPriceForBundleComponent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

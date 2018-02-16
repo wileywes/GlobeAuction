@@ -127,8 +127,8 @@
             </dt>
             <dd>
                 @string.Format("{0} ({1:C})",
-                        item.Title,
-                        item.WinningBid)
+                                  item.Title,
+                                  item.WinningBid)
             </dd>
         }
     </dl>
@@ -141,10 +141,10 @@
             <dt></dt>
             <dd>
                 @string.Format("{0} - {1} - {2:C} (paid {3:C})",
-                        item.StoreItem.Title,
-                        item.Quantity,
-                        item.StoreItem.Price,
-                        item.PricePaid.GetValueOrDefault(0))
+                           item.StoreItem.Title,
+                          (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                          item.StoreItem.Price,
+                          item.PricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>

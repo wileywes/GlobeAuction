@@ -31,6 +31,10 @@ namespace GlobeAuction.Models
         [Display(Name = "Is Raffle Ticket")]
         public bool IsRaffleTicket { get; set; }
 
+        [Display(Name = "Is Bundle of Raffle Tickets")]
+        public bool IsBundleParent { get; set; }
+        public virtual List<BundleComponent> BundleComponents { get; set; }
+
         [Required]
         [Display(Name = "Can Purchase in Bidder Registration")]
         public bool CanPurchaseInBidderRegistration { get; set; }
@@ -87,6 +91,10 @@ namespace GlobeAuction.Models
         public bool IsRaffleTicket { get; set; }
 
         [Required]
+        public bool IsBundleParent { get; set; }
+        public virtual List<BundleComponent> BundleComponents { get; set; }
+
+        [Required]
         public bool CanPurchaseInBidderRegistration { get; set; }
 
         [Required]
@@ -111,6 +119,23 @@ namespace GlobeAuction.Models
         public virtual DonationItem DonationItem { get; set; }
     }
 
+    public class BundleComponent
+    {
+        public int BundleComponentId { get; set; }
+
+        [Required]
+        public int StoreItemId { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
+        public decimal ComponentUnitPrice { get; set; }
+        
+        //should always exist but not marked required to keep UI view simple
+        public StoreItem BundleParent { get; set; }
+    }
+
     public class StoreItemPurchaseViewModel
     {
         public int StoreItemPurchaseId { get; set; }
@@ -119,6 +144,10 @@ namespace GlobeAuction.Models
         public StoreItemViewModel StoreItem { get; set; }
 
         public int Quantity { get; set; }
+        
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal Price { get; set; }
 
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -172,6 +201,10 @@ namespace GlobeAuction.Models
 
         [Required]
         public int Quantity { get; set; }
+        
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal Price { get; set; }
 
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}")]

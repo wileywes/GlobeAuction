@@ -94,6 +94,37 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
+
+                        @if (item.IsBundleParent)
+                        {
+                            <br /><br />
+                            <b>Components:</b>
+                            <table>
+                                <tr>
+                                    <td>@Html.DisplayNameFor(model => model.StoreItemId)</td>
+                                    <td>Title</td>
+                                    <td>Quantity</td>
+                                    <td>Price</td>
+                                </tr>
+                                @foreach (var comp in item.BundleComponents)
+                                {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(m => comp.StoreItemId)
+                                    </td>
+                                    <td>
+                                        @(Model.First(i => i.StoreItemId == comp.StoreItemId).Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => comp.Quantity)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => comp.ComponentUnitPrice)
+                                    </td>
+                                </tr>
+                                }
+                            </table>
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Price)

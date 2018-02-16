@@ -269,12 +269,13 @@
                                     <td></td>
                                     <td>
                                         @Html.DisplayFor(m => item.StoreItem.Title)
+                                        @(item.StoreItem.IsRaffleTicket && item.IsPaid ? " - Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString())
                                     </td>
                                     <td>
                                         @Html.DisplayFor(m => item.Quantity)
                                     </td>
                                     <td>
-                                        @((item.PricePaid ?? item.StoreItem.Price).ToString("C"))
+                                        @((item.PricePaid ?? item.Price).ToString("C"))
                                     </td>
                                     @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
                                     {

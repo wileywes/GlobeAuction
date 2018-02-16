@@ -108,7 +108,7 @@ namespace GlobeAuction.Models
 
             CountOfItems = invoice.AuctionItems.Count + invoice.StoreItemPurchases.Count;
             InvoiceTotal = invoice.AuctionItems.Any() ? invoice.AuctionItems.Sum(i => i.WinningBid.GetValueOrDefault(0)) : 0;
-            InvoiceTotal += invoice.StoreItemPurchases.Any() ? invoice.StoreItemPurchases.Sum(i => i.StoreItem.Price * i.Quantity) : 0;
+            InvoiceTotal += invoice.StoreItemPurchases.Any() ? invoice.StoreItemPurchases.Sum(i => i.Price * i.Quantity) : 0;
 
             if (invoice.PaymentTransaction != null)
             {

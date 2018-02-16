@@ -55,7 +55,7 @@ namespace GlobeAuction.Models
             {
                 var total = 0m;
                 if (AuctionItems.Any()) total = AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0));
-                if (StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(sip.StoreItem.Price * sip.Quantity));
+                if (StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(sip.Price * sip.Quantity));
                 return total;
             }
         }
@@ -91,7 +91,7 @@ namespace GlobeAuction.Models
             PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 
             LineItems = invoice.AuctionItems.Select(g => new PayPalPaymentLine(g.Title, g.WinningBid.Value, 1)).ToList();
-            LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.StoreItem.Price, s.Quantity)));
+            LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
         }
     }
 
