@@ -221,7 +221,10 @@ namespace GlobeAuction.Controllers
 
         private void ApplyBundleComponentsFromViewToModel(StoreItemViewModel storeItemViewModel, StoreItem storeItem)
         {
-            storeItem.BundleComponents = storeItemViewModel?.BundleComponents.Where(c => c.StoreItemId > 0 && c.Quantity > 0).ToList();
+            storeItem.BundleComponents = (storeItemViewModel?.BundleComponents == null?
+                new List<BundleComponent>() :
+                storeItemViewModel?.BundleComponents.Where(c => c.StoreItemId > 0 && c.Quantity > 0).ToList());
+
             storeItem.IsBundleParent = storeItem.BundleComponents.Any();
         }
 
