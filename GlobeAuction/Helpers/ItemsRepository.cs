@@ -164,7 +164,8 @@ namespace GlobeAuction.Helpers
             {
                 foreach (var storeItemPurchase in purchaseViewModels.Where(s => s.Quantity > 0))
                 {
-                    storeItemPurchase.StoreItem = Mapper.Map<StoreItemViewModel>(db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId));
+                    var storeItemPurchased = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
+                    storeItemPurchase.StoreItem = Mapper.Map<StoreItemViewModel>(storeItemPurchased);
 
                     if (storeItemPurchase.StoreItem.IsRaffleTicket)
                     {
@@ -188,8 +189,6 @@ namespace GlobeAuction.Helpers
                         }
                         else
                         {
-                            var storeItemPurchased = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
-
                             //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
                             for (int i = 0; i < storeItemPurchase.Quantity; i++)
                             {
@@ -203,8 +202,13 @@ namespace GlobeAuction.Helpers
                     }
                     else
                     {
+                        if (storeItemPurchased.Quantity <= 0)
+                        {
+                            throw new OutOfStockException("StoreItem out of stock", storeItemPurchased, storeItemPurchase);
+                        }
+
                         var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
-                        lineItem.StoreItem = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
+                        lineItem.StoreItem = storeItemPurchased;
                         lineItem.Price = lineItem.StoreItem.Price;
                         purchasesToReturn.Add(lineItem);
                     }
@@ -229,5 +233,18 @@ namespace GlobeAuction.Helpers
         public Bidder Bidder { get; set; }
         public List<AuctionItem> Winnings { get; set; }
         public bool AreWinningsAllPaidFor { get; set; }
+    }
+
+    public class OutOfStockException : ApplicationException
+    {
+        public StoreItem StoreItem { get; private set;}
+        public StoreItemPurchaseViewModel PurchaseViewModel { get; private set; }
+
+        public OutOfStockException(string message, StoreItem storeitem, StoreItemPurchaseViewModel purchaseViewModel)
+            :base(message)
+        {
+            StoreItem = storeitem;
+            PurchaseViewModel = purchaseViewModel;
+        }
     }
 }

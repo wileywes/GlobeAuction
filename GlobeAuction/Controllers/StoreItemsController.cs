@@ -66,15 +66,23 @@ namespace GlobeAuction.Controllers
             if (ModelState.IsValid)
             {
                 var markedManually = submitButton == "Invoice and Mark Paid";
-                var invoice = new InvoiceRepository(db).CreateInvoiceForStoreItems(buyViewModel,
-                    markedManually, markedManually ? User.Identity.GetUserName() : buyViewModel.Email);
 
-                if (markedManually)
+                try
                 {
-                    return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, fullName = invoice.FirstName + " " + invoice.LastName });
-                }
+                    var invoice = new InvoiceRepository(db).CreateInvoiceForStoreItems(buyViewModel,
+                        markedManually, markedManually ? User.Identity.GetUserName() : buyViewModel.Email);
 
-                return RedirectToAction("RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Email });
+                    if (markedManually)
+                    {
+                        return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, fullName = invoice.FirstName + " " + invoice.LastName });
+                    }
+
+                    return RedirectToAction("RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Email });
+                }
+                catch (OutOfStockException oosExc)
+                {
+                    ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your purchase again.");
+                }
             }
 
             return View(buyViewModel);

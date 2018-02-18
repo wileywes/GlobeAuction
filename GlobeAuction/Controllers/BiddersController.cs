@@ -87,33 +87,40 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var bidder = Mapper.Map<Bidder>(bidderViewModel);
-
-                var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
-                bidder.BidderNumber = nextBidderNumber;
-                bidder.CreateDate = bidder.UpdateDate = DateTime.Now;
-                bidder.UpdateBy = bidder.Email;
-
-                //strip out dependents that weren't filled in
-                bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
-                bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
-
-                bidder.StoreItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(bidderViewModel.StoreItemPurchases);
-                
-                foreach (var guest in bidder.AuctionGuests)
+                try
                 {
-                    var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
-                    guest.TicketType = ticketType.Name;
-                    guest.TicketPrice = ticketType.Price;
-                }
-                
-                db.Bidders.Add(bidder);
-                db.SaveChanges();
+                    var bidder = Mapper.Map<Bidder>(bidderViewModel);
 
-                if (submitButton == "Create Bidder Only")
-                    return RedirectToAction("Index");
-                else
-                    return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                    var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
+                    bidder.BidderNumber = nextBidderNumber;
+                    bidder.CreateDate = bidder.UpdateDate = DateTime.Now;
+                    bidder.UpdateBy = bidder.Email;
+
+                    //strip out dependents that weren't filled in
+                    bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
+                    bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
+
+                    bidder.StoreItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(bidderViewModel.StoreItemPurchases);
+
+                    foreach (var guest in bidder.AuctionGuests)
+                    {
+                        var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
+                        guest.TicketType = ticketType.Name;
+                        guest.TicketPrice = ticketType.Price;
+                    }
+
+                    db.Bidders.Add(bidder);
+                    db.SaveChanges();
+
+                    if (submitButton == "Create Bidder Only")
+                        return RedirectToAction("Index");
+                    else
+                        return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                }
+                catch(OutOfStockException oosExc)
+                {
+                    ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your registration again (you have not been charged yet).");
+                }
             }
 
             AddBidderControlInfo();
