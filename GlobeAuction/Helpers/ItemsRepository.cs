@@ -205,7 +205,7 @@ namespace GlobeAuction.Helpers
                     {
                         var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
                         lineItem.StoreItem = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
-                        lineItem.Price = storeItemPurchase.Price;
+                        lineItem.Price = lineItem.StoreItem.Price;
                         purchasesToReturn.Add(lineItem);
                     }
                 }

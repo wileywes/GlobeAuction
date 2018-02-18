@@ -109,38 +109,42 @@
             </div>
         </div>
 
-
-        @Html.HiddenFor(m => Model.IsBundleParent)
-        <br /><br />
-        <h4>Bundle Components for Raffle ticket bundles</h4>
-        If you need to edit the components of a raffle ticket please create a new one.  Editing of components is not currently supported.
-        <hr />
-        <div class="row form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-2">@Html.Label("Store Item Id")</div>
-            <div class="col-md-2">@Html.Label("Quantity")</div>
-            <div class="col-md-2">@Html.Label("Unit Price")</div>
-            <div class="col-md-4"></div>
-        </div>
-        @for (var i = 0; i < Model.BundleComponents.Count; i++)
+        @if (Model.IsBundleParent)
         {
-            @Html.HiddenFor(m => Model.BundleComponents[i].BundleComponentId)
-            @Html.HiddenFor(m => Model.BundleComponents[i].Quantity)
-            @Html.HiddenFor(m => Model.BundleComponents[i].ComponentUnitPrice)
-            @Html.HiddenFor(m => Model.BundleComponents[i].StoreItemId)
+            <br /><br />
+            <h4>Bundle Components for Raffle ticket bundles</h4>
+            <p>
+                If you need to edit the components of a raffle ticket please create a new one.Editing of components is not currently supported.
+            </p>
+            <hr />
+            @Html.HiddenFor(m => Model.IsBundleParent)
             <div class="row form-group">
-                <div class="control-label col-md-2">Component @(i + 1)</div>
-                <div class="col-md-2">
-                    @Html.DisplayFor(m => Model.BundleComponents[i].StoreItemId, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-                <div class="col-md-2">
-                    @Html.DisplayFor(m => Model.BundleComponents[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-                <div class="col-md-2">
-                    @Html.DisplayFor(m => Model.BundleComponents[i].ComponentUnitPrice, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2">@Html.Label("Store Item Id")</div>
+                <div class="col-md-2">@Html.Label("Quantity")</div>
+                <div class="col-md-2">@Html.Label("Unit Price")</div>
                 <div class="col-md-4"></div>
             </div>
+            for (var i = 0; i < Model.BundleComponents.Count; i++)
+            {
+                @Html.HiddenFor(m => Model.BundleComponents[i].BundleComponentId)
+                @Html.HiddenFor(m => Model.BundleComponents[i].Quantity)
+                @Html.HiddenFor(m => Model.BundleComponents[i].ComponentUnitPrice)
+                @Html.HiddenFor(m => Model.BundleComponents[i].StoreItemId)
+                <div class="row form-group">
+                    <div class="control-label col-md-2">Component @(i + 1)</div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(m => Model.BundleComponents[i].StoreItemId, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(m => Model.BundleComponents[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DisplayFor(m => Model.BundleComponents[i].ComponentUnitPrice, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+            }
         }
         <br />
 

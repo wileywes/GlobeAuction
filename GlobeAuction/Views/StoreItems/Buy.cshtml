@@ -20,6 +20,7 @@ else
         </div>
     }
     <p>
+        <br />
         If you haven't registered for the auction yet, you can do that and purchase raffle tickets
         @Html.ActionLink("here in registration", "Register", "Bidders") .
         If you have already registered or just want to buy raffle tickets or gift cards in our pre-sale, you can do that below.
@@ -27,93 +28,126 @@ else
 
     using (Html.BeginForm())
     {
+        var cardCount = 0;
+
         @Html.AntiForgeryToken()
 
         <div class="form-horizontal">
             <h2>Purchase Raffle Tickets for the Auction</h2>
             <hr />
-            <div class="row form-group">
-                <div class="col-md-2"></div>
-                <div class="col-md-6">@Html.Label("Raffle Package")</div>
-                <div class="col-md-2">@Html.Label("Price")</div>
-                <div class="col-md-2">@Html.Label("Quantity")</div>
+            <div class="row">
+                @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+                {
+                    if (!Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
+
+                    if (cardCount % 3 == 0 && cardCount > 0)
+                    {
+                        @Html.Raw("</div><br /><div class=\"row\">")
+                    }
+
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
+                    <div class="col-md-4">
+                        <div class="card">
+                            @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                            {
+                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" class="center-block" />
+                            }
+                            <div class="card-container">
+                                <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
+                                <p>
+                                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                                    <br />
+                                    <table cellspacing="5">
+                                        <tr>
+                                            <td><b>Price:</b></td>
+                                            <td>
+                                                @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Quantity:&nbsp;&nbsp;</b></td>
+                                            <td>
+                                                @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "" } })
+                                                @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {
+                        cardCount++;
+                    }
+                }
             </div>
-            @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
-            {
-                if (!Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
-
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
-
-                <div class="row form-group">
-                    <div class="col-md-2">
-                        @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
-                        {
-                            <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
-                        }
-                    </div>
-                    <div class="col-md-6">
-                        <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
-                        <br />
-                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                    </div>
-                    <div class="col-md-2">
-                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                    </div>
-                    <div class="col-md-2">
-                        @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            }
             <br />
 
             <h2>Buy It Now!</h2>
             <hr />
-            <div class="row form-group">
-                <div class="col-md-2"></div>
-                <div class="col-md-6">@Html.Label("Item")</div>
-                <div class="col-md-2">@Html.Label("Price")</div>
-                <div class="col-md-2">@Html.Label("Quantity")</div>
+            <div class="row">
+                @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+                {
+                    cardCount = 0;
+                    if (Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
+
+                    if (cardCount % 3 == 0 && cardCount > 0)
+                    {
+                        @Html.Raw("</div><br /><div class=\"row\">")
+                    }
+
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
+                    <div class="col-md-4">
+                        <div class="card">
+                            @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                            {
+                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" class="center-block" />
+                            }
+                            <div class="card-container">
+                                <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
+                                <p>
+                                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                                    <br />
+                                    <table>
+                                        <tr>
+                                            <td><b>Price:</b></td>
+                                            <td>
+                                                @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Quantity:&nbsp;&nbsp;</b></td>
+                                            <td>
+                                                @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "", @readonly = "readonly" } })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <input type="button" class="btn btn-default" value="Add to Order" onclick="javascript:buy('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
+                                                    <input type="button" class="btn btn-default" value="Remove" onclick="javascript:removeFromOrder('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {
+                        cardCount++;
+                    }
+                }
             </div>
-            @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
-            {
-                if (Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
-
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
-
-                <div class="row form-group">
-                    <div class="col-md-2">
-                        @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
-                        {
-                            <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
-                        }
-                    </div>
-                    <div class="col-md-6">
-                        <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
-                        <br />
-                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                    </div>
-                    <div class="col-md-2">
-                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                    </div>
-                    <div class="col-md-1">
-                        @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                        @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-1">
-                        <input type="button" class="btn" value="Add to Order" onclick="javascript:buy('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
-                        <input type="button" class="btn" value="Delete" onclick="javascript:removeFromOrder('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
-                    </div>
-                </div>
-            }
             <br />
 
             @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
