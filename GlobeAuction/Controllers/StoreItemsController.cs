@@ -36,6 +36,7 @@ namespace GlobeAuction.Controllers
             //filter out items with no more quantity
             storeItems = storeItems
                 .Where(si => si.IsRaffleTicket || si.Quantity > 0)
+                .OrderBy(si => si.Price)
                 .ToList();
 
             var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
