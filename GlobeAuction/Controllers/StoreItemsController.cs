@@ -23,6 +23,7 @@ namespace GlobeAuction.Controllers
         public ActionResult Buy(int? iid, string fullName)
         {
             var storeItems = db.StoreItems
+                .Include(i => i.DonationItem)
                 .Where(s => s.CanPurchaseInStore && s.IsDeleted == false)
                 .ToList();
 

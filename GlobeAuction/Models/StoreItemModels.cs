@@ -57,6 +57,9 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
+
+        //reference to donation item that the StoreItem was copied from.  Null for items not converted from donation items
+        public virtual DonationItem DonationItem { get; set; }
     }
 
     public class StoreItemsListViewModel : StoreItemViewModel

@@ -22,8 +22,7 @@ else
     <p>
         <br />
         If you haven't registered for the auction yet, you can do that and purchase raffle tickets
-        @Html.ActionLink("here in registration", "Register", "Bidders") .
-        If you have already registered or just want to buy raffle tickets or gift cards in our pre-sale, you can do that below.
+        @Html.ActionLink("here in registration", "Register", "Bidders").
     </p>
 
     using (Html.BeginForm())
@@ -88,68 +87,75 @@ else
             </div>
             <br />
 
-            <h2>Buy It Now!</h2>
-            <hr />
-            <div class="row">
-                @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
-                {
-                    cardCount = 0;
-                    if (Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
-
-                    if (cardCount % 3 == 0 && cardCount > 0)
+            @if (Model.StoreItemPurchases.Where(s => s.StoreItem.IsRaffleTicket == false).Any())
+            {
+                <h2>Buy It Now!</h2>
+                <hr />
+                <div class="row">
+                    @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
                     {
-                        @Html.Raw("</div><br /><div class=\"row\">")
-                    }
+                        cardCount = 0;
+                        if (Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
 
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
-                    <div class="col-md-4">
-                        <div class="card">
-                            @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
-                            {
-                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" class="center-block" />
-                            }
-                            <div class="card-container">
-                                <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
-                                <p>
-                                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                                    <br />
-                                    <table>
-                                        <tr>
-                                            <td><b>Price:</b></td>
-                                            <td>
-                                                @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Quantity:&nbsp;&nbsp;</b></td>
-                                            <td>
-                                                @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "", @readonly = "readonly" } })
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <input type="button" class="btn btn-default" value="Add to Order" onclick="javascript:buy('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
-                                                    <input type="button" class="btn btn-default" value="Remove" onclick="javascript:removeFromOrder('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </p>
+                        if (cardCount % 3 == 0 && cardCount > 0)
+                        {
+                            @Html.Raw("</div><br /><div class=\"row\">")
+                        }
+
+                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
+                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
+                        <div class="col-md-4">
+                            <div class="card">
+                                @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                                {
+                                    <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" class="center-block" />
+                                }
+                                <div class="card-container">
+                                    <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
+                                    <p>
+                                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                                        <br />
+                                        <table>
+                                            <tr>
+                                                <td><b>Price:</b></td>
+                                                <td>
+                                                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                                                    @if (Model.StoreItemPurchases[i].StoreItem.DonationItem?.DollarValue.GetValueOrDefault(0) > 0)
+                                                    {
+                                                        @Html.Raw($" (value {Model.StoreItemPurchases[i].StoreItem.DonationItem.DollarValue.Value:C})");
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Quantity:&nbsp;&nbsp;</b></td>
+                                                <td>
+                                                    @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "", @readonly = "readonly" } })
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <input type="button" class="btn btn-default" value="Add to Order" onclick="javascript:buy('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
+                                                        <input type="button" class="btn btn-default" value="Remove" onclick="javascript:removeFromOrder('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {
-                        cardCount++;
+                        {
+                            cardCount++;
+                        }
                     }
-                }
-            </div>
-            <br />
+                </div>
+                <br />
+            }
 
             @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
             {
