@@ -54,7 +54,7 @@ else
                         <div class="card">
                             @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
                             {
-                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" class="center-block" />
+                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                             }
                             <div class="card-container">
                                 <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
@@ -111,7 +111,7 @@ else
                             <div class="card">
                                 @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
                                 {
-                                    <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" class="center-block" />
+                                    <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                                 }
                                 <div class="card-container">
                                     <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
