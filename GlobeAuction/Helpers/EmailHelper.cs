@@ -89,7 +89,7 @@ namespace GlobeAuction.Helpers
                     .Where(s => s.IsPaid)
                     .Select(GetStoreItemPurchaseLineString));
             }
-            
+
             var body = GetInvoiceEmail(
                 paidManually ? invoice.Total : invoice.PaymentTransaction.PaymentGross,
                 invoice.FirstName + " " + invoice.LastName,
@@ -98,6 +98,16 @@ namespace GlobeAuction.Helpers
                 lines);
 
             SendEmail(invoice.Email, "Order Confirmation", body);
+        }
+
+        public void SendDonationItemCertificate(Bidder bidder, DonationItem item)
+        {
+            var body = GetDonationItemCertificateEmail(
+                bidder.FirstName + " " + bidder.LastName,
+                item.Title,
+                item.Description);
+
+            SendEmail(bidder.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
 
         public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
@@ -126,7 +136,7 @@ namespace GlobeAuction.Helpers
 
             var imagesToEmbed = new Dictionary<string, string> { { "<!--%HeaderImage-->", headerPath } };
 
-            SendEmail(donor.Email, "Thanks for your contribution to \"An Evening Around the GLOBE\"", body, 
+            SendEmail(donor.Email, null, "Thanks for your contribution to \"An Evening Around the GLOBE\"", body,
                 false, _donorReceiptEmailBcc, imagesToEmbed);
         }
 
@@ -135,7 +145,7 @@ namespace GlobeAuction.Helpers
             var body = GetEmailBody("donorReceipt");
 
             var lineTemplate = GetEmailBody("donorReceiptLine");
-            
+
             body = ReplaceToken("DonationTotal", totalDonated.ToString("C"), body);
             body = ReplaceToken("DonorName", donorName, body);
             body = ReplaceToken("CurrentDate", DateTime.Now.Date.ToString("D"), body);
@@ -201,6 +211,21 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
+        private string GetDonationItemCertificateEmail(string winnerName, string itemTitle, string itemDescription)
+        {
+            var body = GetEmailBody("donationItemCertificate");
+
+            body = ReplaceToken("WinnerName", winnerName, body);
+            body = ReplaceToken("Title", itemTitle, body);
+            body = ReplaceToken("Description", itemDescription, body);
+
+            body = ReplaceToken("SiteUrl", _siteUrl, body);
+            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteName", _siteName, body);
+
+            return body;
+        }
+
         public void SendBidderPaymentReminder(Bidder bidder)
         {
             var url = string.Format("{0}/Bidders/RedirectToPayPal/{1}", _siteUrl, bidder.BidderId);
@@ -234,11 +259,15 @@ namespace GlobeAuction.Helpers
 
         public void SendEmail(string to, string subject, string body)
         {
-            SendEmail(to, subject, body, true, null, null);
+            SendEmail(to, null, subject, body, true, null, null);
         }
 
-        public void SendEmail(string to, string subject, string body, bool includeAllEmailBcc, string additionalBccList,
-            Dictionary<string, string> imagesToEmbedByTag)
+        public void SendEmail(string to, string additionalTo, string subject, string body)
+        {
+            SendEmail(to, additionalTo, subject, body, true, null, null);
+        }
+
+        public void SendEmail(string to, string additionalTo, string subject, string body, bool includeAllEmailBcc, string additionalBccList, Dictionary<string, string> imagesToEmbedByTag)
         {
             var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
             {
@@ -246,6 +275,11 @@ namespace GlobeAuction.Helpers
                 IsBodyHtml = true,
                 Subject = subject
             };
+
+            if (!string.IsNullOrEmpty(additionalTo))
+            {
+                msg.To.Add(additionalTo);
+            }
 
             if (!string.IsNullOrEmpty(_allEmailBcc) && includeAllEmailBcc)
             {
@@ -261,7 +295,7 @@ namespace GlobeAuction.Helpers
 
             if (imagesToEmbedByTag != null && imagesToEmbedByTag.Any())
             {
-                foreach(var imgPair in imagesToEmbedByTag)
+                foreach (var imgPair in imagesToEmbedByTag)
                 {
                     AddEmbeddedImage(msg, imgPair.Key, imgPair.Value);
                 }

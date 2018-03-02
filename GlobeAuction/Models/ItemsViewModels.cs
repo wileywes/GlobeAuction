@@ -107,6 +107,7 @@ namespace GlobeAuction.Models
         public int? DollarValue { get; set; }
         public string HasDisplay { get; set; }
         public bool IsGiftCard { get; set; }
+        public bool HasWinnerBeenEmailed { get; set; }
 
         public DonationItemViewModel()
         {
@@ -244,10 +245,11 @@ namespace GlobeAuction.Models
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
         public bool IsDeleted { get; set; }
+        public bool HasWinnerBeenEmailed { get; set; }
 
         [Required]
         public bool IsGiftCard { get; set; }
-
+        
         public virtual Solicitor Solicitor { get; set; }
         public virtual Donor Donor { get; set; }
 

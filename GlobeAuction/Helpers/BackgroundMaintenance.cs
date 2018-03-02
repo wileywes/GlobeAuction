@@ -31,27 +31,53 @@ namespace GlobeAuction.Helpers
                 {
                     _lastMaintenance = DateTime.Now;
 
-                    var oneDayAgo = DateTime.Now.AddDays(-1);
-
-                    var biddersThatHaveNotPaid = db.Bidders
-                        .Where(b => b.CreateDate < oneDayAgo 
-                                && b.AuctionGuests.Any(g => g.TicketPrice > 0) //only nudge if they have non-free tickets
-                                && b.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false) //only nudge if at least one ticket isn't paid
-                                && b.IsPaymentReminderSent == false)
-                        .ToList();
-
-                    foreach(var bidder in biddersThatHaveNotPaid)
-                    {
-                        emailHelper.SendBidderPaymentReminder(bidder);
-                        bidder.IsPaymentReminderSent = true; //just send this once per bidder
-                        db.SaveChanges();
-
-                        _logger.Info("Sent payment reminder to {0}, bidder ID {1}", bidder.Email, bidder.BidderId);
-                    }
+                    SendBidderPaymentReminders(emailHelper);
                 }
 
-                Thread.Sleep(TimeSpan.FromSeconds(60));
+                Thread.Sleep(TimeSpan.FromMinutes(60));
             }
         }        
+
+        private void SendBidderPaymentReminders(EmailHelper emailHelper)
+        {
+            var oneDayAgo = DateTime.Now.AddDays(-1);
+
+            var biddersThatHaveNotPaid = db.Bidders
+                .Where(b => b.CreateDate < oneDayAgo
+                        && b.AuctionGuests.Any(g => g.TicketPrice > 0) //only nudge if they have non-free tickets
+                        && b.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false) //only nudge if at least one ticket isn't paid
+                        && b.IsPaymentReminderSent == false)
+                .ToList();
+
+            foreach (var bidder in biddersThatHaveNotPaid)
+            {
+                emailHelper.SendBidderPaymentReminder(bidder);
+                bidder.IsPaymentReminderSent = true; //just send this once per bidder
+                db.SaveChanges();
+
+                _logger.Info("Sent payment reminder to {0}, bidder ID {1}", bidder.Email, bidder.BidderId);
+            }
+        }
+
+        private void S(EmailHelper emailHelper)
+        {
+            var allWinnings = new ItemsRepository(db).GetWinningsByBidder();
+
+            foreach(var winning in allWinnings)
+            {
+                var paidAuctionItems = winning.Winnings.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid).ToList();
+
+                foreach(var paidAi in paidAuctionItems)
+                {
+                    foreach(var donationItem in paidAi.DonationItems.Where(di => di.HasWinnerBeenEmailed == false))
+                    {
+                        emailHelper.SendDonationItemCertificate(winning.Bidder, donationItem);
+
+                        donationItem.HasWinnerBeenEmailed = true;
+                        db.SaveChanges();
+                    }
+                }
+            }
+        }
     }
 }
