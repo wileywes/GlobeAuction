@@ -143,7 +143,7 @@
                 @string.Format("{0} - {1} - {2:C} (paid {3:C})",
                            item.StoreItem.Title,
                           (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
-                          item.StoreItem.Price,
+                          item.Price,
                           item.PricePaid.GetValueOrDefault(0))
             </dd>
         }

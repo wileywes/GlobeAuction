@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.BidderViewModel
+﻿@model GlobeAuction.Models.BidderRegistrationViewModel
 
 @{
     ViewBag.Title = "Register";
@@ -120,7 +120,7 @@ else
             }
             <br />
 
-            @if (Model.StoreItemPurchases != null && Model.StoreItemPurchases.Any())
+            @if (Model.ItemPurchases != null && Model.ItemPurchases.Any())
             {
                 <h4>Raffle Tickets</h4>
                 <hr />
@@ -134,32 +134,28 @@ else
                     <div class="col-md-2">@Html.Label("Price")</div>
                     <div class="col-md-2">@Html.Label("Quantity")</div>
                 </div>
-                for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+                for (var i = 0; i < Model.ItemPurchases.Count; i++)
                 {
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
+                    @Html.HiddenFor(m => Model.ItemPurchases[i].StoreItemId)
 
                     <div class="row form-group">
                         <div class="col-md-2">
-                            @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                            @if (!string.IsNullOrEmpty(Model.ItemPurchases[i].ImageUrl))
                             {
-                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
+                                <img src="@Url.Content(Model.ItemPurchases[i].ImageUrl)" alt="Image" style="max-width: calc(100% - 20px);" />
                             }
                         </div>
                         <div class="col-md-6">
-                            <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
+                            <b>@Html.DisplayFor(m => Model.ItemPurchases[i].Title)</b>
                             <br />
-                            @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                            @Html.DisplayFor(m => Model.ItemPurchases[i].Description)
                         </div>
                         <div class="col-md-2">
-                            @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                            @Html.DisplayFor(m => Model.ItemPurchases[i].Price)
                         </div>
                         <div class="col-md-2">
-                            @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                            @Html.EditorFor(m => Model.ItemPurchases[i].QuantityPurchased, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => Model.ItemPurchases[i].QuantityPurchased, "", new { @class = "text-danger" })
                         </div>
                     </div>
                 }

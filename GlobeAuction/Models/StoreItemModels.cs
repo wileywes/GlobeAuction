@@ -244,10 +244,46 @@ namespace GlobeAuction.Models
         [Display(Name = "Zip")]
         public string ZipCode { get; set; }
 
-        public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
+        public List<BuyItemViewModel> RaffleItems { get; set; }
+        public List<BuyItemViewModel> StoreItems { get; set; }
 
         public bool ShowInvoiceCreatedSuccessMessage { get; set; }
         public int? InvoiceIdCreated { get; set; }
         public string InvoiceFullNameCreated { get; set; }
+    }
+
+    public class BuyItemViewModel
+    {
+        //store item info
+        public int StoreItemId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal Price { get; set; }
+        public int QuantityAvailable { get; set; }
+        public decimal? DonationItemValue { get; set; }
+
+        //input from user
+        [Required]
+        public int QuantityPurchased { get; set; }
+
+        /// <summary>
+        /// For model binding only!!
+        /// </summary>
+        public BuyItemViewModel()
+        {
+        }
+
+        public BuyItemViewModel(StoreItem si)
+        {
+            StoreItemId = si.StoreItemId;
+            Title = si.Title;
+            Description = si.Description;
+            ImageUrl = si.ImageUrl;
+            Price = si.Price;
+            QuantityAvailable = si.Quantity;
+            DonationItemValue = si?.DonationItem?.DollarValue;
+        }
     }
 }

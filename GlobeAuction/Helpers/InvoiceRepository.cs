@@ -63,7 +63,11 @@ namespace GlobeAuction.Helpers
 
         public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, bool markedManually, string updatedBy)
         {
-            var storeItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(buyModel.StoreItemPurchases);
+            var allPurchases = new List<BuyItemViewModel>();
+            if (buyModel.RaffleItems != null) allPurchases.AddRange(buyModel.RaffleItems);
+            if (buyModel.StoreItems != null) allPurchases.AddRange(buyModel.StoreItems);
+
+            var storeItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(allPurchases);
 
             var invoice = new Invoice
             {

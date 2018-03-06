@@ -246,6 +246,33 @@ namespace GlobeAuction.Models
         public bool IsCheckoutNudgeTextSent { get; set; }
     }
 
+    public class BidderRegistrationViewModel
+    {
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+        public string Phone { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [DataType(DataType.PostalCode)]
+        [Display(Name = "Zip")]
+        public string ZipCode { get; set; }
+
+        public List<AuctionGuestViewModel> AuctionGuests { get; set; }
+        public List<StudentViewModel> Students { get; set; }
+        public List<BuyItemViewModel> ItemPurchases { get; set; }
+    }
+
     public class AuctionGuestViewModel
     {
         public int AuctionGuestId { get; set; }

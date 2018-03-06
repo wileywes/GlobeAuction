@@ -20,7 +20,7 @@ namespace GlobeAuction.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         [AllowAnonymous]
-        public ActionResult Buy(int? iid, string fullName)
+        public ActionResult Buy(int? iid, string fullName, string itemTitleWithOosError)
         {
             var storeItems = db.StoreItems
                 .Include(i => i.DonationItem)
@@ -33,20 +33,10 @@ namespace GlobeAuction.Controllers
                 storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
 
-            //filter out items with no more quantity
-            storeItems = storeItems
-                .Where(si => si.IsRaffleTicket || si.Quantity > 0)
-                .OrderBy(si => si.Price)
-                .ToList();
-
-            var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
-
             var viewModel = new BuyViewModel()
             {
-                StoreItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
-                {
-                    StoreItem = si
-                }).ToList()
+                RaffleItems = storeItems.Where(si => si.IsRaffleTicket).OrderBy(si => si.Price).Select(si => new BuyItemViewModel(si)).ToList(),
+                StoreItems = storeItems.Where(si => !si.IsRaffleTicket && si.Quantity > 0).OrderBy(si => si.Price).Select(si => new BuyItemViewModel(si)).ToList(),
             };
 
             //if we just created an invoice then show the info
@@ -56,6 +46,11 @@ namespace GlobeAuction.Controllers
                 viewModel.InvoiceIdCreated = iid.Value;
                 viewModel.InvoiceFullNameCreated = fullName;
             };
+
+            if (!string.IsNullOrEmpty(itemTitleWithOosError))
+            {
+                ModelState.AddModelError("", $"Item \"{itemTitleWithOosError}\" is no longer available or you attempted to order more than what is currently available.  Please try your purchase again.");
+            }
 
             return View(viewModel);
         }
@@ -83,7 +78,7 @@ namespace GlobeAuction.Controllers
                 }
                 catch (OutOfStockException oosExc)
                 {
-                    ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your purchase again.");
+                    return RedirectToAction("Buy", "StoreItems", new { itemTitleWithOosError = oosExc.StoreItem.Title });
                 }
             }
 

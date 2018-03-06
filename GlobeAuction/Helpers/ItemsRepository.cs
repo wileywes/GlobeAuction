@@ -156,33 +156,37 @@ namespace GlobeAuction.Helpers
             return results;
         }
 
-        public List<StoreItemPurchase> GetStorePurchasesWithIndividualizedRaffleTickets(List<StoreItemPurchaseViewModel> purchaseViewModels)
+        public List<StoreItemPurchase> GetStorePurchasesWithIndividualizedRaffleTickets(List<BuyItemViewModel> purchaseViewModels)
         {
             var purchasesToReturn = new List<StoreItemPurchase>();
 
             if (purchaseViewModels != null)
             {
-                foreach (var storeItemPurchase in purchaseViewModels.Where(s => s.Quantity > 0))
+                foreach (var itemPurchase in purchaseViewModels.Where(s => s.QuantityPurchased > 0))
                 {
-                    var storeItemPurchased = db.StoreItems.Find(storeItemPurchase.StoreItem.StoreItemId);
-                    storeItemPurchase.StoreItem = Mapper.Map<StoreItemViewModel>(storeItemPurchased);
+                    //reload from DB instead of relying on payload posted back to have all the StoreItem details
+                    var storeItem = db.StoreItems.Find(itemPurchase.StoreItemId);
+                    var storeItemViewModel = Mapper.Map<StoreItemViewModel>(storeItem);
 
-                    if (storeItemPurchase.StoreItem.IsRaffleTicket)
+                    if (storeItem.IsRaffleTicket)
                     {
-                        if (storeItemPurchase.StoreItem.BundleComponents != null && storeItemPurchase.StoreItem.BundleComponents.Any())
+                        if (storeItem.BundleComponents != null && storeItem.BundleComponents.Any())
                         {
-                            foreach(var component in storeItemPurchase.StoreItem.BundleComponents)
+                            foreach(var component in storeItem.BundleComponents)
                             {
                                 var componentStoreItem = db.StoreItems.Find(component.StoreItemId);
-                                var totalQtyForThisTicket = component.Quantity * storeItemPurchase.Quantity;
+                                var totalQtyForThisTicket = component.Quantity * itemPurchase.QuantityPurchased;
 
                                 //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
                                 for (int i = 0; i < totalQtyForThisTicket; i++)
                                 {
-                                    var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
-                                    lineItem.StoreItem = componentStoreItem;
-                                    lineItem.Quantity = 1;
-                                    lineItem.Price = component.ComponentUnitPrice;
+                                    var lineItem = new StoreItemPurchase
+                                    {
+                                        StoreItem = componentStoreItem,
+                                        Quantity = 1,
+                                        Price = component.ComponentUnitPrice                                        
+                                    };
+
                                     purchasesToReturn.Add(lineItem);
                                 }
                             }
@@ -190,26 +194,31 @@ namespace GlobeAuction.Helpers
                         else
                         {
                             //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
-                            for (int i = 0; i < storeItemPurchase.Quantity; i++)
+                            for (int i = 0; i < itemPurchase.QuantityPurchased; i++)
                             {
-                                var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
-                                lineItem.StoreItem = storeItemPurchased;
-                                lineItem.Quantity = 1;
-                                lineItem.Price = storeItemPurchased.Price;
+                                var lineItem = new StoreItemPurchase
+                                {
+                                    StoreItem = storeItem,
+                                    Quantity = 1,
+                                    Price = storeItem.Price
+                                };
                                 purchasesToReturn.Add(lineItem);
                             }
                         }
                     }
                     else
                     {
-                        if (storeItemPurchased.Quantity <= 0)
+                        if (storeItem.Quantity <= 0 || storeItem.Quantity < itemPurchase.QuantityPurchased)
                         {
-                            throw new OutOfStockException("StoreItem out of stock", storeItemPurchased, storeItemPurchase);
+                            throw new OutOfStockException("StoreItem out of stock", storeItem, itemPurchase);
                         }
 
-                        var lineItem = Mapper.Map<StoreItemPurchase>(storeItemPurchase);
-                        lineItem.StoreItem = storeItemPurchased;
-                        lineItem.Price = lineItem.StoreItem.Price;
+                        var lineItem = new StoreItemPurchase
+                        {
+                            StoreItem = storeItem,
+                            Quantity = itemPurchase.QuantityPurchased,
+                            Price = storeItem.Price
+                        };
                         purchasesToReturn.Add(lineItem);
                     }
                 }
@@ -238,13 +247,13 @@ namespace GlobeAuction.Helpers
     public class OutOfStockException : ApplicationException
     {
         public StoreItem StoreItem { get; private set;}
-        public StoreItemPurchaseViewModel PurchaseViewModel { get; private set; }
+        public BuyItemViewModel BuyItemViewModel { get; private set; }
 
-        public OutOfStockException(string message, StoreItem storeitem, StoreItemPurchaseViewModel purchaseViewModel)
+        public OutOfStockException(string message, StoreItem storeitem, BuyItemViewModel itemViewModel)
             :base(message)
         {
             StoreItem = storeitem;
-            PurchaseViewModel = purchaseViewModel;
+            BuyItemViewModel = itemViewModel;
         }
     }
 }

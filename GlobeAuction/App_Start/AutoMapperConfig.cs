@@ -13,6 +13,7 @@ namespace GlobeAuction
 
                 c.CreateMap<Bidder, BidderViewModel>();
                 c.CreateMap<BidderViewModel, Bidder>();
+                c.CreateMap<BidderRegistrationViewModel, Bidder>();
 
                 c.CreateMap<AuctionGuest, AuctionGuestViewModel>();
                 c.CreateMap<AuctionGuestViewModel, AuctionGuest>();

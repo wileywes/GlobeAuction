@@ -36,43 +36,37 @@ else
             <h2>Purchase Raffle Tickets for the Auction</h2>
             <hr />
             <div class="row">
-                @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+                @for (var i = 0; i < Model.RaffleItems.Count; i++)
                 {
-                    if (!Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
-
                     if (cardCount % 3 == 0 && cardCount > 0)
                     {
                         @Html.Raw("</div><br /><div class=\"row\">")
                     }
 
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
+                    @Html.HiddenFor(m => Model.RaffleItems[i].StoreItemId)
                     <div class="col-md-4">
                         <div class="card">
-                            @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                            @if (!string.IsNullOrEmpty(Model.RaffleItems[i].ImageUrl))
                             {
-                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
+                                <img src="@Url.Content(Model.RaffleItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                             }
                             <div class="card-container">
-                                <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
+                                <h4><b>@Html.DisplayFor(m => Model.RaffleItems[i].Title)</b></h4>
                                 <p>
-                                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                                    @Html.DisplayFor(m => Model.RaffleItems[i].Description)
                                     <br />
                                     <table cellspacing="5">
                                         <tr>
                                             <td><b>Price:</b></td>
                                             <td>
-                                                @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                                                @Html.DisplayFor(m => Model.RaffleItems[i].Price)
                                             </td>
                                         </tr>
                                         <tr>
                                             <td><b>Quantity:&nbsp;&nbsp;</b></td>
                                             <td>
-                                                @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "" } })
-                                                @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(m => Model.RaffleItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
+                                                @Html.ValidationMessageFor(model => Model.RaffleItems[i].QuantityPurchased, "", new { @class = "text-danger" })
                                             </td>
                                         </tr>
                                     </table>
@@ -87,7 +81,7 @@ else
             </div>
             <br />
 
-            @if (Model.StoreItemPurchases.Where(s => s.StoreItem.IsRaffleTicket == false).Any())
+            @if (Model.StoreItems.Any())
             {
                 <h2>Buy It Now!</h2>
                 <hr />
@@ -98,55 +92,47 @@ else
                     cardCount = 0;
                 }
                 <div class="row">
-                    @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+                    @for (var i = 0; i < Model.StoreItems.Count; i++)
                     {
-                        if (Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
-
                         if (cardCount % 3 == 0 && cardCount > 0)
                         {
                             @Html.Raw("</div><br /><div class=\"row\">")
                         }
 
-                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
-                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Title)
-                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
-                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                        @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket)
+                        @Html.HiddenFor(m => Model.StoreItems[i].StoreItemId)
                         <div class="col-md-4">
                             <div class="card">
-                                @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                                @if (!string.IsNullOrEmpty(Model.StoreItems[i].ImageUrl))
                                 {
-                                    <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
+                                    <img src="@Url.Content(Model.StoreItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                                 }
                                 <div class="card-container">
-                                    <h4><b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b></h4>
+                                    <h4><b>@Html.DisplayFor(m => Model.StoreItems[i].Title)</b></h4>
                                     <p>
-                                        @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                                        @Html.DisplayFor(m => Model.StoreItems[i].Description)
                                         <br />
-                                        <table>
+                                        <table cellspacing="5">
                                             <tr>
                                                 <td><b>Price:</b></td>
                                                 <td>
-                                                    @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
-                                                    @if (Model.StoreItemPurchases[i].StoreItem.DonationItem?.DollarValue.GetValueOrDefault(0) > 0)
+                                                    @Html.DisplayFor(m => Model.StoreItems[i].Price)
+                                                    @if (Model.StoreItems[i].DonationItemValue.GetValueOrDefault(0) > 0)
                                                     {
-                                                        @Html.Raw($" (value {Model.StoreItemPurchases[i].StoreItem.DonationItem.DollarValue.Value:C})");
+                                                        @Html.Raw($" (value {Model.StoreItems[i].DonationItemValue.Value:C})");
                                                     }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Available:</b></td>
+                                                <td>
+                                                    @Html.DisplayFor(m => Model.StoreItems[i].QuantityAvailable)
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td><b>Quantity:&nbsp;&nbsp;</b></td>
                                                 <td>
-                                                    @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "", @readonly = "readonly" } })
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <input type="button" class="btn btn-default" value="Add to Order" onclick="javascript:buy('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
-                                                        <input type="button" class="btn btn-default" value="Remove" onclick="javascript:removeFromOrder('@Html.IdFor(m => Model.StoreItemPurchases[i].Quantity)');" />
-                                                    </div>
+                                                    @Html.EditorFor(m => Model.StoreItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
+                                                    @Html.ValidationMessageFor(model => Model.StoreItems[i].QuantityPurchased, "", new { @class = "text-danger" })
                                                 </td>
                                             </tr>
                                         </table>

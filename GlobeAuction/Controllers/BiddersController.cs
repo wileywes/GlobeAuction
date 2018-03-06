@@ -61,17 +61,13 @@ namespace GlobeAuction.Controllers
                 //remove admin-only ticket types
                 raffleItems = raffleItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
-            var availableRaffleItems = raffleItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
 
             AddBidderControlInfo();
-            var newBidder = new BidderViewModel()
+            var newBidder = new BidderRegistrationViewModel()
             {
                 AuctionGuests = new List<AuctionGuestViewModel>(Enumerable.Repeat(new AuctionGuestViewModel(), 6)),
                 Students = new List<StudentViewModel>(Enumerable.Repeat(new StudentViewModel(), 4)),
-                StoreItemPurchases = availableRaffleItems.Select(si => new StoreItemPurchaseViewModel
-                {
-                    StoreItem = si
-                }).ToList()
+                ItemPurchases = raffleItems.Select(si => new BuyItemViewModel(si)).ToList()
             };
 
             return View(newBidder);
@@ -83,7 +79,7 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register([Bind(Exclude = "BidderId")] BidderViewModel bidderViewModel, string submitButton)
+        public ActionResult Register([Bind(Exclude = "BidderId")] BidderRegistrationViewModel bidderViewModel, string submitButton)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +96,7 @@ namespace GlobeAuction.Controllers
                     bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                     bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
 
-                    bidder.StoreItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(bidderViewModel.StoreItemPurchases);
+                    bidder.StoreItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(bidderViewModel.ItemPurchases);
 
                     foreach (var guest in bidder.AuctionGuests)
                     {
