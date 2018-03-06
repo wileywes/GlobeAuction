@@ -152,6 +152,9 @@
                 <th>
                     Has Display
                 </th>
+                <th>
+                    Use Digital Certificate For Winner
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -346,6 +349,23 @@
                             
                             if (confirm("Are you sure?  This will move these items out of the auction items into the store for the catalog.")) {
                                 $("#donationItemsAction").val("MoveDonationItemsToStore");
+                                $('#submitSelectedDonationItemsForm').submit();
+                            }
+                        }
+                    }
+                },
+                {
+                    text: 'Email Certificate when Won',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows for this action.');
+                        }
+                        else {
+                            $("#selectedDonationItemIds").val(getSelectedRows(data));
+
+                            if (confirm("Are you sure?  For these items the system will now email a digital certificate to the winner once paid.")) {
+                                $("#donationItemsAction").val("UseDigitalCertificateForWinner");
                                 $('#submitSelectedDonationItemsForm').submit();
                             }
                         }

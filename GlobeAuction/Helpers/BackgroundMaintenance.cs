@@ -32,6 +32,7 @@ namespace GlobeAuction.Helpers
                     _lastMaintenance = DateTime.Now;
 
                     SendBidderPaymentReminders(emailHelper);
+                    SendDonationItemCertificates(emailHelper);
                 }
 
                 Thread.Sleep(TimeSpan.FromMinutes(60));
@@ -59,7 +60,7 @@ namespace GlobeAuction.Helpers
             }
         }
 
-        private void S(EmailHelper emailHelper)
+        private void SendDonationItemCertificates(EmailHelper emailHelper)
         {
             var allWinnings = new ItemsRepository(db).GetWinningsByBidder();
 
@@ -69,7 +70,7 @@ namespace GlobeAuction.Helpers
 
                 foreach(var paidAi in paidAuctionItems)
                 {
-                    foreach(var donationItem in paidAi.DonationItems.Where(di => di.HasWinnerBeenEmailed == false))
+                    foreach(var donationItem in paidAi.DonationItems.Where(di => di.UseDigitalCertificateForWinner && di.HasWinnerBeenEmailed == false))
                     {
                         emailHelper.SendDonationItemCertificate(winning.Bidder, donationItem);
 

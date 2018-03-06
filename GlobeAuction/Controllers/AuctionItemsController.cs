@@ -279,6 +279,14 @@ namespace GlobeAuction.Controllers
                 case "MoveDonationItemsToStore":
                     new ItemsRepository(db).CreateStoreItemsForDonations(selectedDonations, username);
                     return RedirectToAction("Index", "StoreItems");
+                case "UseDigitalCertificateForWinner":
+                    foreach (var selectedDonation in selectedDonations)
+                    {
+                        selectedDonation.UseDigitalCertificateForWinner = true;
+                    }
+
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");
