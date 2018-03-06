@@ -94,10 +94,12 @@ else
                 <div class="alert alert-info">
                     All "Buy It Now" purchases will be available for pickup in the Lower Campus office on March 19th.
                 </div>
+                {
+                    cardCount = 0;
+                }
                 <div class="row">
                     @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
                     {
-                        cardCount = 0;
                         if (Model.StoreItemPurchases[i].StoreItem.IsRaffleTicket) { continue; }
 
                         if (cardCount % 3 == 0 && cardCount > 0)
