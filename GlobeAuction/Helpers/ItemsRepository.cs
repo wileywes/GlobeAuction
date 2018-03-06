@@ -162,7 +162,7 @@ namespace GlobeAuction.Helpers
 
             if (purchaseViewModels != null)
             {
-                foreach (var itemPurchase in purchaseViewModels.Where(s => s.QuantityPurchased > 0))
+                foreach (var itemPurchase in purchaseViewModels.Where(s => s.QuantityPurchased.GetValueOrDefault(0) > 0))
                 {
                     //reload from DB instead of relying on payload posted back to have all the StoreItem details
                     var storeItem = db.StoreItems.Find(itemPurchase.StoreItemId);
@@ -175,7 +175,7 @@ namespace GlobeAuction.Helpers
                             foreach(var component in storeItem.BundleComponents)
                             {
                                 var componentStoreItem = db.StoreItems.Find(component.StoreItemId);
-                                var totalQtyForThisTicket = component.Quantity * itemPurchase.QuantityPurchased;
+                                var totalQtyForThisTicket = component.Quantity * itemPurchase.QuantityPurchased.Value;
 
                                 //if multiple quantity then create individual StoreItemPurchases for each so we have unique IDs
                                 for (int i = 0; i < totalQtyForThisTicket; i++)
@@ -216,7 +216,7 @@ namespace GlobeAuction.Helpers
                         var lineItem = new StoreItemPurchase
                         {
                             StoreItem = storeItem,
-                            Quantity = itemPurchase.QuantityPurchased,
+                            Quantity = itemPurchase.QuantityPurchased.Value,
                             Price = storeItem.Price
                         };
                         purchasesToReturn.Add(lineItem);

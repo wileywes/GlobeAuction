@@ -265,8 +265,7 @@ namespace GlobeAuction.Models
         public decimal? DonationItemValue { get; set; }
 
         //input from user
-        [Required]
-        public int QuantityPurchased { get; set; }
+        public int? QuantityPurchased { get; set; }
 
         /// <summary>
         /// For model binding only!!
