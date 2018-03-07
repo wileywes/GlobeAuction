@@ -114,20 +114,58 @@ namespace GlobeAuction.Helpers
 
         public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
         {
-            var lines = GetLinesForAuctionItems(winnings);
+            var allItemsAreDigitalCertificates = winnings.All(w => w.DonationItems.All(di => di.UseDigitalCertificateForWinner));
+            var hasAtLeastOneDigitalCertificate = winnings.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner));
 
-            var footerNotes = winnings.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
-                "* Certificate for this item will be emailed to you once payment is received"
-                : string.Empty;
+            string body;
 
-            var totalOwed = winnings.Sum(i => i.WinningBid.Value);
-            var body = GetAuctionWinningsNudgeEmailEmail(winnings.Count,
-                totalOwed, payLink,
-                bidder.FirstName + " " + bidder.LastName,
-                "Bidder # " + bidder.BidderId,
-                footerNotes,
-                lines,
-                isAfterEvent);
+            if (isAfterEvent)
+            {
+                var paidItems = winnings.Where(w => w.Invoice != null && w.Invoice.IsPaid).ToList();
+                var unpaidItems = winnings.Where(w => w.Invoice == null || !w.Invoice.IsPaid).ToList();
+
+                var paidLines = GetLinesForAuctionItems(paidItems);
+                var unpaidLines = GetLinesForAuctionItems(unpaidItems);
+
+                var totalPaid = paidItems.Sum(i => i.WinningBid.Value);
+                var totalUnpaid = unpaidItems.Sum(i => i.WinningBid.Value);
+
+                var paidFooter = paidItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
+                    "* Certificate for this item should have been emailed within one hour of payment" : string.Empty;
+
+                var unpaidFooter = unpaidItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
+                    "* Certificate for this item will be emailed to you once payment is received" : string.Empty;
+
+                body = GetAuctionWinningsNudgeEmailForAfterEvent(
+                    winnings.Count, paidItems.Count, unpaidItems.Count,
+                    totalPaid, totalUnpaid, 
+                    payLink, 
+                    bidder.FirstName + " " + bidder.LastName, //address1
+                    "Bidder # " + bidder.BidderNumber, //address 2
+                    paidFooter, unpaidFooter,
+                    paidLines, unpaidLines);
+            }
+            else
+            {
+                var lines = GetLinesForAuctionItems(winnings);
+
+                var checkoutNotes = "Then Use Express Checkout to get your items";
+
+                if (allItemsAreDigitalCertificates)
+                {
+                    checkoutNotes = "All your items are certificates which will be emailed to you. You may skip checkout at the auction event.";
+                }
+
+                var footerNotes = hasAtLeastOneDigitalCertificate ? "* Certificate for this item will be emailed to you once payment is received" : string.Empty;
+
+                var totalOwed = winnings.Sum(i => i.WinningBid.Value);
+                body = GetAuctionWinningsNudgeEmail(winnings.Count,
+                    totalOwed, payLink,
+                    bidder.FirstName + " " + bidder.LastName,
+                    "Bidder # " + bidder.BidderNumber,
+                    checkoutNotes, footerNotes,
+                    lines);
+            }
 
             SendEmail(bidder.Email, "Auction Checkout", body);
         }
@@ -175,10 +213,10 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, string footerNotes, List<Tuple<string, decimal>> lines, bool isAfterEvent)
+        private string GetAuctionWinningsNudgeEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, 
+            string checkoutNotes, string footerNotes, List<Tuple<string, decimal>> lines)
         {
-            var template = isAfterEvent ? "auctionWinningsNudgeAfterEvent" : "auctionWinningsNudge";
-            var body = GetEmailBody(template);
+            var body = GetEmailBody("auctionWinningsNudge");
 
             var lineTemplate = GetEmailBody("invoiceLine");
 
@@ -188,7 +226,9 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("PayLink", payLink, body);
             body = ReplaceToken("Address1", address1, body);
             body = ReplaceToken("Address2", address2, body);
+            body = ReplaceToken("CheckoutNotes", checkoutNotes, body);
             body = ReplaceToken("FooterNotes", footerNotes, body);
+
 
             var linesHtml = string.Empty;
             foreach (var line in lines)
@@ -197,6 +237,59 @@ namespace GlobeAuction.Helpers
             }
 
             body = ReplaceToken("InvoiceLines", linesHtml, body);
+            body = ReplaceToken("SiteUrl", _siteUrl, body);
+            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+
+            return body;
+        }
+
+        private string GetAuctionWinningsNudgeEmailForAfterEvent(int itemCount, int paidItemCount, int unpaidItemCount, 
+            decimal paidTotal, decimal unpaidTotal,
+            string payLink, string address1, string address2, 
+            string paidFooterNotes, string unpaidFooterNotes,
+            List<Tuple<string, decimal>> paidLines,
+            List<Tuple<string, decimal>> unpaidLines)
+        {
+            var body = GetEmailBody("auctionWinningsNudgeAfterEvent");
+
+            var lineTemplate = GetEmailBody("invoiceLine");
+
+            body = ReplaceToken("SiteName", _siteName, body);
+            body = ReplaceToken("ItemCount", itemCount.ToString(), body);
+            body = ReplaceToken("PaidItemCount", paidItemCount.ToString(), body);
+            body = ReplaceToken("UnpaidItemCount", unpaidItemCount.ToString(), body);
+            body = ReplaceToken("TotalUnpaid", unpaidTotal.ToString("C"), body);
+            body = ReplaceToken("TotalPaid", paidTotal.ToString("C"), body);
+            body = ReplaceToken("PayLink", payLink, body);
+            body = ReplaceToken("Address1", address1, body);
+            body = ReplaceToken("Address2", address2, body);
+            body = ReplaceToken("PaidFooterNotes", paidFooterNotes, body);
+            body = ReplaceToken("UnpaidFooterNotes", unpaidFooterNotes, body);
+
+            var linesHtml = string.Empty;
+            foreach (var line in unpaidLines)
+            {
+                linesHtml += ReplaceToken("LineName", line.Item1, ReplaceToken("LinePrice", line.Item2.ToString("C"), lineTemplate));
+            }
+            body = ReplaceToken("UnpaidInvoiceLines", linesHtml, body);
+
+            linesHtml = string.Empty;
+            foreach (var line in paidLines)
+            {
+                linesHtml += ReplaceToken("LineName", line.Item1, ReplaceToken("LinePrice", line.Item2.ToString("C"), lineTemplate));
+            }
+            body = ReplaceToken("PaidInvoiceLines", linesHtml, body);
+
+            if (paidItemCount > 0)
+            {
+                body = ReplaceToken("PaidSectionDisplay", string.Empty, body);                
+            }
+            else
+            {
+                body = ReplaceToken("PaidSectionDisplay", "display:none;", body);
+
+            }
+
             body = ReplaceToken("SiteUrl", _siteUrl, body);
             body = ReplaceToken("SiteEmail", _gmailUsername, body);
 
