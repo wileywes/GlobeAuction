@@ -24,7 +24,6 @@ namespace GlobeAuction.Helpers
         private static readonly string _donorReceiptEmailBcc = ConfigurationManager.AppSettings["DonorReceiptEmailBcc"];
         private readonly string _baseFilePath;
 
-
         public EmailHelper()
             : this(HttpContext.Current.Server.MapPath("/"))
         {
@@ -71,6 +70,7 @@ namespace GlobeAuction.Helpers
                 bidder.FirstName + " " + bidder.LastName,
                 "Transaction ID " + trans.TxnId,
                 DateTime.Now.ToString("g"),
+                string.Empty, //no footer notes for bidder payments since those items are only auction items
                 lines);
 
             SendEmail(bidder.Email, "Ticket Confirmation", body);
@@ -78,10 +78,7 @@ namespace GlobeAuction.Helpers
 
         public void SendInvoicePaymentConfirmation(Invoice invoice, bool paidManually)
         {
-            var lines = invoice.AuctionItems
-                .Where(g => g.WinningBid.HasValue)
-                .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
-                .ToList();
+            var lines = GetLinesForAuctionItems(invoice.AuctionItems);
 
             if (invoice.StoreItemPurchases.Any())
             {
@@ -90,11 +87,16 @@ namespace GlobeAuction.Helpers
                     .Select(GetStoreItemPurchaseLineString));
             }
 
+            var footerNotes = invoice.AuctionItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
+                "* Certificate for this item will be emailed to you"
+                : string.Empty;
+
             var body = GetInvoiceEmail(
                 paidManually ? invoice.Total : invoice.PaymentTransaction.PaymentGross,
                 invoice.FirstName + " " + invoice.LastName,
                 "Invoice ID " + invoice.InvoiceId,
                 paidManually ? "Paid in Person" : "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,
+                footerNotes,
                 lines);
 
             SendEmail(invoice.Email, "Order Confirmation", body);
@@ -112,19 +114,31 @@ namespace GlobeAuction.Helpers
 
         public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
         {
-            var lines = winnings
-                .Select(g => new Tuple<string, decimal>(g.Title, g.WinningBid.Value))
-                .ToList();
+            var lines = GetLinesForAuctionItems(winnings);
+
+            var footerNotes = winnings.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
+                "* Certificate for this item will be emailed to you once payment is received"
+                : string.Empty;
 
             var totalOwed = winnings.Sum(i => i.WinningBid.Value);
             var body = GetAuctionWinningsNudgeEmailEmail(winnings.Count,
                 totalOwed, payLink,
                 bidder.FirstName + " " + bidder.LastName,
                 "Bidder # " + bidder.BidderId,
+                footerNotes,
                 lines,
                 isAfterEvent);
 
             SendEmail(bidder.Email, "Auction Checkout", body);
+        }
+
+        private static List<Tuple<string,decimal>> GetLinesForAuctionItems(List<AuctionItem> winnings)
+        {
+            return winnings
+                .Select(g => new Tuple<string, decimal>(
+                    g.DonationItems.Any(di => di.UseDigitalCertificateForWinner) ? "* " + g.Title : g.Title,
+                    g.WinningBid.Value))
+                .ToList();
         }
 
         public void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude)
@@ -161,7 +175,7 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, List<Tuple<string, decimal>> lines, bool isAfterEvent)
+        private string GetAuctionWinningsNudgeEmailEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, string footerNotes, List<Tuple<string, decimal>> lines, bool isAfterEvent)
         {
             var template = isAfterEvent ? "auctionWinningsNudgeAfterEvent" : "auctionWinningsNudge";
             var body = GetEmailBody(template);
@@ -174,6 +188,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("PayLink", payLink, body);
             body = ReplaceToken("Address1", address1, body);
             body = ReplaceToken("Address2", address2, body);
+            body = ReplaceToken("FooterNotes", footerNotes, body);
 
             var linesHtml = string.Empty;
             foreach (var line in lines)
@@ -188,7 +203,7 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetInvoiceEmail(decimal totalPaid, string address1, string address2, string address3, List<Tuple<string, decimal>> lines)
+        private string GetInvoiceEmail(decimal totalPaid, string address1, string address2, string address3, string footerNotes, List<Tuple<string, decimal>> lines)
         {
             var body = GetEmailBody("invoicePaid");
             var lineTemplate = GetEmailBody("invoiceLine");
@@ -198,6 +213,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("Address1", address1, body);
             body = ReplaceToken("Address2", address2, body);
             body = ReplaceToken("Address3", address3, body);
+            body = ReplaceToken("FooterNotes", footerNotes, body);            
 
             var linesHtml = string.Empty;
             foreach (var line in lines)
