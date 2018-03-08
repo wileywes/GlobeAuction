@@ -20,7 +20,7 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, bool markedManually, string updatedBy)
+        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, PaymentMethod? manualPayMethod, string updatedBy)
         {
             var invoice = new Invoice
             {
@@ -38,10 +38,11 @@ namespace GlobeAuction.Helpers
                 ZipCode = bidder.ZipCode
             };
 
-            if (markedManually)
+            if (manualPayMethod.HasValue)
             {
                 invoice.IsPaid = true;
                 invoice.WasMarkedPaidManually = true;
+                invoice.PaymentMethod = manualPayMethod.Value;
                 invoice.UpdateBy = updatedBy;
 
                 foreach (var storeItem in invoice.StoreItemPurchases)
@@ -53,7 +54,7 @@ namespace GlobeAuction.Helpers
             db.Invoices.Add(invoice);
             db.SaveChanges();
 
-            if (markedManually)
+            if (manualPayMethod.HasValue)
             {
                 new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
             }
@@ -61,7 +62,7 @@ namespace GlobeAuction.Helpers
             return invoice;
         }
 
-        public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, bool markedManually, string updatedBy)
+        public Invoice CreateInvoiceForStoreItems(BuyViewModel buyModel, PaymentMethod? manualPayMethod, string updatedBy)
         {
             var allPurchases = new List<BuyItemViewModel>();
             if (buyModel.RaffleItems != null) allPurchases.AddRange(buyModel.RaffleItems);
@@ -83,10 +84,11 @@ namespace GlobeAuction.Helpers
                 ZipCode = buyModel.ZipCode
             };
 
-            if (markedManually)
+            if (manualPayMethod.HasValue)
             {
                 invoice.IsPaid = true;
                 invoice.WasMarkedPaidManually = true;
+                invoice.PaymentMethod = manualPayMethod.Value;
                 invoice.UpdateBy = updatedBy;
 
                 foreach (var sip in invoice.StoreItemPurchases)
@@ -119,6 +121,7 @@ namespace GlobeAuction.Helpers
             {
                 invoice.PaymentTransaction = ppTrans;
                 invoice.IsPaid = true;
+                invoice.PaymentMethod = PaymentMethod.PayPal;
                 invoice.UpdateDate = DateTime.Now;
                 invoice.UpdateBy = ppTrans.PayerEmail;
 

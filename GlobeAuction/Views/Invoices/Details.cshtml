@@ -18,14 +18,14 @@
         </dd>
 
         @if (Model.Bidder != null)
-        {
-            <dt>
-                @Html.DisplayNameFor(model => model.Bidder.BidderNumber)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Bidder.BidderNumber)
-            </dd>
-        }
+    {
+        <dt>
+            @Html.DisplayNameFor(model => model.Bidder.BidderNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bidder.BidderNumber)
+        </dd>
+}
 
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
@@ -78,6 +78,13 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.IsPaid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PaymentMethod)
         </dd>
 
         <dt>

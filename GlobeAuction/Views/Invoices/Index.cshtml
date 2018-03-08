@@ -51,7 +51,7 @@
                     @Html.DisplayFor(modelItem => item.InvoiceId)
                 </td>
                 <td>
-                    @(item.IsPaid ? "Yes" : "No")
+                    @(item.IsPaid ? "Yes (" + item.PaymentMethod + ")" : "No")
                 </td>
                 <td>
                     @(item.WasMarkedPaidManually ? "Yes" : "No")

@@ -230,7 +230,8 @@ else
                 <div class="col-md-offset-2 col-md-10">
                     @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
                     {
-                        <input type="submit" name="submitButton" value="Invoice and Mark Paid" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
                         <br /><br />
                         <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
                     }

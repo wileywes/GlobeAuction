@@ -62,6 +62,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Paid Marked Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
+        [Display(Name = "Payment Method")]
+        public PaymentMethod? PaymentMethod { get; set; }
+
         public int? BidderId { get; set; }
 
         [Display(Name = "Bidder #")]
@@ -100,6 +103,7 @@ namespace GlobeAuction.Models
             Email = invoice.Email;
             InvoiceId = invoice.InvoiceId;
             IsPaid = invoice.IsPaid;
+            PaymentMethod = invoice.PaymentMethod;
             WasMarkedPaidManually = invoice.WasMarkedPaidManually;
             CreateDate = invoice.CreateDate;
 

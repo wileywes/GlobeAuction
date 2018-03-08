@@ -19,6 +19,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Marked Paid Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
+        [Display(Name = "Payment Method")]
+        public PaymentMethod? PaymentMethod { get; set; }
+
         [Display(Name = "Create Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
@@ -93,6 +96,13 @@ namespace GlobeAuction.Models
             LineItems = invoice.AuctionItems.Select(g => new PayPalPaymentLine(g.Title, g.WinningBid.Value, 1)).ToList();
             LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
         }
+    }
+
+    public enum PaymentMethod
+    {
+        PayPal = 0,
+        Cash = 1,
+        Check = 2
     }
 
     public enum PayPalTransactionType

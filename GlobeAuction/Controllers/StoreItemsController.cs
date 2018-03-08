@@ -62,14 +62,19 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var markedManually = submitButton == "Invoice and Mark Paid";
+                PaymentMethod? manualPayMethod = null;
+                if (submitButton.StartsWith("Invoice and Mark Paid"))
+                {
+                    if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
+                    if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
+                }
 
                 try
                 {
                     var invoice = new InvoiceRepository(db).CreateInvoiceForStoreItems(buyViewModel,
-                        markedManually, markedManually ? User.Identity.GetUserName() : buyViewModel.Email);
+                        manualPayMethod, manualPayMethod.HasValue ? User.Identity.GetUserName() : buyViewModel.Email);
 
-                    if (markedManually)
+                    if (manualPayMethod.HasValue)
                     {
                         return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, fullName = invoice.FirstName + " " + invoice.LastName });
                     }

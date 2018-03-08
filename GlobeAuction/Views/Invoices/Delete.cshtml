@@ -12,17 +12,91 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.IsPaid)
+            @Html.DisplayNameFor(model => model.InvoiceId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InvoiceId)
+        </dd>
+        @if (Model.Bidder != null)
+    {
+        <dt>
+            @Html.DisplayNameFor(model => model.Bidder.BidderNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bidder.BidderNumber)
+        </dd>
+}
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
         </dt>
 
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Total)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Total)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPaid)
+        </dt>
         <dd>
             @Html.DisplayFor(model => model.IsPaid)
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PaymentMethod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TotalPaid)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.WasMarkedPaidManually)
         </dd>
@@ -30,7 +104,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.CreateDate)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.CreateDate)
         </dd>
@@ -38,7 +111,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.UpdateDate)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.UpdateDate)
         </dd>
@@ -46,7 +118,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.UpdateBy)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.UpdateBy)
         </dd>
