@@ -382,6 +382,8 @@ namespace GlobeAuction.Controllers
             var emailHelper = new EmailHelper();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
+                //for (int i = 0; i < 200; i++)
+                //{
                 try
                 {
                     var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
@@ -399,6 +401,7 @@ namespace GlobeAuction.Controllers
                     model.MessagesFailed++;
                     model.ErrorMessage = exc.Message;
                 }
+                //}
             }
         }
 
@@ -413,13 +416,13 @@ namespace GlobeAuction.Controllers
             var model = new NotifyResultViewModel();
             foreach (var winner in winnersToNotify)
             {
-                //for (int i = 0; i < 100; i++)
+                //for (int i = 0; i < 200; i++)
                 //{
                 try
                 {
                     var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
-                    var tinyUrl = urlHelper.GetTinyUrl(payLink);
-                    var body = "You won GLOBE Auction items!  Click here to checkout: " + tinyUrl;
+                    //var tinyUrl = urlHelper.GetTinyUrl(payLink);
+                    var body = "You won GLOBE Auction items!  Click here to checkout: " + payLink;
                     txtHelper.SendSms(winner.Bidder.Phone, body);
                     model.MessagesSent++;
                     winner.Bidder.IsCheckoutNudgeTextSent = true;

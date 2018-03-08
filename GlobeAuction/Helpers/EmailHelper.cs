@@ -22,6 +22,9 @@ namespace GlobeAuction.Helpers
         private static readonly string _siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
         private static readonly string _allEmailBcc = ConfigurationManager.AppSettings["AllEmailBcc"];
         private static readonly string _donorReceiptEmailBcc = ConfigurationManager.AppSettings["DonorReceiptEmailBcc"];
+        private static readonly string _sendGridApiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
+        private static readonly string _sendGridUsername = ConfigurationManager.AppSettings["SendGridUsername"];
+        private static readonly string _sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
         private readonly string _baseFilePath;
 
         public EmailHelper()
@@ -410,10 +413,16 @@ namespace GlobeAuction.Helpers
                 }
             }
 
+            /*
             var smtp = new SmtpClient("smtp.gmail.com", 587)
             {
                 Credentials = new NetworkCredential(_gmailUsername, _gmailPassword),
                 EnableSsl = true
+            };*/
+
+            var smtp = new SmtpClient("smtp.sendgrid.net", 587)
+            {
+                Credentials = new NetworkCredential(_sendGridUsername, _sendGridPassword)
             };
 
             Utilities.RetryIt(attemptNum => smtp.Send(msg), "SendEmail", 3);
