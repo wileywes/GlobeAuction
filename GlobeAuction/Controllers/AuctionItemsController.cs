@@ -295,7 +295,7 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedAuctionItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedAuctionItems(string postActionName, string selectedAuctionItemIds, int? startingAuctionItemNumber)
+        public ActionResult SubmitSelectedAuctionItems(string auctionItemsAction, string selectedAuctionItemIds, int? startingAuctionItemNumber)
         {
             var selectedAuctionIds = selectedAuctionItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
@@ -314,7 +314,7 @@ namespace GlobeAuction.Controllers
             }
 
             var username = User.Identity.GetUserName();
-            switch (postActionName)
+            switch (auctionItemsAction)
             {
                 case "RenumberAuctionItems":
                     var nextItemNum = startingAuctionItemNumber.GetValueOrDefault(0);
