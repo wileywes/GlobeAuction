@@ -348,6 +348,9 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult PrintAllPackSlips(bool? useMockData)
         {
+            if (User.Identity.GetUserName() != "williams.wes@gmail.com")
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             List<WinningsByBidder> winningsByBidder;
             if (useMockData.GetValueOrDefault())
             {
