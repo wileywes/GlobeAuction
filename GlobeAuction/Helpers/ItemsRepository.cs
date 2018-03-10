@@ -135,6 +135,7 @@ namespace GlobeAuction.Helpers
         {
             var itemsWon = db.AuctionItems
                 .Include(a => a.Invoice)
+                .Include(a => a.DonationItems)
                 .Where(ai => ai.WinningBid.HasValue && ai.WinningBidderId.HasValue)
                 .ToList();
 
@@ -154,6 +155,36 @@ namespace GlobeAuction.Helpers
                 });
             }
             return results;
+        }
+
+        public List<WinningsByBidder> Mock_GetWinningsByBidder()
+        {
+            var random = new Random();
+            var allItems = db.AuctionItems
+                .Include(a => a.Invoice)
+                .Include(a => a.DonationItems)
+                .ToList();
+
+            var first20Bidders = db.Bidders.Take(20)
+                .ToList()
+                .Select(b => new WinningsByBidder
+                {
+                    AreWinningsAllPaidFor = false,
+                    Bidder = b,
+                    Winnings = new List<AuctionItem>()
+                })
+                .ToList();
+
+            foreach(var item in allItems)
+            {
+                //mock winner
+                item.WinningBid = random.Next(1, 900);
+
+                var index = random.Next(20);
+                first20Bidders[index].Winnings.Add(item);
+            }
+
+            return first20Bidders.Where(b => b.Winnings.Count > 0).ToList();
         }
 
         public List<StoreItemPurchase> GetStorePurchasesWithIndividualizedRaffleTickets(List<BuyItemViewModel> purchaseViewModels)

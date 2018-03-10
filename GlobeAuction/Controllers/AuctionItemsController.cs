@@ -346,13 +346,21 @@ namespace GlobeAuction.Controllers
         }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
-        public ActionResult PrintAllPackSlips()
+        public ActionResult PrintAllPackSlips(bool? useMockData)
         {
-            var winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            List<WinningsByBidder> winningsByBidder;
+            if (useMockData.GetValueOrDefault())
+            {
+                winningsByBidder = new ItemsRepository(db).Mock_GetWinningsByBidder();
+            }
+            else
+            {
+                winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
+            }
             var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }
-
+        
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult EmailAllWinners()
         {

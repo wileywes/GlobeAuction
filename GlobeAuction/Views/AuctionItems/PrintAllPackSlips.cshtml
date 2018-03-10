@@ -32,13 +32,34 @@
                             <td>@item.UniqueItemNumber</td>
                             <td>@item.Category</td>
                             <td>
-                                @(item.HasPhysicalItem ? "*" : string.Empty)
+                                @(item.DonationItemsCount == 1 && item.DonationItems.First().UseDigitalCertificateForWinner ? "* " : string.Empty)
                                 @item.Title
                             </td>
-                            <td>@item.Description</td>
                         </tr>
+
+                        if (item.DonationItems.Count > 1)
+                        {
+                            foreach (var donationItem in item.DonationItems)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        @(donationItem.UseDigitalCertificateForWinner ? "* " : string.Empty)
+                                        @donationItem.Title
+                                    </td>
+                                </tr>
+                            }
+                        }
                     }
                 </table>
+
+                @if (winner.ItemsWon.Any(ai => ai.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
+                {
+                    <p>
+                        * Certificate for this item will be emailed to you
+                    </p>
+                }
             </div>
         }
     </div>
