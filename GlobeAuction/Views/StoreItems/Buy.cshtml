@@ -50,7 +50,7 @@ else
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-horizontal">
-            <h2>Purchase Raffle Tickets for the Auction</h2>
+            <h2>Raffle Tickets + Fund-A-Project</h2>
             <hr />
             <div class="row">
                 @for (var i = 0; i < Model.RaffleItems.Count; i++)
@@ -96,15 +96,13 @@ else
                     }
                 }
             </div>
+            
             <br />
 
             @if (Model.StoreItems.Any())
             {
-                <h2>Buy It Now!</h2>
+                <h2>Fund-a-Project!</h2>
                 <hr />
-                <div class="alert alert-info">
-                    All "Buy It Now" purchases will be available for pickup in the Lower Campus office on March 19th.
-                </div>
                 {
                     cardCount = 0;
                 }
