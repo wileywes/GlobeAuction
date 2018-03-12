@@ -90,6 +90,8 @@ namespace GlobeAuction.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    user.LastLogin = DateTime.Now;
+                    await UserManager.UpdateAsync(user);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -162,7 +164,7 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, CreateDate = DateTime.Now };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -359,6 +361,9 @@ namespace GlobeAuction.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    var user = await UserManager.FindByNameAsync(loginInfo.Email);
+                    user.LastLogin = DateTime.Now;
+                    await UserManager.UpdateAsync(user);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -393,7 +398,7 @@ namespace GlobeAuction.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, CreateDate = DateTime.Now };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -401,6 +406,8 @@ namespace GlobeAuction.Controllers
                     if (result.Succeeded)
                     {
                         SetupNewUser(user);
+                        user.LastLogin = DateTime.Now;
+                        await UserManager.UpdateAsync(user);
 
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         return RedirectToLocal(returnUrl);

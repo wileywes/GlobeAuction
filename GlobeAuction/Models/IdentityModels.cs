@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -10,6 +12,9 @@ namespace GlobeAuction.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        public DateTime CreateDate { get; set; }
+        public DateTime? LastLogin { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -24,6 +29,17 @@ namespace GlobeAuction.Models
         public string Id { get; set; }
         public string UserName { get; set; }
         public List<string> RoleNames { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime? LastLogin { get; set; }
+
+        public ApplicationUserWithRoleNames(ApplicationUser user, RoleManager<IdentityRole> roleManager)
+        {
+            Id = user.Id;
+            UserName = user.UserName;
+            RoleNames = user.Roles.Select(r => roleManager.FindById(r.RoleId).Name).ToList();
+            CreateDate = user.CreateDate;
+            LastLogin = user.LastLogin;
+        }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -57,20 +73,20 @@ namespace GlobeAuction.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<GlobeAuction.Models.DonationItem> DonationItems { get; set; }
-        public System.Data.Entity.DbSet<GlobeAuction.Models.Solicitor> Solicitors { get; set; }
-        public System.Data.Entity.DbSet<GlobeAuction.Models.AuctionItem> AuctionItems { get; set; }
-        public System.Data.Entity.DbSet<GlobeAuction.Models.Bidder> Bidders { get; set; }
-        public System.Data.Entity.DbSet<GlobeAuction.Models.TicketType> TicketTypes { get; set; }
+        public DbSet<DonationItem> DonationItems { get; set; }
+        public DbSet<Solicitor> Solicitors { get; set; }
+        public DbSet<AuctionItem> AuctionItems { get; set; }
+        public DbSet<Bidder> Bidders { get; set; }
+        public DbSet<TicketType> TicketTypes { get; set; }
 
-        public System.Data.Entity.DbSet<GlobeAuction.Models.AuctionGuest> AuctionGuests { get; set; }
-        public System.Data.Entity.DbSet<GlobeAuction.Models.Student> Students { get; set; }
+        public DbSet<AuctionGuest> AuctionGuests { get; set; }
+        public DbSet<Student> Students { get; set; }
         public DbSet<PayPalTransaction> PayPalTransactions { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<StoreItem> StoreItems { get; set; }
         public DbSet<BundleComponent> BundleComponents { get; set; }
         public DbSet<StoreItemPurchase> StoreItemPurchases { get; set; }
 
-        public System.Data.Entity.DbSet<GlobeAuction.Models.Donor> Donors { get; set; }
+        public DbSet<Donor> Donors { get; set; }
     }
 }

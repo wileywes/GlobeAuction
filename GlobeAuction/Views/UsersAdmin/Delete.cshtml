@@ -24,14 +24,28 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastLogin)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastLogin)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.RoleNames)
         </dt>
         <dd>
             <ul>
-                @foreach(var role in Model.RoleNames)
-                {
-                    <li>@role</li>
-                }
+                @foreach (var role in Model.RoleNames)
+            {
+                <li>@role</li>
+        }
             </ul>
         </dd>
     </dl>

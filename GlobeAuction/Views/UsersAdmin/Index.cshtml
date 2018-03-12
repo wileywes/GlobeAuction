@@ -1,71 +1,92 @@
 ﻿@model IEnumerable<GlobeAuction.Models.ApplicationUserWithRoleNames>
 
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
 @{
     ViewBag.Title = "User Accounts";
 }
 
 <h2>User Accounts</h2>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.UserName)
-        </th>
-        <th>Edit Items</th>
-        <th>Edit Bidders</th>
-        <th>Edit Tickets</th>
-        <th>Edit Winners</th>
-        <th>Checkout Winners</th>
-        <th>Admin Users</th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+<table class="table table-striped table-bordered" id="usersTable">
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td align="">
-                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditItems))
-                {
-                    <img src="~/Content/Images/checkmark.jpg" />
-                }
-            </td>
-            <td align="">
-                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditBidders))
-                {
-                    <img src="~/Content/Images/checkmark.jpg" />
-                }
-            </td>
-            <td align="">
-                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditTickets))
-                {
-                    <img src="~/Content/Images/checkmark.jpg" />
-                }
-            </td>
-            <td>
-                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditWinners))
-                {
-                    <img src="~/Content/Images/checkmark.jpg" />
-                }
-            </td>
-            <td>
-                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-                {
-                    <img src="~/Content/Images/checkmark.jpg" />
-                }
-            </td>
-            <td>
-                @if (item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
-                {
-                    <img src="~/Content/Images/checkmark.jpg" />
-                }
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastLogin)
+            </th>
+            <th>Edit Items</th>
+            <th>Edit Bidders</th>
+            <th>Edit Tickets</th>
+            <th>Edit Winners</th>
+            <th>Checkout Winners</th>
+            <th>Admin Users</th>
+            <th></th>
         </tr>
-    }
-
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastLogin)
+                </td>
+                <td>
+                    @(item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditItems) ? "Yes" : string.Empty)
+                </td>
+                <td>
+                    @(item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditBidders) ? "Yes" : string.Empty)
+                </td>
+                <td>
+                    @(item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditTickets) ? "Yes" : string.Empty)
+                </td>
+                <td>
+                    @(item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanEditWinners) ? "Yes" : string.Empty)
+                </td>
+                <td>
+                    @(item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) ? "Yes" : string.Empty)
+                </td>
+                <td>
+                    @(item.RoleNames.Contains(GlobeAuction.Models.AuctionRoles.CanAdminUsers) ? "Yes" : string.Empty)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#usersTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ],
+            select: {
+                style: 'os'
+            }
+        });
+    });
+</script>

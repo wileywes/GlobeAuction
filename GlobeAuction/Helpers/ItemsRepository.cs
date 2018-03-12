@@ -165,7 +165,9 @@ namespace GlobeAuction.Helpers
                 .Include(a => a.DonationItems)
                 .ToList();
 
-            var first20Bidders = db.Bidders.Take(20)
+            var first20Bidders = db.Bidders
+                .Where(b => b.IsDeleted == false)
+                .Take(20)
                 .ToList()
                 .Select(b => new WinningsByBidder
                 {

@@ -411,6 +411,10 @@
     <Compile Include="Migrations\201803080356356_PaymentMethodOonInvoice.Designer.cs">
       <DependentUpon>201803080356356_PaymentMethodOonInvoice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803121327175_DatesForApplicationUser.cs" />
+    <Compile Include="Migrations\201803121327175_DatesForApplicationUser.Designer.cs">
+      <DependentUpon>201803121327175_DatesForApplicationUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -811,6 +815,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803080356356_PaymentMethodOonInvoice.resx">
       <DependentUpon>201803080356356_PaymentMethodOonInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803121327175_DatesForApplicationUser.resx">
+      <DependentUpon>201803121327175_DatesForApplicationUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

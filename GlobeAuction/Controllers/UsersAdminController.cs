@@ -40,12 +40,9 @@ namespace GlobeAuction.Controllers
         public async Task<ActionResult> Index()
         {
             //must to ToList() to close out the DataReader from Users
-            return View(UserManager.Users.ToList().Select(u => new ApplicationUserWithRoleNames
-            {
-                Id = u.Id,
-                UserName = u.UserName,
-                RoleNames = u.Roles.Select(r => RoleManager.FindById(r.RoleId).Name).ToList()
-            }).ToList());
+            return View(UserManager.Users.ToList()
+                .Select(u => new ApplicationUserWithRoleNames(u, RoleManager))
+                .ToList());
         }
                 
         //
@@ -144,12 +141,7 @@ namespace GlobeAuction.Controllers
             {
                 return HttpNotFound();
             }
-            var viewModel = new ApplicationUserWithRoleNames
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                RoleNames = user.Roles.Select(r => RoleManager.FindById(r.RoleId).Name).ToList()
-            };
+            var viewModel = new ApplicationUserWithRoleNames(user, RoleManager);
             return View(viewModel);
         }
 
