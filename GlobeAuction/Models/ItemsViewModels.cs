@@ -106,7 +106,6 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
         public string HasDisplay { get; set; }
-        public bool IsGiftCard { get; set; }
         public bool HasWinnerBeenEmailed { get; set; }
         public string UseDigitalCertificateForWinner { get; set; }
 
@@ -124,7 +123,6 @@ namespace GlobeAuction.Models
             this.ExpirationDate = item.ExpirationDate;
             this.Restrictions = item.Restrictions; //.TruncateTo(50);
             this.HasDisplay = item.HasDisplay ? "Yes" : "No";
-            this.IsGiftCard = item.IsGiftCard;
             this.UseDigitalCertificateForWinner = item.UseDigitalCertificateForWinner ? "Yes" : "No";
         }
     }
@@ -247,9 +245,6 @@ namespace GlobeAuction.Models
         public bool HasWinnerBeenEmailed { get; set; }
         public bool UseDigitalCertificateForWinner { get; set; }
 
-        [Required]
-        public bool IsGiftCard { get; set; }
-        
         public virtual Solicitor Solicitor { get; set; }
         public virtual Donor Donor { get; set; }
 

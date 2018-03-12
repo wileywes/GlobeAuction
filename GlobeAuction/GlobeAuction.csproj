@@ -423,6 +423,10 @@
     <Compile Include="Migrations\201803122131374_StoreItemHasUnlimitedQuantity.Designer.cs">
       <DependentUpon>201803122131374_StoreItemHasUnlimitedQuantity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803122149074_RemoveDonationItemIsGiftCard.cs" />
+    <Compile Include="Migrations\201803122149074_RemoveDonationItemIsGiftCard.Designer.cs">
+      <DependentUpon>201803122149074_RemoveDonationItemIsGiftCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -832,6 +836,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803122131374_StoreItemHasUnlimitedQuantity.resx">
       <DependentUpon>201803122131374_StoreItemHasUnlimitedQuantity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803122149074_RemoveDonationItemIsGiftCard.resx">
+      <DependentUpon>201803122149074_RemoveDonationItemIsGiftCard.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
