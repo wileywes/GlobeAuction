@@ -14,9 +14,26 @@ else
 {
     if (Model.ShowInvoiceCreatedSuccessMessage)
     {
+        <br />
         <div class="alert alert-success">
-            Successfully created invoice @Model.InvoiceIdCreated.GetValueOrDefault(0) for @Model.InvoiceFullNameCreated .  You can continue to enter
-            another raffle purchase below.
+            Successfully created invoice @Model.InvoiceIdCreated.GetValueOrDefault(0) for @Model.InvoiceFullNameCreated.
+
+            @if (Model.RaffleTicketNumbersCreated.Any())
+            {
+                <p>
+                    <br />
+                    <h4>
+                        Raffle ticket numbers are:
+                    </h4>
+                    @foreach (var raffleDescription in Model.RaffleTicketNumbersCreated)
+                    {
+                        <li>
+                            @raffleDescription
+                        </li>
+                    }
+                </p><br />
+            }
+            You can continue to enter another raffle purchase below.
         </div>
     }
     <p>
@@ -229,17 +246,17 @@ else
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-    {
-                <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
-                <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
-                <input type="submit" name="submitButton" value="Invoice and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
-                <br /><br />
-                <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
-}
-else
-{
-                <input type="submit" name="submitButton" value="Buy Now" class="btn btn-primary btn-lg" />
-}
+                    {
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
+                        <br /><br />
+                        <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
+                    }
+                    else
+                    {
+                        <input type="submit" name="submitButton" value="Buy Now" class="btn btn-primary btn-lg" />
+                    }
                 </div>
             </div>
         </div>

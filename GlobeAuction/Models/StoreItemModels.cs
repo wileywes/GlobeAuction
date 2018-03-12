@@ -250,6 +250,7 @@ namespace GlobeAuction.Models
         public bool ShowInvoiceCreatedSuccessMessage { get; set; }
         public int? InvoiceIdCreated { get; set; }
         public string InvoiceFullNameCreated { get; set; }
+        public List<string> RaffleTicketNumbersCreated { get; set; }
     }
 
     public class BuyItemViewModel

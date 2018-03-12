@@ -20,7 +20,7 @@ namespace GlobeAuction.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         [AllowAnonymous]
-        public ActionResult Buy(int? iid, string fullName, string itemTitleWithOosError)
+        public ActionResult Buy(int? iid, string ie, string itemTitleWithOosError)
         {
             var storeItems = db.StoreItems
                 .Include(i => i.DonationItem)
@@ -40,11 +40,19 @@ namespace GlobeAuction.Controllers
             };
 
             //if we just created an invoice then show the info
-            if (iid.HasValue)
+            if (iid.HasValue && !string.IsNullOrEmpty(ie))
             {
-                viewModel.ShowInvoiceCreatedSuccessMessage = true;
-                viewModel.InvoiceIdCreated = iid.Value;
-                viewModel.InvoiceFullNameCreated = fullName;
+                var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid.Value && i.Email == ie);
+                if (invoice != null)
+                {
+                    viewModel.ShowInvoiceCreatedSuccessMessage = true;
+                    viewModel.InvoiceIdCreated = iid.Value;
+                    viewModel.InvoiceFullNameCreated = invoice.FirstName + " " + invoice.LastName;
+                    viewModel.RaffleTicketNumbersCreated = invoice?.StoreItemPurchases?
+                        .Where(sip => sip.StoreItem.IsRaffleTicket)
+                        .Select(sip => sip.GetRaffleDescriptionWithItemTitle())
+                        .ToList() ?? new List<string>();
+                }
             };
 
             if (!string.IsNullOrEmpty(itemTitleWithOosError))
@@ -77,7 +85,7 @@ namespace GlobeAuction.Controllers
 
                     if (manualPayMethod.HasValue)
                     {
-                        return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, fullName = invoice.FirstName + " " + invoice.LastName });
+                        return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, ie = invoice.Email });
                     }
 
                     return RedirectToAction("RedirectToPayPal", "Invoices", new { iid = invoice.InvoiceId, email = invoice.Email });

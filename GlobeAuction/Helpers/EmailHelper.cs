@@ -49,7 +49,7 @@ namespace GlobeAuction.Helpers
         {
             if (sip.StoreItem.IsRaffleTicket)
             {
-                return new Tuple<string, decimal>(sip.StoreItem.Title + " -  Ticket #" + sip.StoreItemPurchaseId.ToString("D8"), sip.PricePaid.Value);
+                return new Tuple<string, decimal>(sip.GetRaffleDescriptionWithItemTitle(), sip.PricePaid.Value);
             }
 
             return new Tuple<string, decimal>(sip.StoreItem.Title + (sip.Quantity > 1 ? " x " + sip.Quantity : ""), sip.PricePaid.Value);
