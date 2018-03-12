@@ -53,6 +53,8 @@ namespace GlobeAuction.Models
         [Display(Name = "Total Paid")]
         public decimal TotalPaid { get; set; }
 
+        [Display(Name = "Payment Method")]
+        public PaymentMethod? PaymentMethod { get; set; }
 
         [Display(Name = "Pay Reminder Sent")]
         public bool IsPaymentReminderSent{ get; set; }
@@ -74,6 +76,7 @@ namespace GlobeAuction.Models
             CreateDate = b.CreateDate;
 
             TotalPaid = 0;
+            PaymentMethod = b.PaymentMethod;
 
             if (b.AuctionGuests.Any())
             {
@@ -160,6 +163,12 @@ namespace GlobeAuction.Models
         [Required]
         public bool IsCheckoutNudgeTextSent { get; set; }
 
+        [Display(Name = "Marked Paid Manually")]
+        public bool WasMarkedPaidManually { get; set; }
+
+        [Display(Name = "Payment Method")]
+        public PaymentMethod? PaymentMethod { get; set; }
+
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
@@ -244,6 +253,9 @@ namespace GlobeAuction.Models
         [Required]
         [Display(Name = "Checkout Text Sent")]
         public bool IsCheckoutNudgeTextSent { get; set; }
+
+        [Display(Name = "Payment Method")]
+        public PaymentMethod? PaymentMethod { get; set; }
     }
 
     public class BidderRegistrationViewModel
@@ -271,6 +283,11 @@ namespace GlobeAuction.Models
         public List<AuctionGuestViewModel> AuctionGuests { get; set; }
         public List<StudentViewModel> Students { get; set; }
         public List<BuyItemViewModel> ItemPurchases { get; set; }
+
+        //shown if registered and marked manually
+        public bool ShowRegistrationSuccessMessage { get; set; }
+        public string FullNameJustRegistered { get; set; }
+        public int? BidderNumberJustRegistered { get; set; }
     }
 
     public class AuctionGuestViewModel

@@ -53,7 +53,7 @@ namespace GlobeAuction.Controllers
 
         // GET: Bidders/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(int? bid, string email)
         {
             var raffleItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false && s.IsRaffleTicket).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
@@ -69,6 +69,17 @@ namespace GlobeAuction.Controllers
                 Students = new List<StudentViewModel>(Enumerable.Repeat(new StudentViewModel(), 4)),
                 ItemPurchases = raffleItems.Select(si => new BuyItemViewModel(si)).ToList()
             };
+
+            if (bid.HasValue && !string.IsNullOrEmpty(email))
+            {
+                var existingJustRegistered = db.Bidders.FirstOrDefault(b => b.BidderId == bid.Value && b.Email == email);
+                if (existingJustRegistered != null)
+                {
+                    newBidder.ShowRegistrationSuccessMessage = true;
+                    newBidder.BidderNumberJustRegistered = existingJustRegistered.BidderNumber;
+                    newBidder.FullNameJustRegistered = existingJustRegistered.FirstName + " " + existingJustRegistered.LastName;
+                }
+            }
 
             return View(newBidder);
         }
@@ -108,10 +119,24 @@ namespace GlobeAuction.Controllers
                     db.Bidders.Add(bidder);
                     db.SaveChanges();
 
-                    if (submitButton == "Create Bidder Only")
-                        return RedirectToAction("Index");
+                    PaymentMethod? manualPayMethod = null;
+                    if (submitButton.StartsWith("Register and Mark Paid"))
+                    {
+                        if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
+                        if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
+                        if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
+                    }
+
+                    if (manualPayMethod.HasValue)
+                    {
+                        new BidderRepository(db).MarkBidderManuallyPaid(manualPayMethod.Value, bidder);
+
+                        return RedirectToAction("Register", new { bid = bidder.BidderId, email = bidder.Email });
+                    }
                     else
+                    {
                         return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                    }
                 }
                 catch(OutOfStockException oosExc)
                 {

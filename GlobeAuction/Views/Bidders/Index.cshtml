@@ -57,6 +57,9 @@
                     @Html.DisplayNameFor(model => model.TotalPaid)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.PaymentMethod)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.IsPaymentReminderSent)
                 </th>
                 <th>
@@ -101,6 +104,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.TotalPaid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaymentMethod)
                     </td>
                     <td>
                         @(item.IsPaymentReminderSent ? "Yes" : "No")

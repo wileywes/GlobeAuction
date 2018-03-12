@@ -15,6 +15,16 @@
 }
 else
 {
+    if (Model.ShowRegistrationSuccessMessage)
+    {
+        <div class="alert alert-success">
+            Successfully registered <b>@Model.FullNameJustRegistered</b> for the auction.  Paddle number is:
+            
+            <h3>@Model.BidderNumberJustRegistered</h3>
+
+            You can continue to entering more registrations below.
+        </div>
+    }
     <p>
         You will receive one bid paddle number for each registration you submit here.
         If you are bringing guests that want their own bid paddle number then please submit a separate registration for them.
@@ -85,7 +95,7 @@ else
                     <div class="control-label col-md-2">Child @(i + 1)</div>
                     <div class="col-md-10">
                         @Html.DropDownListFor(m => Model.Students[i].HomeroomTeacher, (IEnumerable<SelectListItem>)ViewBag.TeacherNames,
-                                       "Select Child's Homeroom Teacher", new { htmlAttributes = new { @class = "form-control" } })
+                                                                "Select Child's Homeroom Teacher", new { htmlAttributes = new { @class = "form-control" } })
                     </div>
                 </div>
             }
@@ -113,7 +123,7 @@ else
                     </div>
                     <div class="col-md-6">
                         @Html.DropDownListFor(model => Model.AuctionGuests[i].TicketType, (IEnumerable<SelectListItem>)ViewBag.TicketTypes,
-                                       "Select a Ticket Type", new { htmlAttributes = new { @class = "form-control" } })
+                                                                "Select a Ticket Type", new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => Model.AuctionGuests[i].TicketType, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -163,15 +173,21 @@ else
             }
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" name="submitButton" value="Submit and Proceed to Ticket Purchase" class="btn btn-default" />
-
-                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
+                    @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditBidders))
                     {
-                        <input type="submit" name="submitButton" value="Create Bidder Only" class="btn btn-default" />
+                        <input type="submit" name="submitButton" value="Register and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Register and Mark Paid (Check)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Register and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
+                        <br /><br />
+                        <input type="submit" name="submitButton" value="Register Now (for Myself)" class="btn btn-default btn-sm" />
                         <p>
                             <br />
-                            NOTE: "Create Bidder Only" option is only visible to admin users
+                            NOTE: "Register and Mark Paid" buttons only visible to logged-in volunteers
                         </p>
+                    }
+                    else
+                    {
+                        <input type="submit" name="submitButton" value="Submit and Proceed to Ticket Purchase" class="btn btn-primary btn-lg" />
                     }
                 </div>
             </div>

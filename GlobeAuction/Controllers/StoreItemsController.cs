@@ -67,6 +67,7 @@ namespace GlobeAuction.Controllers
                 {
                     if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
                     if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
+                    if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
                 }
 
                 try

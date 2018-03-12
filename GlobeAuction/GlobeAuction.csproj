@@ -415,6 +415,10 @@
     <Compile Include="Migrations\201803121327175_DatesForApplicationUser.Designer.cs">
       <DependentUpon>201803121327175_DatesForApplicationUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803121425321_BidderPaidManually.cs" />
+    <Compile Include="Migrations\201803121425321_BidderPaidManually.Designer.cs">
+      <DependentUpon>201803121425321_BidderPaidManually.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -818,6 +822,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803121327175_DatesForApplicationUser.resx">
       <DependentUpon>201803121327175_DatesForApplicationUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803121425321_BidderPaidManually.resx">
+      <DependentUpon>201803121425321_BidderPaidManually.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

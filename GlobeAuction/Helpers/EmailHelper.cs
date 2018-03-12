@@ -57,6 +57,11 @@ namespace GlobeAuction.Helpers
 
         public void SendBidderPaymentConfirmation(Bidder bidder, PayPalTransaction trans)
         {
+            SendBidderPaymentConfirmation(bidder, trans.PaymentGross, "Transaction ID " + trans.TxnId);
+        }
+
+        public void SendBidderPaymentConfirmation(Bidder bidder, decimal totalPaid, string paymentDetailsLine)
+        {
             var lines = bidder.AuctionGuests
                 .Where(g => g.TicketPricePaid.HasValue)
                 .Select(g => new Tuple<string, decimal>(g.TicketType, g.TicketPricePaid.Value))
@@ -69,9 +74,9 @@ namespace GlobeAuction.Helpers
                     .Select(GetStoreItemPurchaseLineString));
             }
 
-            var body = GetInvoiceEmail(trans.PaymentGross,
+            var body = GetInvoiceEmail(totalPaid,
                 bidder.FirstName + " " + bidder.LastName,
-                "Transaction ID " + trans.TxnId,
+                paymentDetailsLine,
                 DateTime.Now.ToString("g"),
                 string.Empty, //no footer notes for bidder payments since those items are only auction items
                 lines);

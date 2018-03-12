@@ -142,17 +142,18 @@
                 <dt></dt>
                 <dd>
                     @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-    {
-                <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
-                <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
-                <input type="button" id="skipButton" value="Skip to Next Person" class="btn btn-default btn-lg" />
-                <br /><br />
-                <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-sm" />
-}
-else
-{
-                <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-primary btn-lg" />
-}
+                    {
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
+                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
+                        <input type="button" id="skipButton" value="Skip to Next Person" class="btn btn-default btn-lg" />
+                        <br /><br />
+                        <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-sm" />
+                    }
+                    else
+                    {
+                        <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-primary btn-lg" />
+                    }
                 </dd>
             </dl>
         }

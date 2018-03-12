@@ -37,9 +37,38 @@ namespace GlobeAuction.Helpers
                     paymentLeft -= priceToUseUp;
                 }
 
+                bidder.WasMarkedPaidManually = false;
+                bidder.PaymentMethod = PaymentMethod.PayPal;
                 db.SaveChanges();
 
                 new EmailHelper().SendBidderPaymentConfirmation(bidder, ppTrans);
+            }
+        }
+
+        public void MarkBidderManuallyPaid(PaymentMethod manualPayMethod, Bidder bidder)
+        {
+            //only apply the ticket payment if there are un-paid tickets and the PP trans was successful
+            if (bidder.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false))
+            {
+                var totalPaid = 0m;
+                foreach (var guest in bidder.AuctionGuests)
+                {
+                    guest.TicketPricePaid = guest.TicketPrice;
+                    totalPaid += guest.TicketPrice;
+                }
+
+                foreach (var storeItem in bidder.StoreItemPurchases)
+                {
+                    var lineExtendedPrice = storeItem.Price * storeItem.Quantity;
+                    storeItem.PricePaid = lineExtendedPrice;
+                    totalPaid += lineExtendedPrice;
+                }
+
+                bidder.WasMarkedPaidManually = true;
+                bidder.PaymentMethod = manualPayMethod;
+                db.SaveChanges();
+
+                new EmailHelper().SendBidderPaymentConfirmation(bidder, totalPaid, "Paid by " + manualPayMethod);
             }
         }
 

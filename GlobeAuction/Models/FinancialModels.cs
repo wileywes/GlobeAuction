@@ -102,7 +102,8 @@ namespace GlobeAuction.Models
     {
         PayPal = 0,
         Cash = 1,
-        Check = 2
+        Check = 2,
+        PayPalHere = 3
     }
 
     public enum PayPalTransactionType

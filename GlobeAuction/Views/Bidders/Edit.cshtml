@@ -12,179 +12,187 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
-    <div class="form-horizontal">
-        <h4>Contact Information</h4>
-        <hr />
-        @Html.HiddenFor(model => model.BidderId)
+<div class="form-horizontal">
+    <h4>Contact Information</h4>
+    <hr />
+    @Html.HiddenFor(model => model.BidderId)
 
 
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.BidderNumber, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.BidderNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.HiddenFor(model => model.BidderNumber)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.IsPaymentReminderSent, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.CheckBoxFor(model => model.IsPaymentReminderSent, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IsPaymentReminderSent, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.IsCheckoutNudgeEmailSent, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.CheckBoxFor(model => model.IsCheckoutNudgeEmailSent, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IsCheckoutNudgeEmailSent, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.IsCheckoutNudgeTextSent, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.CheckBoxFor(model => model.IsCheckoutNudgeTextSent, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IsCheckoutNudgeTextSent, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.CreateDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.CreateDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.HiddenFor(m => m.CreateDate)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.UpdateDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.UpdateDate, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.MyLabelFor(model => model.UpdateBy, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.UpdateBy, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-        <br />
-
-
-        <h4>Student(s) Information</h4>
-        <hr />
-        <div class="row form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-10">@Html.Label("Homeroom Teacher")</div>
-        </div>
-        @if (Model.Students != null)
-        {
-            for (var i = 0; i < Model.Students.Count; i++)
-            {
-                @Html.HiddenFor(m => Model.Students[i].StudentId)
-                <div class="row form-group">
-                    <div class="control-label col-md-2">Child @(i + 1)</div>
-                    <div class="col-md-10">@Html.EditorFor(m => Model.Students[i].HomeroomTeacher, new { htmlAttributes = new { @class = "form-control" } })</div>
-                </div>
-            }
-        }
-        <br />
-
-        <h4>Auction Guest(s) Information</h4>
-        <hr />
-        <div class="row form-group">
-            <div class="col-md-2"></div>
-            <div class="col-md-2">@Html.Label("First Name")</div>
-            <div class="col-md-2">@Html.Label("Last Name")</div>
-            <div class="col-md-2">@Html.Label("Ticket Type")</div>
-        </div>
-        @if (Model.AuctionGuests != null)
-        {
-            for (var i = 0; i < Model.AuctionGuests.Count; i++)
-            {
-                @Html.HiddenFor(m => Model.AuctionGuests[i].AuctionGuestId)
-                <div class="row form-group">
-                    <div class="control-label col-md-2">Guest @(i + 1)</div>
-                    <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
-                    <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
-                    <div class="col-md-2">
-                        @Html.DisplayFor(model => Model.AuctionGuests[i].TicketType)
-                        @Html.HiddenFor(model => Model.AuctionGuests[i].TicketType)
-                    </div>
-                </div>
-            }
-        }
-        <br />
-
-
-        <h4>Additional Purchase(s)</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            @foreach (var item in Model.StoreItemPurchases)
-            {
-                <dt></dt>
-                <dd>
-                    @string.Format("{0} - {1} - {2:C} (paid {3:C})",
-                                         item.StoreItem.Title,
-                                        (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
-                                        item.StoreItem.Price,
-                                        item.PricePaid.GetValueOrDefault(0))
-                </dd>
-            }
-        </dl>
-        <br />
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.BidderNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.BidderNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.BidderNumber)
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.IsPaymentReminderSent, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(model => model.IsPaymentReminderSent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.IsPaymentReminderSent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.PaymentMethod, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.PaymentMethod, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(m => m.PaymentMethod)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.IsCheckoutNudgeEmailSent, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(model => model.IsCheckoutNudgeEmailSent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.IsCheckoutNudgeEmailSent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.IsCheckoutNudgeTextSent, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(model => model.IsCheckoutNudgeTextSent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.IsCheckoutNudgeTextSent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.CreateDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.CreateDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(m => m.CreateDate)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.UpdateDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.UpdateDate, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.UpdateBy, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DisplayFor(model => model.UpdateBy, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <br />
+
+
+    <h4>Student(s) Information</h4>
+    <hr />
+    <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">@Html.Label("Homeroom Teacher")</div>
+    </div>
+    @if (Model.Students != null)
+    {
+        for (var i = 0; i < Model.Students.Count; i++)
+        {
+            @Html.HiddenFor(m => Model.Students[i].StudentId)
+            <div class="row form-group">
+                <div class="control-label col-md-2">Child @(i + 1)</div>
+                <div class="col-md-10">@Html.EditorFor(m => Model.Students[i].HomeroomTeacher, new { htmlAttributes = new { @class = "form-control" } })</div>
+            </div>
+        }
+    }
+    <br />
+
+    <h4>Auction Guest(s) Information</h4>
+    <hr />
+    <div class="row form-group">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">@Html.Label("First Name")</div>
+        <div class="col-md-2">@Html.Label("Last Name")</div>
+        <div class="col-md-2">@Html.Label("Ticket Type")</div>
+    </div>
+    @if (Model.AuctionGuests != null)
+    {
+        for (var i = 0; i < Model.AuctionGuests.Count; i++)
+        {
+            @Html.HiddenFor(m => Model.AuctionGuests[i].AuctionGuestId)
+            <div class="row form-group">
+                <div class="control-label col-md-2">Guest @(i + 1)</div>
+                <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-2">@Html.EditorFor(m => Model.AuctionGuests[i].LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-2">
+                    @Html.DisplayFor(model => Model.AuctionGuests[i].TicketType)
+                    @Html.HiddenFor(model => Model.AuctionGuests[i].TicketType)
+                </div>
+            </div>
+        }
+    }
+    <br />
+
+
+    <h4>Additional Purchase(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.StoreItemPurchases)
+        {
+            <dt></dt>
+            <dd>
+                @string.Format("{0} - {1} - {2:C} (paid {3:C})",
+                                               item.StoreItem.Title,
+                                              (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                                              item.StoreItem.Price,
+                                              item.PricePaid.GetValueOrDefault(0))
+            </dd>
+        }
+    </dl>
+    <br />
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>
