@@ -28,6 +28,9 @@ namespace GlobeAuction.Models
         public int Quantity { get; set; }
 
         [Required]
+        public bool HasUnlimitedQuantity { get; set; }
+
+        [Required]
         [Display(Name = "Is Raffle Ticket")]
         public bool IsRaffleTicket { get; set; }
 
@@ -89,6 +92,9 @@ namespace GlobeAuction.Models
 
         [Required]
         public int Quantity { get; set; }
+
+        [Required]
+        public bool HasUnlimitedQuantity { get; set; }
 
         [Required]
         public bool IsRaffleTicket { get; set; }
@@ -263,6 +269,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal Price { get; set; }
         public int QuantityAvailable { get; set; }
+        public bool HasUnlimitedQuantity { get; set; }
         public decimal? DonationItemValue { get; set; }
 
         //input from user
@@ -283,6 +290,7 @@ namespace GlobeAuction.Models
             ImageUrl = si.ImageUrl;
             Price = si.Price;
             QuantityAvailable = si.Quantity;
+            HasUnlimitedQuantity = si.HasUnlimitedQuantity;
             DonationItemValue = si?.DonationItem?.DollarValue;
         }
     }

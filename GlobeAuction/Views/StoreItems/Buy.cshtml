@@ -50,7 +50,7 @@ else
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-horizontal">
-            <h2>Raffle Tickets + Fund-A-Project</h2>
+            <h2>Raffle Tickets</h2>
             <hr />
             <div class="row">
                 @for (var i = 0; i < Model.RaffleItems.Count; i++)
@@ -96,7 +96,9 @@ else
                     }
                 }
             </div>
-            
+
+            <a name="fap"></a>
+
             <br />
 
             @if (Model.StoreItems.Any())
@@ -137,12 +139,15 @@ else
                                                     }
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td><b>Available:</b></td>
-                                                <td>
-                                                    @Html.DisplayFor(m => Model.StoreItems[i].QuantityAvailable)
-                                                </td>
-                                            </tr>
+                                            @if (Model.StoreItems[i].HasUnlimitedQuantity == false)
+                                            {
+                                                <tr>
+                                                    <td><b>Available:</b></td>
+                                                    <td>
+                                                        @Html.DisplayFor(m => Model.StoreItems[i].QuantityAvailable)
+                                                    </td>
+                                                </tr>
+                                            }
                                             <tr>
                                                 <td><b>Quantity:&nbsp;&nbsp;</b></td>
                                                 <td>

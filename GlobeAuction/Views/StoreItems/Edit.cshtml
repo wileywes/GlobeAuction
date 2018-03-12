@@ -60,6 +60,16 @@
         </div>
 
         <div class="form-group">
+            @Html.MyLabelFor(model => model.HasUnlimitedQuantity, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.CheckBoxFor(model => model.HasUnlimitedQuantity)
+                    @Html.ValidationMessageFor(model => model.HasUnlimitedQuantity, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.MyLabelFor(model => model.IsRaffleTicket, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">

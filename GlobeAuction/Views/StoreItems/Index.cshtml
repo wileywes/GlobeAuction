@@ -130,7 +130,7 @@
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
                     <td>
-                        @if (item.IsRaffleTicket)
+                        @if (item.IsRaffleTicket || item.HasUnlimitedQuantity)
                         {
                             <span>Unlimited</span>
                         }

@@ -36,7 +36,7 @@ namespace GlobeAuction.Controllers
             var viewModel = new BuyViewModel()
             {
                 RaffleItems = storeItems.Where(si => si.IsRaffleTicket).OrderBy(si => si.Price).Select(si => new BuyItemViewModel(si)).ToList(),
-                StoreItems = storeItems.Where(si => !si.IsRaffleTicket && si.Quantity > 0).OrderBy(si => si.Price).Select(si => new BuyItemViewModel(si)).ToList(),
+                StoreItems = storeItems.Where(si => !si.IsRaffleTicket && (si.Quantity > 0 || si.HasUnlimitedQuantity)).OrderBy(si => si.Price).Select(si => new BuyItemViewModel(si)).ToList(),
             };
 
             //if we just created an invoice then show the info

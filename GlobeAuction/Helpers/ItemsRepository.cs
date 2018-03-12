@@ -241,7 +241,7 @@ namespace GlobeAuction.Helpers
                     }
                     else
                     {
-                        if (storeItem.Quantity <= 0 || storeItem.Quantity < itemPurchase.QuantityPurchased)
+                        if (storeItem.HasUnlimitedQuantity == false && (storeItem.Quantity <= 0 || storeItem.Quantity < itemPurchase.QuantityPurchased))
                         {
                             throw new OutOfStockException("StoreItem out of stock", storeItem, itemPurchase);
                         }
