@@ -56,6 +56,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Payment Method")]
         public PaymentMethod? PaymentMethod { get; set; }
 
+        [Display(Name = "Attended")]
+        public bool AttendedEvent { get; set; }
+
         [Display(Name = "Pay Reminder Sent")]
         public bool IsPaymentReminderSent{ get; set; }
 
@@ -77,6 +80,7 @@ namespace GlobeAuction.Models
 
             TotalPaid = 0;
             PaymentMethod = b.PaymentMethod;
+            AttendedEvent = b.AttendedEvent;
 
             if (b.AuctionGuests.Any())
             {
@@ -169,6 +173,8 @@ namespace GlobeAuction.Models
         [Display(Name = "Payment Method")]
         public PaymentMethod? PaymentMethod { get; set; }
 
+        public bool AttendedEvent { get; set; }
+
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
@@ -256,6 +262,9 @@ namespace GlobeAuction.Models
 
         [Display(Name = "Payment Method")]
         public PaymentMethod? PaymentMethod { get; set; }
+        
+        [Display(Name = "Attended")]
+        public bool AttendedEvent { get; set; }
     }
 
     public class BidderRegistrationViewModel

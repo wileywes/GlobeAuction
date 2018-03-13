@@ -363,6 +363,25 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult MarkAsAttended(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Bidder bidder = db.Bidders.Find(id);
+            if (bidder == null)
+            {
+                return HttpNotFound();
+            }
+
+            bidder.AttendedEvent = true;
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

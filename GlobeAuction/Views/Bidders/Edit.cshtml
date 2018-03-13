@@ -67,6 +67,14 @@
     </div>
 
     <div class="form-group">
+        @Html.MyLabelFor(model => model.AttendedEvent, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(model => model.AttendedEvent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.AttendedEvent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
         @Html.MyLabelFor(model => model.IsPaymentReminderSent, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.CheckBoxFor(model => model.IsPaymentReminderSent, new { htmlAttributes = new { @class = "form-control" } })
@@ -177,10 +185,10 @@
             <dt></dt>
             <dd>
                 @string.Format("{0} - {1} - {2:C} (paid {3:C})",
-                                               item.StoreItem.Title,
-                                              (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
-                                              item.StoreItem.Price,
-                                              item.PricePaid.GetValueOrDefault(0))
+                                                    item.StoreItem.Title,
+                                                   (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                                                   item.StoreItem.Price,
+                                                   item.PricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>

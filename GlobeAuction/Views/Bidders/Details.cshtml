@@ -52,9 +52,15 @@
         <dt>
             @Html.DisplayNameFor(model => model.ZipCode)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttendedEvent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AttendedEvent)
         </dd>
 
         <dt>
@@ -95,6 +101,8 @@
 
     </dl>
 
+    @Html.ActionLink("Mark As Attended", "MarkAsAttended", "Bidders", new { id = Model.BidderId }, htmlAttributes: new { @class = "btn btn-primary" })
+
     <h4>Student(s)</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -121,10 +129,10 @@
 
             <dd>
                 @string.Format("{0} {1} - {2} (paid {3:C})",
-                             Model.AuctionGuests[i].FirstName,
-                             Model.AuctionGuests[i].LastName,
-                             Model.AuctionGuests[i].TicketType,
-                             Model.AuctionGuests[i].TicketPricePaid.GetValueOrDefault(0))
+                                  Model.AuctionGuests[i].FirstName,
+                                  Model.AuctionGuests[i].LastName,
+                                  Model.AuctionGuests[i].TicketType,
+                                  Model.AuctionGuests[i].TicketPricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>
@@ -137,10 +145,10 @@
             <dt></dt>
             <dd>
                 @string.Format("{0} - {1} - {2:C} (paid {3:C})",
-                             item.StoreItem.Title,
-                               (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
-                             item.Price,
-                             item.PricePaid.GetValueOrDefault(0))
+                                  item.StoreItem.Title,
+                                    (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                                  item.Price,
+                                  item.PricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>
