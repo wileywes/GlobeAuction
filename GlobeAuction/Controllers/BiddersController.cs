@@ -78,6 +78,10 @@ namespace GlobeAuction.Controllers
                     newBidder.ShowRegistrationSuccessMessage = true;
                     newBidder.BidderNumberJustRegistered = existingJustRegistered.BidderNumber;
                     newBidder.FullNameJustRegistered = existingJustRegistered.FirstName + " " + existingJustRegistered.LastName;
+                    newBidder.RaffleTicketNumbersCreated = existingJustRegistered?.StoreItemPurchases?
+                        .Where(sip => sip.StoreItem.IsRaffleTicket)
+                        .Select(sip => sip.GetRaffleDescriptionWithItemTitle())
+                        .ToList() ?? new List<string>();
                 }
             }
 

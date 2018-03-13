@@ -86,24 +86,31 @@ namespace GlobeAuction.Helpers
 
         public void SendInvoicePaymentConfirmation(Invoice invoice, bool paidManually)
         {
-            var lines = GetLinesForAuctionItems(invoice.AuctionItems);
+            var lines = new List<Tuple<string, decimal>>();
+            var footerNotes = string.Empty;
 
-            if (invoice.StoreItemPurchases.Any())
+            if (invoice.AuctionItems != null)
+            {
+                lines.AddRange(GetLinesForAuctionItems(invoice.AuctionItems));
+
+                if (invoice.AuctionItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
+                {
+                    footerNotes = "* Certificate for this item will be emailed to you";
+                }
+            }
+
+            if (invoice.StoreItemPurchases != null)
             {
                 lines.AddRange(invoice.StoreItemPurchases
                     .Where(s => s.IsPaid)
                     .Select(GetStoreItemPurchaseLineString));
             }
-
-            var footerNotes = invoice.AuctionItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
-                "* Certificate for this item will be emailed to you"
-                : string.Empty;
-
+            
             var body = GetInvoiceEmail(
                 paidManually ? invoice.Total : invoice.PaymentTransaction.PaymentGross,
                 invoice.FirstName + " " + invoice.LastName,
                 "Invoice ID " + invoice.InvoiceId,
-                paidManually ? "Paid in Person" : "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,
+                paidManually ? $"Paid in Person ({invoice.PaymentMethod})" : "PayPal Transaction ID " + invoice.PaymentTransaction.TxnId,
                 footerNotes,
                 lines);
 
@@ -114,8 +121,10 @@ namespace GlobeAuction.Helpers
         {
             var body = GetDonationItemCertificateEmail(
                 bidder.FirstName + " " + bidder.LastName,
-                item.Title,
-                item.Description);
+                item.Title, item.Description,
+                item.Donor.BusinessName, item.Donor.ContactName, item.Donor.Email, item.Donor.Phone,
+                item.ExpirationDate.HasValue ? "Expires: " + item.ExpirationDate.Value.ToString("d") : string.Empty,
+                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty);
 
             SendEmail(bidder.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
@@ -328,13 +337,20 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetDonationItemCertificateEmail(string winnerName, string itemTitle, string itemDescription)
+        private string GetDonationItemCertificateEmail(string winnerName, string itemTitle, string itemDescription, string donorBusiness,
+            string donorName, string donorEmail,string donorPhone, string itemDetails1, string itemDetails2)
         {
             var body = GetEmailBody("donationItemCertificate");
 
             body = ReplaceToken("WinnerName", winnerName, body);
             body = ReplaceToken("Title", itemTitle, body);
             body = ReplaceToken("Description", itemDescription, body);
+            body = ReplaceToken("DonorBusiness", donorBusiness, body);
+            body = ReplaceToken("DonorName", donorName, body);
+            body = ReplaceToken("DonorEmail", donorEmail, body);
+            body = ReplaceToken("DonorPhone", donorPhone, body);
+            body = ReplaceToken("ItemDetails1", itemDetails1, body);
+            body = ReplaceToken("ItemDetails2", itemDetails2, body);
 
             body = ReplaceToken("SiteUrl", _siteUrl, body);
             body = ReplaceToken("SiteEmail", _gmailUsername, body);

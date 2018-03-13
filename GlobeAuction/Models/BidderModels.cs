@@ -288,6 +288,7 @@ namespace GlobeAuction.Models
         public bool ShowRegistrationSuccessMessage { get; set; }
         public string FullNameJustRegistered { get; set; }
         public int? BidderNumberJustRegistered { get; set; }
+        public List<string> RaffleTicketNumbersCreated { get; set; }
     }
 
     public class AuctionGuestViewModel

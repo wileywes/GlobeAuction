@@ -17,3 +17,11 @@ inner join Bidders b on b.bidderid = s.bidder_bidderid
 inner join AuctionGuests g on b.bidderid = g.bidder_bidderid
 where b.IsDeleted = 0
 group by HomeroomTeacher
+
+--Digital certificate items
+select ai.UniqueItemNumber as AuctionItemNumber, di.*, d.*
+from donationitems di
+inner join donors d on di.donor_donorid = d.donorid
+left join auctionitems ai on ai.AuctionItemId = di.AuctionItem_AuctionItemId
+where di.UseDigitalCertificateForWinner=1
+  and IsDeleted=0

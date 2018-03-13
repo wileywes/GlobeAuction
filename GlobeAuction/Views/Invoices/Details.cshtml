@@ -165,7 +165,7 @@
             <dd>
                 @if (Model.WasMarkedPaidManually)
                 {
-                    @Html.Label("Mark Paid in Person")
+                    @Html.Label($"Paid in Person ({Model.PaymentMethod})")
                 }
                 else
                 {

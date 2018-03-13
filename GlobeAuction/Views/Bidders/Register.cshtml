@@ -19,8 +19,24 @@ else
     {
         <div class="alert alert-success">
             Successfully registered <b>@Model.FullNameJustRegistered</b> for the auction.  Paddle number is:
-            
+
             <h3>@Model.BidderNumberJustRegistered</h3>
+
+            @if (Model.RaffleTicketNumbersCreated.Any())
+            {
+                <p>
+                    <br />
+                    <h4>
+                        Raffle ticket numbers are:
+                    </h4>
+                    @foreach (var raffleDescription in Model.RaffleTicketNumbersCreated)
+                    {
+                        <li>
+                            @raffleDescription
+                        </li>
+                    }
+                </p><br />
+            }
 
             You can continue to entering more registrations below.
         </div>
@@ -95,7 +111,7 @@ else
                     <div class="control-label col-md-2">Child @(i + 1)</div>
                     <div class="col-md-10">
                         @Html.DropDownListFor(m => Model.Students[i].HomeroomTeacher, (IEnumerable<SelectListItem>)ViewBag.TeacherNames,
-                                                                "Select Child's Homeroom Teacher", new { htmlAttributes = new { @class = "form-control" } })
+                                                                     "Select Child's Homeroom Teacher", new { htmlAttributes = new { @class = "form-control" } })
                     </div>
                 </div>
             }
@@ -123,7 +139,7 @@ else
                     </div>
                     <div class="col-md-6">
                         @Html.DropDownListFor(model => Model.AuctionGuests[i].TicketType, (IEnumerable<SelectListItem>)ViewBag.TicketTypes,
-                                                                "Select a Ticket Type", new { htmlAttributes = new { @class = "form-control" } })
+                                                                     "Select a Ticket Type", new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => Model.AuctionGuests[i].TicketType, "", new { @class = "text-danger" })
                     </div>
                 </div>
