@@ -11,7 +11,7 @@
         Please review the details below for accuracy.  You can pay any outstanding invoices and review items you've already paid for.
     </div>
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("ReviewBidderWinnings", "Invoices", FormMethod.Post, new { id = "reviewWinningsForm" }))
     {
         @Html.AntiForgeryToken()
 
@@ -88,9 +88,10 @@
                                 <td></td>
                                 <td></td>
                                 <td align="right">
-                                    <b>Total:</b>
+                                    <b>Auction Winnings Total:</b>
                                 </td>
                                 <td>
+                                    <input type="hidden" id="auctionItemsSum" value="@Model.AuctionItemsNotInInvoice.Sum(a => a.WinningBid.Value)" />
                                     @Model.AuctionItemsNotInInvoice.Sum(a => a.WinningBid.Value).ToString("C")
                                 </td>
                             </tr>
@@ -99,39 +100,48 @@
                 </dd>
             </dl>
 
-            if (Model.StoreItemPurchases.Any())
+            if (Model.ItemPurchases.Any())
             {
-                <h4>Additional Items for Purchase</h4>
+                <h4>More Ways to Support GLOBE!</h4>
                 <dl class="dl-horizontal">
                     <dt></dt>
                     <dd>
                         <table class="table table-bordered">
                             <tbody>
-                                @for (var i = 0; i < Model.StoreItemPurchases.Count; i++)
+                                @for (var i = 0; i < Model.ItemPurchases.Count; i++)
                                 {
-                                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItemPurchaseId)
-                                    @Html.HiddenFor(m => Model.StoreItemPurchases[i].StoreItem.StoreItemId)
+                                    @Html.HiddenFor(m => Model.ItemPurchases[i].StoreItemId)
                                     <tr>
                                         <td>
-                                            @if (!string.IsNullOrEmpty(Model.StoreItemPurchases[i].StoreItem.ImageUrl))
+                                            @if (!string.IsNullOrEmpty(Model.ItemPurchases[i].ImageUrl))
                                             {
-                                                <img src="@Url.Content(Model.StoreItemPurchases[i].StoreItem.ImageUrl)" alt="Image" style="max alt="Image" style="max-width: calc(100% - 20px);" />
+                                                <img src="@Url.Content(Model.ItemPurchases[i].ImageUrl)" alt="Image" style="max-height:150px;max-width:200px;height:auto;width:auto;" />
                                             }
                                         </td>
                                         <td>
-                                            <b>@Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Title)</b>
+                                            <b>@Html.DisplayFor(m => Model.ItemPurchases[i].Title)</b>
                                             <br />
-                                            @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Description)
+                                            @Html.DisplayFor(m => Model.ItemPurchases[i].Description)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(m => Model.StoreItemPurchases[i].StoreItem.Price)
+                                            @Html.DisplayFor(m => Model.ItemPurchases[i].Price)
                                         </td>
                                         <td>
-                                            @Html.EditorFor(m => Model.StoreItemPurchases[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => Model.StoreItemPurchases[i].Quantity, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(m => Model.ItemPurchases[i].QuantityPurchased, new { htmlAttributes = new { @class = "form-control", @oninput = "recalcTotal();" } })
+                                            @Html.ValidationMessageFor(model => Model.ItemPurchases[i].QuantityPurchased, "", new { @class = "text-danger" })
                                         </td>
                                     </tr>
                                 }
+                                <tr>
+                                    <td colspan="3" align="right">
+                                        <b>Total with Additional Items:</b>
+                                    </td>
+                                    <td>
+                                        <div id="totalWithPurchases">
+                                            @Model.AuctionItemsNotInInvoice.Sum(a => a.WinningBid.Value).ToString("C")
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </dd>
@@ -146,6 +156,7 @@
                         <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
                         <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
                         <input type="submit" name="submitButton" value="Invoice and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
+                        <br /><br />
                         <input type="button" id="skipButton" value="Skip to Next Person" class="btn btn-default btn-lg" />
                         <br /><br />
                         <input type="submit" name="submitButton" value="Pay for Your Winnings Now" class="btn btn-default btn-sm" />
@@ -322,3 +333,26 @@
 
     </script>
 }
+<script type="text/javascript">
+    function recalcTotal() {
+        var auctionItemsTotal = parseFloat($("#auctionItemsSum").val());
+
+        $("#reviewWinningsForm input").each(function () {
+            var input = $(this);
+
+            if (input.attr('name') != undefined) {
+
+                if (input.attr('name').endsWith("QuantityPurchased")) {
+                    var price = parseFloat(input.parent().siblings('td').eq(2).text().replace('$', ''));
+                    var qty = parseFloat(input.val());
+
+                    if (!isNaN(qty)) {
+                        auctionItemsTotal = auctionItemsTotal + (price * qty);
+                    }
+                }
+            }
+        });
+
+        $("#totalWithPurchases").html("$" + auctionItemsTotal);
+    }
+</script>

@@ -118,13 +118,13 @@ namespace GlobeAuction.Controllers
                 //remove admin-only store items
                 storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
-            var availableStoreItems = storeItems.Select(i => Mapper.Map<StoreItemViewModel>(i)).ToList();
-            var storeItemPurchases = availableStoreItems.Select(si => new StoreItemPurchaseViewModel
-            {
-                StoreItem = si
-            });
-
-            var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice, storeItemPurchases);
+            var storeItemsAvailableToPurchase = storeItems
+                .Where(si => !si.IsRaffleTicket && (si.Quantity > 0 || si.HasUnlimitedQuantity))
+                .OrderBy(si => si.Price)
+                .Select(si => new BuyItemViewModel(si))
+                .ToList();
+            
+            var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice, storeItemsAvailableToPurchase);
 
             viewModel.ShowManuallyPaidSuccess = manualPaidSuccessful.GetValueOrDefault(false);
             viewModel.ShowSelfPaySuccess = selfPaySuccessful.GetValueOrDefault(false);
@@ -151,14 +151,7 @@ namespace GlobeAuction.Controllers
 
             if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var storeItemPurchases = (model.StoreItemPurchases ?? new List<StoreItemPurchaseViewModel>())
-                .Where(sip => sip.Quantity > 0)
-                .Select(sip =>
-                new StoreItemPurchase
-                {
-                    Quantity = sip.Quantity,                    
-                    StoreItem = db.StoreItems.Find(sip.StoreItem.StoreItemId)
-                }).ToList();
+            var storeItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(model.ItemPurchases);
 
             PaymentMethod? manualPayMethod = null;
             if (submitButton.StartsWith("Invoice and Mark Paid"))

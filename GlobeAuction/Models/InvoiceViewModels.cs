@@ -28,7 +28,7 @@ namespace GlobeAuction.Models
 
         public List<Invoice> Invoices { get; set; }
         public List<AuctionItemViewModel> AuctionItemsNotInInvoice { get; set; }
-        public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
+        public List<BuyItemViewModel> ItemPurchases { get; set; }
 
         public bool ShowManuallyPaidSuccess { get; set; }
         public bool ShowSelfPaySuccess { get; set; }
@@ -38,7 +38,7 @@ namespace GlobeAuction.Models
             //empty constr for view binding
         }
 
-        public ReviewBidderWinningsViewModel(Bidder bidder, IEnumerable<Invoice> invoices, IEnumerable<AuctionItem> auctionWinningsForBidderNotInInvoice, IEnumerable<StoreItemPurchaseViewModel> storeItems)
+        public ReviewBidderWinningsViewModel(Bidder bidder, List<Invoice> invoices, List<AuctionItem> auctionWinningsForBidderNotInInvoice, List<BuyItemViewModel> storeItems)
         {
             BidderId = bidder.BidderId;
             BidderNumber = bidder.BidderNumber;
@@ -47,7 +47,7 @@ namespace GlobeAuction.Models
 
             Invoices = (invoices ?? new List<Invoice>()).ToList();
             AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new AuctionItemViewModel(a, bidder.BidderNumber)).ToList();
-            StoreItemPurchases = storeItems.ToList();
+            ItemPurchases = storeItems.ToList();
         }
     }
 
