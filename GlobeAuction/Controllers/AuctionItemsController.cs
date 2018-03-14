@@ -461,25 +461,71 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult GetNextAuctionItemWithNoWinner(string selectedCategory, int currentUniqueItemNumber)
         {
-            var nextItem = db.AuctionItems.Where(ai =>
+            var nextItems = db.AuctionItems.Where(ai =>
                     ai.WinningBidderId.HasValue == false &&
                     ai.Category == selectedCategory &&
                     ai.UniqueItemNumber > currentUniqueItemNumber)
                 .OrderBy(ai => ai.UniqueItemNumber)
-                .FirstOrDefault();
+                .ToList();
+
+            var nextItem = nextItems.FirstOrDefault();
+
+            var hasNext = nextItems.Count > 1;
+            var hasPrevious = db.AuctionItems.Any(ai =>
+                    ai.WinningBidderId.HasValue == false &&
+                    ai.Category == selectedCategory &&
+                    ai.UniqueItemNumber <= currentUniqueItemNumber);
 
             if (nextItem == null)
             {
-                return Json(new { hasNext = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { hasResult = false }, JsonRequestBehavior.AllowGet);
             }
             return Json(
                 new
                 {
-                    hasNext = true,
+                    hasResult = true,
+                    hasNext,
+                    hasPrevious,
                     auctionItemId = nextItem.AuctionItemId,
                     title = nextItem.Title,
                     description = nextItem.Description,
                     uniqueItemNumber = nextItem.UniqueItemNumber
+                },
+                JsonRequestBehavior.AllowGet
+            );
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult GetPreviousAuctionItemWithNoWinner(string selectedCategory, int currentUniqueItemNumber)
+        {
+            var previousItems = db.AuctionItems.Where(ai =>
+                    ai.WinningBidderId.HasValue == false &&
+                    ai.Category == selectedCategory &&
+                    ai.UniqueItemNumber < currentUniqueItemNumber)
+                .OrderByDescending(ai => ai.UniqueItemNumber)
+                .ToList();
+
+            var previousItem = previousItems.FirstOrDefault();
+            var hasPrevious = previousItems.Count > 1;
+            var hasNext = db.AuctionItems.Any(ai =>
+                    ai.WinningBidderId.HasValue == false &&
+                    ai.Category == selectedCategory &&
+                    ai.UniqueItemNumber >= currentUniqueItemNumber);
+
+            if (previousItem == null)
+            {
+                return Json(new { hasResult = false }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(
+                new
+                {
+                    hasResult = true,
+                    hasNext,
+                    hasPrevious,
+                    auctionItemId = previousItem.AuctionItemId,
+                    title = previousItem.Title,
+                    description = previousItem.Description,
+                    uniqueItemNumber = previousItem.UniqueItemNumber
                 },
                 JsonRequestBehavior.AllowGet
             );
@@ -513,7 +559,7 @@ namespace GlobeAuction.Controllers
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already marked as won.  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
 
-            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == winningBidderIdInt);
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderNumber == winningBidderIdInt);
 
             if (bidder == null)
             {

@@ -58,7 +58,8 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="button" class="btn btn-default" value="Skip" id="btnSkip" />
+                    <input type="button" class="btn btn-default" value="Previous" id="btnPrevious" />
+                    <input type="button" class="btn btn-default" value="Next" id="btnNext" />
                     <input type="button" class="btn btn-primary" value="Save Winner" id="btnSave" />
                 </div>
             </div>
@@ -69,20 +70,30 @@
 <script type="text/javascript">
     $('#SelectedCategory').change(function () {
         $('#currentAuctionItemId').val(-1);
-        getNextAuctionItemWithNoWinner();
+        getNextAuctionItemWithNoWinner(true);
     });
 
-    $('#btnSkip').click(function () {
-        getNextAuctionItemWithNoWinner();
+    $('#btnPrevious').click(function () {
+        getNextAuctionItemWithNoWinner(false);
+    });
+
+    $('#btnNext').click(function () {
+        getNextAuctionItemWithNoWinner(true);
     });
 
     $('#btnSave').click(function () {
         saveAuctionItemWinner();
     });
 
-    function getNextAuctionItemWithNoWinner() {
+    function getNextAuctionItemWithNoWinner(isNext) {
         var selectedCategory = $('#SelectedCategory').val();
         var currentUniqueItemNumber = $('#currentUniqueItemNumber').val();
+
+        //figure out which action to call
+        var prevAction = '@Url.Action("GetPreviousAuctionItemWithNoWinner")';
+        var nextAction = '@Url.Action("GetNextAuctionItemWithNoWinner")';
+        var actionToCall = prevAction;
+        if (isNext) actionToCall = nextAction;
 
         if (selectedCategory == null || selectedCategory == '') {
             alert('You must select a category first.')
@@ -91,8 +102,8 @@
             $('#winningBidderId').val('');
             $('#winningBidAmount').val('');
 
-            $.getJSON('@Url.Action("GetNextAuctionItemWithNoWinner")', { selectedCategory: selectedCategory, currentUniqueItemNumber: currentUniqueItemNumber }, function (nextItemData) {
-                if (nextItemData.hasNext) {
+            $.getJSON(actionToCall, { selectedCategory: selectedCategory, currentUniqueItemNumber: currentUniqueItemNumber }, function (nextItemData) {
+                if (nextItemData.hasResult) {
                     $('#currentAuctionItemId').val(nextItemData.auctionItemId);
                     $('#currentUniqueItemNumber').val(nextItemData.uniqueItemNumber);
                     $('#uniqueItemNumber').text('# ' + nextItemData.uniqueItemNumber);
@@ -101,6 +112,19 @@
                     $('#divNoRemainingItems').hide();
                     $('#itemInformation').show();
                     $('#winningBidderId').focus();
+
+                    if (nextItemData.hasNext) {
+                        $('#btnNext').show();
+                    }
+                    else {
+                        $('#btnNext').hide();
+                    }
+                    if (nextItemData.hasPrevious) {
+                        $('#btnPrevious').show();
+                    }
+                    else {
+                        $('#btnPrevious').hide();
+                    }
                 }
                 else {
                     $('#currentAuctionItemId').val(-1);
@@ -131,7 +155,7 @@
                     $('#divWinnerUpdateSuccess').show();
                     $('#divWinnerUpdateFailure').hide();
 
-                    getNextAuctionItemWithNoWinner();
+                    getNextAuctionItemWithNoWinner(true);
                 }
                 else {
                     $('#itemNoNotUpdated').text(currentUniqueItemNumber);
