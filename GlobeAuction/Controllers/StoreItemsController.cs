@@ -27,7 +27,7 @@ namespace GlobeAuction.Controllers
                 .Where(s => s.CanPurchaseInStore && s.IsDeleted == false)
                 .ToList();
 
-            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))
             {
                 //remove admin-only ticket types
                 storeItems = storeItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
@@ -317,7 +317,6 @@ namespace GlobeAuction.Controllers
         
         [HttpPost, ActionName("SubmitSelectedStoreItems")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult SubmitSelectedStoreItems(string storeItemsAction, string selectedStoreItemIds, int? storeItemIdForUpload, IEnumerable<HttpPostedFileBase> files)
         {
             var selectedStoreItems = selectedStoreItemIds

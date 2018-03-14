@@ -93,10 +93,10 @@
                         @Html.DisplayFor(modelItem => item.BidIncrement)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.WinningBidderNumber)
+                        @(item.IsMasterItemForMultipleWinners ? "Master" : (item.WinningBidderNumber.HasValue ? item.WinningBidderNumber.Value.ToString() : string.Empty))
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.WinningBid)
+                        @(item.IsMasterItemForMultipleWinners ? "Master" : (item.WinningBid.HasValue ? item.WinningBid.Value.ToString("C") : string.Empty))
                     </td>
                     <td class="text-nowrap">
                         @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |

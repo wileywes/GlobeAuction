@@ -45,7 +45,7 @@
             @Html.MyLabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.Category, (IEnumerable<SelectListItem>)ViewBag.AuctionItemCategories,
-                        "Select a Category", new { htmlAttributes = new { @class = "form-control" } })
+                                  "Select a Category", new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -63,6 +63,14 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.BidIncrement, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.BidIncrement, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.IsMasterItemForMultipleWinners, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.IsMasterItemForMultipleWinners, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.IsMasterItemForMultipleWinners, "", new { @class = "text-danger" })
             </div>
         </div>
 

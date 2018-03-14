@@ -431,6 +431,10 @@
     <Compile Include="Migrations\201803132054382_BidderAttendedEvent.Designer.cs">
       <DependentUpon>201803132054382_BidderAttendedEvent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803142048392_AuctionItemMasterItemForMultiWinner.cs" />
+    <Compile Include="Migrations\201803142048392_AuctionItemMasterItemForMultiWinner.Designer.cs">
+      <DependentUpon>201803142048392_AuctionItemMasterItemForMultiWinner.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
@@ -700,6 +704,7 @@
     <Content Include="Views\Donors\Index.cshtml" />
     <Content Include="Views\Donors\EmailTaxReceipts.cshtml" />
     <Content Include="Views\Home\Sponsors.cshtml" />
+    <Content Include="Views\AuctionItems\EnterWinnersInBulk.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -846,6 +851,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803132054382_BidderAttendedEvent.resx">
       <DependentUpon>201803132054382_BidderAttendedEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803142048392_AuctionItemMasterItemForMultiWinner.resx">
+      <DependentUpon>201803142048392_AuctionItemMasterItemForMultiWinner.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

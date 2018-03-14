@@ -13,6 +13,8 @@
 {
     <h4>
         @Html.ActionLink("Click here to Enter Winners", "EnterWinners")
+        <br />
+        @Html.ActionLink("Click here to Enter Fund-A-Project Winners", "EnterWinnersInBulk")
     </h4>
     <br />
 }
@@ -92,7 +94,8 @@
                         @foreach (var item in winner.ItemsWon)
                         {
                             <tr>
-                                <td>#
+                                <td>
+                                    #
                                     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                                     {
                                         @Html.ActionLink(item.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItemId }, new { target = "_blank" })

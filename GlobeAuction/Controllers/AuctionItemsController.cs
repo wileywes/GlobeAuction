@@ -36,7 +36,7 @@ namespace GlobeAuction.Controllers
                         if (bidderIdToNumber.ContainsKey(i.WinningBidderId.Value))
                             bidderNumber = bidderIdToNumber[i.WinningBidderId.Value];
                         else
-                            bidderNumber = bidderNumber;
+                            NLog.LogManager.GetCurrentClassLogger().Warn($"AuctionItem {i.UniqueItemNumber} has winning bidder ID {i.WinningBidderId.Value} that doesn't match a bidder");
                     }
                     return new AuctionItemViewModel(i, bidderNumber);
                 }).ToList(),
@@ -116,6 +116,10 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("uniqueItemNumber", "Cannot change the item once it's on an invoice.  If this is just testing you can delete the invoice to free up the item again.");
                 }
+                else if (auctionItemModel.IsMasterItemForMultipleWinners && auctionItemModel.WinningBidderNumber.HasValue)
+                {
+                    ModelState.AddModelError("winningBidderNumber", "Cannot assign a winner to an auction item that is a master item for multiple winners.  Use the bulk winner entry screen instead.");
+                }
                 else
                 {
                     int? winBidderId = null;
@@ -140,8 +144,9 @@ namespace GlobeAuction.Controllers
                     auctionItem.BidIncrement = auctionItemModel.BidIncrement;
                     auctionItem.WinningBidderId = winBidderId;
                     auctionItem.WinningBid = auctionItemModel.WinningBid;
+                    auctionItem.IsMasterItemForMultipleWinners = auctionItemModel.IsMasterItemForMultipleWinners;
                     auctionItem.UpdateDate = DateTime.Now;
-                    auctionItem.UpdateBy = User.Identity.GetUserName();                    
+                    auctionItem.UpdateBy = User.Identity.GetUserName();
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -363,7 +368,7 @@ namespace GlobeAuction.Controllers
             var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }
-        
+
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult EmailAllWinners()
         {
@@ -463,6 +468,7 @@ namespace GlobeAuction.Controllers
         {
             var nextItems = db.AuctionItems.Where(ai =>
                     ai.WinningBidderId.HasValue == false &&
+                    ai.IsMasterItemForMultipleWinners == false &&
                     ai.Category == selectedCategory &&
                     ai.UniqueItemNumber > currentUniqueItemNumber)
                 .OrderBy(ai => ai.UniqueItemNumber)
@@ -473,6 +479,7 @@ namespace GlobeAuction.Controllers
             var hasNext = nextItems.Count > 1;
             var hasPrevious = db.AuctionItems.Any(ai =>
                     ai.WinningBidderId.HasValue == false &&
+                    ai.IsMasterItemForMultipleWinners == false &&
                     ai.Category == selectedCategory &&
                     ai.UniqueItemNumber <= currentUniqueItemNumber);
 
@@ -500,6 +507,7 @@ namespace GlobeAuction.Controllers
         {
             var previousItems = db.AuctionItems.Where(ai =>
                     ai.WinningBidderId.HasValue == false &&
+                    ai.IsMasterItemForMultipleWinners == false &&
                     ai.Category == selectedCategory &&
                     ai.UniqueItemNumber < currentUniqueItemNumber)
                 .OrderByDescending(ai => ai.UniqueItemNumber)
@@ -509,6 +517,7 @@ namespace GlobeAuction.Controllers
             var hasPrevious = previousItems.Count > 1;
             var hasNext = db.AuctionItems.Any(ai =>
                     ai.WinningBidderId.HasValue == false &&
+                    ai.IsMasterItemForMultipleWinners == false &&
                     ai.Category == selectedCategory &&
                     ai.UniqueItemNumber >= currentUniqueItemNumber);
 
@@ -558,6 +567,10 @@ namespace GlobeAuction.Controllers
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already marked as won.  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
             }
+            if (auctionItem.IsMasterItemForMultipleWinners)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Cannot assign a winner to an auction item that is a master item for multiple winners.  Use the bulk winner entry screen instead." }, JsonRequestBehavior.AllowGet);
+            }
 
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderNumber == winningBidderIdInt);
 
@@ -573,6 +586,151 @@ namespace GlobeAuction.Controllers
             db.SaveChanges();
 
             return Json(new { wasSuccessful = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult EnterWinnersInBulk()
+        {
+            var model = new EnterWinnersInBulkViewModel();
+            AddWinnersInBulkInfo(model);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult EnterWinnersInBulk(EnterWinnersInBulkViewModel model)
+        {
+            var item = db.AuctionItems.Find(model.SelectedAuctionItemId);
+            if (item == null)
+            {
+                ModelState.AddModelError("uniqueItemNumber", "Master item not found.  No winners were recorded.  Please confirm your data and try again.");
+            }
+            else if (model.BidPrice == 0)
+            {
+                ModelState.AddModelError("bidPrice", "Bid Price must be greater than zero.  No winners were recorded.  Please confirm your data and try again.");
+            }
+            else if (string.IsNullOrEmpty(model.ListOfBidderNumbers))
+            {
+                ModelState.AddModelError("listOfBidderNumbers", "No bidder paddle numbers were entered.  No winners were recorded.  Please confirm your data and try again.");
+            }
+            else
+            {
+                model.ErrorMessages = new List<string>();
+                model.ItemsCreated = 0;
+
+                var bidderNumbersStrings = model.ListOfBidderNumbers.Split(new[] { Environment.NewLine, "," }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach(var bidNumStr in bidderNumbersStrings)
+                {
+                    int bidNumber = 0;
+                    if (int.TryParse(bidNumStr, out bidNumber))
+                    {
+                        string errMsg;
+                        if (TryCopyAuctionItemForBulkWinner(item, bidNumber, model.BidPrice, out errMsg))
+                        {
+                            model.ItemsCreated++;
+                        }
+                        else
+                        {
+                            model.ErrorMessages.Add($"Unable to create item for bidder number [{bidNumStr}].  This one was skipped but the rest were entered. Error was: {errMsg}");
+                        }
+                    }
+                    else
+                    {
+                        model.ErrorMessages.Add($"Unable to parse bidder number [{bidNumStr}].  This one was skipped but the rest were entered.");
+                    }
+                }
+            }
+
+            AddWinnersInBulkInfo(model);
+            return View(model);
+        }
+
+        private bool TryCopyAuctionItemForBulkWinner(AuctionItem item, int bidderNumber, decimal bidPrice, out string errorMessage)
+        {
+            var bidder = db.Bidders.FirstOrDefault(b => b.BidderNumber == bidderNumber && b.IsDeleted == false);
+            if (bidder == null)
+            {
+                errorMessage = "Cannot find bidder number " + bidderNumber;
+                return false;
+            }
+
+            //find the next available uniqueItemNumber above this one
+            int? nextItemNumber = null;
+            var itemNumbersAbove = new HashSet<int>(db.AuctionItems
+                .Where(ai => ai.UniqueItemNumber > item.UniqueItemNumber)
+                .Select(ai => ai.UniqueItemNumber));
+
+            //look for the next open slot
+            for (int i=1; i < 1000; i++)
+            {
+                var possibleItemNumber = item.UniqueItemNumber + i;
+                if (!itemNumbersAbove.Contains(possibleItemNumber))
+                {
+                    nextItemNumber = possibleItemNumber;
+                    break;
+                }
+            }
+
+            if (!nextItemNumber.HasValue)
+            {
+                errorMessage = "Cannot calculate the next available Item Number";
+                return false;
+            }
+
+            //copy donation items first
+            var donationItemsToCopy = item.DonationItems;
+            db.DonationItems.AddRange(donationItemsToCopy);
+
+            item.DonationItems = donationItemsToCopy;
+            item.UniqueItemNumber = nextItemNumber.Value;
+            item.WinningBid = bidPrice;
+            item.WinningBidderId = bidder.BidderId;
+            item.CreateDate = item.UpdateDate = DateTime.Now;
+            item.UpdateBy = User.Identity.GetUserName();
+            item.IsMasterItemForMultipleWinners = false;
+
+            //doing an add creates a new record with a new ID
+            db.AuctionItems.Add(item);
+            db.SaveChanges();
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult GetAuctionItemInfo(int auctionItemId)
+        {
+            var item = db.AuctionItems.Find(auctionItemId);
+
+            if (item == null)
+            {
+                return Json(new { hasResult = false }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(
+                new
+                {
+                    hasResult = true,
+                    auctionItemId = item.AuctionItemId,
+                    title = item.Title,
+                    description = item.Description,
+                    uniqueItemNumber = item.UniqueItemNumber
+                },
+                JsonRequestBehavior.AllowGet
+            );
+        }
+
+        private void AddWinnersInBulkInfo(EnterWinnersInBulkViewModel model)
+        {
+            var availableMasterItems = db.AuctionItems
+                .Where(ai => ai.IsMasterItemForMultipleWinners)
+                .OrderBy(ai => ai.Category)
+                .ThenBy(ai => ai.Title)
+                .ToList();
+
+            var selectListItems = availableMasterItems.Select(i => new SelectListItem { Text = i.Category + " - " + i.Title, Value = i.AuctionItemId.ToString() }).ToList();
+            
+            ViewBag.AvailableMasterItems = selectListItems;
         }
 
         protected override void Dispose(bool disposing)

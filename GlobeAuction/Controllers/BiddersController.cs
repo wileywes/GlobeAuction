@@ -56,7 +56,7 @@ namespace GlobeAuction.Controllers
         public ActionResult Register(int? bid, string bem)
         {
             var raffleItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false && s.IsRaffleTicket).ToList();
-            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))
             {
                 //remove admin-only ticket types
                 raffleItems = raffleItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
@@ -396,7 +396,7 @@ namespace GlobeAuction.Controllers
             //TICKETS
             var ticketTypes = db.TicketTypes.ToList();
 
-            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanEditBidders))
+            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))
             {
                 //remove admin-only ticket types
                 ticketTypes = ticketTypes.Where(t => t.OnlyVisibleToAdmins == false).ToList();

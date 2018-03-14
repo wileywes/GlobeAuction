@@ -25,12 +25,14 @@ else
                     <h4>
                         Raffle ticket numbers are:
                     </h4>
-                    @foreach (var raffleDescription in Model.RaffleTicketNumbersCreated)
-                    {
-                        <li>
-                            @raffleDescription
-                        </li>
-                    }
+                    <ul>
+                        @foreach (var raffleDescription in Model.RaffleTicketNumbersCreated)
+                        {
+                            <li>
+                                @raffleDescription
+                            </li>
+                        }
+                    </ul>
                 </p><br />
             }
             You can continue to enter another raffle purchase below.

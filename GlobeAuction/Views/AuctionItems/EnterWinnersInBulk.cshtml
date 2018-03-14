@@ -1,0 +1,127 @@
+﻿@model GlobeAuction.Models.EnterWinnersInBulkViewModel
+
+@{
+    ViewBag.Title = "Enter Winners in Bulk";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="container">
+        <h3>To Begin entering Winners, select a category:</h3>
+
+        @if (Model.ItemsCreated.HasValue)
+        {
+            <div class="alert alert-success">
+                Winning bids entered successfully for @Model.ItemsCreated.Value items.
+            </div>
+        }
+        @if (Model.ErrorMessages != null && Model.ErrorMessages.Any())
+        {
+            <div class="alert alert-warning">
+                The following errors happened trying to save winner information:
+                <ul>
+                    @foreach (var msg in Model.ErrorMessages)
+                    {
+                        <li>
+                            @msg
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.MyLabelFor(model => model.SelectedAuctionItemId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.SelectedAuctionItemId, (IEnumerable<SelectListItem>)ViewBag.AvailableMasterItems,
+                                                              "Select an Item", new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div id="itemInformation" style="display:none">
+                <div class="form-group">
+                    @Html.Label("Starting Item No", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" id="uniqueItemNumber"></div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" id="title"></div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" id="description"></div>
+                </div>
+
+                <div class="form-group">
+                    @Html.MyLabelFor(model => model.BidPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BidPrice, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.MyLabelFor(model => model.ListOfBidderNumbers, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.ListOfBidderNumbers, 10, 150, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" class="btn btn-primary" value="Save Winners" id="btnSave" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $('#SelectedAuctionItemId').change(function () {
+        getAuctionItemInfo();
+    });
+
+
+    function getAuctionItemInfo() {
+        var selectedAuctionItemId = $('#SelectedAuctionItemId').val();
+
+        var actionToCall = '@Url.Action("GetAuctionItemInfo")';
+
+        if (selectedAuctionItemId == null || selectedAuctionItemId == '') {
+            alert('You must select an item first.')
+        }
+        else {
+            $('#BidPrice').val('');
+            $('#ListOfBidderNumbers').val('');
+
+            $.getJSON(actionToCall, { auctionItemId: selectedAuctionItemId }, function (nextItemData) {
+                if (nextItemData.hasResult) {
+                    $('#uniqueItemNumber').text('# ' + nextItemData.uniqueItemNumber);
+                    $('#title').text(nextItemData.title);
+                    $('#description').text(nextItemData.description);
+                    $('#itemInformation').show();
+                    $('#BidPrice').focus();
+                }
+                else {
+                    $('#uniqueItemNumber').text('');
+                    $('#title').text('');
+                    $('#description').text('');
+                    $('#itemInformation').hide();
+                }
+            });
+        }
+    }
+</script>
+
+
+@if (Model.ItemsCreated.HasValue) //re-load the item info if we are coming from a post-back
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getAuctionItemInfo();
+        }
+    </script>
+}

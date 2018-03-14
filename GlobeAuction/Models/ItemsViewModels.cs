@@ -80,6 +80,18 @@ namespace GlobeAuction.Models
         public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
     }
 
+    public class EnterWinnersInBulkViewModel
+    {
+        [Display(Name = "Auction Item")]
+        public int SelectedAuctionItemId { get; set; }
+        public decimal BidPrice { get; set; }
+        public string ListOfBidderNumbers { get; set; }
+
+        //outputs
+        public int? ItemsCreated { get; set; }
+        public List<string> ErrorMessages { get; set; }
+    }
+
     public class NotifyResultViewModel
     {
         public bool WasSuccessful { get { return MessagesFailed == 0; } }
@@ -149,6 +161,7 @@ namespace GlobeAuction.Models
         public int? WinningBidderNumber { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? WinningBid { get; set; }
+        public bool IsMasterItemForMultipleWinners { get; set; }
 
         public AuctionItemViewModel()
         {
@@ -169,6 +182,7 @@ namespace GlobeAuction.Models
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
             this.WinningBid = i.WinningBid;
             this.WinningBidderNumber = winningBidderNumber;
+            IsMasterItemForMultipleWinners = i.IsMasterItemForMultipleWinners;
         }
     }
 
@@ -205,9 +219,9 @@ namespace GlobeAuction.Models
         public virtual List<DonationItem> DonationItems { get; set; }
         
         public int? WinningBidderId { get; set; }
-
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? WinningBid { get; set; }
+        public bool IsMasterItemForMultipleWinners { get; set; }
 
         public virtual Invoice Invoice { get; set; }
     }
