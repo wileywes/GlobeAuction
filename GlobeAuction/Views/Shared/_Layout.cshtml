@@ -24,6 +24,13 @@
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
+        @if (Request.IsAuthenticated)
+        {
+            <div class="btn btn-gold btn-lg navbar-left">
+                Raised: @RevenueHelper.GetTotalRevenue().ToString("C")
+            </div>
+        }
+
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

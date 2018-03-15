@@ -78,7 +78,7 @@ namespace GlobeAuction.Models
             IsPaymentReminderSent = b.IsPaymentReminderSent;
             CreateDate = b.CreateDate;
 
-            TotalPaid = 0;
+            TotalPaid = b.TotalPaid;
             PaymentMethod = b.PaymentMethod;
             AttendedEvent = b.AttendedEvent;
 
@@ -86,14 +86,12 @@ namespace GlobeAuction.Models
             {
                 GuestCount = b.AuctionGuests.Count;
                 TicketsPaid = b.AuctionGuests.Count(g => g.IsTicketPaid);
-                TotalPaid += b.AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0));
             }
 
             if (b.StoreItemPurchases.Any())
             {
                 ItemsCount = b.StoreItemPurchases.Count;
                 ItemsPaid = b.StoreItemPurchases.Count(g => g.IsPaid);
-                TotalPaid += b.StoreItemPurchases.Sum(g => g.PricePaid.GetValueOrDefault(0));
             }
         }
     }
@@ -179,6 +177,19 @@ namespace GlobeAuction.Models
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
         public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
+        
+
+        [Display(Name = "Total Paid")]
+        public decimal TotalPaid
+        {
+            get
+            {
+                var total = 0m;
+                if (AuctionGuests != null && AuctionGuests.Any()) total = AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0));
+                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(sip.Price * sip.Quantity));
+                return total;
+            }
+        }
     }
 
     public class AuctionGuest

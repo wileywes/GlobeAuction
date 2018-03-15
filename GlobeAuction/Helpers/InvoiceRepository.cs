@@ -49,6 +49,8 @@ namespace GlobeAuction.Helpers
                 {
                     storeItem.PricePaid = storeItem.Price * storeItem.Quantity;
                 }
+
+                RevenueHelper.IncrementTotalRevenue(invoice.TotalPaid);
             }
 
             db.Invoices.Add(invoice);
@@ -95,6 +97,8 @@ namespace GlobeAuction.Helpers
                 {
                     sip.PricePaid = sip.Price * sip.Quantity;
                 }
+
+                RevenueHelper.IncrementTotalRevenue(invoice.TotalPaid);
             }
 
             if (buyModel.BidderId.GetValueOrDefault(-1) >= 0)
@@ -138,6 +142,7 @@ namespace GlobeAuction.Helpers
 
                 db.SaveChanges();
 
+                RevenueHelper.IncrementTotalRevenue(invoice.TotalPaid);
                 new EmailHelper().SendInvoicePaymentConfirmation(invoice, false);
             }
         }

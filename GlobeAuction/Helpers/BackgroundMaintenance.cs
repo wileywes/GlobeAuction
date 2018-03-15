@@ -1,6 +1,8 @@
 ﻿using GlobeAuction.Models;
 using NLog;
 using System;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 
@@ -33,6 +35,7 @@ namespace GlobeAuction.Helpers
 
                     SendBidderPaymentReminders(emailHelper);
                     SendDonationItemCertificates(emailHelper);
+                    RecalculateRevenueTotals();
                 }
 
                 Thread.Sleep(TimeSpan.FromMinutes(60));
@@ -79,6 +82,26 @@ namespace GlobeAuction.Helpers
                     }
                 }
             }
+        }
+
+        private void RecalculateRevenueTotals()
+        {
+            var paidInvoices = db.Invoices
+                .Include(i => i.AuctionItems)
+                .Include(i => i.StoreItemPurchases)
+                .Where(i => i.IsPaid)
+                .ToList();
+
+            var totalRevenue = paidInvoices.Sum(i => i.TotalPaid);
+
+            var allBidders = db.Bidders
+                .Include(b => b.AuctionGuests)
+                .Include(b => b.StoreItemPurchases)
+                .ToList();
+
+            totalRevenue += allBidders.Sum(b => b.TotalPaid);
+
+            RevenueHelper.SetTotalRevenue(totalRevenue);
         }
     }
 }

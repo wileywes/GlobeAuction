@@ -41,6 +41,7 @@ namespace GlobeAuction.Helpers
                 bidder.PaymentMethod = PaymentMethod.PayPal;
                 db.SaveChanges();
 
+                RevenueHelper.IncrementTotalRevenue(ppTrans.PaymentGross);
                 new EmailHelper().SendBidderPaymentConfirmation(bidder, ppTrans);
             }
         }
@@ -68,6 +69,7 @@ namespace GlobeAuction.Helpers
                 bidder.PaymentMethod = manualPayMethod;
                 db.SaveChanges();
 
+                RevenueHelper.IncrementTotalRevenue(totalPaid);
                 new EmailHelper().SendBidderPaymentConfirmation(bidder, totalPaid, "Paid by " + manualPayMethod);
             }
         }
