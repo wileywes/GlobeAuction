@@ -229,6 +229,7 @@
     <Compile Include="Controllers\DonationItemsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\StoreItemsController.cs" />
     <Compile Include="Controllers\TicketTypesController.cs" />
     <Compile Include="Controllers\UsersAdminController.cs" />
@@ -441,6 +442,7 @@
     <Compile Include="Models\FinancialModels.cs" />
     <Compile Include="Models\InvoiceViewModels.cs" />
     <Compile Include="Models\LogModels.cs" />
+    <Compile Include="Models\ReportsModels.cs" />
     <Compile Include="Models\StoreItemModels.cs" />
     <Compile Include="Models\TicketModels.cs" />
     <Compile Include="Models\ItemsViewModels.cs" />
@@ -706,6 +708,7 @@
     <Content Include="Views\Donors\EmailTaxReceipts.cshtml" />
     <Content Include="Views\Home\Sponsors.cshtml" />
     <Content Include="Views\AuctionItems\EnterWinnersInBulk.cshtml" />
+    <Content Include="Views\Reports\AllRevenueByType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

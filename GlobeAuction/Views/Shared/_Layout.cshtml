@@ -28,9 +28,9 @@
             <div class="navbar-header">
                 @if (Request.IsAuthenticated)
                 {
-                    <div class="btn btn-gold btn-lg navbar-left">
-                        Raised: @RevenueHelper.GetTotalRevenue().ToString("C")
-                    </div>
+                <div>
+                    @Html.ActionLink(RevenueHelper.GetTotalRevenue().ToString("C"), "AllRevenueByType", "Reports", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                </div>
                 }
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>

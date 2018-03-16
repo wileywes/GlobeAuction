@@ -1,0 +1,113 @@
+﻿@model GlobeAuction.Models.AllRevenueByTypeReportModel
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
+@{
+    ViewBag.Title = "Reports - All Revenue by Type";
+}
+
+<h2>Reports - All Revenue by Type</h2>
+
+
+<table class="table table-striped table-bordered" id="revenueByTypeTable">
+    <thead>
+        <tr>
+            <th>
+                Type
+            </th>
+            <th>
+                Amount Raised
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.AuctionItems)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.AuctionItems)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.BidderTickets)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.BidderTickets)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.RaffleTicketsViaRegistration)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.RaffleTicketsViaRegistration)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.StoreSalesViaRegistration)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.StoreSalesViaRegistration)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.RaffleTicketsViaStore)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.RaffleTicketsViaStore)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.StoreSalesViaStore)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.StoreSalesViaStore)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <td align="right">
+                <b>
+                    @Html.DisplayNameFor(m => m.Total)
+                </b>
+            </td>
+            <td>
+                <b>
+                    @Html.DisplayFor(m => m.Total)
+                </b>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var revenueByTypeTable = $('#revenueByTypeTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Brt',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ]
+        });
+
+    });
+</script>
