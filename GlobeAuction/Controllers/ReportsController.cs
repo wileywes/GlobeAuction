@@ -71,15 +71,53 @@ namespace GlobeAuction.Controllers
                 }).ToList()
             };
 
+            //funds by payment method
+            var paidPurchases = paidInvoices.GroupBy(i => i.PaymentMethod).Select(g =>
+            {
+                var payMethod = g.Key;
+                var ordersForMethod = g.ToList();
+                return new PurchasesByPaymentMethodGroup
+                {
+                    PaymentMethodName = GetPayMethodName(payMethod),
+                    PurchaseCount = ordersForMethod.Count,
+                    TotalSales = ordersForMethod.Select(i => i.TotalPaid).DefaultIfEmpty(0).Sum()
+                };
+            }).ToList();
+            foreach(var b in allBidders)
+            {
+                if (b.TotalPaid > 0)
+                {
+                    var name = GetPayMethodName(b.PaymentMethod);
+                    var methodGroup = paidPurchases.FirstOrDefault(p => p.PaymentMethodName == name);
+                    if (methodGroup == null)
+                    {
+                        methodGroup = new PurchasesByPaymentMethodGroup();
+                        methodGroup.PaymentMethodName = name;
+                        paidPurchases.Add(methodGroup);
+                    }
+                    methodGroup.PurchaseCount += 1;
+                    methodGroup.TotalSales += b.TotalPaid;
+                }
+            }
+            var byPayMethodReport = new PurchasesByPaymentMethodReportModel
+            {
+                PurchasesByPaymentMethod = paidPurchases
+            };
+
             var model = new AllRevenueReportsModel
             {
                 AllRevenueByTypeReport = byType,
                 FundaProjectRevenueReport = fundAProject,
-                RaffleTicketPurchasesReport = raffleTicketPurchases
+                RaffleTicketPurchasesReport = raffleTicketPurchases,
+                PurchasesByPaymentMethodReport = byPayMethodReport
             };
             return View(model);
         }
 
+        private static string GetPayMethodName(PaymentMethod? payMethod)
+        {
+            return payMethod.HasValue ? payMethod.Value.ToString() : "Unknown";
+        }
 
         protected override void Dispose(bool disposing)
         {

@@ -176,19 +176,19 @@
             </thead>
             <tbody>
                 @foreach (var ticket in Model.RaffleTicketPurchasesReport.PaidRaffleTickets)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(m => ticket.RaffleTicketName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => ticket.TicketCount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => ticket.TotalSales)
-                    </td>
-                </tr>
-        }
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => ticket.RaffleTicketName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => ticket.TicketCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => ticket.TotalSales)
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
         <table class="table table-bordered">
@@ -208,7 +208,56 @@
             </tbody>
         </table>
     </div>
+
     <div class="col-lg-6">
+        <h3>Purchases by Payment Method</h3>
+        <table class="table table-striped table-bordered" id="payMethodTable">
+            <thead>
+                <tr>
+                    <th>
+                        Payment Method
+                    </th>
+                    <th>
+                        Purchase Count
+                    </th>
+                    <th>
+                        Amount Raised
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var purchases in Model.PurchasesByPaymentMethodReport.PurchasesByPaymentMethod)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => purchases.PaymentMethodName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => purchases.PurchaseCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => purchases.TotalSales)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td align="right">
+                        <b>
+                            @Html.DisplayNameFor(m => m.PurchasesByPaymentMethodReport.Total)
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            @Html.DisplayFor(m => m.PurchasesByPaymentMethodReport.Total)
+                        </b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -219,7 +268,6 @@
         var revenueByTypeTable = $('#revenueByTypeTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Brt',
-            stateSave: true,
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -231,7 +279,6 @@
         var fundaProjectTable = $('#fundaProjectTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Brt',
-            stateSave: true,
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -243,7 +290,17 @@
         var raffleTicketsTable = $('#raffleTicketsTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Brt',
-            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ]
+        });
+
+        var payMethodTable = $('#payMethodTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Brt',
             buttons: [
                 {
                     extend: 'excelHtml5',

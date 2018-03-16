@@ -63,17 +63,36 @@ namespace GlobeAuction.Models
         }
     }
 
+    public class PurchasesByPaymentMethodReportModel
+    {
+        public List<PurchasesByPaymentMethodGroup> PurchasesByPaymentMethod { get; set; }
+
+        [Display(Name = "Total Raised")]
+        public decimal Total
+        {
+            get { return PurchasesByPaymentMethod.Select(t => t.TotalSales).DefaultIfEmpty(0).Sum(); }
+        }
+    }
+
     public class AllRevenueReportsModel
     {
         public AllRevenueByTypeReportModel AllRevenueByTypeReport { get; set; }
         public FundaProjectRevenueReportModel FundaProjectRevenueReport { get; set; }
         public RaffleTicketPurchasesReportModel RaffleTicketPurchasesReport { get; set; }
+        public PurchasesByPaymentMethodReportModel PurchasesByPaymentMethodReport { get; set; }
     }
 
     public class RaffleTicketPurchaseGroup
     {
         public string RaffleTicketName { get; set; }
         public int TicketCount { get; set; }
+        public decimal TotalSales { get; set; }
+    }
+
+    public class PurchasesByPaymentMethodGroup
+    {
+        public string PaymentMethodName { get; set; }
+        public int PurchaseCount { get; set; }
         public decimal TotalSales { get; set; }
     }
 }
