@@ -97,6 +97,7 @@ namespace GlobeAuction.Helpers
             var allBidders = db.Bidders
                 .Include(b => b.AuctionGuests)
                 .Include(b => b.StoreItemPurchases)
+                .Where(b => b.IsDeleted == false)
                 .ToList();
 
             totalRevenue += allBidders.Sum(b => b.TotalPaid);

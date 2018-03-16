@@ -32,6 +32,7 @@ namespace GlobeAuction.Controllers
                 .Include(b => b.AuctionGuests)
                 .Include(b => b.StoreItemPurchases)
                 .Include("StoreItemPurchases.StoreItem")
+                .Where(b => b.IsDeleted == false)
                 .ToList();
 
             var model = new AllRevenueByTypeReportModel

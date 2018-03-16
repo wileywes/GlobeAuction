@@ -186,7 +186,7 @@ namespace GlobeAuction.Models
             {
                 var total = 0m;
                 if (AuctionGuests != null && AuctionGuests.Any()) total = AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0));
-                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(sip.Price * sip.Quantity));
+                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(0));
                 return total;
             }
         }
