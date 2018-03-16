@@ -74,7 +74,7 @@ namespace GlobeAuction.Controllers
 
                 if (bidder == null)
                 {
-                    ModelState.AddModelError("bidderId", "No bidder was found matching this information.");
+                    ModelState.AddModelError("bidderNumber", "No bidder was found matching this information.");
                 }
                 else
                 {

@@ -9,41 +9,52 @@
         </div>
         <div class="col-lg-6 greybox" style="padding-left:0px; padding-right:0px;height:100%; display: inline-block; top:0; bottom:0; margin-bottom:-9999px; padding-bottom:9999px;">
             <div class="container">
-                <h2><b>An Evening Around the GLOBE</b></h2>
-                <p>
-                    You will not want to miss The GLOBE Academy’s 2018 Auction, An Evening Around the GLOBE.
-                    Join us for a night of food, drinks, fantastic silent auction items and a spirited live auction!
-                    Attire is dressy casual.
-                </p>
-                <p>
-                    <table width="100%" cellpadding="5">
-                        <tr>
-                            <td>Get your ticket(s) now!</td>
-                            <td align="right">@Html.ActionLink("BUY TICKETS NOW", "Register", "Bidders", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })</td>
-                        </tr>
-                    </table>
-                </p>
-                <p>
-                    <table width="100%" cellpadding="5">
-                        <tr>
-                            <td>
-                                If you have already registered, or just need raffle tickets ONLY, you can get your amazing raffle tickets here:
-                            </td>
-                            <td align="right">@Html.ActionLink("BUY RAFFLE TICKETS", "Buy", "StoreItems", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })</td>
-                        </tr>
-                    </table>
-                </p>
-                <p>
-                    <table width="100%" cellpadding="5">
-                        <tr>
-                            <td>
-                                2018 Fund-a-Project is all about science! With the money raised, we can purchase supplies for both LC and UC Science Labs, 
-                                including stopwatches, microscopes, scales and more. The more we raise, the more we can buy!
-                            </td>
-                            <td align="right">@Html.ActionLink("FUND-A- PROJECT", "Buy", "StoreItems", null, null, "fap", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })</td>
-                        </tr>
-                    </table>
-                </p>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <h2><b>An Evening Around the GLOBE</b></h2>
+                        <p>
+                            You will not want to miss The GLOBE Academy’s 2018 Auction, An Evening Around the GLOBE.
+                            Join us for a night of food, drinks, fantastic silent auction items and a spirited live auction!
+                            Attire is dressy casual.
+                        </p>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-6">
+                        Get your ticket(s) now!
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        @Html.ActionLink("BUY TICKETS NOW", "Register", "Bidders", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-lg-6">
+                        If you have already registered, or just need raffle tickets ONLY, you can get your amazing raffle tickets here:
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        @Html.ActionLink("BUY RAFFLE TICKETS", "Buy", "StoreItems", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-lg-6">
+                        2018 Fund-a-Project is all about science! With the money raised, we can purchase supplies for both LC and UC Science Labs.
+                        The more we raise, the more we can buy!
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        @Html.ActionLink("FUND-A- PROJECT", "Buy", "StoreItems", null, null, "fap", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-lg-6">
+                        At the auction event and ready to pay for your winings?
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <a href="/pay" class="btn btn-lg btn-gold">PAY NOW</a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-lg-3" style="padding-left:0px; padding-right:0px">
