@@ -33,16 +33,16 @@ namespace GlobeAuction.Models
 
     public class FundaProjectRevenueReportModel
     {
-        [Display(Name = "Purchased in Store or Checkout (unpaid")]
+        [Display(Name = "Purchased in Store or Checkout (unpaid)")]
         public decimal SalesViaStoreUnpaid { get; set; }
 
-        [Display(Name = "Purchased in Live Auction (unpaid")]
+        [Display(Name = "Purchased in Live Auction (unpaid)")]
         public decimal SalesViaAuctionUnpaid { get; set; }
 
-        [Display(Name = "Purchased in Store or Checkout (paid")]
+        [Display(Name = "Purchased in Store or Checkout (paid)")]
         public decimal SalesViaStorePaid { get; set; }
 
-        [Display(Name = "Purchased in Live Auction (paid")]
+        [Display(Name = "Purchased in Live Auction (paid)")]
         public decimal SalesViaAuctionPaid { get; set; }
         
         [Display(Name = "Total Raised")]

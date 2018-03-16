@@ -26,32 +26,45 @@
                 <h3>@Html.DisplayFor(m => winner.FirstName) @Html.DisplayFor(m => winner.LastName)</h3>
                 <br />
                 <table class="table table-bordered table-striped">
-                    @foreach (var item in winner.ItemsWon.OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
-                    {
-                        <tr>
-                            <td>@item.UniqueItemNumber</td>
-                            <td>@item.Category</td>
-                            <td>
-                                @(item.DonationItemsCount == 1 && item.DonationItems.First().UseDigitalCertificateForWinner ? "* " : string.Empty)
-                                @item.Title
-                            </td>
-                        </tr>
-
-                        if (item.DonationItems.Count > 1)
+                    <thead>
+                        <th>
+                            Item No.
+                        </th>
+                        <th>Category</th>
+                        <th>Title</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in winner.ItemsWon.OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
                         {
-                            foreach (var donationItem in item.DonationItems)
+                            <tr>
+                                <td>@item.UniqueItemNumber</td>
+                                <td>@item.Category</td>
+                                <td>
+                                    @(item.DonationItemsCount == 1 && item.DonationItems.First().UseDigitalCertificateForWinner ? "* " : string.Empty)
+                                    @item.Title
+                                    @if(item.DonationItemsCount > 1)
+                                    {
+                                        <b>(basket)</b>
+                                    }
+                                </td>
+                            </tr>
+
+                            if (item.DonationItems.Count > 1)
                             {
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        @(donationItem.UseDigitalCertificateForWinner ? "* " : string.Empty)
-                                        @donationItem.Title
-                                    </td>
-                                </tr>
+                                foreach (var donationItem in item.DonationItems)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            @(donationItem.UseDigitalCertificateForWinner ? "* " : string.Empty)
+                                            @donationItem.Title
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
-                    }
+                    </tbody>
                 </table>
 
                 @if (winner.ItemsWon.Any(ai => ai.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))

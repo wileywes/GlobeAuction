@@ -147,7 +147,7 @@
                 {
                     text: 'Re-Number Paddles',
                     action: function (e, dt, node, config) {
-                        var startingPaddleNumber = prompt("This will re-number bidders sorted by LastName, FirstName.  What Bidder Number do you want to start with?");
+                        var startingPaddleNumber = prompt("Are you sure you want to do this?  This will re-number bidders sorted by LastName, FirstName.  You SHOULD NOT DO THIS ONCE THE AUCTION HAS STARTED!  To proceed, enter the Bidder Number to start with...");
                         if (startingPaddleNumber != null) {
                             $("#startingPaddleNumber").val(startingPaddleNumber);
                             $("#biddersAction").val("RenumberBidderPaddles");
