@@ -28,7 +28,7 @@
             <div class="navbar-header">
                 @if (Request.IsAuthenticated)
                 {
-                <div>
+                <div class="pull-left">
                     @Html.ActionLink(RevenueHelper.GetTotalRevenue().ToString("C"), "AllRevenueReports", "Reports", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
                 </div>
                 }
