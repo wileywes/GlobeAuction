@@ -1,0 +1,255 @@
+﻿@model GlobeAuction.Models.AllRevenueReportsModel
+
+<link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+<script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
+
+@{
+    ViewBag.Title = "Reports - All Revenue by Type";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <h3>All Revenue by Type</h3>
+        <table class="table table-striped table-bordered" id="revenueByTypeTable">
+            <thead>
+                <tr>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Amount Raised
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.AuctionItems)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.AllRevenueByTypeReport.AuctionItems)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.BidderTickets)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.AllRevenueByTypeReport.BidderTickets)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.RaffleTicketsViaRegistration)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.AllRevenueByTypeReport.RaffleTicketsViaRegistration)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.StoreSalesViaRegistration)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.AllRevenueByTypeReport.StoreSalesViaRegistration)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.RaffleTicketsViaStore)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.AllRevenueByTypeReport.RaffleTicketsViaStore)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.StoreSalesViaStore)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.AllRevenueByTypeReport.StoreSalesViaStore)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td align="right">
+                        <b>
+                            @Html.DisplayNameFor(m => m.AllRevenueByTypeReport.Total)
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            @Html.DisplayFor(m => m.AllRevenueByTypeReport.Total)
+                        </b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-6">
+        <h3>Fund-A-Project Total Raised</h3>
+        <table class="table table-striped table-bordered" id="fundaProjectTable">
+            <thead>
+                <tr>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Amount Raised
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.FundaProjectRevenueReport.SalesViaAuctionPaid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.FundaProjectRevenueReport.SalesViaAuctionPaid)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.FundaProjectRevenueReport.SalesViaAuctionUnpaid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.FundaProjectRevenueReport.SalesViaAuctionUnpaid)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.FundaProjectRevenueReport.SalesViaStorePaid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.FundaProjectRevenueReport.SalesViaStorePaid)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(m => m.FundaProjectRevenueReport.SalesViaStoreUnpaid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.FundaProjectRevenueReport.SalesViaStoreUnpaid)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td align="right">
+                        <b>
+                            @Html.DisplayNameFor(m => m.FundaProjectRevenueReport.Total)
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            @Html.DisplayFor(m => m.FundaProjectRevenueReport.Total)
+                        </b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <h3>Raffle Tickets Purchased / Paid</h3>
+        <table class="table table-striped table-bordered" id="raffleTicketsTable">
+            <thead>
+                <tr>
+                    <th>
+                        Raffle Ticket
+                    </th>
+                    <th>
+                        Tickets Purchases
+                    </th>
+                    <th>
+                        Amount Raised
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.RaffleTicketPurchasesReport.PaidRaffleTickets)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => ticket.RaffleTicketName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => ticket.TicketCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => ticket.TotalSales)
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td align="right">
+                        <b>
+                            @Html.DisplayNameFor(m => m.RaffleTicketPurchasesReport.Total)
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            @Html.DisplayFor(m => m.RaffleTicketPurchasesReport.Total)
+                        </b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-6">
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var revenueByTypeTable = $('#revenueByTypeTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Brt',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ]
+        });
+
+        var fundaProjectTable = $('#fundaProjectTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Brt',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ]
+        });
+
+        var raffleTicketsTable = $('#raffleTicketsTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Brt',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ]
+        });
+    });
+</script>

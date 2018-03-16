@@ -39,15 +39,15 @@ namespace GlobeAuction.Models
         public virtual List<BundleComponent> BundleComponents { get; set; }
 
         [Required]
-        [Display(Name = "Can Purchase in Bidder Registration")]
+        [Display(Name = "Show in Bidder Registration")]
         public bool CanPurchaseInBidderRegistration { get; set; }
 
         [Required]
-        [Display(Name = "Can Purchase in Auction Checkout")]
+        [Display(Name = "Show in Auction Checkout")]
         public bool CanPurchaseInAuctionCheckout { get; set; }
 
         [Required]
-        [Display(Name = "Can Purchase in Store")]
+        [Display(Name = "Show in Store")]
         public bool CanPurchaseInStore { get; set; }
 
         [Required]
@@ -67,7 +67,9 @@ namespace GlobeAuction.Models
 
     public class StoreItemsListViewModel : StoreItemViewModel
     {
+        [Display(Name = "Unpaid Count")]
         public int UnpaidPurchaseCount { get; set; }
+        [Display(Name = "Paid Count")]
         public int PaidPurchaseCount { get; set; }
     }
 

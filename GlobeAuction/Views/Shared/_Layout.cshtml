@@ -29,7 +29,7 @@
                 @if (Request.IsAuthenticated)
                 {
                 <div>
-                    @Html.ActionLink(RevenueHelper.GetTotalRevenue().ToString("C"), "AllRevenueByType", "Reports", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                    @Html.ActionLink(RevenueHelper.GetTotalRevenue().ToString("C"), "AllRevenueReports", "Reports", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
                 </div>
                 }
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

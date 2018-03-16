@@ -146,19 +146,19 @@
                         @Html.DisplayFor(modelItem => item.UnpaidPurchaseCount)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsRaffleTicket)
+                        @(item.IsRaffleTicket ? "Yes" : "No")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CanPurchaseInBidderRegistration)
+                        @(item.CanPurchaseInBidderRegistration ? "Yes" : "No")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CanPurchaseInAuctionCheckout)
+                        @(item.CanPurchaseInAuctionCheckout ? "Yes" : "No")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CanPurchaseInStore)
+                        @(item.CanPurchaseInStore ? "Yes" : "No")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.OnlyVisibleToAdmins)
+                        @(item.OnlyVisibleToAdmins ? "Yes" : "No")
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.StoreItemId }) |

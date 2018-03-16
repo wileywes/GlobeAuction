@@ -708,7 +708,7 @@
     <Content Include="Views\Donors\EmailTaxReceipts.cshtml" />
     <Content Include="Views\Home\Sponsors.cshtml" />
     <Content Include="Views\AuctionItems\EnterWinnersInBulk.cshtml" />
-    <Content Include="Views\Reports\AllRevenueByType.cshtml" />
+    <Content Include="Views\Reports\AllRevenueReports.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
