@@ -145,7 +145,7 @@
     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
     {
         @:isAdmin = true;
-                            }
+    }
 
     $(document).ready(function () {
         var auctionItemsDataTable = $('#winnersTable').dataTable({
@@ -161,12 +161,6 @@
                     text: 'Print All Pick Slips',
                     action: function (e, dt, node, config) {
                         window.open('/AuctionItems/PrintAllPackSlips', '_blank');
-                    }
-                },
-                {
-                    text: 'TEST Pick Slips',
-                    action: function (e, dt, node, config) {
-                        window.open('/AuctionItems/PrintAllPackSlips?useMockData=true', '_blank');
                     }
                 },
                 {

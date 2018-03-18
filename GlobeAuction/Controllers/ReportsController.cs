@@ -28,9 +28,16 @@ namespace GlobeAuction.Controllers
 
             var paidInvoices = allInvoices.Where(i => i.IsPaid).ToList();
 
+            var unpaidAuctionItems = db.AuctionItems
+                .Where(ai => ai.WinningBid.HasValue && (ai.Invoice == null || ai.Invoice.IsPaid == false))
+                .Select(ai => ai.WinningBid.Value)
+                .DefaultIfEmpty(0)
+                .Sum();
+
             var byType = new AllRevenueByTypeReportModel
             {
-                AuctionItems = paidInvoices.Sum(i => i.AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0))),
+                AuctionItemsPaid = paidInvoices.Sum(i => i.AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0))),
+                AuctionItemsUnpaid = unpaidAuctionItems,
                 BidderTickets = allBidders.Sum(b => b.AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0))),
                 RaffleTicketsViaRegistration = allBidders.Sum(b => b.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
                 StoreSalesViaRegistration = allBidders.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
