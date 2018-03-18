@@ -225,7 +225,7 @@ namespace GlobeAuction.Controllers
                 $"<b>Bidder Name:</b> {bidNumber}<br />" +
                 $"<b>Bidder Email:</b> {bidName}<br />" +
                 $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
-                $"<b>Amount Paid:</b> {item.WinningBid.GetValueOrDefault(0)}<br />" +
+                $"<b>Amount Paid:</b> {item.WinningBid.GetValueOrDefault(0):C}<br />" +
                 $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />";
 
             new EmailHelper().SendEmail("robynloren@gmail.com", "Paid Item Removed from Invoice - Refund Needed", body);
