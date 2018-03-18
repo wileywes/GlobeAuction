@@ -26,15 +26,19 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:n2}")]
         public decimal StoreSalesViaStore { get; set; }
         
-        [Display(Name = "Auction Items")]
+        [Display(Name = "Auction Items (paid)")]
         [DisplayFormat(DataFormatString = "{0:n2}")]
-        public decimal AuctionItems { get; set; }
+        public decimal AuctionItemsPaid { get; set; }
+
+        [Display(Name = "Auction Items (unpaid)")]
+        [DisplayFormat(DataFormatString = "{0:n2}")]
+        public decimal AuctionItemsUnpaid { get; set; }
 
         [Display(Name = "Total Raised")]
         [DisplayFormat(DataFormatString = "{0:n2}")]
         public decimal Total
         {
-            get { return BidderTickets + RaffleTicketsViaRegistration + RaffleTicketsViaStore + StoreSalesViaRegistration + StoreSalesViaStore + AuctionItems; }
+            get { return BidderTickets + RaffleTicketsViaRegistration + RaffleTicketsViaStore + StoreSalesViaRegistration + StoreSalesViaStore + AuctionItemsPaid + AuctionItemsUnpaid; }
         }
     }
 

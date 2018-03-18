@@ -102,6 +102,14 @@ namespace GlobeAuction.Helpers
 
             totalRevenue += allBidders.Sum(b => b.TotalPaid);
 
+            var unpaidAuctionItems = db.AuctionItems
+                .Where(ai => ai.WinningBid.HasValue && (ai.Invoice == null || ai.Invoice.IsPaid == false))
+                .Select(ai => ai.WinningBid.Value)
+                .DefaultIfEmpty(0)
+                .Sum();
+
+            totalRevenue += unpaidAuctionItems;
+
             RevenueHelper.SetTotalRevenue(totalRevenue);
         }
     }
