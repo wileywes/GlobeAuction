@@ -219,7 +219,7 @@ namespace GlobeAuction.Controllers
 
             db.SaveChanges();
 
-            var body = "The following item was removed from a paid invoice.  The winner likely needs to be refunded via PayPal:<br/>" +
+            var body = "The following item was removed from a paid invoice.  The winner likely needs to be refunded via PayPal:<br/><br/>" +
                 $"<b>Invoice #:</b> {invoice.InvoiceId}<br />" +
                 $"<b>Bidder #:</b> {bidNumber}<br />" +
                 $"<b>Bidder Name:</b> {bidNumber}<br />" +
