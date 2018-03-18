@@ -71,7 +71,14 @@
                                 @Html.HiddenFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItemId)
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].UniqueItemNumber)
+                                        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                                        {
+                                            @Html.ActionLink(Model.AuctionItemsNotInInvoice[i].UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = Model.AuctionItemsNotInInvoice[i].AuctionItemId }, new { target = "_blank" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].UniqueItemNumber)
+                                        }
                                     </td>
                                     <td>
                                         @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].Category)
@@ -244,7 +251,7 @@
                                 <th>Title</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
-                                @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                                @if ((!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners)) || (invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                                 {
                                     <th></th>
                                 }
@@ -255,7 +262,14 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(m => item.UniqueItemNumber)
+                                        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
+                                        {
+                                            @Html.ActionLink(item.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItemId }, new { target = "_blank" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(m => item.UniqueItemNumber)
+                                        }
                                     </td>
                                     <td>
                                         @Html.DisplayFor(m => item.Category)
@@ -267,10 +281,17 @@
                                     <td>
                                         @Html.DisplayFor(m => item.WinningBid)
                                     </td>
-                                    @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                                    @if ((!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners)) || (invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                                     {
                                         <td class="text-nowrap">
-                                            @Html.ActionLink("Remove", "RemoveAuctionItemFromUnpaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, auctionItemId = item.AuctionItemId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                            @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                                            {
+                                                @Html.ActionLink("Remove", "RemoveAuctionItemFromUnpaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, auctionItemId = item.AuctionItemId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                            }
+                                            @if (invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
+                                            {
+                                                @Html.ActionLink("Remove", "RemoveAuctionItemFromPaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, auctionItemId = item.AuctionItemId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                            }
                                         </td>
                                     }
                                 </tr>

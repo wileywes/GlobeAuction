@@ -26,6 +26,7 @@ namespace GlobeAuction.Helpers
         private static readonly string _sendGridUsername = ConfigurationManager.AppSettings["SendGridUsername"];
         private static readonly string _sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
         private readonly string _baseFilePath;
+        private readonly bool _isLocalHost;
 
         public EmailHelper()
             : this(HttpContext.Current.Server.MapPath("/"))
@@ -35,6 +36,7 @@ namespace GlobeAuction.Helpers
         public EmailHelper(string baseFilePath)
         {
             _baseFilePath = baseFilePath;
+            _isLocalHost = Environment.MachineName.Equals("desktop-xps", StringComparison.OrdinalIgnoreCase);
         }
 
         private string GetEmailBody(string inlinedTemplateName)
@@ -402,6 +404,11 @@ namespace GlobeAuction.Helpers
 
         public void SendEmail(string to, string additionalTo, string subject, string body, bool includeAllEmailBcc, string additionalBccList, Dictionary<string, string> imagesToEmbedByTag)
         {
+            if (_isLocalHost)
+            {
+                subject = "TEST: " + subject;
+            }
+
             var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
             {
                 Body = body,

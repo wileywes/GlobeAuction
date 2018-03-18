@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 
 namespace GlobeAuction.Controllers
 {
+    [AllowAnonymous]
     public class InvoicesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -45,7 +46,6 @@ namespace GlobeAuction.Controllers
             return View(invoice);
         }
         
-        [AllowAnonymous]
         public ActionResult Checkout()
         {
             return View(new InvoiceLookupModel());
@@ -54,7 +54,6 @@ namespace GlobeAuction.Controllers
         // POST: AuctionItems/Delete/5
         [HttpPost, ActionName("Checkout")]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
         public ActionResult CheckoutConfirmed(InvoiceLookupModel invoiceLookupModel)
         {
             var requireEmailMatch = true;
@@ -86,7 +85,6 @@ namespace GlobeAuction.Controllers
             return View(invoiceLookupModel);
         }
 
-        [AllowAnonymous]
         public ActionResult ReviewBidderWinnings(int bid, string email, bool? manualPaidSuccessful, bool? selfPaySuccessful)
         {
             //check they are who they say they are
@@ -130,7 +128,6 @@ namespace GlobeAuction.Controllers
 
         [HttpPost, ActionName("ReviewBidderWinnings")]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
         public ActionResult ReviewBidderWinningsPayNow(ReviewBidderWinningsViewModel model, string submitButton)
         {
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderId == model.BidderId && b.Email.Equals(model.BidderEmail, StringComparison.OrdinalIgnoreCase));
@@ -168,7 +165,7 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = invoice.Email });
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult RemoveAuctionItemFromUnpaidInvoice(int invoiceId, int auctionItemId)
         {
             var invoice = db.Invoices.Find(invoiceId);
@@ -198,7 +195,45 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult RemoveAuctionItemFromPaidInvoice(int invoiceId, int auctionItemId)
+        {
+            var invoice = db.Invoices.Find(invoiceId);
+            if (invoice == null) return HttpNotFound();
+            if (!invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            //grab a copy before we delete the invoice
+            var bidId = invoice.Bidder.BidderId;
+            var bidNumber = invoice.Bidder.BidderNumber;
+            var bidEmail = invoice.Bidder.Email;
+            var bidName = invoice.Bidder.FirstName + " " + invoice.Bidder.LastName;
+
+            var item = db.AuctionItems.FirstOrDefault(ai => ai.Invoice != null && ai.Invoice.InvoiceId == invoiceId && ai.AuctionItemId == auctionItemId && ai.WinningBidderId == bidId);
+            if (item == null)
+            {
+                return HttpNotFound();
+            }
+
+            item.Invoice = null;
+            invoice.AuctionItems.Remove(invoice.AuctionItems.First(ai => ai.AuctionItemId == auctionItemId));
+
+            db.SaveChanges();
+
+            var body = "The following item was removed from a paid invoice.  The winner likely needs to be refunded via PayPal:<br/>" +
+                $"<b>Invoice #:</b> {invoice.InvoiceId}<br />" +
+                $"<b>Bidder #:</b> {bidNumber}<br />" +
+                $"<b>Bidder Name:</b> {bidNumber}<br />" +
+                $"<b>Bidder Email:</b> {bidName}<br />" +
+                $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
+                $"<b>Amount Paid:</b> {item.WinningBid.GetValueOrDefault(0)}<br />" +
+                $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />";
+
+            new EmailHelper().SendEmail("robynloren@gmail.com", "Paid Item Removed from Invoice - Refund Needed", body);
+
+            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
+        }
+
+        [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult RemoveStoreItemFromUnpaidInvoice(int invoiceId, int sipId)
         {
             var invoice = db.Invoices.Find(invoiceId);
@@ -234,7 +269,6 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
         }
 
-        [AllowAnonymous]
         public ActionResult RedirectToPayPal(int iid, string email)
         {
             var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Email != null && i.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
@@ -248,7 +282,6 @@ namespace GlobeAuction.Controllers
             return View(model);
         }
         
-        [AllowAnonymous]
         [HttpPost]
         public ActionResult PayPalComplete(FormCollection form)
         {
