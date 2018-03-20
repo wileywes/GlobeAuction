@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobeAuction", "GlobeAuction\GlobeAuction.csproj", "{474BD74E-A70C-4CFC-9CE8-231350718BBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobeAuction.UnitTests", "GlobeAuction.UnitTests\GlobeAuction.UnitTests.csproj", "{DB148D33-DC8F-4207-A01E-F9999C22A9A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobeAuction.TestHarness", "GlobeAuction.TestHarness\GlobeAuction.TestHarness.csproj", "{34321CDE-22AA-4A05-95E1-DCC507126BB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,15 @@ Global
 		{DB148D33-DC8F-4207-A01E-F9999C22A9A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB148D33-DC8F-4207-A01E-F9999C22A9A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB148D33-DC8F-4207-A01E-F9999C22A9A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34321CDE-22AA-4A05-95E1-DCC507126BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34321CDE-22AA-4A05-95E1-DCC507126BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34321CDE-22AA-4A05-95E1-DCC507126BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34321CDE-22AA-4A05-95E1-DCC507126BB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26CC4D81-891D-487F-849F-EC22A25B61AF}
 	EndGlobalSection
 EndGlobal

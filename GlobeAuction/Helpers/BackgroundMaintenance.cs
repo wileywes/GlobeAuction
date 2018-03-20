@@ -65,8 +65,8 @@ namespace GlobeAuction.Helpers
 
         private void SendDonationItemCertificates(EmailHelper emailHelper)
         {
+            //send for auction winnings first
             var allWinnings = new ItemsRepository(db).GetWinningsByBidder();
-
             foreach(var winning in allWinnings)
             {
                 var paidAuctionItems = winning.Winnings.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid).ToList();
@@ -80,6 +80,26 @@ namespace GlobeAuction.Helpers
                         donationItem.HasWinnerBeenEmailed = true;
                         db.SaveChanges();
                     }
+                }
+            }
+
+            //now do store purchases
+            var invoicesWithDonationItemToSend = db.Invoices
+                .Where(i => i.IsPaid && i.StoreItemPurchases.Any(sip => sip.StoreItem.DonationItem != null && sip.StoreItem.DonationItem.UseDigitalCertificateForWinner && sip.StoreItem.DonationItem.HasWinnerBeenEmailed == false))
+                .ToList();
+
+            foreach(var invoice in invoicesWithDonationItemToSend)
+            {
+                var sipToSend = invoice.StoreItemPurchases
+                    .Where(sip => sip.StoreItem.DonationItem != null && sip.StoreItem.DonationItem.UseDigitalCertificateForWinner && sip.StoreItem.DonationItem.HasWinnerBeenEmailed == false)
+                    .ToList();
+
+                foreach (var donationItem in sipToSend.Select(sip => sip.StoreItem.DonationItem))
+                {
+                    emailHelper.SendDonationItemCertificate(invoice, donationItem);
+
+                    donationItem.HasWinnerBeenEmailed = true;
+                    db.SaveChanges();
                 }
             }
         }

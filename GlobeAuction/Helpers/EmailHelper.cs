@@ -131,6 +131,18 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
 
+        public void SendDonationItemCertificate(Invoice invoice, DonationItem item)
+        {
+            var body = GetDonationItemCertificateEmail(
+                invoice.FirstName + " " + invoice.LastName,
+                item.Title, item.Description,
+                item.Donor.BusinessName, item.Donor.ContactName, item.Donor.Email, item.Donor.Phone,
+                item.ExpirationDate.HasValue ? "Expires: " + item.ExpirationDate.Value.ToString("d") : string.Empty,
+                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty);
+
+            SendEmail(invoice.Email, item.Donor.Email, "Certificate of Auction Won", body);
+        }
+
         public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
         {
             var allItemsAreDigitalCertificates = winnings.All(w => w.DonationItems.All(di => di.UseDigitalCertificateForWinner));
