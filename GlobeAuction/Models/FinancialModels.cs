@@ -68,15 +68,7 @@ namespace GlobeAuction.Models
         {
             get
             {
-                if (PaymentTransaction != null)
-                {
-                    return PaymentTransaction.PaymentGross;
-                }
-                if (WasMarkedPaidManually)
-                {
-                    return Total;
-                }
-                return 0;
+                return IsPaid ? Total : 0;
             }
         }
     }

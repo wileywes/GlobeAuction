@@ -111,17 +111,9 @@ namespace GlobeAuction.Models
             invoice.StoreItemPurchases = invoice.StoreItemPurchases ?? new List<StoreItemPurchase>();
 
             CountOfItems = invoice.AuctionItems.Count + invoice.StoreItemPurchases.Count;
-            InvoiceTotal = invoice.AuctionItems.Any() ? invoice.AuctionItems.Sum(i => i.WinningBid.GetValueOrDefault(0)) : 0;
-            InvoiceTotal += invoice.StoreItemPurchases.Any() ? invoice.StoreItemPurchases.Sum(i => i.Price * i.Quantity) : 0;
+            InvoiceTotal = invoice.Total;
 
-            if (invoice.PaymentTransaction != null)
-            {
-                InvoiceTotalPaid = invoice.PaymentTransaction.PaymentGross;
-            }
-            else if (invoice.WasMarkedPaidManually)
-            {
-                InvoiceTotalPaid = invoice.Total;
-            }
+            InvoiceTotalPaid = invoice.TotalPaid;
         }
     }
 }
