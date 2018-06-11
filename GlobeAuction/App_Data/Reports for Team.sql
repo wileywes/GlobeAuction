@@ -35,3 +35,17 @@ where bu.IsDeleted = 0
  and exists (select * from AuctionGuests ag where ag.Bidder_BidderId=bu.BidderId and ag.TicketPricePaid is null) --has unpaid ticket
  and exists (select * from AuctionGuests ag where ag.Bidder_BidderId=bp.BidderId and ag.TicketPricePaid is not null) --has paid tickets on other bidder
  and bu.IsPaymentReminderSent=1
+
+
+--Fund-a-Project donations
+select i.FirstName, i.LastName, i.Email, si.Title, sip.PricePaid, sip.Quantity
+from StoreItemPurchases sip
+inner join StoreItems si on sip.StoreItem_StoreItemID = si.StoreItemID
+inner join Invoices i on sip.invoice_invoiceid=i.invoiceid
+where i.ispaid=1
+  and si.Title like '%fund-%'
+UNION ALL
+select i.FirstName, i.LastName, i.Email, ai.Title, ai.WinningBid as PricePaid, 1 as Quantity
+from AuctionItems ai
+inner join Invoices i on ai.Invoice_InvoiceId = i.InvoiceId
+where ai.Category='Fund-a-Project'
