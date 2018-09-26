@@ -1,53 +1,22 @@
-﻿select * into AuctionGuests_2017 from AuctionGuests;
-DELETE from AuctionGuests;
-GO
+﻿/*
+select t.name,
+  (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) as FksReferencingTable,
+  'select * into 2018_' + name + ' from ' + name as BackupScript,
+  'DELETE from ' + name as DeleteScript,
+  'EXEC sp_rename ''' + name + ''', ''2017_' + replace(name, '_2017','') + ''';' as RenameScript
+from sys.tables t
+where [name] not in ('TicketTypes','StoreItems','__MigrationHistory')
+ and name not like 'AspNet%'
+order by (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) asc
 
-EXEC sp_rename 'AuctionItems', 'AuctionItems_2017';
-GO
-select * into AuctionItems from AuctionItems_2017 where 1 = 0;
-GO
 
-EXEC sp_rename 'Bidders', 'Bidders_2017';
-GO
-select * into Bidders from Bidders_2017 where 1 = 0;
-GO
+--run the SELECT INTO statements
 
-EXEC sp_rename 'DonationItems', 'DonationItems_2017';
-GO
-select * into DonationItems from DonationItems_2017 where 1 = 0;
-GO
+EXEC sp_MSforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"
 
-EXEC sp_rename 'Donors', 'Donors_2017';
-GO
-select * into Donors from Donors_2017 where 1 = 0;
-GO
+--run the DELETE statements
 
-EXEC sp_rename 'Invoices', 'Invoices_2017';
-GO
-select * into Invoices from Invoices_2017 where 1 = 0;
-GO
+exec sp_MSforeachtable @command1="print '?'", @command2="ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"
 
-EXEC sp_rename 'PayPalTransactions', 'PayPalTransactions_2017';
-GO
-select * into PayPalTransactions from PayPalTransactions_2017 where 1 = 0;
-GO
 
-EXEC sp_rename 'Solicitors', 'Solicitors_2017';
-GO
-select * into Solicitors from Solicitors_2017 where 1 = 0;
-GO
-
-EXEC sp_rename 'StoreItemPurchases', 'StoreItemPurchases_2017';
-GO
-select * into StoreItemPurchases from StoreItemPurchases_2017 where 1 = 0;
-GO
-
-EXEC sp_rename 'StoreItems', 'StoreItems_2017';
-GO
-select * into StoreItems from StoreItems_2017 where 1 = 0;
-GO
-
-EXEC sp_rename 'Students', 'Students_2017';
-GO
-select * into Students from Students_2017 where 1 = 0;
-GO
+*/
