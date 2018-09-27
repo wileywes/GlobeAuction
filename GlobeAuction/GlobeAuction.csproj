@@ -439,13 +439,17 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\BidderViewModels.cs" />
     <Compile Include="Models\FinancialModels.cs" />
-    <Compile Include="Models\InvoiceViewModels.cs" />
+    <Compile Include="Models\FinancialViewModels.cs" />
+    <Compile Include="Models\ItemModels.cs" />
     <Compile Include="Models\LogModels.cs" />
     <Compile Include="Models\ReportsModels.cs" />
     <Compile Include="Models\StoreItemModels.cs" />
+    <Compile Include="Models\StoreItemViewModels.cs" />
     <Compile Include="Models\TicketModels.cs" />
-    <Compile Include="Models\ItemsViewModels.cs" />
+    <Compile Include="Models\ItemViewModels.cs" />
     <Compile Include="Models\BidderModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />

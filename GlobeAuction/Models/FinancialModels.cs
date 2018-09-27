@@ -73,23 +73,6 @@ namespace GlobeAuction.Models
         }
     }
 
-
-    public class InvoiceForPayPal
-    {
-        public int InvoiceId { get; set; }
-        public string PayPalBusiness { get; set; }
-        public List<PayPalPaymentLine> LineItems { get; set; }
-
-        public InvoiceForPayPal(Invoice invoice)
-        {
-            InvoiceId = invoice.InvoiceId;
-            PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
-
-            LineItems = invoice.AuctionItems.Select(g => new PayPalPaymentLine(g.Title, g.WinningBid.Value, 1)).ToList();
-            LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
-        }
-    }
-
     public enum PaymentMethod
     {
         PayPal = 0,
