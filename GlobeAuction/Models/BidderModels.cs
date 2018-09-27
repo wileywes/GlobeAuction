@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace GlobeAuction.Models
 {
@@ -42,19 +41,12 @@ namespace GlobeAuction.Models
         public bool IsCheckoutNudgeEmailSent { get; set; }
         [Required]
         public bool IsCheckoutNudgeTextSent { get; set; }
-
-        [Display(Name = "Marked Paid Manually")]
-        public bool WasMarkedPaidManually { get; set; }
-
-        [Display(Name = "Payment Method")]
-        public PaymentMethod? PaymentMethod { get; set; }
-
+        
         public bool AttendedEvent { get; set; }
 
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
-        public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
         
 
         [Display(Name = "Total Paid")]
@@ -62,12 +54,11 @@ namespace GlobeAuction.Models
         {
             get
             {
-                var total = 0m;
-                if (AuctionGuests != null && AuctionGuests.Any()) total = AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0));
-                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(0));
-                return total;
+                return Invoice?.TotalPaid ?? 0;
             }
         }
+
+        public virtual Invoice Invoice { get; set; }
     }
 
     public class AuctionGuest
@@ -78,13 +69,17 @@ namespace GlobeAuction.Models
         public string TicketType { get; set; }
         public decimal TicketPrice { get; set; }
 
+        public virtual Bidder Bidder { get; set; }
+    }
+
+    public class TicketPurchase
+    {
         [DataType(DataType.Currency)]
         public decimal? TicketPricePaid { get; set; }
 
-        public bool IsTicketPaid {  get { return TicketPricePaid.HasValue; } }
+        public bool IsTicketPaid { get { return TicketPricePaid.HasValue; } }
 
-        public virtual Bidder Bidder { get; set; }
-        public virtual PayPalTransaction TicketTransaction { get; set; }
+        public virtual AuctionGuest AuctionGuest { get; set; }
     }
 
     public class Student

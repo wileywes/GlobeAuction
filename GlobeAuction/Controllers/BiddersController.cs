@@ -24,8 +24,9 @@ namespace GlobeAuction.Controllers
         public ActionResult Index()
         {
             var bidders = db.Bidders
-                .Include(b => b.AuctionGuests)
-                .Include(b => b.StoreItemPurchases)
+                .Include(b => b.Invoice)
+                .Include("Invoice.StoreItemPurchases")
+                .Include("Invoice.TicketPurchases")
                 .Where(b => b.IsDeleted == false).ToList();
 
             var models = bidders.Select(b => new BidderForList(b)).ToList();
@@ -78,7 +79,7 @@ namespace GlobeAuction.Controllers
                     newBidder.ShowRegistrationSuccessMessage = true;
                     newBidder.BidderNumberJustRegistered = existingJustRegistered.BidderNumber;
                     newBidder.FullNameJustRegistered = existingJustRegistered.FirstName + " " + existingJustRegistered.LastName;
-                    newBidder.RaffleTicketNumbersCreated = existingJustRegistered?.StoreItemPurchases?
+                    newBidder.RaffleTicketNumbersCreated = existingJustRegistered?.Invoice?.StoreItemPurchases?
                         .Where(sip => sip.StoreItem.IsRaffleTicket)
                         .Select(sip => sip.GetRaffleDescriptionWithItemTitle())
                         .ToList() ?? new List<string>();
@@ -271,7 +272,7 @@ namespace GlobeAuction.Controllers
                 db.Entry(bidder).State = EntityState.Modified;
 
                 //don't try to save StoreItemPurchases - just reload from DB
-                bidder.StoreItemPurchases = db.Bidders.Find(bidderViewModel.BidderId).StoreItemPurchases;
+                //TODO: test this flow with bidder invoice refactor
 
                 try
                 {
