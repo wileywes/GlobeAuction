@@ -65,7 +65,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
 
-        public BidderForList(Bidder b)
+        public BidderForList(Bidder b, Invoice i)
         {
             BidderId = b.BidderId;
             BidderNumber = b.BidderNumber;
@@ -77,20 +77,24 @@ namespace GlobeAuction.Models
             IsPaymentReminderSent = b.IsPaymentReminderSent;
             CreateDate = b.CreateDate;
 
-            TotalPaid = b.TotalPaid;
-            PaymentMethod = b.PaymentMethod;
             AttendedEvent = b.AttendedEvent;
 
-            if (b.AuctionGuests.Any())
+            if (i != null)
             {
-                GuestCount = b.AuctionGuests.Count;
-                TicketsPaid = b.AuctionGuests.Count(g => g.IsTicketPaid);
-            }
+                TotalPaid = i.TotalPaid;
+                PaymentMethod = i.PaymentMethod;
 
-            if (b.StoreItemPurchases.Any())
-            {
-                ItemsCount = b.StoreItemPurchases.Count;
-                ItemsPaid = b.StoreItemPurchases.Count(g => g.IsPaid);
+                if (i.TicketPurchases.Any())
+                {
+                    GuestCount = i.TicketPurchases.Count;
+                    TicketsPaid = i.TicketPurchases.Count(g => g.IsTicketPaid);
+                }
+
+                if (i.StoreItemPurchases.Any())
+                {
+                    ItemsCount = i.StoreItemPurchases.Count;
+                    ItemsPaid = i.StoreItemPurchases.Count(g => g.IsPaid);
+                }
             }
         }
     }
@@ -101,15 +105,15 @@ namespace GlobeAuction.Models
         public string PayPalBusiness { get; set; }
         public List<PayPalPaymentLine> LineItems { get; set; }
 
-        public BidderForPayPal(Bidder bidder)
+        public BidderForPayPal(Bidder bidder, Invoice invoice)
         {
             BidderId = bidder.BidderId;
             PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 
             if (bidder.AuctionGuests == null || !bidder.AuctionGuests.Any()) throw new ApplicationException("No auction guests found");
 
-            LineItems = bidder.AuctionGuests.Select(g => new PayPalPaymentLine(g.TicketType, g.TicketPrice, 1)).ToList();
-            LineItems.AddRange(bidder.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
+            LineItems = invoice.TicketPurchases.Select(g => new PayPalPaymentLine(g.TicketType, g.TicketPrice, 1)).ToList();
+            LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
         }
     }
 
@@ -158,7 +162,7 @@ namespace GlobeAuction.Models
 
         public List<AuctionGuestViewModel> AuctionGuests { get; set; }
         public List<StudentViewModel> Students { get; set; }
-        public List<StoreItemPurchaseViewModel> StoreItemPurchases { get; set; }
+        public Invoice RegistrationInvoice { get; set; }
 
         [Display(Name = "Registration Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]

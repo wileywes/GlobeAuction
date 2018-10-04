@@ -1,7 +1,7 @@
 ﻿/*
 select t.name,
   (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) as FksReferencingTable,
-  'select * into 2018_' + name + ' from ' + name as BackupScript,
+  'select * into [2018_' + name + '] from ' + name as BackupScript,
   'DELETE from ' + name as DeleteScript,
   'EXEC sp_rename ''' + name + ''', ''2017_' + replace(name, '_2017','') + ''';' as RenameScript
 from sys.tables t

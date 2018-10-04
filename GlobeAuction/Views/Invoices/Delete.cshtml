@@ -18,14 +18,14 @@
             @Html.DisplayFor(model => model.InvoiceId)
         </dd>
         @if (Model.Bidder != null)
-    {
-        <dt>
-            @Html.DisplayNameFor(model => model.Bidder.BidderNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Bidder.BidderNumber)
-        </dd>
-}
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Bidder.BidderNumber)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Bidder.BidderNumber)
+            </dd>
+        }
 
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
@@ -71,6 +71,13 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Total)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InvoiceType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InvoiceType)
         </dd>
 
         <dt>

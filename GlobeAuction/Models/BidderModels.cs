@@ -47,18 +47,6 @@ namespace GlobeAuction.Models
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
-        
-
-        [Display(Name = "Total Paid")]
-        public decimal TotalPaid
-        {
-            get
-            {
-                return Invoice?.TotalPaid ?? 0;
-            }
-        }
-
-        public virtual Invoice Invoice { get; set; }
     }
 
     public class AuctionGuest
@@ -74,12 +62,19 @@ namespace GlobeAuction.Models
 
     public class TicketPurchase
     {
+        public int TicketPurchaseId { get; set; }
+        public string TicketType { get; set; }
+        public decimal TicketPrice { get; set; }
+
         [DataType(DataType.Currency)]
         public decimal? TicketPricePaid { get; set; }
 
         public bool IsTicketPaid { get { return TicketPricePaid.HasValue; } }
 
         public virtual AuctionGuest AuctionGuest { get; set; }
+
+        [Required]  //<======= Forces Cascade delete
+        public Invoice Invoice { get; set; }
     }
 
     public class Student

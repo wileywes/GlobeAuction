@@ -437,6 +437,14 @@
     <Compile Include="Migrations\201803142048392_AuctionItemMasterItemForMultiWinner.Designer.cs">
       <DependentUpon>201803142048392_AuctionItemMasterItemForMultiWinner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201809281249293_InvoiceForBidders.cs" />
+    <Compile Include="Migrations\201809281249293_InvoiceForBidders.Designer.cs">
+      <DependentUpon>201809281249293_InvoiceForBidders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.cs" />
+    <Compile Include="Migrations\201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.Designer.cs">
+      <DependentUpon>201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -862,6 +870,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803142048392_AuctionItemMasterItemForMultiWinner.resx">
       <DependentUpon>201803142048392_AuctionItemMasterItemForMultiWinner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809281249293_InvoiceForBidders.resx">
+      <DependentUpon>201809281249293_InvoiceForBidders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.resx">
+      <DependentUpon>201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

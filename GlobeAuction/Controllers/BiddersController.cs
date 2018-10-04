@@ -23,13 +23,22 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditBidders)]
         public ActionResult Index()
         {
-            var bidders = db.Bidders
-                .Include(b => b.Invoice)
-                .Include("Invoice.StoreItemPurchases")
-                .Include("Invoice.TicketPurchases")
-                .Where(b => b.IsDeleted == false).ToList();
+            var bidders = db.Bidders.Where(b => b.IsDeleted == false).ToList();
 
-            var models = bidders.Select(b => new BidderForList(b)).ToList();
+            var invoicesForBidders = db.Invoices
+                .Include(i => i.StoreItemPurchases)
+                .Include(i => i.TicketPurchases)
+                .Where(i => i.InvoiceType == InvoiceType.BidderRegistration)
+                .ToList();
+
+            var models = new List<BidderForList>();
+
+            foreach(var bidder in bidders)
+            {
+                var invoice = invoicesForBidders.FirstOrDefault(i => i.Bidder.BidderId == bidder.BidderId);
+                var bidderForList = new BidderForList(bidder, invoice);
+                models.Add(bidderForList);
+            }
             
             return View(models);
         }
@@ -48,7 +57,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            var viewModel = GetBidderViewModel(bidder);
             return View(viewModel);
         }
 
@@ -76,10 +85,12 @@ namespace GlobeAuction.Controllers
                 var existingJustRegistered = db.Bidders.FirstOrDefault(b => b.BidderId == bid.Value && b.Email == bem);
                 if (existingJustRegistered != null)
                 {
+                    var registrationInvoice = new InvoiceRepository(db).GetRegistrationInvoiceForBidder(existingJustRegistered);
+
                     newBidder.ShowRegistrationSuccessMessage = true;
                     newBidder.BidderNumberJustRegistered = existingJustRegistered.BidderNumber;
                     newBidder.FullNameJustRegistered = existingJustRegistered.FirstName + " " + existingJustRegistered.LastName;
-                    newBidder.RaffleTicketNumbersCreated = existingJustRegistered?.Invoice?.StoreItemPurchases?
+                    newBidder.RaffleTicketNumbersCreated = registrationInvoice?.StoreItemPurchases?
                         .Where(sip => sip.StoreItem.IsRaffleTicket)
                         .Select(sip => sip.GetRaffleDescriptionWithItemTitle())
                         .ToList() ?? new List<string>();
@@ -111,9 +122,7 @@ namespace GlobeAuction.Controllers
                     //strip out dependents that weren't filled in
                     bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                     bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
-
-                    bidder.StoreItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(bidderViewModel.ItemPurchases);
-
+                    
                     foreach (var guest in bidder.AuctionGuests)
                     {
                         var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
@@ -132,10 +141,10 @@ namespace GlobeAuction.Controllers
                         if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
                     }
 
+                    new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, User.Identity.GetUserName());
+
                     if (manualPayMethod.HasValue)
                     {
-                        new BidderRepository(db).MarkBidderManuallyPaid(manualPayMethod.Value, bidder);
-
                         return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
                     }
                     else
@@ -166,7 +175,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-                        //before we redirect, make sure we have the latest prices on the current tickets configuration
+            //before we redirect, make sure we have the latest prices on the current tickets configuration
             var ticketTypes = db.TicketTypes.ToList();
             var changesMade = false;
             foreach(var guest in bidder.AuctionGuests)
@@ -182,7 +191,13 @@ namespace GlobeAuction.Controllers
             if (changesMade)
                 db.SaveChanges();
 
-            var viewModel = new BidderForPayPal(bidder);
+            var invoice = new InvoiceRepository(db).GetRegistrationInvoiceForBidder(bidder);
+            if (invoice == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var viewModel = new BidderForPayPal(bidder, invoice);
             
             return View(viewModel);
         }
@@ -207,10 +222,12 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+            var invoiceRepos = new InvoiceRepository(db);
+            var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
+            invoiceRepos.ApplyPaymentToInvoice(ppTrans, regInvoice);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
 
-            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            var viewModel = GetBidderViewModel(bidder);
             return View(viewModel);
         }
 
@@ -221,8 +238,10 @@ namespace GlobeAuction.Controllers
             var ppTrans = db.PayPalTransactions.Find(ppTransId);
             var bidder = db.Bidders.Find(bidderId);
             if (ppTrans == null || bidder == null) return HttpNotFound();
-            
-            new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+
+            var invoiceRepos = new InvoiceRepository(db);
+            var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
+            invoiceRepos.ApplyPaymentToInvoice(ppTrans, regInvoice);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " manually via MarkBidderPaid");
             return RedirectToAction("Index", "Logs");
         }
@@ -241,7 +260,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            var viewModel = GetBidderViewModel(bidder);
             return View(viewModel);
         }
 
@@ -312,7 +331,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            var viewModel = GetBidderViewModel(bidder);
             return View(viewModel);
         }
 
@@ -324,6 +343,14 @@ namespace GlobeAuction.Controllers
         {
             Bidder bidder = db.Bidders.Find(id);
             bidder.IsDeleted = true;
+
+            var invoiceRepo = new InvoiceRepository(db);
+            var regInvoice = invoiceRepo.GetRegistrationInvoiceForBidder(bidder);
+            if (regInvoice != null)
+            {
+                invoiceRepo.DeleteInvoice(regInvoice);
+            }
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -410,6 +437,13 @@ namespace GlobeAuction.Controllers
             //TEACHER NAMES
             ViewBag.TeacherNames = AuctionConstants.TeacherNames
                 .Select(t => new SelectListItem { Text = t, Value = t });
+        }
+
+        private BidderViewModel GetBidderViewModel(Bidder bidder)
+        {
+            var viewModel = Mapper.Map<BidderViewModel>(bidder);
+            viewModel.RegistrationInvoice = db.Invoices.FirstOrDefault(i => i.InvoiceType == InvoiceType.BidderRegistration && i.Bidder.BidderId == bidder.BidderId);
+            return viewModel;
         }
     }
 }

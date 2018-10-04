@@ -16,17 +16,14 @@ namespace GlobeAuction.Controllers
             var allInvoices = db.Invoices
                 .Include(i => i.AuctionItems)
                 .Include(i => i.StoreItemPurchases)
+                .Include(i => i.TicketPurchases)
                 .Include("StoreItemPurchases.StoreItem")
                 .ToList();
             
-            var allBidders = db.Bidders
-                .Include(b => b.AuctionGuests)
-                .Include(b => b.StoreItemPurchases)
-                .Include("StoreItemPurchases.StoreItem")
-                .Where(b => b.IsDeleted == false)
-                .ToList();
-
             var paidInvoices = allInvoices.Where(i => i.IsPaid).ToList();
+
+            var paidCheckoutInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.AuctionCheckout).ToList();
+            var paidRegistrationInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.BidderRegistration).ToList();
 
             var unpaidAuctionItems = db.AuctionItems
                 .Where(ai => ai.WinningBid.HasValue && (ai.Invoice == null || ai.Invoice.IsPaid == false))
@@ -38,11 +35,11 @@ namespace GlobeAuction.Controllers
             {
                 AuctionItemsPaid = paidInvoices.Sum(i => i.AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0))),
                 AuctionItemsUnpaid = unpaidAuctionItems,
-                BidderTickets = allBidders.Sum(b => b.AuctionGuests.Sum(g => g.TicketPricePaid.GetValueOrDefault(0))),
-                RaffleTicketsViaRegistration = allBidders.Sum(b => b.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-                StoreSalesViaRegistration = allBidders.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-                RaffleTicketsViaStore = paidInvoices.Sum(i => i.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-                StoreSalesViaStore = paidInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
+                BidderTickets = paidRegistrationInvoices.Sum(i => i.TicketPurchases.Sum(t => t.TicketPricePaid.GetValueOrDefault(0))),
+                RaffleTicketsViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
+                StoreSalesViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
+                RaffleTicketsViaStore = paidCheckoutInvoices.Sum(i => i.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
+                StoreSalesViaStore = paidCheckoutInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
             };
 
             //fund-a-project
@@ -61,7 +58,6 @@ namespace GlobeAuction.Controllers
 
             //raffle tickets are already broken down into individual records when bundles are purchases, so just need to sum by store item title
             var paidRafflePurchases = paidInvoices.SelectMany(i => i.StoreItemPurchases).Where(sip => sip.IsPaid && sip.StoreItem.IsRaffleTicket).ToList();
-            paidRafflePurchases.AddRange(allBidders.SelectMany(b => b.StoreItemPurchases).Where(sip => sip.IsPaid && sip.StoreItem.IsRaffleTicket));
 
             var raffleTicketPurchases = new RaffleTicketPurchasesReportModel
             {
@@ -90,22 +86,6 @@ namespace GlobeAuction.Controllers
                     TotalSales = ordersForMethod.Select(i => i.TotalPaid).DefaultIfEmpty(0).Sum()
                 };
             }).ToList();
-            foreach(var b in allBidders)
-            {
-                if (b.TotalPaid > 0)
-                {
-                    var name = GetPayMethodName(b.PaymentMethod);
-                    var methodGroup = paidPurchases.FirstOrDefault(p => p.PaymentMethodName == name);
-                    if (methodGroup == null)
-                    {
-                        methodGroup = new PurchasesByPaymentMethodGroup();
-                        methodGroup.PaymentMethodName = name;
-                        paidPurchases.Add(methodGroup);
-                    }
-                    methodGroup.PurchaseCount += 1;
-                    methodGroup.TotalSales += b.TotalPaid;
-                }
-            }
             var byPayMethodReport = new PurchasesByPaymentMethodReportModel
             {
                 PurchasesByPaymentMethod = paidPurchases

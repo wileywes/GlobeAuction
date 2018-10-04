@@ -57,33 +57,30 @@ namespace GlobeAuction.Helpers
             return new Tuple<string, decimal>(sip.StoreItem.Title + (sip.Quantity > 1 ? " x " + sip.Quantity : ""), sip.PricePaid.Value);
         }
 
-        public void SendBidderPaymentConfirmation(Bidder bidder, PayPalTransaction trans)
+        public void SendBidderPaymentConfirmation(Invoice invoice)
         {
-            SendBidderPaymentConfirmation(bidder, trans.PaymentGross, "Transaction ID " + trans.TxnId);
-        }
-
-        public void SendBidderPaymentConfirmation(Bidder bidder, decimal totalPaid, string paymentDetailsLine)
-        {
-            var lines = bidder.AuctionGuests
+            var totalPaid = invoice.PaymentTransaction.PaymentGross;
+            var paymentDetailsLine = "Transaction ID " + invoice.PaymentTransaction.TxnId;
+            var lines = invoice.TicketPurchases
                 .Where(g => g.TicketPricePaid.HasValue)
                 .Select(g => new Tuple<string, decimal>(g.TicketType, g.TicketPricePaid.Value))
                 .ToList();
 
-            if (bidder.StoreItemPurchases.Any())
+            if (invoice.StoreItemPurchases.Any())
             {
-                lines.AddRange(bidder.StoreItemPurchases
+                lines.AddRange(invoice.StoreItemPurchases
                     .Where(s => s.IsPaid)
                     .Select(GetStoreItemPurchaseLineString));
             }
 
             var body = GetInvoiceEmail(totalPaid,
-                bidder.FirstName + " " + bidder.LastName,
+                invoice.Bidder.FirstName + " " + invoice.Bidder.LastName,
                 paymentDetailsLine,
                 DateTime.Now.ToString("g"),
                 string.Empty, //no footer notes for bidder payments since those items are only auction items
                 lines);
 
-            SendEmail(bidder.Email, "Ticket Confirmation", body);
+            SendEmail(invoice.Bidder.Email, "Ticket Confirmation", body);
         }
 
         public void SendInvoicePaymentConfirmation(Invoice invoice, bool paidManually)

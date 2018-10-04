@@ -226,7 +226,8 @@ namespace GlobeAuction.Controllers
                 $"<b>Bidder Email:</b> {bidName}<br />" +
                 $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
                 $"<b>Amount Paid:</b> {item.WinningBid.GetValueOrDefault(0):C}<br />" +
-                $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />";
+                $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />" +
+                $"<b>Invoice Type:</b> {invoice.InvoiceType}<br />";
 
             new EmailHelper().SendEmail("robynloren@gmail.com", "Paid Item Removed from Invoice - Refund Needed", body);
 
@@ -342,25 +343,7 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
-            foreach(var sip in db.StoreItemPurchases.Where(p => p.Invoice.InvoiceId == id).ToList())
-            {
-                //add the quantity back if it's not a raffle ticket
-                if (sip.StoreItem.IsRaffleTicket == false)
-                {
-                    sip.StoreItem.Quantity += sip.Quantity;
-                }
-
-                //remove store item purchase
-                db.StoreItemPurchases.Remove(sip);
-            }
-
-            foreach (var ai in db.AuctionItems.Where(p => p.Invoice.InvoiceId == id))
-            {
-                //detach auction items
-                ai.Invoice = null;
-            }
-
-            db.Invoices.Remove(invoice);
+            new InvoiceRepository(db).DeleteInvoice(invoice);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

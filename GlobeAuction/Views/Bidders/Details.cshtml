@@ -121,37 +121,43 @@
     <h4>Auction Guest(s)</h4>
     <hr />
     <dl class="dl-horizontal">
-        @for (int i = 0; i < Model.AuctionGuests.Count; i++)
+        @if (Model.RegistrationInvoice != null)
         {
-            <dt>
-                @Html.Label("Guest " + (i + 1))
-            </dt>
+            for (int i = 0; i < Model.RegistrationInvoice.TicketPurchases.Count; i++)
+            {
+                <dt>
+                    @Html.Label("Guest " + (i + 1))
+                </dt>
 
-            <dd>
-                @string.Format("{0} {1} - {2} (paid {3:C})",
-                                  Model.AuctionGuests[i].FirstName,
-                                  Model.AuctionGuests[i].LastName,
-                                  Model.AuctionGuests[i].TicketType,
-                                  Model.AuctionGuests[i].TicketPricePaid.GetValueOrDefault(0))
-            </dd>
+                <dd>
+                    @string.Format("{0} {1} - {2} (paid {3:C})",
+                                            Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.FirstName,
+                                            Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.LastName,
+                                            Model.RegistrationInvoice.TicketPurchases[i].TicketType,
+                                            Model.RegistrationInvoice.TicketPurchases[i].TicketPricePaid.GetValueOrDefault(0))
+                </dd>
+            }
         }
-    </dl>
+        </dl>
 
     <h4>Additional Purchases(s)</h4>
     <hr />
     <dl class="dl-horizontal">
-        @foreach (var item in Model.StoreItemPurchases)
+        @if (Model.RegistrationInvoice != null)
         {
-            <dt></dt>
-            <dd>
-                @string.Format("{0} - {1} - {2:C} (paid {3:C})",
-                                  item.StoreItem.Title,
-                                    (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
-                                  item.Price,
-                                  item.PricePaid.GetValueOrDefault(0))
-            </dd>
+            foreach (var item in Model.RegistrationInvoice.StoreItemPurchases)
+            {
+                <dt></dt>
+                <dd>
+                    @string.Format("{0} - {1} - {2:C} (paid {3:C})",
+                                            item.StoreItem.Title,
+                                              (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                                            item.Price,
+                                            item.PricePaid.GetValueOrDefault(0))
+                </dd>
+            }
         }
-    </dl>
+        </dl>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.BidderId }) |

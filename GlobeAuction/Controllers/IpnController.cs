@@ -143,7 +143,10 @@ namespace GlobeAuction.Controllers
                             return;
                         }
 
-                        new BidderRepository(db).ApplyTicketPaymentToBidder(ppTrans, bidder);
+                        var invoiceRepos = new InvoiceRepository(db);
+                        var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
+                        invoiceRepos.ApplyPaymentToInvoice(ppTrans, regInvoice);
+
                         _logger.Info("Updated payment for bidder ID {0} via IPN", bidderId.Value);
                     }
                     else if (ppTrans.TransactionType == PayPalTransactionType.InvoiceCart)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -12,9 +11,11 @@ namespace GlobeAuction.Models
         [Required]
         [Display(Name = "Invoice #")]
         public int InvoiceId { get; set; }
+
         [Required]
         [Display(Name = "Is Paid")]
         public bool IsPaid { get; set; }
+
         [Required]
         [Display(Name = "Marked Paid Manually")]
         public bool WasMarkedPaidManually { get; set; }
@@ -22,13 +23,21 @@ namespace GlobeAuction.Models
         [Display(Name = "Payment Method")]
         public PaymentMethod? PaymentMethod { get; set; }
 
+        [Required]
+        [Display(Name = "Invoice Type")]
+        public InvoiceType InvoiceType { get; set; }
+
+        [Required]
         [Display(Name = "Create Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime CreateDate { get; set; }
 
+        [Required]
         [Display(Name = "Update Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime UpdateDate { get; set; }
+
+        [Required]
         [Display(Name = "Updated By")]
         public string UpdateBy { get; set; }
 
@@ -59,8 +68,8 @@ namespace GlobeAuction.Models
             {
                 var total = 0m;
                 if (AuctionItems != null && AuctionItems.Any()) total = AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0));
-                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.PricePaid.GetValueOrDefault(0));
-                if (TicketPurchases != null && TicketPurchases.Any()) total += TicketPurchases.Sum(t => t.TicketPricePaid.GetValueOrDefault(0));
+                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.Price);
+                if (TicketPurchases != null && TicketPurchases.Any()) total += TicketPurchases.Sum(t => t.TicketPrice);
                 return total;
             }
         }
@@ -81,6 +90,14 @@ namespace GlobeAuction.Models
         Cash = 1,
         Check = 2,
         PayPalHere = 3
+    }
+
+    public enum InvoiceType
+    {
+        [Display(Name = "Registration")]
+        BidderRegistration = 0,
+        [Display(Name = "Checkout")]
+        AuctionCheckout = 1
     }
 
     public enum PayPalTransactionType

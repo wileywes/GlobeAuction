@@ -180,18 +180,21 @@
     <h4>Additional Purchase(s)</h4>
     <hr />
     <dl class="dl-horizontal">
-        @foreach (var item in Model.StoreItemPurchases)
+        @if (Model.RegistrationInvoice != null)
         {
-            <dt></dt>
-            <dd>
-                @string.Format("{0} - {1} - {2:C} (paid {3:C})",
-                                                    item.StoreItem.Title,
-                                                   (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
-                                                   item.StoreItem.Price,
-                                                   item.PricePaid.GetValueOrDefault(0))
-            </dd>
+            foreach (var item in Model.RegistrationInvoice.StoreItemPurchases)
+            {
+                <dt></dt>
+                <dd>
+                    @string.Format("{0} - {1} - {2:C} (paid {3:C})",
+                                                         item.StoreItem.Title,
+                                                        (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
+                                                        item.StoreItem.Price,
+                                                        item.PricePaid.GetValueOrDefault(0))
+                </dd>
+            }
         }
-    </dl>
+        </dl>
     <br />
 
 

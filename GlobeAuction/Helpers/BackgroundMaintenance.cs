@@ -46,11 +46,16 @@ namespace GlobeAuction.Helpers
         {
             var oneDayAgo = DateTime.Now.AddDays(-1);
 
-            var biddersThatHaveNotPaid = db.Bidders
-                .Where(b => b.CreateDate < oneDayAgo
-                        && b.AuctionGuests.Any(g => g.TicketPrice > 0) //only nudge if they have non-free tickets
-                        && b.AuctionGuests.Any(g => g.TicketPricePaid.HasValue == false) //only nudge if at least one ticket isn't paid
-                        && b.IsPaymentReminderSent == false)
+            //look at invoices to know about unpaid bidders since we always have a registration invoice
+            var biddersThatHaveNotPaid = db.Invoices
+                .Where(i => i.InvoiceType == InvoiceType.BidderRegistration
+                        && i.Bidder != null
+                        && i.Bidder.IsPaymentReminderSent == false
+                        && i.IsPaid == false
+                        && i.CreateDate < oneDayAgo
+                        && i.TicketPurchases.Any(g => g.TicketPrice > 0) //only nudge if they have non-free tickets
+                        && i.TicketPurchases.Any(g => g.TicketPricePaid.HasValue == false)) //only nudge if at least one ticket isn't paid
+                .Select(i => i.Bidder)
                 .ToList();
 
             foreach (var bidder in biddersThatHaveNotPaid)
@@ -113,15 +118,7 @@ namespace GlobeAuction.Helpers
                 .ToList();
 
             var totalRevenue = paidInvoices.Sum(i => i.TotalPaid);
-
-            var allBidders = db.Bidders
-                .Include(b => b.AuctionGuests)
-                .Include(b => b.StoreItemPurchases)
-                .Where(b => b.IsDeleted == false)
-                .ToList();
-
-            totalRevenue += allBidders.Sum(b => b.TotalPaid);
-
+            
             var unpaidAuctionItems = db.AuctionItems
                 .Where(ai => ai.WinningBid.HasValue && (ai.Invoice == null || ai.Invoice.IsPaid == false))
                 .Select(ai => ai.WinningBid.Value)

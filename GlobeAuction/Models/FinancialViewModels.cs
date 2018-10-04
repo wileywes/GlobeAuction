@@ -66,6 +66,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Payment Method")]
         public PaymentMethod? PaymentMethod { get; set; }
 
+        [Display(Name = "Type")]
+        public InvoiceType InvoiceType { get; set; }
+
         public int? BidderId { get; set; }
 
         [Display(Name = "Bidder #")]
@@ -105,6 +108,7 @@ namespace GlobeAuction.Models
             InvoiceId = invoice.InvoiceId;
             IsPaid = invoice.IsPaid;
             PaymentMethod = invoice.PaymentMethod;
+            InvoiceType = invoice.InvoiceType;
             WasMarkedPaidManually = invoice.WasMarkedPaidManually;
             CreateDate = invoice.CreateDate;
 

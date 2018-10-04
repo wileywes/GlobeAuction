@@ -16,6 +16,12 @@
                 @Html.DisplayNameFor(model => model.InvoiceId)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.InvoiceType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceTotal)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.IsPaid)
             </th>
             <th>
@@ -34,9 +40,6 @@
                 @Html.DisplayNameFor(model => model.CountOfItems)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InvoiceTotal)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.CreateDate)
             </th>
             <th></th>
@@ -46,43 +49,46 @@
 
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InvoiceId)
-                </td>
-                <td>
-                    @(item.IsPaid ? "Yes (" + item.PaymentMethod + ")" : "No")
-                </td>
-                <td>
-                    @(item.WasMarkedPaidManually ? "Yes" : "No")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BidderNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CountOfItems)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InvoiceTotal)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateDate)
-                </td>
-                <td>
-                    @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
-                    @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) || //admins can delete paid invoices too
-                        (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && item.IsPaid == false))
-                    {
-                        @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
-                    }
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceId)
+            </td>
+            <td>
+                @(item.InvoiceType == GlobeAuction.Models.InvoiceType.BidderRegistration ? "Registration" : "Checkout")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceTotal)
+            </td>
+            <td>
+                @(item.IsPaid ? "Yes (" + item.PaymentMethod + ")" : "No")
+            </td>
+            <td>
+                @(item.WasMarkedPaidManually ? "Yes" : "No")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BidderNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CountOfItems)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
+                @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) || //admins can delete paid invoices too
+                    (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && item.IsPaid == false))
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>
