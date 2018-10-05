@@ -44,7 +44,7 @@ namespace GlobeAuction.Helpers
 
         private void SendBidderPaymentReminders(EmailHelper emailHelper)
         {
-            var oneDayAgo = DateTime.Now.AddDays(-1);
+            var oneDayAgo = Utilities.GetEasternTimeNow().AddDays(-1);
 
             //look at invoices to know about unpaid bidders since we always have a registration invoice
             var biddersThatHaveNotPaid = db.Invoices

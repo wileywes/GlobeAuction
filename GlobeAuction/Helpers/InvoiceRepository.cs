@@ -22,7 +22,7 @@ namespace GlobeAuction.Helpers
 
         public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, PaymentMethod? manualPayMethod, string updatedBy)
         {
-            var invoice = CreateInvoiceFromBidder(bidder, winnings, storeItemPurchases, null, updatedBy);
+            var invoice = CreateInvoiceFromBidder(bidder, winnings, storeItemPurchases, null, InvoiceType.AuctionCheckout, updatedBy);
             ApplyPotentialManualPayment(invoice, manualPayMethod, updatedBy);
 
             db.Invoices.Add(invoice);
@@ -47,7 +47,7 @@ namespace GlobeAuction.Helpers
                     TicketType = ag.TicketType
                 }).ToList();
 
-            var invoice = CreateInvoiceFromBidder(bidder, null, storeItemPurchases, ticketPurchases, updatedBy);
+            var invoice = CreateInvoiceFromBidder(bidder, null, storeItemPurchases, ticketPurchases, InvoiceType.BidderRegistration, updatedBy);
             ApplyPotentialManualPayment(invoice, manualPayMethod, updatedBy);
 
             db.Invoices.Add(invoice);
@@ -61,7 +61,8 @@ namespace GlobeAuction.Helpers
             return invoice;
         }
 
-        private Invoice CreateInvoiceFromBidder(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, List<TicketPurchase> ticketPurchases, string updatedBy)
+        private Invoice CreateInvoiceFromBidder(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, List<TicketPurchase> ticketPurchases,
+            InvoiceType type, string updatedBy)
         {
             return new Invoice
             {
@@ -72,15 +73,15 @@ namespace GlobeAuction.Helpers
 
                 //properties
                 Bidder = bidder,
-                CreateDate = DateTime.Now,
+                CreateDate = Utilities.GetEasternTimeNow(),
                 Email = bidder.Email,
                 FirstName = bidder.FirstName,
-                InvoiceType = InvoiceType.BidderRegistration,
+                InvoiceType = type,
                 IsPaid = false,
                 LastName = bidder.LastName,
                 Phone = bidder.Phone,
                 UpdateBy = updatedBy,
-                UpdateDate = DateTime.Now,
+                UpdateDate = Utilities.GetEasternTimeNow(),
                 ZipCode = bidder.ZipCode           
             };
         }
@@ -99,7 +100,7 @@ namespace GlobeAuction.Helpers
                 StoreItemPurchases = storeItemPurchases,
 
                 //properties
-                CreateDate = DateTime.Now,
+                CreateDate = Utilities.GetEasternTimeNow(),
                 Email = buyModel.Email,
                 FirstName = buyModel.FirstName,
                 InvoiceType = InvoiceType.AuctionCheckout,
@@ -107,7 +108,7 @@ namespace GlobeAuction.Helpers
                 LastName = buyModel.LastName,
                 Phone = buyModel.Phone,
                 UpdateBy = buyModel.FirstName + "  " + buyModel.LastName,
-                UpdateDate = DateTime.Now,
+                UpdateDate = Utilities.GetEasternTimeNow(),
                 ZipCode = buyModel.ZipCode
             };
 
@@ -164,7 +165,7 @@ namespace GlobeAuction.Helpers
                 invoice.PaymentTransaction = ppTrans;
                 invoice.IsPaid = true;
                 invoice.PaymentMethod = PaymentMethod.PayPal;
-                invoice.UpdateDate = DateTime.Now;
+                invoice.UpdateDate = Utilities.GetEasternTimeNow();
                 invoice.UpdateBy = ppTrans.PayerEmail;
 
                 var paymentLeft = ppTrans.PaymentGross;

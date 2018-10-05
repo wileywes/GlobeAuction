@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobeAuction.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -167,7 +168,7 @@ txn_type=cart
 custom=
 
              */
-            PaymentDate = DateTime.Now;
+            PaymentDate = Utilities.GetEasternTimeNow();
             PayerId = form["payer_id"];
             PaymentGross = decimal.Parse(form["payment_gross"]);
             PaymentType = form["payment_type"];

@@ -193,7 +193,7 @@ namespace GlobeAuction.Controllers
             if (ModelState.IsValid)
             {
                 var storeItem = Mapper.Map<StoreItem>(storeItemViewModel);
-                storeItem.CreateDate = storeItem.UpdateDate = DateTime.Now;
+                storeItem.CreateDate = storeItem.UpdateDate = Utilities.GetEasternTimeNow();
                 storeItem.UpdateBy = User.Identity.GetUserName();
                 ApplyBundleComponentsFromViewToModel(storeItemViewModel, storeItem);
 
@@ -259,7 +259,7 @@ namespace GlobeAuction.Controllers
             if (ModelState.IsValid)
             {
                 var storeItem = Mapper.Map<StoreItem>(storeItemViewModel);
-                storeItem.UpdateDate = DateTime.Now;
+                storeItem.UpdateDate = Utilities.GetEasternTimeNow();
                 storeItem.UpdateBy = User.Identity.GetUserName();
                 ApplyBundleComponentsFromViewToModel(storeItemViewModel, storeItem);
 

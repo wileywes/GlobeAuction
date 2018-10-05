@@ -46,8 +46,8 @@ namespace GlobeAuction.Helpers
             return new AuctionItem
             {
                 UniqueItemNumber = uniqueId,
-                CreateDate = DateTime.Now,
-                UpdateDate = DateTime.Now,
+                CreateDate = Utilities.GetEasternTimeNow(),
+                UpdateDate = Utilities.GetEasternTimeNow(),
                 UpdateBy = username,
                 StartingBid = (int)startBid,
                 BidIncrement = bidIncrement,
@@ -82,7 +82,7 @@ namespace GlobeAuction.Helpers
                         CanPurchaseInAuctionCheckout = false,
                         CanPurchaseInBidderRegistration = false,
                         CanPurchaseInStore = false,
-                        CreateDate = DateTime.Now,
+                        CreateDate = Utilities.GetEasternTimeNow(),
                         Description = donation.Description,
                         IsDeleted = false,
                         IsRaffleTicket = false,
@@ -91,7 +91,7 @@ namespace GlobeAuction.Helpers
                         Quantity = 1,
                         Title = donation.Title,
                         UpdateBy = username,
-                        UpdateDate = DateTime.Now
+                        UpdateDate = Utilities.GetEasternTimeNow()
                     };
 
                     storeItem.DonationItem = donation;

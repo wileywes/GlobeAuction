@@ -145,7 +145,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.WinningBidderId = winBidderId;
                     auctionItem.WinningBid = auctionItemModel.WinningBid;
                     auctionItem.IsMasterItemForMultipleWinners = auctionItemModel.IsMasterItemForMultipleWinners;
-                    auctionItem.UpdateDate = DateTime.Now;
+                    auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     auctionItem.UpdateBy = User.Identity.GetUserName();
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -172,7 +172,7 @@ namespace GlobeAuction.Controllers
 
             var donationItem = auctionItem.DonationItems.First(di => di.DonationItemId == id);
             auctionItem.DonationItems.Remove(donationItem);
-            auctionItem.UpdateDate = DateTime.Now;
+            auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
             auctionItem.UpdateBy = User.Identity.GetUserName();
 
             db.Entry(auctionItem).State = EntityState.Modified;
@@ -265,7 +265,7 @@ namespace GlobeAuction.Controllers
                     {
                         existingAuctionItem.DonationItems.Add(selectedDonation);
                     }
-                    existingAuctionItem.UpdateDate = DateTime.Now;
+                    existingAuctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     existingAuctionItem.UpdateBy = username;
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = existingAuctionItem.AuctionItemId });
@@ -331,7 +331,7 @@ namespace GlobeAuction.Controllers
                     {
                         auctionItem.UniqueItemNumber = nextItemNum;
                         auctionItem.UpdateBy = username;
-                        auctionItem.UpdateDate = DateTime.Now;
+                        auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                         nextItemNum++;
                     }
                     db.SaveChanges();
@@ -582,7 +582,7 @@ namespace GlobeAuction.Controllers
             auctionItem.WinningBid = winningAmountDecimal;
             auctionItem.WinningBidderId = bidder.BidderId;
             auctionItem.UpdateBy = User.Identity.GetUserName();
-            auctionItem.UpdateDate = DateTime.Now;
+            auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
             db.SaveChanges();
 
             return Json(new { wasSuccessful = true }, JsonRequestBehavior.AllowGet);
@@ -686,7 +686,7 @@ namespace GlobeAuction.Controllers
             item.UniqueItemNumber = nextItemNumber.Value;
             item.WinningBid = bidPrice;
             item.WinningBidderId = bidder.BidderId;
-            item.CreateDate = item.UpdateDate = DateTime.Now;
+            item.CreateDate = item.UpdateDate = Utilities.GetEasternTimeNow();
             item.UpdateBy = User.Identity.GetUserName();
             item.IsMasterItemForMultipleWinners = false;
 

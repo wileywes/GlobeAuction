@@ -76,7 +76,7 @@ namespace GlobeAuction.Helpers
             var body = GetInvoiceEmail(totalPaid,
                 invoice.Bidder.FirstName + " " + invoice.Bidder.LastName,
                 paymentDetailsLine,
-                DateTime.Now.ToString("g"),
+                Utilities.GetEasternTimeNow().ToString("g"),
                 string.Empty, //no footer notes for bidder payments since those items are only auction items
                 lines);
 
@@ -228,7 +228,7 @@ namespace GlobeAuction.Helpers
 
             body = ReplaceToken("DonationTotal", totalDonated.ToString("C"), body);
             body = ReplaceToken("DonorName", donorName, body);
-            body = ReplaceToken("CurrentDate", DateTime.Now.Date.ToString("D"), body);
+            body = ReplaceToken("CurrentDate", Utilities.GetEasternTimeNow().Date.ToString("D"), body);
 
             var linesHtml = string.Empty;
             foreach (var line in donations)

@@ -25,5 +25,14 @@ namespace GlobeAuction.Helpers
                 }
             }
         }
+
+        public static DateTime GetEasternTimeNow()
+        {
+            var tzi = TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time");
+            var isDaylightTime = tzi.IsDaylightSavingTime(DateTime.Today);
+            var hoursDiff = isDaylightTime ? 4 : 5;
+            var localTime = DateTime.UtcNow.AddHours(-1 * hoursDiff);
+            return localTime;
+        }
     }
 }

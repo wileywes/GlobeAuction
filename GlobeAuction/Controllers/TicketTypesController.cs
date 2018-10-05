@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GlobeAuction.Helpers;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
 
@@ -52,7 +53,7 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                ticketType.CreateDate = ticketType.UpdateDate = DateTime.Now;
+                ticketType.CreateDate = ticketType.UpdateDate = Utilities.GetEasternTimeNow();
                 ticketType.UpdateBy = User.Identity.GetUserName();
                 db.TicketTypes.Add(ticketType);
                 db.SaveChanges();
@@ -86,7 +87,7 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                ticketType.UpdateDate = DateTime.Now;
+                ticketType.UpdateDate = Utilities.GetEasternTimeNow();
                 ticketType.UpdateBy = User.Identity.GetUserName();
 
                 db.Entry(ticketType).State = EntityState.Modified;

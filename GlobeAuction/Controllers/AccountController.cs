@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GlobeAuction.Models;
+using GlobeAuction.Helpers;
 
 namespace GlobeAuction.Controllers
 {
@@ -90,7 +91,7 @@ namespace GlobeAuction.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    user.LastLogin = DateTime.Now;
+                    user.LastLogin = Utilities.GetEasternTimeNow();
                     await UserManager.UpdateAsync(user);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -164,7 +165,7 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, CreateDate = DateTime.Now };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, CreateDate = Utilities.GetEasternTimeNow() };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -362,7 +363,7 @@ namespace GlobeAuction.Controllers
             {
                 case SignInStatus.Success:
                     var user = await UserManager.FindByNameAsync(loginInfo.Email);
-                    user.LastLogin = DateTime.Now;
+                    user.LastLogin = Utilities.GetEasternTimeNow();
                     await UserManager.UpdateAsync(user);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -398,7 +399,7 @@ namespace GlobeAuction.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, CreateDate = DateTime.Now };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, CreateDate = Utilities.GetEasternTimeNow() };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -406,7 +407,7 @@ namespace GlobeAuction.Controllers
                     if (result.Succeeded)
                     {
                         SetupNewUser(user);
-                        user.LastLogin = DateTime.Now;
+                        user.LastLogin = Utilities.GetEasternTimeNow();
                         await UserManager.UpdateAsync(user);
 
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);

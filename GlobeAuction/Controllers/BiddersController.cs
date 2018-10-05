@@ -116,7 +116,7 @@ namespace GlobeAuction.Controllers
 
                     var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
                     bidder.BidderNumber = nextBidderNumber;
-                    bidder.CreateDate = bidder.UpdateDate = DateTime.Now;
+                    bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
                     bidder.UpdateBy = bidder.Email;
 
                     //strip out dependents that weren't filled in
@@ -277,7 +277,7 @@ namespace GlobeAuction.Controllers
                 var bidder = Mapper.Map<Bidder>(bidderViewModel);
 
                 bidder.UpdateBy = User.Identity.GetUserName();
-                bidder.UpdateDate = DateTime.Now;
+                bidder.UpdateDate = Utilities.GetEasternTimeNow();
                 
                 foreach(var g in bidder.AuctionGuests)
                 {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GlobeAuction.Helpers;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
 
@@ -79,7 +80,7 @@ namespace GlobeAuction.Controllers
                     if (existingSolicitor != null)
                         donationItem.Solicitor = existingSolicitor;
 
-                    donationItem.CreateDate = donationItem.UpdateDate = DateTime.Now;
+                    donationItem.CreateDate = donationItem.UpdateDate = Utilities.GetEasternTimeNow();
                     donationItem.UpdateBy = donationItem.Solicitor.Email;
 
                     db.DonationItems.Add(donationItem);
@@ -132,7 +133,7 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                donationItem.UpdateDate = DateTime.Now;
+                donationItem.UpdateDate = Utilities.GetEasternTimeNow();
                 donationItem.UpdateBy = User.Identity.GetUserName();
 
                 db.Entry(donationItem).State = EntityState.Modified;
