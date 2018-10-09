@@ -134,20 +134,20 @@
     <h4>Auction Item(s)</h4>
     <hr />
     <dl class="dl-horizontal">
-        @foreach (var item in Model.AuctionItems)
+        @foreach (var item in Model.Bids)
         {
             <dt>
-                @Html.Label("Item # " + item.UniqueItemNumber)
+                @Html.Label("Item # " + item.AuctionItem.UniqueItemNumber)
             </dt>
             <dd>
                 @string.Format("{0} ({1:C})",
-                                  item.Title,
-                                  item.WinningBid)
+                                  item.AuctionItem.Title,
+                                  item.BidAmount)
             </dd>
         }
     </dl>
 
-    <h4>Additional Purchase(s)</h4>
+    <h4>Store Purchase(s)</h4>
     <hr />
     <dl class="dl-horizontal">
         @foreach (var item in Model.StoreItemPurchases)
@@ -159,6 +159,21 @@
                           (item.StoreItem.IsRaffleTicket && item.IsPaid ? "Ticket #" + item.StoreItemPurchaseId.ToString("D8") : item.Quantity.ToString()),
                           item.Price,
                           item.PricePaid.GetValueOrDefault(0))
+            </dd>
+        }
+    </dl>
+
+    <h4>Ticket Purchase(s)</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.TicketPurchases)
+        {
+            <dt></dt>
+            <dd>
+                @string.Format("{0} - {1:C} (paid {2:C})",
+                          item.TicketType,
+                          item.TicketPrice,
+                          item.TicketPricePaid.GetValueOrDefault(0))
             </dd>
         }
     </dl>

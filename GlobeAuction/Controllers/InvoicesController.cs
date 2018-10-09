@@ -98,7 +98,7 @@ namespace GlobeAuction.Controllers
                 .Include(i => i.Bids)
                 .Include(i => i.PaymentTransaction)
                 .Include(i => i.StoreItemPurchases)
-                .Where(i => i.Bidder.BidderId == bidder.BidderId)
+                .Where(i => i.Bidder.BidderId == bidder.BidderId && i.InvoiceType == InvoiceType.AuctionCheckout)
                 .ToList();
 
             var auctionWinningsForBidderNotInInvoice = db.Bids

@@ -12,11 +12,8 @@
 @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners))
 {
     <h4>
-        @Html.ActionLink("Click here to Enter Winners", "EnterWinners")
-        <br />
         @Html.ActionLink("Click here to Enter Fund-A-Project Winners", "EnterWinnersInBulk")
     </h4>
-    <br />
 }
 
 @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
