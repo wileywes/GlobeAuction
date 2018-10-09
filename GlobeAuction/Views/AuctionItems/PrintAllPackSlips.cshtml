@@ -27,14 +27,16 @@
                 <br />
                 <table class="table table-bordered table-striped">
                     <thead>
-                        <th>
-                            Item No.
-                        </th>
-                        <th>Category</th>
-                        <th>Title</th>
+                        <tr>
+                            <th>
+                                Item No.
+                            </th>
+                            <th>Category</th>
+                            <th>Title</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in winner.ItemsWon.OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
+                        @foreach (var item in winner.ItemsWon.Select(i => i.AuctionItem).OrderBy(i => i.Category).ThenBy(i => i.UniqueItemNumber))
                         {
                             <tr>
                                 <td>@item.UniqueItemNumber</td>
@@ -67,7 +69,7 @@
                     </tbody>
                 </table>
 
-                @if (winner.ItemsWon.Any(ai => ai.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
+                @if (winner.ItemsWon.Any(ai => ai.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
                 {
                     <p>
                         * Certificate for this item will be emailed to you

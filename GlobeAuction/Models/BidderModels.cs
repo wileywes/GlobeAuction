@@ -47,6 +47,7 @@ namespace GlobeAuction.Models
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
+        public virtual List<Bid> Bids { get; set; }
     }
 
     public class AuctionGuest

@@ -84,15 +84,6 @@ namespace GlobeAuction.Controllers
                     donationItem.UpdateBy = donationItem.Solicitor.Email;
 
                     db.DonationItems.Add(donationItem);
-
-                    if (qty > 1)
-                    {
-                        for(int i=1; i < qty; i++)
-                        {
-                            var newDonation = donationItem.Clone();
-                            db.DonationItems.Add(newDonation);
-                        }
-                    }
                     db.SaveChanges();
 
                     TempData["PreviousSolicitor"] = donationItem.Solicitor;

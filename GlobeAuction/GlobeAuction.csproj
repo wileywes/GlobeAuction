@@ -445,6 +445,10 @@
     <Compile Include="Migrations\201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.Designer.cs">
       <DependentUpon>201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201810071247564_BidBackendRefactoring.cs" />
+    <Compile Include="Migrations\201810071247564_BidBackendRefactoring.Designer.cs">
+      <DependentUpon>201810071247564_BidBackendRefactoring.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -470,7 +474,6 @@
     <Content Include="App_Data\aspnet-GlobeAuction-20161005062405_log.ldf">
       <DependentUpon>aspnet-GlobeAuction-20161005062405.mdf</DependentUpon>
     </Content>
-    <Content Include="App_Data\fix bad backup.sql" />
     <Content Include="App_Data\Backup and Create new tables for new year.sql" />
     <Content Include="App_Data\Category Updates Feb 24.sql" />
     <Content Include="App_Data\Identity queries.sql" />
@@ -689,7 +692,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\AuctionItems\PrintBidSheets.cshtml" />
-    <Content Include="Views\AuctionItems\EnterWinners.cshtml" />
     <Content Include="Views\Ipn\TestPayPalHereIpn.cshtml" />
     <Content Include="Views\Ipn\TestTicketPurchaseIpn.cshtml" />
     <Content Include="Views\Invoices\Checkout.cshtml" />
@@ -876,6 +878,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.resx">
       <DependentUpon>201809282039335_CascadeDeleteTicketPurchasesWhenInvoiceDeleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810071247564_BidBackendRefactoring.resx">
+      <DependentUpon>201810071247564_BidBackendRefactoring.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

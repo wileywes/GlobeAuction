@@ -37,6 +37,7 @@ namespace GlobeAuction.Models
         public DbSet<DonationItem> DonationItems { get; set; }
         public DbSet<Solicitor> Solicitors { get; set; }
         public DbSet<AuctionItem> AuctionItems { get; set; }
+        public DbSet<Bid> Bids { get; set; }
         public DbSet<Bidder> Bidders { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
 

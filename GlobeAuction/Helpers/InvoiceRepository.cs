@@ -20,7 +20,7 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, PaymentMethod? manualPayMethod, string updatedBy)
+        public Invoice CreateInvoiceForAuctionItems(Bidder bidder, List<Bid> winnings, List<StoreItemPurchase> storeItemPurchases, PaymentMethod? manualPayMethod, string updatedBy)
         {
             var invoice = CreateInvoiceFromBidder(bidder, winnings, storeItemPurchases, null, InvoiceType.AuctionCheckout, updatedBy);
             ApplyPotentialManualPayment(invoice, manualPayMethod, updatedBy);
@@ -61,13 +61,13 @@ namespace GlobeAuction.Helpers
             return invoice;
         }
 
-        private Invoice CreateInvoiceFromBidder(Bidder bidder, List<AuctionItem> winnings, List<StoreItemPurchase> storeItemPurchases, List<TicketPurchase> ticketPurchases,
+        private Invoice CreateInvoiceFromBidder(Bidder bidder, List<Bid> winnings, List<StoreItemPurchase> storeItemPurchases, List<TicketPurchase> ticketPurchases,
             InvoiceType type, string updatedBy)
         {
             return new Invoice
             {
                 //child items
-                AuctionItems = winnings,
+                Bids = winnings,
                 StoreItemPurchases = storeItemPurchases,
                 TicketPurchases = ticketPurchases,
 
@@ -78,6 +78,7 @@ namespace GlobeAuction.Helpers
                 FirstName = bidder.FirstName,
                 InvoiceType = type,
                 IsPaid = false,
+                TotalPaid = 0,
                 LastName = bidder.LastName,
                 Phone = bidder.Phone,
                 UpdateBy = updatedBy,
@@ -105,6 +106,7 @@ namespace GlobeAuction.Helpers
                 FirstName = buyModel.FirstName,
                 InvoiceType = InvoiceType.AuctionCheckout,
                 IsPaid = false,
+                TotalPaid = 0,
                 LastName = buyModel.LastName,
                 Phone = buyModel.Phone,
                 UpdateBy = buyModel.FirstName + "  " + buyModel.LastName,
@@ -154,6 +156,14 @@ namespace GlobeAuction.Helpers
                     }
                 }
 
+                foreach(var bid in invoice.Bids)
+                {
+                    bid.AmountPaid = bid.BidAmount;
+                }
+
+                //mark all as paid when it's manual
+                invoice.TotalPaid = invoice.Total;
+
                 RevenueHelper.IncrementTotalRevenue(invoice.TotalPaid);
             }
         }
@@ -164,24 +174,27 @@ namespace GlobeAuction.Helpers
             {
                 invoice.PaymentTransaction = ppTrans;
                 invoice.IsPaid = true;
+                invoice.TotalPaid = ppTrans.PaymentGross;
                 invoice.PaymentMethod = PaymentMethod.PayPal;
                 invoice.UpdateDate = Utilities.GetEasternTimeNow();
                 invoice.UpdateBy = ppTrans.PayerEmail;
-
-                var paymentLeft = ppTrans.PaymentGross;
-
+                
+                //for the child items we assume all were paid in full and we will check in the background if we ever have invoices paid partially
                 foreach (var storeItem in invoice.StoreItemPurchases)
                 {
                     var lineExtendedPrice = storeItem.Price * storeItem.Quantity;
-                    var priceToUseUp = Math.Min(lineExtendedPrice, paymentLeft);
-                    storeItem.PricePaid = priceToUseUp;
+                    storeItem.PricePaid = lineExtendedPrice;
                     storeItem.PurchaseTransaction = ppTrans;
-                    paymentLeft -= priceToUseUp;
                 }
 
                 foreach(var ticket in invoice.TicketPurchases)
                 {
                     ticket.TicketPricePaid = ticket.AuctionGuest.TicketPrice;
+                }
+
+                foreach(var bid in invoice.Bids)
+                {
+                    bid.AmountPaid = bid.BidAmount;
                 }
 
                 db.SaveChanges();
@@ -218,10 +231,11 @@ namespace GlobeAuction.Helpers
                 db.StoreItemPurchases.Remove(sip);
             }
 
-            foreach (var ai in db.AuctionItems.Where(p => p.Invoice.InvoiceId == invoice.InvoiceId))
+            foreach (var bid in db.Bids.Where(p => p.Invoice.InvoiceId == invoice.InvoiceId))
             {
                 //detach auction items
-                ai.Invoice = null;
+                bid.Invoice = null;
+                bid.AmountPaid = null;
             }
 
             db.Invoices.Remove(invoice);

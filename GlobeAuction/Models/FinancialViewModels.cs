@@ -28,7 +28,9 @@ namespace GlobeAuction.Models
         public string BidderEmail { get; set; }
 
         public List<Invoice> Invoices { get; set; }
-        public List<AuctionItemViewModel> AuctionItemsNotInInvoice { get; set; }
+
+        //TODO: rename
+        public List<BidViewModel> AuctionItemsNotInInvoice { get; set; }
         public List<BuyItemViewModel> ItemPurchases { get; set; }
 
         public bool ShowManuallyPaidSuccess { get; set; }
@@ -39,7 +41,7 @@ namespace GlobeAuction.Models
             //empty constr for view binding
         }
 
-        public ReviewBidderWinningsViewModel(Bidder bidder, List<Invoice> invoices, List<AuctionItem> auctionWinningsForBidderNotInInvoice, List<BuyItemViewModel> storeItems)
+        public ReviewBidderWinningsViewModel(Bidder bidder, List<Invoice> invoices, List<Bid> auctionWinningsForBidderNotInInvoice, List<BuyItemViewModel> storeItems)
         {
             BidderId = bidder.BidderId;
             BidderNumber = bidder.BidderNumber;
@@ -47,7 +49,7 @@ namespace GlobeAuction.Models
             BidderEmail = bidder.Email;
 
             Invoices = (invoices ?? new List<Invoice>()).ToList();
-            AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new AuctionItemViewModel(a, bidder.BidderNumber)).ToList();
+            AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new BidViewModel(a)).ToList();
             ItemPurchases = storeItems.ToList();
         }
     }
@@ -112,10 +114,10 @@ namespace GlobeAuction.Models
             WasMarkedPaidManually = invoice.WasMarkedPaidManually;
             CreateDate = invoice.CreateDate;
 
-            invoice.AuctionItems = invoice.AuctionItems ?? new List<AuctionItem>();
+            invoice.Bids = invoice.Bids ?? new List<Bid>();
             invoice.StoreItemPurchases = invoice.StoreItemPurchases ?? new List<StoreItemPurchase>();
 
-            CountOfItems = invoice.AuctionItems.Count + invoice.StoreItemPurchases.Count;
+            CountOfItems = invoice.Bids.Count + invoice.StoreItemPurchases.Count;
             InvoiceTotal = invoice.Total;
 
             InvoiceTotalPaid = invoice.TotalPaid;
@@ -133,7 +135,7 @@ namespace GlobeAuction.Models
             InvoiceId = invoice.InvoiceId;
             PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 
-            LineItems = invoice.AuctionItems.Select(g => new PayPalPaymentLine(g.Title, g.WinningBid.Value, 1)).ToList();
+            LineItems = invoice.Bids.Select(g => new PayPalPaymentLine(g.AuctionItem.Title, g.BidAmount, 1)).ToList();
             LineItems.AddRange(invoice.StoreItemPurchases.Select(s => new PayPalPaymentLine(s.StoreItem.Title, s.Price, s.Quantity)));
         }
     }

@@ -68,26 +68,26 @@
                         <tbody>
                             @for (var i = 0; i < Model.AuctionItemsNotInInvoice.Count; i++)
                             {
-                                @Html.HiddenFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItemId)
+                                @Html.HiddenFor(m => Model.AuctionItemsNotInInvoice[i].BidId)
                                 <tr>
                                     <td>
                                         @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                                         {
-                                            @Html.ActionLink(Model.AuctionItemsNotInInvoice[i].UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = Model.AuctionItemsNotInInvoice[i].AuctionItemId }, new { target = "_blank" })
+                                            @Html.ActionLink(Model.AuctionItemsNotInInvoice[i].AuctionItem.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = Model.AuctionItemsNotInInvoice[i].AuctionItem.AuctionItemId }, new { target = "_blank" })
                                         }
                                         else
                                         {
-                                            @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].UniqueItemNumber)
+                                            @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItem.UniqueItemNumber)
                                         }
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].Category)
+                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItem.Category)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].Title)
+                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItem.Title)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].WinningBid)
+                                        @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].BidAmount)
                                     </td>
                                 </tr>
                             }
@@ -98,8 +98,8 @@
                                     <b>Auction Winnings Total:</b>
                                 </td>
                                 <td>
-                                    <input type="hidden" id="auctionItemsSum" value="@Model.AuctionItemsNotInInvoice.Sum(a => a.WinningBid.Value)" />
-                                    @Model.AuctionItemsNotInInvoice.Sum(a => a.WinningBid.Value).ToString("C")
+                                    <input type="hidden" id="auctionItemsSum" value="@Model.AuctionItemsNotInInvoice.Sum(a => a.BidAmount)" />
+                                    @Model.AuctionItemsNotInInvoice.Sum(a => a.BidAmount).ToString("C")
                                 </td>
                             </tr>
                         </tbody>
@@ -145,7 +145,7 @@
                                     </td>
                                     <td>
                                         <div id="totalWithPurchases">
-                                            @Model.AuctionItemsNotInInvoice.Sum(a => a.WinningBid.Value).ToString("C")
+                                            @Model.AuctionItemsNotInInvoice.Sum(a => a.BidAmount).ToString("C")
                                         </div>
                                     </td>
                                 </tr>
@@ -258,8 +258,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in invoice.AuctionItems)
+                            @foreach (var bid in invoice.Bids)
                             {
+                                var item = bid.AuctionItem;
                                 <tr>
                                     <td>
                                         @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
@@ -279,18 +280,18 @@
                                     </td>
                                     <td>1</td>
                                     <td>
-                                        @Html.DisplayFor(m => item.WinningBid)
+                                        @Html.DisplayFor(m => bid.BidAmount)
                                     </td>
                                     @if ((!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners)) || (invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                                     {
                                         <td class="text-nowrap">
                                             @if (!invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
                                             {
-                                                @Html.ActionLink("Remove", "RemoveAuctionItemFromUnpaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, auctionItemId = item.AuctionItemId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                                @Html.ActionLink("Remove", "RemoveBidFromUnpaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, bidId = bid.BidId }, htmlAttributes: new { @class = "btn btn-primary" })
                                             }
                                             @if (invoice.IsPaid && Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                                             {
-                                                @Html.ActionLink("Remove", "RemoveAuctionItemFromPaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, auctionItemId = item.AuctionItemId }, htmlAttributes: new { @class = "btn btn-primary" })
+                                                @Html.ActionLink("Remove", "RemoveBidFromPaidInvoice", "Invoices", new { invoiceId = invoice.InvoiceId, bidId = bid.BidId }, htmlAttributes: new { @class = "btn btn-primary" })
                                             }
                                         </td>
                                     }

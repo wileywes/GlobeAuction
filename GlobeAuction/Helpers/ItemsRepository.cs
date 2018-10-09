@@ -54,7 +54,8 @@ namespace GlobeAuction.Helpers
                 Category = mostCommonCategory,
                 Description = description,
                 Title = title,
-                DonationItems = items
+                DonationItems = items,
+                Quantity = items.Count == 1 ? items.First().Quantity : 1
             };
         }
 
@@ -88,7 +89,7 @@ namespace GlobeAuction.Helpers
                         IsRaffleTicket = false,
                         OnlyVisibleToAdmins = false,
                         Price = donation.DollarValue.GetValueOrDefault(9999),
-                        Quantity = 1,
+                        Quantity = donation.Quantity,
                         Title = donation.Title,
                         UpdateBy = username,
                         UpdateDate = Utilities.GetEasternTimeNow()
@@ -118,6 +119,26 @@ namespace GlobeAuction.Helpers
             db.SaveChanges();
         }
 
+        public void EnterNewBidAndRecalcWinners(AuctionItem item, Bidder bidder, decimal amount)
+        {
+            var newBid = new Bid
+            {
+                AuctionItem = item,
+                Bidder = bidder,
+                BidAmount = amount
+            };
+            item.AllBids.Add(newBid);
+
+            //recalculate winners
+            var index = 0;
+            foreach(var bid in item.AllBids.OrderByDescending(b => b.BidAmount))
+            {
+                bid.IsWinning = (index < item.Quantity);
+                index++;
+            }
+            db.SaveChanges();
+        }
+
         public static string GetItemNameForPayPalCart(AuctionItem item)
         {
             return $"Auction Item #{item.UniqueItemNumber}: {item.Title}";
@@ -133,25 +154,23 @@ namespace GlobeAuction.Helpers
 
         public List<WinningsByBidder> GetWinningsByBidder()
         {
-            var itemsWon = db.AuctionItems
-                .Include(a => a.Invoice)
-                .Include(a => a.DonationItems)
-                .Where(ai => ai.WinningBid.HasValue && ai.WinningBidderId.HasValue)
+            var biddersWithWinnings = db.Bidders
+                .Include(a => a.Bids)
+                .Include("Bids.AuctionItem")
+                .Include("Bids.Invoice")
+                .Where(b => b.Bids.Any(bid => bid.IsWinning))
                 .ToList();
-
-            var uniqueBidderIds = itemsWon.Select(i => i.WinningBidderId.Value).Distinct().ToList();
-            var bidders = db.Bidders.Where(b => uniqueBidderIds.Contains(b.BidderId)).ToList();
-
+            
             var results = new List<WinningsByBidder>();
-            foreach (var b in bidders)
+            foreach (var b in biddersWithWinnings)
             {
-                var winnings = itemsWon.Where(i => i.WinningBidderId.Value == b.BidderId).ToList();
-                var allPaidFor = winnings.All(w => w.Invoice != null && w.Invoice.IsPaid);
+                var winningBids = b.Bids.Where(bid => bid.IsWinning).ToList();
+                var allPaidFor = winningBids.All(w => w.Invoice != null && w.Invoice.IsPaid);
                 results.Add(new WinningsByBidder
                 {
                     AreWinningsAllPaidFor = allPaidFor,
                     Bidder = b,
-                    Winnings = winnings
+                    Winnings = winningBids
                 });
             }
             return results;
@@ -159,6 +178,7 @@ namespace GlobeAuction.Helpers
 
         public List<WinningsByBidder> Mock_GetWinningsByBidder()
         {
+            /*
             var random = new Random();
             var allItems = db.AuctionItems
                 .Include(a => a.Invoice)
@@ -186,7 +206,8 @@ namespace GlobeAuction.Helpers
                 first20Bidders[index].Winnings.Add(item);
             }
 
-            return first20Bidders.Where(b => b.Winnings.Count > 0).ToList();
+            return first20Bidders.Where(b => b.Winnings.Count > 0).ToList();*/
+            throw new NotImplementedException("Need to revisit");
         }
 
         public List<StoreItemPurchase> GetStorePurchasesWithIndividualizedRaffleTickets(List<BuyItemViewModel> purchaseViewModels)
@@ -273,7 +294,7 @@ namespace GlobeAuction.Helpers
     public class WinningsByBidder
     {
         public Bidder Bidder { get; set; }
-        public List<AuctionItem> Winnings { get; set; }
+        public List<Bid> Winnings { get; set; }
         public bool AreWinningsAllPaidFor { get; set; }
     }
 

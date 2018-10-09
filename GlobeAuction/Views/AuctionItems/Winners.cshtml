@@ -98,15 +98,15 @@
                                     #
                                     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                                     {
-                                        @Html.ActionLink(item.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItemId }, new { target = "_blank" })
+                                        @Html.ActionLink(item.AuctionItem.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItem.AuctionItemId }, new { target = "_blank" })
                                     }
                                     else
                                     {
-                                        @Html.DisplayFor(m => item.UniqueItemNumber)
+                                        @Html.DisplayFor(m => item.AuctionItem.UniqueItemNumber)
                                     }
                                 </td>
-                                <td>@Html.DisplayFor(m => item.Title)</td>
-                                <td>@Html.DisplayFor(m => item.WinningBid)</td>
+                                <td>@Html.DisplayFor(m => item.AuctionItem.Title)</td>
+                                <td>@Html.DisplayFor(m => item.BidAmount)</td>
                             </tr>
                         }
                     </table>

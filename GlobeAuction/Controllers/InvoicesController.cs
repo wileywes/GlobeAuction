@@ -20,7 +20,7 @@ namespace GlobeAuction.Controllers
         public ActionResult Index()
         {
             var invoices = db.Invoices
-                .Include(i => i.AuctionItems)
+                .Include(i => i.Bids)
                 .Include(i => i.Bidder)
                 .Include(i => i.PaymentTransaction)
                 .Include(i => i.StoreItemPurchases)
@@ -95,15 +95,16 @@ namespace GlobeAuction.Controllers
             }
 
             var invoicesForBidder = db.Invoices
-                .Include(i => i.AuctionItems)
+                .Include(i => i.Bids)
                 .Include(i => i.PaymentTransaction)
                 .Include(i => i.StoreItemPurchases)
                 .Where(i => i.Bidder.BidderId == bidder.BidderId)
                 .ToList();
 
-            var auctionWinningsForBidderNotInInvoice = db.AuctionItems
-                .Include(a => a.DonationItems)
-                .Where(a => a.WinningBidderId.HasValue && a.WinningBidderId.Value == bidder.BidderId && a.Invoice == null)
+            var auctionWinningsForBidderNotInInvoice = db.Bids
+                .Include(a => a.AuctionItem)
+                .Include("AuctionItem.DonationItems")
+                .Where(a => a.Bidder.BidderId == bidder.BidderId && a.Invoice == null)
                 .ToList();
 
             var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout && s.IsDeleted == false).ToList();
@@ -136,11 +137,10 @@ namespace GlobeAuction.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var auctionItemIds = model.AuctionItemsNotInInvoice.Select(i => i.AuctionItemId).ToList();
-            var winnings = db.AuctionItems.Where(ai => auctionItemIds.Contains(ai.AuctionItemId) &&
-                    ai.WinningBidderId.HasValue && 
-                    ai.WinningBidderId.Value == bidder.BidderId && 
-                    ai.Invoice == null).ToList();
+            var auctionItemIds = model.AuctionItemsNotInInvoice.Select(i => i.AuctionItem.AuctionItemId).ToList();
+            var winnings = db.Bids.Where(bid => auctionItemIds.Contains(bid.AuctionItem.AuctionItemId) &&
+                    bid.Bidder.BidderId== bidder.BidderId &&
+                    bid.Invoice == null).ToList();
 
             if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
@@ -166,72 +166,72 @@ namespace GlobeAuction.Controllers
         }
 
         [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
-        public ActionResult RemoveAuctionItemFromUnpaidInvoice(int invoiceId, int auctionItemId)
+        public ActionResult RemoveBidFromUnpaidInvoice(int invoiceId, int bidId)
         {
             var invoice = db.Invoices.Find(invoiceId);
             if (invoice == null) return HttpNotFound();
             if (invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             //grab a copy before we delete the invoice
-            var bidId = invoice.Bidder.BidderId;
-            var bidEmail = invoice.Bidder.Email;
+            var bidderId = invoice.Bidder.BidderId;
+            var bidderEmail = invoice.Bidder.Email;
 
-            var item = db.AuctionItems.FirstOrDefault(ai => ai.Invoice != null && ai.Invoice.InvoiceId == invoiceId && ai.AuctionItemId == auctionItemId);
+            var item = db.Bids.FirstOrDefault(b => b.Invoice != null && b.Invoice.InvoiceId == invoiceId && b.BidId == bidId);
             if (item == null)
             {
                 return HttpNotFound();
             }
 
             item.Invoice = null;
-            invoice.AuctionItems.Remove(invoice.AuctionItems.First(ai => ai.AuctionItemId == auctionItemId));
+            invoice.Bids.Remove(invoice.Bids.First(ai => ai.BidId == bidId));
 
             //delete the invoice entirely if there are no more lines on it
-            if (invoice.AuctionItems.Count == 0 && invoice.StoreItemPurchases.Count == 0)
+            if (invoice.Bids.Count == 0 && invoice.StoreItemPurchases.Count == 0 && invoice.TicketPurchases.Count == 0)
             {
                 db.Invoices.Remove(invoice);
             }
             db.SaveChanges();
 
-            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
+            return RedirectToAction("ReviewBidderWinnings", new { bid = bidderId, email = bidderEmail });
         }
 
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
-        public ActionResult RemoveAuctionItemFromPaidInvoice(int invoiceId, int auctionItemId)
+        public ActionResult RemoveBidFromPaidInvoice(int invoiceId, int bidId)
         {
             var invoice = db.Invoices.Find(invoiceId);
             if (invoice == null) return HttpNotFound();
             if (!invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             //grab a copy before we delete the invoice
-            var bidId = invoice.Bidder.BidderId;
-            var bidNumber = invoice.Bidder.BidderNumber;
-            var bidEmail = invoice.Bidder.Email;
-            var bidName = invoice.Bidder.FirstName + " " + invoice.Bidder.LastName;
+            var bidderId = invoice.Bidder.BidderId;
+            var bidderNumber = invoice.Bidder.BidderNumber;
+            var bidderEmail = invoice.Bidder.Email;
+            var bidderName = invoice.Bidder.FirstName + " " + invoice.Bidder.LastName;
 
-            var item = db.AuctionItems.FirstOrDefault(ai => ai.Invoice != null && ai.Invoice.InvoiceId == invoiceId && ai.AuctionItemId == auctionItemId && ai.WinningBidderId == bidId);
+            var item = db.Bids.FirstOrDefault(ai => ai.Invoice != null && ai.Invoice.InvoiceId == invoiceId && ai.BidId == bidId && ai.Bidder.BidderId == bidderId);
             if (item == null)
             {
                 return HttpNotFound();
             }
 
             item.Invoice = null;
-            invoice.AuctionItems.Remove(invoice.AuctionItems.First(ai => ai.AuctionItemId == auctionItemId));
+            invoice.Bids.Remove(invoice.Bids.First(ai => ai.BidId == bidId));
 
             db.SaveChanges();
 
             var body = "The following item was removed from a paid invoice.  The winner likely needs to be refunded via PayPal:<br/><br/>" +
                 $"<b>Invoice #:</b> {invoice.InvoiceId}<br />" +
-                $"<b>Bidder #:</b> {bidNumber}<br />" +
-                $"<b>Bidder Name:</b> {bidNumber}<br />" +
-                $"<b>Bidder Email:</b> {bidName}<br />" +
-                $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
-                $"<b>Amount Paid:</b> {item.WinningBid.GetValueOrDefault(0):C}<br />" +
+                $"<b>Bidder #:</b> {bidderNumber}<br />" +
+                $"<b>Bidder Name:</b> {bidderNumber}<br />" +
+                $"<b>Bidder Email:</b> {bidderName}<br />" +
+                $"<b>Item #:</b> {item.AuctionItem.UniqueItemNumber}<br />" +
+                $"<b>Amount Paid:</b> {item.BidAmount:C}<br />" +
                 $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />" +
                 $"<b>Invoice Type:</b> {invoice.InvoiceType}<br />";
 
             new EmailHelper().SendEmail("robynloren@gmail.com", "Paid Item Removed from Invoice - Refund Needed", body);
 
-            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
+            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidderEmail });
         }
 
         [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
@@ -260,7 +260,7 @@ namespace GlobeAuction.Controllers
             db.StoreItemPurchases.Remove(item);
 
             //delete the invoice entirely if there are no more lines on it
-            if (invoice.AuctionItems.Count == 0 && invoice.StoreItemPurchases.Count == 0)
+            if (invoice.Bids.Count == 0 && invoice.StoreItemPurchases.Count == 0 && invoice.TicketPurchases.Count == 0)
             {
                 db.Invoices.Remove(invoice);
             }
@@ -305,7 +305,7 @@ namespace GlobeAuction.Controllers
             new InvoiceRepository(db).ApplyPaymentToInvoice(ppTrans, invoice);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice  " + invoice.InvoiceId + " via cart post-back");
 
-            if (invoice.AuctionItems.Any() && invoice.Bidder != null)
+            if (invoice.Bids.Any() && invoice.Bidder != null)
             {
                 //go to auction review page if there were auction winnings in this order
                 return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, selfPaySuccessful = true });

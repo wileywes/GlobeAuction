@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace GlobeAuction.Models
 {
@@ -28,6 +29,10 @@ namespace GlobeAuction.Models
         [Required]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
+
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
@@ -36,13 +41,15 @@ namespace GlobeAuction.Models
         /// List of items in this buyable group - could be 1 or more donation items
         /// </summary>
         public virtual List<DonationItem> DonationItems { get; set; }
+        public virtual List<Bid> AllBids { get; set; }
 
-        public int? WinningBidderId { get; set; }
-        [DisplayFormat(DataFormatString = "{0:C}")]
-        public decimal? WinningBid { get; set; }
-        public bool IsMasterItemForMultipleWinners { get; set; }
-
-        public virtual Invoice Invoice { get; set; }
+        public IEnumerable<Bid> WinningBids
+        {
+            get
+            {
+                return AllBids.Where(b => b.IsWinning);
+            }
+        }
     }
 
     public class DonationItem
@@ -59,6 +66,9 @@ namespace GlobeAuction.Models
         [Required]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
 
         public string Restrictions { get; set; }
 
@@ -80,15 +90,6 @@ namespace GlobeAuction.Models
 
         public virtual Solicitor Solicitor { get; set; }
         public virtual Donor Donor { get; set; }
-
-        public DonationItem Clone()
-        {
-            var newItem = (DonationItem)MemberwiseClone();
-            newItem.DonationItemId = 0;
-            newItem.Donor = this.Donor;
-            newItem.Solicitor = this.Solicitor;
-            return newItem;
-        }
     }
 
     public class Donor
@@ -147,5 +148,33 @@ namespace GlobeAuction.Models
         public string Email { get; set; }
 
         public virtual List<DonationItem> DonationItems { get; set; }
+    }
+
+    public class Bid
+    {
+        public int BidId { get; set; }
+
+        [Required]  //<======= Forces Cascade delete
+        public virtual AuctionItem AuctionItem { get; set; }
+
+        [Required]  //<======= Forces Cascade delete
+        public virtual Bidder Bidder { get; set; }
+
+        [Required]
+        public decimal BidAmount { get; set; }
+
+        [DataType(DataType.Currency)]
+        public decimal? AmountPaid { get; set; }
+
+        public bool IsPaid { get { return AmountPaid.HasValue; } }
+
+        [Required]
+        public bool IsWinning { get; set; }
+
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public string UpdateBy { get; set; }
+
+        public virtual Invoice Invoice { get; set; }
     }
 }

@@ -88,11 +88,11 @@ namespace GlobeAuction.Helpers
             var lines = new List<Tuple<string, decimal>>();
             var footerNotes = string.Empty;
 
-            if (invoice.AuctionItems != null)
+            if (invoice.Bids != null)
             {
-                lines.AddRange(GetLinesForAuctionItems(invoice.AuctionItems));
+                lines.AddRange(GetLinesForAuctionItems(invoice.Bids));
 
-                if (invoice.AuctionItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
+                if (invoice.Bids.Any(w => w.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
                 {
                     footerNotes = "* Certificate for this item will be emailed to you";
                 }
@@ -140,10 +140,10 @@ namespace GlobeAuction.Helpers
             SendEmail(invoice.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
 
-        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<AuctionItem> winnings, string payLink, bool isAfterEvent)
+        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<Bid> winnings, string payLink, bool isAfterEvent)
         {
-            var allItemsAreDigitalCertificates = winnings.All(w => w.DonationItems.All(di => di.UseDigitalCertificateForWinner));
-            var hasAtLeastOneDigitalCertificate = winnings.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner));
+            var allItemsAreDigitalCertificates = winnings.All(w => w.AuctionItem.DonationItems.All(di => di.UseDigitalCertificateForWinner));
+            var hasAtLeastOneDigitalCertificate = winnings.Any(w => w.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner));
 
             string body;
 
@@ -155,13 +155,13 @@ namespace GlobeAuction.Helpers
                 var paidLines = GetLinesForAuctionItems(paidItems);
                 var unpaidLines = GetLinesForAuctionItems(unpaidItems);
 
-                var totalPaid = paidItems.Sum(i => i.WinningBid.Value);
-                var totalUnpaid = unpaidItems.Sum(i => i.WinningBid.Value);
+                var totalPaid = paidItems.Sum(i => i.BidAmount);
+                var totalUnpaid = unpaidItems.Sum(i => i.BidAmount);
 
-                var paidFooter = paidItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
+                var paidFooter = paidItems.Any(w => w.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
                     "* Certificate for this item should have been emailed within one hour of payment" : string.Empty;
 
-                var unpaidFooter = unpaidItems.Any(w => w.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
+                var unpaidFooter = unpaidItems.Any(w => w.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner)) ?
                     "* Certificate for this item will be emailed to you once payment is received" : string.Empty;
 
                 body = GetAuctionWinningsNudgeEmailForAfterEvent(
@@ -186,7 +186,7 @@ namespace GlobeAuction.Helpers
 
                 var footerNotes = hasAtLeastOneDigitalCertificate ? "* Certificate for this item will be emailed to you once payment is received" : string.Empty;
 
-                var totalOwed = winnings.Sum(i => i.WinningBid.Value);
+                var totalOwed = winnings.Sum(i => i.BidAmount);
                 body = GetAuctionWinningsNudgeEmail(winnings.Count,
                     totalOwed, payLink,
                     bidder.FirstName + " " + bidder.LastName,
@@ -198,12 +198,12 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Auction Checkout", body);
         }
 
-        private static List<Tuple<string,decimal>> GetLinesForAuctionItems(List<AuctionItem> winnings)
+        private static List<Tuple<string,decimal>> GetLinesForAuctionItems(List<Bid> winnings)
         {
             return winnings
                 .Select(g => new Tuple<string, decimal>(
-                    g.DonationItems.Any(di => di.UseDigitalCertificateForWinner) ? "* " + g.Title : g.Title,
-                    g.WinningBid.Value))
+                    g.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner) ? "* " + g.AuctionItem.Title : g.AuctionItem.Title,
+                    g.BidAmount))
                 .ToList();
         }
 

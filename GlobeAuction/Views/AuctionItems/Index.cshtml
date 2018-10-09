@@ -43,6 +43,7 @@
                 <th>
                     Category
                 </th>
+                <th>Quantity</th>
                 <th>
                     # Items
                 </th>
@@ -55,55 +56,46 @@
                 <th>
                     Bid Increment
                 </th>
-                <th>
-                    Winner #
-                </th>
-                <th>
-                    Winning Bid
-                </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.AuctionItems)
                 {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UniqueItemNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Category)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DonationItemsCount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartingBid)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BidIncrement)
-                    </td>
-                    <td>
-                        @(item.IsMasterItemForMultipleWinners ? "Master" : (item.WinningBidderNumber.HasValue ? item.WinningBidderNumber.Value.ToString() : string.Empty))
-                    </td>
-                    <td>
-                        @(item.IsMasterItemForMultipleWinners ? "Master" : (item.WinningBid.HasValue ? item.WinningBid.Value.ToString("C") : string.Empty))
-                    </td>
-                    <td class="text-nowrap">
-                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DonationItemsCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartingBid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BidIncrement)
+                </td>
+                <td class="text-nowrap">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -140,6 +132,7 @@
                 <th>
                     Description
                 </th>
+                <th>Quantity</th>
                 <th>
                     Restrictions
                 </th>

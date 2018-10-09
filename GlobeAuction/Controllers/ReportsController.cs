@@ -14,7 +14,6 @@ namespace GlobeAuction.Controllers
         public ActionResult AllRevenueReports()
         {
             var allInvoices = db.Invoices
-                .Include(i => i.AuctionItems)
                 .Include(i => i.StoreItemPurchases)
                 .Include(i => i.TicketPurchases)
                 .Include("StoreItemPurchases.StoreItem")
@@ -25,16 +24,22 @@ namespace GlobeAuction.Controllers
             var paidCheckoutInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.AuctionCheckout).ToList();
             var paidRegistrationInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.BidderRegistration).ToList();
 
-            var unpaidAuctionItems = db.AuctionItems
-                .Where(ai => ai.WinningBid.HasValue && (ai.Invoice == null || ai.Invoice.IsPaid == false))
-                .Select(ai => ai.WinningBid.Value)
+            var unpaidBids = db.Bids
+                .Where(b => b.IsWinning && (b.Invoice == null || b.Invoice.IsPaid == false))
+                .Select(b => b.BidAmount)
+                .DefaultIfEmpty(0)
+                .Sum();
+            
+            var paidBids = db.Bids
+                .Where(b => b.IsWinning && b.AmountPaid.HasValue)
+                .Select(b => b.AmountPaid.Value)
                 .DefaultIfEmpty(0)
                 .Sum();
 
             var byType = new AllRevenueByTypeReportModel
             {
-                AuctionItemsPaid = paidInvoices.Sum(i => i.AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0))),
-                AuctionItemsUnpaid = unpaidAuctionItems,
+                AuctionItemsPaid = paidBids,
+                AuctionItemsUnpaid = unpaidBids,
                 BidderTickets = paidRegistrationInvoices.Sum(i => i.TicketPurchases.Sum(t => t.TicketPricePaid.GetValueOrDefault(0))),
                 RaffleTicketsViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
                 StoreSalesViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
@@ -43,15 +48,15 @@ namespace GlobeAuction.Controllers
             };
 
             //fund-a-project
-            var fapAuctionItems = db.AuctionItems
+            var fundProjectBids = db.Bids
                 .Include(i => i.Invoice)
-                .Where(ai => ai.Category == AuctionConstants.FundaProjectCategoryName)
+                .Where(b => b.AuctionItem.Category == AuctionConstants.FundaProjectCategoryName)
                 .ToList();
 
             var fundAProject = new FundaProjectRevenueReportModel
             {
-                SalesViaAuctionPaid = fapAuctionItems.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid && ai.WinningBid.HasValue).Select(ai => ai.WinningBid.Value).DefaultIfEmpty(0).Sum(),
-                SalesViaAuctionUnpaid = fapAuctionItems.Where(ai => (ai.Invoice == null || !ai.Invoice.IsPaid) && ai.WinningBid.HasValue).Select(ai => ai.WinningBid.Value).DefaultIfEmpty(0).Sum(),
+                SalesViaAuctionPaid = fundProjectBids.Where(b => b.IsWinning && b.AmountPaid.HasValue).Select(b => b.AmountPaid.Value).DefaultIfEmpty(0).Sum(),
+                SalesViaAuctionUnpaid = fundProjectBids.Where(b => b.IsWinning && b.AmountPaid.HasValue == false).Select(b => b.BidAmount).DefaultIfEmpty(0).Sum(),
                 SalesViaStorePaid = allInvoices.Where(i => i.IsPaid).SelectMany(i => i.StoreItemPurchases).Where(sip => sip.IsPaid && !sip.StoreItem.IsRaffleTicket && sip.StoreItem.HasUnlimitedQuantity).Select(sip => sip.PricePaid.GetValueOrDefault(0)).DefaultIfEmpty(0).Sum(),
                 SalesViaStoreUnpaid = allInvoices.Where(i => !i.IsPaid).SelectMany(i => i.StoreItemPurchases).Where(sip => !sip.IsPaid && !sip.StoreItem.IsRaffleTicket && sip.StoreItem.HasUnlimitedQuantity).Select(sip => sip.Price).DefaultIfEmpty(0).Sum()
             };

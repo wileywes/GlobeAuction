@@ -43,7 +43,7 @@ namespace GlobeAuction.Models
         public string UpdateBy { get; set; }
 
         public virtual Bidder Bidder { get; set; }
-        public virtual List<AuctionItem> AuctionItems { get; set; }
+        public virtual List<Bid> Bids { get; set; }
         public virtual List<StoreItemPurchase> StoreItemPurchases { get; set; }
         public virtual List<TicketPurchase> TicketPurchases { get; set; }
         public virtual PayPalTransaction PaymentTransaction { get; set; }
@@ -68,7 +68,7 @@ namespace GlobeAuction.Models
             get
             {
                 var total = 0m;
-                if (AuctionItems != null && AuctionItems.Any()) total = AuctionItems.Sum(a => a.WinningBid.GetValueOrDefault(0));
+                if (Bids != null && Bids.Any()) total = Bids.Sum(a => a.BidAmount);
                 if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.Price);
                 if (TicketPurchases != null && TicketPurchases.Any()) total += TicketPurchases.Sum(t => t.TicketPrice);
                 return total;
@@ -76,13 +76,7 @@ namespace GlobeAuction.Models
         }
 
         [Display(Name = "Total Paid")]
-        public decimal TotalPaid
-        {
-            get
-            {
-                return IsPaid ? Total : 0;
-            }
-        }
+        public decimal TotalPaid { get; set; }
     }
 
     public enum PaymentMethod

@@ -74,11 +74,11 @@ namespace GlobeAuction.Helpers
             var allWinnings = new ItemsRepository(db).GetWinningsByBidder();
             foreach(var winning in allWinnings)
             {
-                var paidAuctionItems = winning.Winnings.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid).ToList();
+                var paidForBids = winning.Winnings.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid).ToList();
 
-                foreach(var paidAi in paidAuctionItems)
+                foreach(var paidBid in paidForBids)
                 {
-                    foreach(var donationItem in paidAi.DonationItems.Where(di => di.UseDigitalCertificateForWinner && di.HasWinnerBeenEmailed == false))
+                    foreach(var donationItem in paidBid.AuctionItem.DonationItems.Where(di => di.UseDigitalCertificateForWinner && di.HasWinnerBeenEmailed == false))
                     {
                         emailHelper.SendDonationItemCertificate(winning.Bidder, donationItem);
 
@@ -112,16 +112,17 @@ namespace GlobeAuction.Helpers
         private void RecalculateRevenueTotals()
         {
             var paidInvoices = db.Invoices
-                .Include(i => i.AuctionItems)
+                .Include(i => i.Bids)
                 .Include(i => i.StoreItemPurchases)
+                .Include(i => i.TicketPurchases)
                 .Where(i => i.IsPaid)
                 .ToList();
 
             var totalRevenue = paidInvoices.Sum(i => i.TotalPaid);
             
-            var unpaidAuctionItems = db.AuctionItems
-                .Where(ai => ai.WinningBid.HasValue && (ai.Invoice == null || ai.Invoice.IsPaid == false))
-                .Select(ai => ai.WinningBid.Value)
+            var unpaidAuctionItems = db.Bids
+                .Where(b => b.IsWinning && (b.Invoice == null || b.Invoice.IsPaid == false))
+                .Select(b => b.BidAmount)
                 .DefaultIfEmpty(0)
                 .Sum();
 

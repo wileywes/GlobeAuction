@@ -50,9 +50,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Checkout Text Sent")]
         public bool IsCheckoutNudgeTextSent { get; set; }
 
-        public List<AuctionItemViewModel> ItemsWon { get; set; }
+        public List<BidViewModel> ItemsWon { get; set; }
 
-        public WinnerViewModel(Bidder bidder, List<AuctionItem> itemsWon)
+        public WinnerViewModel(Bidder bidder, List<Bid> itemsWon)
         {
             this.BidderId = bidder.BidderId;
             this.BidderNumber = bidder.BidderNumber;
@@ -62,20 +62,14 @@ namespace GlobeAuction.Models
             this.Phone = bidder.Phone;
             this.IsCheckoutNudgeEmailSent = bidder.IsCheckoutNudgeEmailSent;
             this.IsCheckoutNudgeTextSent = bidder.IsCheckoutNudgeTextSent;
-            this.ItemsWon = itemsWon.Select(i => new AuctionItemViewModel(i, bidder.BidderNumber)).ToList();
+            this.ItemsWon = itemsWon.Select(i => new BidViewModel(i)).ToList();
             AreWinningsAllPaidFor = itemsWon.All(w => w.Invoice != null && w.Invoice.IsPaid);
 
             if (!AreWinningsAllPaidFor)
             {
-                TotalUnpaid = itemsWon.Where(w => w.Invoice == null || !w.Invoice.IsPaid).Sum(i => i.WinningBid.Value);
+                TotalUnpaid = itemsWon.Where(w => w.Invoice == null || !w.Invoice.IsPaid).Sum(i => i.BidAmount);
             }
         }
-    }
-
-    public class EnterWinnersViewModel
-    {
-        public string SelectedCategory { get; set; }
-        public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
     }
 
     public class EnterWinnersInBulkViewModel
@@ -116,6 +110,8 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
         public string HasDisplay { get; set; }
+        [Required]
+        public int Quantity { get; set; }
         public bool HasWinnerBeenEmailed { get; set; }
         public string UseDigitalCertificateForWinner { get; set; }
 
@@ -134,6 +130,7 @@ namespace GlobeAuction.Models
             this.Restrictions = item.Restrictions; //.TruncateTo(50);
             this.HasDisplay = item.HasDisplay ? "Yes" : "No";
             this.UseDigitalCertificateForWinner = item.UseDigitalCertificateForWinner ? "Yes" : "No";
+            this.Quantity = item.Quantity;
         }
     }
 
@@ -148,25 +145,21 @@ namespace GlobeAuction.Models
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
+        [Required]
+        public int Quantity { get; set; }
 
         public List<DonationItem> DonationItems { get; set; }
         public int DonationItemsCount { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int DonationItemsTotalValue { get; set; }
-
-        //winner info
-        public int? WinningBidderNumber { get; set; }
-        [DisplayFormat(DataFormatString = "{0:C}")]
-        public decimal? WinningBid { get; set; }
-        public bool IsMasterItemForMultipleWinners { get; set; }
-
+        
         public AuctionItemViewModel()
         {
             //empty for model binding
         }
 
-        public AuctionItemViewModel(AuctionItem i, int? winningBidderNumber)
+        public AuctionItemViewModel(AuctionItem i)
         {
             this.AuctionItemId = i.AuctionItemId;
             this.UniqueItemNumber = i.UniqueItemNumber;
@@ -175,12 +168,34 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
+            this.Quantity = i.Quantity;
             this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
-            this.WinningBid = i.WinningBid;
-            this.WinningBidderNumber = winningBidderNumber;
-            IsMasterItemForMultipleWinners = i.IsMasterItemForMultipleWinners;
+        }
+    }
+
+
+    public class BidViewModel
+    {
+        public int BidId { get; set; }
+
+        public virtual AuctionItemViewModel AuctionItem { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal BidAmount { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal? AmountPaid { get; set; }
+
+        public bool IsPaid { get { return AmountPaid.HasValue; } }
+
+        public bool IsWinning { get; set; }
+
+        public BidViewModel(Bid bid)
+        {
+            BidId = bid.BidId;
+            AuctionItem = new AuctionItemViewModel(bid.AuctionItem);
         }
     }
 }
