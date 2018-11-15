@@ -85,23 +85,24 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <!--<li><a href="/pay"><img src="~/Content/Images/payicon.gif" width="107" height="99" class="hidden-xs" /><br />PAY</a></li>
-    <li><a href="/home/sponsors"><img src="~/Content/Images/sponsorsicon.gif" width="107" height="99" class="hidden-xs" /><br />SPONSORS</a></li>-->
-                            <li><a href="/shop"><img src="~/Content/Images/icon04_blue.jpg" width="107" height="99" class="hidden-xs" /><br />SHOP</a></li>
-                            <li><a href="/account/login" id="loginLink"><img src="~/Content/Images/icon03_blue.jpg" width="107" height="99" class="hidden-xs" /><br />VOLUNTEERS</a></li>
-                        </ul>
-                    </div>
-                }
+                                <li><a href="/home/sponsors"><img src="~/Content/Images/sponsorsicon.gif" width="107" height="99" class="hidden-xs" /><br />SPONSORS</a></li>
+                                <li><a href="/shop"><img src="~/Content/Images/icon04_blue.jpg" width="107" height="99" class="hidden-xs" /><br />SHOP</a></li>-->
+                                <li></li>
+                                <li><a href="/account/login" id="loginLink"><img src="~/Content/Images/icon03_blue.jpg" width="107" height="99" class="hidden-xs" /><br />VOLUNTEERS</a></li>
+                            </ul>
+                        </div>
+                    }
 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container body-content" id="bodyContainer">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year</p>
-        </footer>
-    </div>
+        <div class="container body-content" id="bodyContainer">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year</p>
+            </footer>
+        </div>
 
-</body>
-</html>
+    </body>
+    </html>
