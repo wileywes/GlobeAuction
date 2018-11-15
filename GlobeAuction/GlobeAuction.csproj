@@ -504,10 +504,16 @@
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\gold_color#.jpg" />
     <Content Include="Content\Images\icon01.gif" />
+    <Content Include="Content\Images\icon01_blue.jpg" />
     <Content Include="Content\Images\icon02.gif" />
+    <Content Include="Content\Images\icon02_blue.jpg" />
     <Content Include="Content\Images\icon03.gif" />
+    <Content Include="Content\Images\icon03_blue.jpg" />
     <Content Include="Content\Images\icon04.gif" />
+    <Content Include="Content\Images\icon04_blue.jpg" />
     <Content Include="Content\Images\image_home.jpg" />
+    <Content Include="Content\Images\logo_gold_2019.gif" />
+    <Content Include="Content\Images\logo_gold_2019.png" />
     <Content Include="Content\Images\logo_web_shamrock.gif" />
     <Content Include="Content\Images\payicon.gif" />
     <Content Include="Content\Images\sponsorsicon.gif" />

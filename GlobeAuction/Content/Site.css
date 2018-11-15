@@ -1,7 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    color: #004f21;
+    color: #21375E;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -33,13 +33,13 @@ textarea {
 @media (min-width: 767px) {
     .navbar-logo {
         min-height: 152px;
-        background: url("/Content/Images/logo_web_shamrock.gif") center 0px no-repeat;
+        background: url("/Content/Images/logo_gold_2019.gif") center 0px no-repeat;
     }
-
+    
     body {
         padding-top: 155px;
         padding-bottom: 20px;
-        color: #004f21;
+        color: #21375E;
     }
     
     .navbar-nav > li > a {
@@ -62,7 +62,7 @@ textarea {
 }
 
 .navbar {
-    background-color: #004f21;
+    background-color: #21375E;
 }
 
 .nav > li.disabled > a {
