@@ -502,7 +502,10 @@
     <Content Include="Content\Images\checkmark.png" />
     <Content Include="Content\Images\details_close.png" />
     <Content Include="Content\Images\details_open.png" />
+    <Content Include="Content\Images\GLOBEAuction_IMG_6947.JPG" />
+    <Content Include="Content\Images\GLOBEAuction_IMG_7037.jpg" />
     <Content Include="Content\Images\gold_color#.jpg" />
+    <Content Include="Content\Images\Home.gif" />
     <Content Include="Content\Images\icon01.gif" />
     <Content Include="Content\Images\icon01_blue.jpg" />
     <Content Include="Content\Images\icon02.gif" />
@@ -512,10 +515,13 @@
     <Content Include="Content\Images\icon04.gif" />
     <Content Include="Content\Images\icon04_blue.jpg" />
     <Content Include="Content\Images\image_home.jpg" />
+    <Content Include="Content\Images\Logo.gif" />
+    <Content Include="Content\Images\Logo_150x150.gif" />
     <Content Include="Content\Images\logo_gold_2019.gif" />
     <Content Include="Content\Images\logo_gold_2019.png" />
     <Content Include="Content\Images\logo_web_shamrock.gif" />
     <Content Include="Content\Images\payicon.gif" />
+    <Content Include="Content\Images\Register.gif" />
     <Content Include="Content\Images\sponsorsicon.gif" />
     <Content Include="Content\Images\sponsors\LaRocco_Companies_logo.jpg" />
     <Content Include="Content\Images\sponsors\morgan.jpg" />
@@ -524,6 +530,7 @@
     <Content Include="Content\Images\StoreItems\disney and bge mix.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />
     <Content Include="Content\Images\StoreItems\SamsungTablet.jpg" />
+    <Content Include="Content\Images\Volunteer.gif" />
     <Content Include="Content\Images\web_auction 2017_preview.jpg" />
     <Content Include="Content\Images\when_box.jpg" />
     <Content Include="Content\Images\where_box.jpg" />
