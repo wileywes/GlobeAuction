@@ -498,8 +498,22 @@
     <Content Include="Content\Images\attendees1.jpg" />
     <Content Include="Content\Images\attendees2.jpg" />
     <Content Include="Content\Images\blue_color#.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_01.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_03.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_04.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_05.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_06.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_07.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_08.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_09.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_10.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_11.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_12.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_13.jpg" />
+    <Content Include="Content\Images\Carousel\GLOBEAuction_14.jpg" />
     <Content Include="Content\Images\checkmark.jpg" />
     <Content Include="Content\Images\checkmark.png" />
+    <Content Include="Content\Images\controls.png" />
     <Content Include="Content\Images\details_close.png" />
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\GLOBEAuction_IMG_6947.JPG" />
@@ -535,6 +549,8 @@
     <Content Include="Content\Images\when_box.jpg" />
     <Content Include="Content\Images\where_box.jpg" />
     <Content Include="Content\Images\who_box.jpg" />
+    <Content Include="Content\lightslider.css" />
+    <Content Include="Content\lightslider.min.css" />
     <Content Include="DataTables\Buttons-1.2.4\css\buttons.bootstrap.css" />
     <Content Include="DataTables\Buttons-1.2.4\css\buttons.bootstrap.min.css" />
     <Content Include="DataTables\Buttons-1.2.4\css\buttons.dataTables.css" />
@@ -596,9 +612,6 @@
     <Content Include="DataTables\datatables.min.js" />
     <Content Include="DataTables\JSZip-2.5.0\jszip.js" />
     <Content Include="DataTables\JSZip-2.5.0\jszip.min.js" />
-    <Content Include="DataTables\pdfmake-0.1.18\build\pdfmake.js" />
-    <Content Include="DataTables\pdfmake-0.1.18\build\pdfmake.min.js" />
-    <Content Include="DataTables\pdfmake-0.1.18\build\vfs_fonts.js" />
     <Content Include="DataTables\Select-1.2.0\css\select.bootstrap.css" />
     <Content Include="DataTables\Select-1.2.0\css\select.bootstrap.min.css" />
     <Content Include="DataTables\Select-1.2.0\css\select.dataTables.css" />
@@ -633,6 +646,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\GlobeAuction - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\GlobeAuction.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -643,6 +657,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\lightslider.js" />
+    <Content Include="Scripts\lightslider.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -898,6 +914,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Images\BidSheets\" />
+    <Folder Include="DataTables\pdfmake-0.1.18\build\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
