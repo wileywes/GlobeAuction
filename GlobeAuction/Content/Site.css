@@ -32,9 +32,9 @@ textarea {
 /* Overrides to bootstrap.css */
 @media (min-width: 767px) {
     .navbar-logo {
-        min-height: 154px;
+        min-height: 204px;
         background: url("/Content/Images/Logo.gif") center 0px no-repeat;
-        background-size: 150px 150px;
+        background-size: 200px 200px;
     }
     
     body {
