@@ -2,28 +2,21 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="container">
-    <div class="row" style="background-color: #86754d; min-height:100%; overflow:hidden;">
-        <div class="col-lg-12" style="padding-left:0px; padding-right:0px">
-            <ul id="lightSlider">
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_01.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_02.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_03.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_04.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_05.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_06.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_07.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_08.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_09.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_10.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_11.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_12.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_13.jpg" height="100" /></li>
-                <li><img src="~/Content/Images/Carousel/GLOBEAuction_14.jpg" height="100" /></li>
-            </ul>
-        </div>
-    </div>
-</div>
+    <ul id="lightSlider">
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_01.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_03.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_04.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_05.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_06.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_07.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_08.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_09.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_10.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_11.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_12.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_13.jpg" height="300" /></li>
+        <li><img src="~/Content/Images/Carousel/GLOBEAuction_14.jpg" height="300" /></li>
+    </ul>
 
 <div style="background-color: #86754d; height:20px; padding: 0px 0px 0px 0px"></div>
 
@@ -60,7 +53,10 @@
 <script type="text/javascript">
   $(document).ready(function() {
       $("#lightSlider").lightSlider({
-          item: 3
+          auto: true,
+          autoWidth:true,
+          loop: true,
+          speed: 600
       });
   });
 </script>
