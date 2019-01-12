@@ -612,6 +612,9 @@
     <Content Include="DataTables\datatables.min.js" />
     <Content Include="DataTables\JSZip-2.5.0\jszip.js" />
     <Content Include="DataTables\JSZip-2.5.0\jszip.min.js" />
+    <Content Include="DataTables\pdfmake-0.1.18\build\pdfmake.js" />
+    <Content Include="DataTables\pdfmake-0.1.18\build\pdfmake.min.js" />
+    <Content Include="DataTables\pdfmake-0.1.18\build\vfs_fonts.js" />
     <Content Include="DataTables\Select-1.2.0\css\select.bootstrap.css" />
     <Content Include="DataTables\Select-1.2.0\css\select.bootstrap.min.css" />
     <Content Include="DataTables\Select-1.2.0\css\select.dataTables.css" />
@@ -914,7 +917,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Images\BidSheets\" />
-    <Folder Include="DataTables\pdfmake-0.1.18\build\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

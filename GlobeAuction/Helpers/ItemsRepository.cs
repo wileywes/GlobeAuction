@@ -26,22 +26,27 @@ namespace GlobeAuction.Helpers
         {
             if (!items.Any()) throw new ApplicationException("You must select at least one donation item");
 
-            var totalDollarValue = items.Sum(i => i.DollarValue.GetValueOrDefault(0));
-            var startBid = Math.Floor(totalDollarValue * 0.4);
-            startBid = Math.Round(startBid / 5.0) * 5;
-            var mostCommonCategory = items.GroupBy(i => i.Category)
-                .OrderByDescending(g => g.Count())
-                .First().Key;
+            //calculate the starting bid
+            var totalDollarValue = items.Sum(i => i.DollarValue.GetValueOrDefault(0)); //value of all donation items in basket
+            var startBid = Math.Floor(totalDollarValue * 0.4); // start at 40% of value
+            startBid = Math.Round(startBid / 5.0) * 5; //round to nearest $5 increment
 
+            //calculate the bid increment based on ranges of the starting bid
             int bidIncrement;
             if (startBid < 50) bidIncrement = 5;
             else if (startBid <= 100) bidIncrement = 10;
             else bidIncrement = 20;
 
+            //generate the basket description based on the items in it
             var description = items.Count == 1 ? items.First().Description :
                 "This basket includes:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine + Environment.NewLine, items.Select(i => i.Description));
 
+            //basket title comes from the first donation item
             var title = items.First().Title;
+
+            var mostCommonCategory = items.GroupBy(i => i.Category)
+                .OrderByDescending(g => g.Count())
+                .First().Key;
 
             return new AuctionItem
             {
