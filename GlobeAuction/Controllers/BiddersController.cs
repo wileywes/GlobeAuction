@@ -431,6 +431,7 @@ namespace GlobeAuction.Controllers
             }
 
             ViewBag.TicketTypes = ticketTypes
+                .OrderByDescending(t => t.Price)
                 .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
 
             
