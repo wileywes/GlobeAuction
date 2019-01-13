@@ -113,11 +113,13 @@ namespace GlobeAuction.Controllers
                 try
                 {
                     var bidder = Mapper.Map<Bidder>(bidderViewModel);
+                    var updatedBy = User.Identity.GetUserName();
+                    if (string.IsNullOrEmpty(updatedBy)) updatedBy = bidder.Email;
 
                     var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
                     bidder.BidderNumber = nextBidderNumber;
                     bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
-                    bidder.UpdateBy = bidder.Email;
+                    bidder.UpdateBy = updatedBy;
 
                     //strip out dependents that weren't filled in
                     bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
@@ -141,7 +143,7 @@ namespace GlobeAuction.Controllers
                         if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
                     }
 
-                    new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, User.Identity.GetUserName());
+                    new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
 
                     if (manualPayMethod.HasValue)
                     {
