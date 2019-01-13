@@ -516,6 +516,7 @@
     <Content Include="Content\Images\controls.png" />
     <Content Include="Content\Images\details_close.png" />
     <Content Include="Content\Images\details_open.png" />
+    <Content Include="Content\Images\Donate.gif" />
     <Content Include="Content\Images\GLOBEAuction_IMG_6947.JPG" />
     <Content Include="Content\Images\GLOBEAuction_IMG_7037.jpg" />
     <Content Include="Content\Images\gold_color#.jpg" />
