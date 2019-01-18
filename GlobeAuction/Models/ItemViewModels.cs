@@ -154,6 +154,8 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int DonationItemsTotalValue { get; set; }
         
+        public List<BidViewModel> AllBids { get; set; }
+
         public AuctionItemViewModel()
         {
             //empty for model binding
@@ -172,6 +174,7 @@ namespace GlobeAuction.Models
             this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
+            this.AllBids = i.AllBids.Select(b => new BidViewModel(b)).ToList();
         }
     }
 
@@ -196,6 +199,9 @@ namespace GlobeAuction.Models
         {
             BidId = bid.BidId;
             AuctionItem = new AuctionItemViewModel(bid.AuctionItem);
+            BidAmount = bid.BidAmount;
+            AmountPaid = bid.AmountPaid;
+            IsWinning = bid.IsWinning;
         }
     }
 }

@@ -261,4 +261,17 @@ namespace GlobeAuction.Models
             this.HomeroomTeacher = s.HomeroomTeacher;
         }
     }
+
+    public class BidderCookieInfo
+    {
+        public int BidderId { get; set; }
+        public int BidderNumber { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class EnterBidViewModel
+    {
+
+    }
 }

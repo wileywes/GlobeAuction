@@ -1,13 +1,13 @@
 ﻿@model GlobeAuction.Models.BidderLookupModel
 
 @{
-    ViewBag.Title = "Checkout";
+    ViewBag.Title = "Login";
 }
 
-<h2>Checkout</h2>
+<h2>Bidder Login</h2>
 
 <p>
-    Enter the information you registered with to begin checkout for the items you won or to review an invoice(s) you've previously paid.
+    Enter the information you registered with in order to proceed.
 </p>
 <br />
 
@@ -16,6 +16,8 @@
     @Html.AntiForgeryToken()
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(m => m.RedirectUrl)
 
     <div class="form-horizontal">
         <hr />
@@ -35,24 +37,17 @@
             </div>
         </div>
 
-        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-        {
-            @Html.Hidden("Email", "fake@fake.com")
-        }
-        else
-        {
-            <div class="form-group">
-                @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                </div>
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
             </div>
-        }
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Checkout" class="btn btn-lg btn-default" />
+                <input type="submit" value="Login" class="btn btn-lg btn-default" />
             </div>
         </div>
     </div>

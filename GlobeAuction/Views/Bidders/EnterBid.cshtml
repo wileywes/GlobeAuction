@@ -1,0 +1,41 @@
+﻿@model GlobeAuction.Models.AuctionItemViewModel
+
+@{
+    ViewBag.Title = "Enter new Bid";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.Hidden("auctionItemId", Model.AuctionItemId)
+
+    <div class="container">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Item No", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.AuctionItemId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" id="title">
+                    @Html.DisplayFor(model => model.Title)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" id="title">
+                    @Html.DisplayFor(model => model.Description)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

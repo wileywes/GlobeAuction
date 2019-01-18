@@ -667,7 +667,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -756,6 +758,9 @@
     <Content Include="Views\Home\Sponsors.cshtml" />
     <Content Include="Views\AuctionItems\EnterWinnersInBulk.cshtml" />
     <Content Include="Views\Reports\AllRevenueReports.cshtml" />
+    <Content Include="Views\Bidders\Bids.cshtml" />
+    <Content Include="Views\Bidders\Login.cshtml" />
+    <Content Include="Views\Bidders\EnterBid.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

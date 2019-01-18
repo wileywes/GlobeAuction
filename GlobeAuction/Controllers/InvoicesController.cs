@@ -48,13 +48,13 @@ namespace GlobeAuction.Controllers
         
         public ActionResult Checkout()
         {
-            return View(new InvoiceLookupModel());
+            return View(new BidderLookupModel());
         }
 
         // POST: AuctionItems/Delete/5
         [HttpPost, ActionName("Checkout")]
         [ValidateAntiForgeryToken]
-        public ActionResult CheckoutConfirmed(InvoiceLookupModel invoiceLookupModel)
+        public ActionResult CheckoutConfirmed(BidderLookupModel lookupModel)
         {
             var requireEmailMatch = true;
 
@@ -67,9 +67,9 @@ namespace GlobeAuction.Controllers
             {
                 var bidder = db.Bidders.FirstOrDefault(b =>
                     b.IsDeleted == false &&
-                    b.BidderNumber == invoiceLookupModel.BidderNumber &&
-                    b.LastName.Equals(invoiceLookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
-                    (!requireEmailMatch || b.Email.Equals(invoiceLookupModel.Email, StringComparison.OrdinalIgnoreCase)));
+                    b.BidderNumber == lookupModel.BidderNumber &&
+                    b.LastName.Equals(lookupModel.LastName, StringComparison.OrdinalIgnoreCase) &&
+                    (!requireEmailMatch || b.Email.Equals(lookupModel.Email, StringComparison.OrdinalIgnoreCase)));
 
                 if (bidder == null)
                 {
@@ -82,7 +82,7 @@ namespace GlobeAuction.Controllers
                 }
             }
 
-            return View(invoiceLookupModel);
+            return View(lookupModel);
         }
 
         public ActionResult ReviewBidderWinnings(int bid, string email, bool? manualPaidSuccessful, bool? selfPaySuccessful)

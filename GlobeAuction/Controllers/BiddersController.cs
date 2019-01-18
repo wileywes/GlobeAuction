@@ -5,11 +5,9 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
-using System.Configuration;
 using GlobeAuction.Helpers;
 using System.Data.Entity.Validation;
 
@@ -411,6 +409,90 @@ namespace GlobeAuction.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [AllowAnonymous]
+        public ActionResult Login(string returnURl)
+        {
+            return View(new BidderLookupModel { RedirectUrl = returnURl });
+        }
+
+        // POST: AuctionItems/Delete/5
+        [HttpPost, ActionName("Login")]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public ActionResult LoginConfirmed(BidderLookupModel bidderLookup)
+        {
+            if (ModelState.IsValid)
+            {
+                var bidder = db.Bidders.FirstOrDefault(b =>
+                    b.IsDeleted == false &&
+                    b.BidderNumber == bidderLookup.BidderNumber &&
+                    b.LastName.Equals(bidderLookup.LastName, StringComparison.OrdinalIgnoreCase) &&
+                    b.Email.Equals(bidderLookup.Email, StringComparison.OrdinalIgnoreCase));
+
+                if (bidder == null)
+                {
+                    ModelState.AddModelError("bidderNumber", "No bidder was found matching this information.");
+                }
+                else
+                {
+                    BidderRepository.SetBidderCookie(bidder);
+
+                    if (!string.IsNullOrEmpty(bidderLookup.RedirectUrl))
+                    {
+                        return Redirect(bidderLookup.RedirectUrl);
+                    }
+
+                    return RedirectToAction("Bids");
+                }
+            }
+
+            return View(bidderLookup);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Bids()
+        {
+            BidderCookieInfo info;
+            if (BidderRepository.TryGetBidderInfoFromCookie(out info))
+            {
+                var bids = db.Bids
+                    .Include(b => b.AuctionItem)
+                    .Where(b => b.Bidder.BidderId == info.BidderId && b.Bidder.BidderNumber == info.BidderNumber)
+                    .ToList();
+
+                var models = bids.Select(b => new BidViewModel(b));
+
+                ViewBag.BidderInfo = info;
+
+                return View(models);
+            }
+            else
+            {
+                return RedirectToAction("Login", new { returnURl = "/bidders/bids" });
+            }
+        }
+
+        [AllowAnonymous]
+        public ActionResult EnterBid(int auctionItemId)
+        {
+            var item = db.AuctionItems.Find(auctionItemId);
+            if (item == null)
+            {
+                return HttpNotFound();
+            }
+            var model = new AuctionItemViewModel(item);
+            return View(model);
+        }
+
+        [HttpPost, ActionName("EnterBid")]
+        [AllowAnonymous]
+        public ActionResult EnterBidConfirmed(int auctionItemId, decimal bidAmount)
+        {
+            var model = new EnterWinnersInBulkViewModel();
+            return View(model);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
