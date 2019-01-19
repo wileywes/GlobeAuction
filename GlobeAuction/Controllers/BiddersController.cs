@@ -31,13 +31,13 @@ namespace GlobeAuction.Controllers
 
             var models = new List<BidderForList>();
 
-            foreach(var bidder in bidders)
+            foreach (var bidder in bidders)
             {
                 var invoice = invoicesForBidders.FirstOrDefault(i => i.Bidder.BidderId == bidder.BidderId);
                 var bidderForList = new BidderForList(bidder, invoice);
                 models.Add(bidderForList);
             }
-            
+
             return View(models);
         }
 
@@ -122,7 +122,7 @@ namespace GlobeAuction.Controllers
                     //strip out dependents that weren't filled in
                     bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                     bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
-                    
+
                     foreach (var guest in bidder.AuctionGuests)
                     {
                         var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
@@ -152,7 +152,7 @@ namespace GlobeAuction.Controllers
                         return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
                     }
                 }
-                catch(OutOfStockException oosExc)
+                catch (OutOfStockException oosExc)
                 {
                     ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your registration again (you have not been charged yet).");
                 }
@@ -161,7 +161,7 @@ namespace GlobeAuction.Controllers
             AddBidderControlInfo();
             return View(bidderViewModel);
         }
-        
+
         [AllowAnonymous]
         public ActionResult RedirectToPayPal(int? id)
         {
@@ -178,7 +178,7 @@ namespace GlobeAuction.Controllers
             //before we redirect, make sure we have the latest prices on the current tickets configuration
             var ticketTypes = db.TicketTypes.ToList();
             var changesMade = false;
-            foreach(var guest in bidder.AuctionGuests)
+            foreach (var guest in bidder.AuctionGuests)
             {
                 var matchingTT = ticketTypes.FirstOrDefault(t => t.Name.Equals(guest.TicketType));
                 if (matchingTT != null && matchingTT.Price != guest.TicketPrice)
@@ -198,7 +198,7 @@ namespace GlobeAuction.Controllers
             }
 
             var viewModel = new BidderForPayPal(bidder, invoice);
-            
+
             return View(viewModel);
         }
 
@@ -278,8 +278,8 @@ namespace GlobeAuction.Controllers
 
                 bidder.UpdateBy = User.Identity.GetUserName();
                 bidder.UpdateDate = Utilities.GetEasternTimeNow();
-                
-                foreach(var g in bidder.AuctionGuests)
+
+                foreach (var g in bidder.AuctionGuests)
                 {
                     db.Entry(g).State = EntityState.Modified;
                 }
@@ -473,24 +473,65 @@ namespace GlobeAuction.Controllers
             }
         }
 
+        [HttpGet]
         [AllowAnonymous]
         public ActionResult EnterBid(int auctionItemId)
         {
-            var item = db.AuctionItems.Find(auctionItemId);
-            if (item == null)
+            BidderCookieInfo info;
+            if (BidderRepository.TryGetBidderInfoFromCookie(out info))
             {
-                return HttpNotFound();
+                var item = db.AuctionItems
+                .Include(a => a.AllBids)
+                .Include("AllBids.Bidder")
+                .FirstOrDefault(a => a.AuctionItemId == auctionItemId);
+
+                if (item == null)
+                {
+                    return HttpNotFound();
+                }
+                var model = new AuctionItemViewModel(item);
+                return View(model);
             }
-            var model = new AuctionItemViewModel(item);
-            return View(model);
+            else
+            {
+                return RedirectToAction("Login", new { returnURl = "/bidders/bids" });
+            }
         }
 
         [HttpPost, ActionName("EnterBid")]
         [AllowAnonymous]
         public ActionResult EnterBidConfirmed(int auctionItemId, decimal bidAmount)
         {
-            var model = new EnterWinnersInBulkViewModel();
-            return View(model);
+            Bidder bidder;
+            if (new BidderRepository(db).TryGetValidatedBidderFromCookie(out bidder))
+            {
+                var item = db.AuctionItems.Find(auctionItemId);
+
+                if (item == null)
+                {
+                    return HttpNotFound();
+                }
+
+                if (item.StartingBid > bidAmount)
+                {
+                    ModelState.AddModelError("bidAmount", "Your bid must be higher than the starting bid.");
+                }
+                else if (bidAmount % item.BidIncrement != 0)
+                {
+                    ModelState.AddModelError("bidAmount", "Your bid must be an increment of the Bid Increment.");
+                }
+                else
+                {
+                    //enter the bid and return success on the Bids list page
+                }
+
+                var model = new AuctionItemViewModel(item);
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Login", new { returnURl = "/bidders/bids" });
+            }
         }
 
 
@@ -518,7 +559,7 @@ namespace GlobeAuction.Controllers
                 .OrderByDescending(t => t.Price)
                 .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
 
-            
+
             //TEACHER NAMES
             ViewBag.TeacherNames = AuctionConstants.TeacherNames
                 .Select(t => new SelectListItem { Text = t, Value = t });

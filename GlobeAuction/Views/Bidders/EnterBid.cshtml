@@ -20,14 +20,62 @@
             </div>
             <div class="form-group">
                 @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10" id="title">
+                <div class="col-md-10">
                     @Html.DisplayFor(model => model.Title)
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10" id="title">
+                <div class="col-md-10">
                     @Html.DisplayFor(model => model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Starting Bid", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.StartingBid)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Bid Increment", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.BidIncrement)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Existing Bids", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <table class="table table-striped table-bordered" id="donationItemsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Winning?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var bid in Model.AllBids.OrderBy(b => b.BidAmount))
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(m => bid.Bidder.BidderNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => bid.Bidder.FirstName)
+                                        @Html.DisplayFor(m => bid.Bidder.LastName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => bid.BidAmount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => bid.IsWinning)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

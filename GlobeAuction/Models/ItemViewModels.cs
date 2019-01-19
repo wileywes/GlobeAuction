@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -184,6 +185,7 @@ namespace GlobeAuction.Models
         public int BidId { get; set; }
 
         public virtual AuctionItemViewModel AuctionItem { get; set; }
+        public virtual BidderViewModel Bidder { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal BidAmount { get; set; }
@@ -199,6 +201,7 @@ namespace GlobeAuction.Models
         {
             BidId = bid.BidId;
             AuctionItem = new AuctionItemViewModel(bid.AuctionItem);
+            Bidder = Mapper.Map<BidderViewModel>(bid.Bidder);
             BidAmount = bid.BidAmount;
             AmountPaid = bid.AmountPaid;
             IsWinning = bid.IsWinning;
