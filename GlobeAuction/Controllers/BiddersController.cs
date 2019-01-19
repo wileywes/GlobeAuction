@@ -451,7 +451,7 @@ namespace GlobeAuction.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Bids()
+        public ActionResult Bids(BidErrorType? error)
         {
             BidderCookieInfo info;
             if (BidderRepository.TryGetBidderInfoFromCookie(out info))
@@ -465,11 +465,22 @@ namespace GlobeAuction.Controllers
 
                 ViewBag.BidderInfo = info;
 
+                if (error.HasValue)
+                {
+                    switch (error.Value)
+                    {
+                        case BidErrorType.InvalidItemNumber:
+                            ModelState.AddModelError("", "You entered an invalid item number.  Please double-check the item number and try again.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 return View(models);
             }
             else
             {
-                return RedirectToAction("Login", new { returnURl = "/bidders/bids" });
+                return RedirectToAction("Login", new { returnURl = "/bids" });
             }
         }
 
@@ -480,21 +491,24 @@ namespace GlobeAuction.Controllers
             BidderCookieInfo info;
             if (BidderRepository.TryGetBidderInfoFromCookie(out info))
             {
-                var item = db.AuctionItems
-                .Include(a => a.AllBids)
-                .Include("AllBids.Bidder")
-                .FirstOrDefault(a => a.AuctionItemId == auctionItemId);
-
+                var item = new ItemsRepository(db).GetItemWithAllBidInfo(auctionItemId);
                 if (item == null)
                 {
-                    return HttpNotFound();
+                    return RedirectToAction("Bids", new { error = BidErrorType.InvalidItemNumber });
                 }
-                var model = new AuctionItemViewModel(item);
+                var nextBidIncrement = (item.AllBids.Any() ? item.AllBids.Max(b => b.BidAmount) : item.StartingBid)
+                    + item.BidIncrement;
+
+                var model = new EnterBidViewModel
+                {
+                    AuctionItem = new AuctionItemViewModel(item),
+                    BidAmount = nextBidIncrement //default to the next bid up
+                };
                 return View(model);
             }
             else
             {
-                return RedirectToAction("Login", new { returnURl = "/bidders/bids" });
+                return RedirectToAction("Login", new { returnURl = "/bids" });
             }
         }
 
@@ -505,8 +519,7 @@ namespace GlobeAuction.Controllers
             Bidder bidder;
             if (new BidderRepository(db).TryGetValidatedBidderFromCookie(out bidder))
             {
-                var item = db.AuctionItems.Find(auctionItemId);
-
+                var item = new ItemsRepository(db).GetItemWithAllBidInfo(auctionItemId);
                 if (item == null)
                 {
                     return HttpNotFound();
@@ -514,23 +527,40 @@ namespace GlobeAuction.Controllers
 
                 if (item.StartingBid > bidAmount)
                 {
-                    ModelState.AddModelError("bidAmount", "Your bid must be higher than the starting bid.");
+                    ModelState.AddModelError("bidAmount", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").");
                 }
                 else if (bidAmount % item.BidIncrement != 0)
                 {
-                    ModelState.AddModelError("bidAmount", "Your bid must be an increment of the Bid Increment.");
+                    ModelState.AddModelError("bidAmount", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").");
                 }
                 else
                 {
                     //enter the bid and return success on the Bids list page
+                    List<Bidder> biddersThatLost;
+                    new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmount, out biddersThatLost);
+                    
+                    //after saving DB changes, now go text those bidders
+                    var payLink = Url.Action("EnterBid", "Bidders", new { auctionItemId = item.AuctionItemId }, Request.Url.Scheme);
+                    var body = "You won GLOBE Auction items!  Click here to checkout: " + payLink;
+
+                    var txtHelper = new SmsHelper();
+                    foreach (var bidder in biddersThatLost)
+                    {
+                        txtHelper.SendSms(winner.Bidder.Phone, body);
+                    }
+                    return RedirectToAction("Bids", "Bidders");
                 }
 
-                var model = new AuctionItemViewModel(item);
+                var model = new EnterBidViewModel
+                {
+                    AuctionItem = new AuctionItemViewModel(item),
+                    BidAmount = bidAmount
+                };
                 return View(model);
             }
             else
             {
-                return RedirectToAction("Login", new { returnURl = "/bidders/bids" });
+                return RedirectToAction("Login", new { returnURl = "/bids" });
             }
         }
 

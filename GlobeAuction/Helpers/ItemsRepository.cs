@@ -124,21 +124,49 @@ namespace GlobeAuction.Helpers
             db.SaveChanges();
         }
 
-        public void EnterNewBidAndRecalcWinners(AuctionItem item, Bidder bidder, decimal amount)
+        public AuctionItem GetItemWithAllBidInfo(int auctionItemId)
         {
+            return db.AuctionItems
+                .Include(a => a.AllBids)
+                .Include("AllBids.Bidder")
+                .FirstOrDefault(a => a.UniqueItemNumber == auctionItemId);
+        }
+
+        public void EnterNewBidAndRecalcWinners(AuctionItem item, Bidder bidder, decimal amount, out List<Bidder> biddersThatLost)
+        {
+            var time = Utilities.GetEasternTimeNow();
             var newBid = new Bid
             {
                 AuctionItem = item,
                 Bidder = bidder,
-                BidAmount = amount
+                BidAmount = amount,
+                CreateDate = time,
+                UpdateBy = bidder.Email,
+                UpdateDate = time
             };
             item.AllBids.Add(newBid);
+
+            biddersThatLost = new List<Bidder>();
 
             //recalculate winners
             var index = 0;
             foreach(var bid in item.AllBids.OrderByDescending(b => b.BidAmount))
             {
-                bid.IsWinning = (index < item.Quantity);
+                var nowWinning = index < item.Quantity;
+                if (bid.IsWinning != nowWinning)
+                {
+                    //changing
+                    bid.UpdateBy = bidder.Email;
+                    bid.UpdateDate = time;
+                }
+                //lost win
+                if (bid.IsWinning && !nowWinning)
+                {
+                    //send text to this bidder
+                    biddersThatLost.Add(bid.Bidder);
+                }
+
+                bid.IsWinning = nowWinning;
                 index++;
             }
             db.SaveChanges();

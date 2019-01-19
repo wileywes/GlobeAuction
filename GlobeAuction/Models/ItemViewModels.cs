@@ -138,6 +138,7 @@ namespace GlobeAuction.Models
     public class AuctionItemViewModel
     {
         public int AuctionItemId { get; set; }
+        [Display(Name = "Item No.")]
         public int UniqueItemNumber { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -188,6 +189,7 @@ namespace GlobeAuction.Models
         public virtual BidderViewModel Bidder { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Bid Amount")]
         public decimal BidAmount { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -195,6 +197,7 @@ namespace GlobeAuction.Models
 
         public bool IsPaid { get { return AmountPaid.HasValue; } }
 
+        [Display(Name ="Winning?")]
         public bool IsWinning { get; set; }
 
         public BidViewModel(Bid bid)
@@ -206,5 +209,16 @@ namespace GlobeAuction.Models
             AmountPaid = bid.AmountPaid;
             IsWinning = bid.IsWinning;
         }
+    }
+
+    public class EnterBidViewModel
+    {
+        public AuctionItemViewModel AuctionItem { get; set; }
+        public decimal BidAmount { get; set; }
+    }
+
+    public enum BidErrorType
+    {
+        InvalidItemNumber
     }
 }

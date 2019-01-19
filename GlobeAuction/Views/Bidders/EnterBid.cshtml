@@ -1,81 +1,100 @@
-﻿@model GlobeAuction.Models.AuctionItemViewModel
+﻿@model GlobeAuction.Models.EnterBidViewModel
 
 @{
     ViewBag.Title = "Enter new Bid";
 }
 
+<h2>Enter a New Bid</h2>
+
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.Hidden("auctionItemId", Model.AuctionItemId)
+    @Html.Hidden("auctionItemId", Model.AuctionItem.AuctionItemId)
 
     <div class="container">
         <div class="form-horizontal">
             <div class="form-group">
                 @Html.Label("Item No", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItemId)
+                    @Html.DisplayFor(model => model.AuctionItem.AuctionItemId, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.Title)
+                    @Html.DisplayFor(model => model.AuctionItem.Title, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.Description)
+                    @Html.DisplayFor(model => model.AuctionItem.Description, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("Starting Bid", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.StartingBid)
+                    @Html.DisplayFor(model => model.AuctionItem.StartingBid, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
             <div class="form-group">
                 @Html.Label("Bid Increment", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.BidIncrement)
+                    @Html.DisplayFor(model => model.AuctionItem.BidIncrement, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.Label("Existing Bids", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <table class="table table-striped table-bordered" id="donationItemsTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Amount</th>
-                                <th>Winning?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var bid in Model.AllBids.OrderBy(b => b.BidAmount))
-                            {
+                    @if (Model.AuctionItem.AllBids.Any())
+                    {
+                        <table class="table table-striped table-bordered" id="donationItemsTable">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        @Html.DisplayFor(m => bid.Bidder.BidderNumber)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(m => bid.Bidder.FirstName)
-                                        @Html.DisplayFor(m => bid.Bidder.LastName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(m => bid.BidAmount)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(m => bid.IsWinning)
-                                    </td>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Amount</th>
+                                    <th>Winning?</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var bid in Model.AuctionItem.AllBids.OrderBy(b => b.BidAmount))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(m => bid.Bidder.BidderNumber)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(m => bid.Bidder.FirstName)
+                                            @Html.DisplayFor(m => bid.Bidder.LastName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(m => bid.BidAmount)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(m => bid.IsWinning)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>
+                            You are the first bidder!  Enter your bid below.
+                        </p>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Your Bid", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
 
