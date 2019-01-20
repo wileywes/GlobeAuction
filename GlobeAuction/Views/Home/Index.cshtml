@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<ul id="lightSlider">
+<ul id="lightSlider" class="cs-hidden">
     <li><img src="~/Content/Images/Carousel/GLOBEAuction_01.jpg" height="300" /></li>
     <li><img src="~/Content/Images/Carousel/GLOBEAuction_03.jpg" height="300" /></li>
     <li><img src="~/Content/Images/Carousel/GLOBEAuction_04.jpg" height="300" /></li>
@@ -62,7 +62,10 @@
           auto: true,
           autoWidth:true,
           loop: true,
-          speed: 600
+          speed: 600,
+          onSliderLoad: function () {
+              $('#lightSlider').removeClass('cS-hidden');
+          } 
       });
   });
 </script>

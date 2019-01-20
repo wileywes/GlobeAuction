@@ -156,9 +156,12 @@ namespace GlobeAuction.Helpers
                     }
                 }
 
-                foreach(var bid in invoice.Bids)
+                if (invoice.Bids != null)
                 {
-                    bid.AmountPaid = bid.BidAmount;
+                    foreach (var bid in invoice.Bids)
+                    {
+                        bid.AmountPaid = bid.BidAmount;
+                    }
                 }
 
                 //mark all as paid when it's manual

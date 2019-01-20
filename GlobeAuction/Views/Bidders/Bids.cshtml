@@ -12,15 +12,18 @@
 <p>
     @Html.ActionLink("Pay for Winnings", "ReviewBidderWinnings", "Invoices", new { bid = ViewBag.BidderInfo.BidderId, email = ViewBag.BidderInfo.Email })
 </p>
+<p>
+    @Html.ActionLink("Not Me", "Logout")
+</p>
 
-@using (Html.BeginForm("EnterBid", "Bidders", FormMethod.Get, new { @class = "form-inline" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<div class="panel panel-default">
+    <div class="panel-heading">Enter a New Bid</div>
+    <div class="panel-body">
+        @using (Html.BeginForm("EnterBid", "Bidders", FormMethod.Get, new { @class = "form-inline" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div class="panel panel-default">
-        <div class="panel-heading">Enter a New Bid</div>
-        <div class="panel-body">
             <div class="form-group">
                 <label class="sr-only" for="auctionItemId">Auction Item No.</label>
                 <div class="input-group">
@@ -29,9 +32,9 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Start Bidding</button>
-        </div>
+        }
     </div>
-}
+</div>
 
 <div class="panel panel-default">
     <div class="panel-heading">Bids You Have Already Placed</div>
@@ -87,5 +90,9 @@
             stateSave: true,
             buttons: []
         });
+
+        setTimeout(function () {
+            window.location.reload(1);
+        }, 60000);
     });
 </script>

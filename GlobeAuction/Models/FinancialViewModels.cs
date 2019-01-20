@@ -51,7 +51,7 @@ namespace GlobeAuction.Models
             BidderEmail = bidder.Email;
 
             Invoices = (invoices ?? new List<Invoice>()).ToList();
-            AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new BidViewModel(a)).ToList();
+            AuctionItemsNotInInvoice = auctionWinningsForBidderNotInInvoice.Select(a => new BidViewModel(a, a.AuctionItem)).ToList();
             ItemPurchases = storeItems.ToList();
         }
     }

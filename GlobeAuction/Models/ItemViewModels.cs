@@ -63,7 +63,7 @@ namespace GlobeAuction.Models
             this.Phone = bidder.Phone;
             this.IsCheckoutNudgeEmailSent = bidder.IsCheckoutNudgeEmailSent;
             this.IsCheckoutNudgeTextSent = bidder.IsCheckoutNudgeTextSent;
-            this.ItemsWon = itemsWon.Select(i => new BidViewModel(i)).ToList();
+            this.ItemsWon = itemsWon.Select(i => new BidViewModel(i, i.AuctionItem)).ToList();
             AreWinningsAllPaidFor = itemsWon.All(w => w.Invoice != null && w.Invoice.IsPaid);
 
             if (!AreWinningsAllPaidFor)
@@ -156,8 +156,6 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int DonationItemsTotalValue { get; set; }
         
-        public List<BidViewModel> AllBids { get; set; }
-
         public AuctionItemViewModel()
         {
             //empty for model binding
@@ -176,7 +174,6 @@ namespace GlobeAuction.Models
             this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
-            this.AllBids = i.AllBids.Select(b => new BidViewModel(b)).ToList();
         }
     }
 
@@ -200,10 +197,10 @@ namespace GlobeAuction.Models
         [Display(Name ="Winning?")]
         public bool IsWinning { get; set; }
 
-        public BidViewModel(Bid bid)
+        public BidViewModel(Bid bid, AuctionItem item)
         {
             BidId = bid.BidId;
-            AuctionItem = new AuctionItemViewModel(bid.AuctionItem);
+            AuctionItem = new AuctionItemViewModel(item);
             Bidder = Mapper.Map<BidderViewModel>(bid.Bidder);
             BidAmount = bid.BidAmount;
             AmountPaid = bid.AmountPaid;
@@ -214,6 +211,7 @@ namespace GlobeAuction.Models
     public class EnterBidViewModel
     {
         public AuctionItemViewModel AuctionItem { get; set; }
+        public List<BidViewModel> AllBids { get; set; }
         public decimal BidAmount { get; set; }
     }
 

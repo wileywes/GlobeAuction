@@ -49,27 +49,28 @@
             <div class="form-group">
                 @Html.Label("Existing Bids", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @if (Model.AuctionItem.AllBids.Any())
+                    @if (Model.AllBids.Any())
                     {
                         <table class="table table-striped table-bordered" id="donationItemsTable">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
+                                    <th>Bidder #</th>
+                                    <th>Bidder Name</th>
                                     <th>Amount</th>
                                     <th>Winning?</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var bid in Model.AuctionItem.AllBids.OrderBy(b => b.BidAmount))
+                                @foreach (var bid in Model.AllBids.OrderBy(b => b.BidAmount))
                                 {
-                                    <tr>
+                                    <tr @{if (ViewBag.BidderInfo.BidderId == bid.Bidder.BidderId) { <text>class="info"</text> } }>
                                         <td>
                                             @Html.DisplayFor(m => bid.Bidder.BidderNumber)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(m => bid.Bidder.FirstName)
                                             @Html.DisplayFor(m => bid.Bidder.LastName)
+
                                         </td>
                                         <td>
                                             @Html.DisplayFor(m => bid.BidAmount)
