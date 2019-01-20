@@ -497,6 +497,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\Images\attendees1.jpg" />
     <Content Include="Content\Images\attendees2.jpg" />
+    <Content Include="Content\Images\bid.gif" />
     <Content Include="Content\Images\blue_color#.jpg" />
     <Content Include="Content\Images\Carousel\GLOBEAuction_01.jpg" />
     <Content Include="Content\Images\Carousel\GLOBEAuction_03.jpg" />
