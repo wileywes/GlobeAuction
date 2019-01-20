@@ -111,6 +111,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.BidIncrement = auctionItemModel.BidIncrement;
                     auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     auctionItem.UpdateBy = User.Identity.GetUserName();
+                    auctionItem.Quantity = auctionItemModel.Quantity;
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
