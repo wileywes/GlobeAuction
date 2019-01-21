@@ -73,7 +73,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.IsWinning)
                         </td>
-                        <td></td>
+                        <td>
+                            @Html.ActionLink("Details", "EnterBid", new { auctionItemId = item.AuctionItem.UniqueItemNumber })
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -86,7 +88,7 @@
     $(document).ready(function () {
         $('#bidsTable').dataTable({
             "iDisplayLength": 100,
-            dom: 'Bfrtip',
+            dom: 'Brt',
             stateSave: true,
             buttons: []
         });
