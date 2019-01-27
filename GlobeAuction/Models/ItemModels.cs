@@ -161,6 +161,7 @@ namespace GlobeAuction.Models
         public virtual Bidder Bidder { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
         public decimal BidAmount { get; set; }
 
         [DataType(DataType.Currency)]

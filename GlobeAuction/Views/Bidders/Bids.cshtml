@@ -7,17 +7,20 @@
     ViewBag.Title = "My Active Bids";
 }
 
-<h2>My Active Bids (#@ViewBag.BidderInfo.BidderNumber - @ViewBag.BidderInfo.LastName)</h2>
+<h3>
+    My Active Bids (#@ViewBag.BidderInfo.BidderNumber - @ViewBag.BidderInfo.LastName)
+    <small>
+        @Html.ActionLink("Not Me", "Logout")
+    </small>
+</h3>
 
 <p>
     @Html.ActionLink("Pay for Winnings", "ReviewBidderWinnings", "Invoices", new { bid = ViewBag.BidderInfo.BidderId, email = ViewBag.BidderInfo.Email })
 </p>
-<p>
-    @Html.ActionLink("Not Me", "Logout")
-</p>
+
 
 <div class="panel panel-default">
-    <div class="panel-heading">Enter a New Bid</div>
+    <div class="panel-heading"><strong>Enter a New Bid</strong></div>
     <div class="panel-body">
         @using (Html.BeginForm("EnterBid", "Bidders", FormMethod.Get, new { @class = "form-inline" }))
         {
@@ -36,10 +39,10 @@
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">Bids You Have Already Placed</div>
+<div class="panel panel-success">
+    <div class="panel-heading"><strong>Bids You are Winning</strong></div>
     <div class="panel-body">
-        <table class="table table-striped table-bordered" id="bidsTable">
+        <table class="table table-striped table-bordered" id="winningTable">
             <thead>
                 <tr>
                     <th>
@@ -51,14 +54,11 @@
                     <th>
                         @Html.DisplayNameFor(model => model.BidAmount)
                     </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.IsWinning)
-                    </th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Where(b => b.IsWinning))
                 {
                     <tr>
                         <td>
@@ -71,7 +71,57 @@
                             @Html.DisplayFor(modelItem => item.BidAmount)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.IsWinning)
+                            @Html.ActionLink("Details", "EnterBid", new { auctionItemId = item.AuctionItem.UniqueItemNumber })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td align="right"><strong>Total:</strong></td>
+                    <td>
+                        <strong>
+                            @Model.Where(b => b.IsWinning).Select(b => b.BidAmount).DefaultIfEmpty(0).Sum().ToString("C")
+                        </strong>
+                </td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+</div>
+
+<div class="panel panel-warning">
+    <div class="panel-heading"><strong>Bids You are Losing</strong></div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered" id="losingTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AuctionItem.UniqueItemNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AuctionItem.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BidAmount)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Where(b => !b.IsWinning))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AuctionItem.UniqueItemNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AuctionItem.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BidAmount)
                         </td>
                         <td>
                             @Html.ActionLink("Details", "EnterBid", new { auctionItemId = item.AuctionItem.UniqueItemNumber })
@@ -83,10 +133,18 @@
     </div>
 </div>
 
+
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#bidsTable').dataTable({
+        $('#winningTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Brt',
+            stateSave: true,
+            buttons: []
+        });
+
+        $('#losingTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Brt',
             stateSave: true,
