@@ -11,14 +11,14 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.Hidden("auctionItemId", Model.AuctionItem.AuctionItemId)
+    @Html.Hidden("itemNo", Model.AuctionItem.UniqueItemNumber)
 
     <div class="container">
         <div class="form-horizontal">
             <div class="form-group">
                 @Html.Label("Item No", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.AuctionItemId, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.DisplayFor(model => model.AuctionItem.UniqueItemNumber, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
             <div class="form-group">

@@ -28,7 +28,7 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
-                <label class="sr-only" for="auctionItemId">Auction Item No.</label>
+                <label class="sr-only" for="itemNo">Auction Item No.</label>
                 <div class="input-group">
                     <div class="input-group-addon">#</div>
                     <input type="text" class="form-control" id="auctionItemId" name="auctionItemId" placeholder="123">
@@ -71,7 +71,7 @@
                             @Html.DisplayFor(modelItem => item.BidAmount)
                         </td>
                         <td>
-                            @Html.ActionLink("Details", "EnterBid", new { auctionItemId = item.AuctionItem.UniqueItemNumber })
+                            @Html.ActionLink("Details", "EnterBid", new { itemNo = item.AuctionItem.UniqueItemNumber })
                         </td>
                     </tr>
                 }
@@ -124,7 +124,7 @@
                             @Html.DisplayFor(modelItem => item.BidAmount)
                         </td>
                         <td>
-                            @Html.ActionLink("Details", "EnterBid", new { auctionItemId = item.AuctionItem.UniqueItemNumber })
+                            @Html.ActionLink("Details", "EnterBid", new { itemNo = item.AuctionItem.UniqueItemNumber })
                         </td>
                     </tr>
                 }

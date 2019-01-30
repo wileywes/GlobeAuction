@@ -493,14 +493,14 @@ namespace GlobeAuction.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult EnterBid(int auctionItemId)
+        public ActionResult EnterBid(int itemNo)
         {
             BidderCookieInfo info;
             if (BidderRepository.TryGetBidderInfoFromCookie(out info))
             {
                 ViewBag.BidderInfo = info;
 
-                var item = new ItemsRepository(db).GetItemWithAllBidInfo(auctionItemId);
+                var item = new ItemsRepository(db).GetItemWithAllBidInfo(itemNo);
                 if (item == null)
                 {
                     return RedirectToAction("Bids", new { error = BidErrorType.InvalidItemNumber });
@@ -520,14 +520,14 @@ namespace GlobeAuction.Controllers
 
         [HttpPost, ActionName("EnterBid")]
         [AllowAnonymous]
-        public ActionResult EnterBidConfirmed(int auctionItemId, decimal bidAmount)
+        public ActionResult EnterBidConfirmed(int itemNo, decimal bidAmount)
         {
             Bidder bidder;
             if (new BidderRepository(db).TryGetValidatedBidderFromCookie(out bidder))
             {
                 ViewBag.BidderInfo = bidder;
 
-                var item = new ItemsRepository(db).GetItemWithAllBidInfo(auctionItemId);
+                var item = new ItemsRepository(db).GetItemWithAllBidInfo(itemNo);
                 if (item == null)
                 {
                     return HttpNotFound();
@@ -548,8 +548,8 @@ namespace GlobeAuction.Controllers
                     new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmount, out biddersThatLost);
                     
                     //after saving DB changes, now go text those bidders
-                    var bidLink = Url.Action("EnterBid", "Bidders", new { auctionItemId = item.AuctionItemId }, Request.Url.Scheme);
-                    var body = string.Format("You have been outbid on item {0}.  Click here to rebid: {1}", auctionItemId, bidLink);
+                    var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
+                    var body = string.Format("You have been outbid on item {0}.  Click here to rebid: {1}", itemNo, bidLink);
 
                     var txtHelper = new SmsHelper();
                     foreach (var lostBidder in biddersThatLost)

@@ -401,7 +401,7 @@ namespace GlobeAuction.Controllers
                 //{
                 try
                 {
-                    var payLink = Url.Action("EnterBid", "Bidders", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
+                    var payLink = Url.Action("ReviewBidderWinnings", "Invoices", new { bid = winner.Bidder.BidderId, email = winner.Bidder.Email }, Request.Url.Scheme);
                     //var tinyUrl = urlHelper.GetTinyUrl(payLink);
                     var body = "You won GLOBE Auction items!  Click here to checkout: " + payLink;
                     txtHelper.SendSms(winner.Bidder.Phone, body);

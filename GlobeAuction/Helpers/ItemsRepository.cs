@@ -124,12 +124,12 @@ namespace GlobeAuction.Helpers
             db.SaveChanges();
         }
 
-        public AuctionItem GetItemWithAllBidInfo(int auctionItemId)
+        public AuctionItem GetItemWithAllBidInfo(int itemNo)
         {
             return db.AuctionItems
                 .Include(a => a.AllBids)
                 .Include("AllBids.Bidder")
-                .FirstOrDefault(a => a.UniqueItemNumber == auctionItemId);
+                .FirstOrDefault(a => a.UniqueItemNumber == itemNo);
         }
 
         public void EnterNewBidAndRecalcWinners(AuctionItem item, Bidder bidder, decimal amount, out List<Bidder> biddersThatLost)
