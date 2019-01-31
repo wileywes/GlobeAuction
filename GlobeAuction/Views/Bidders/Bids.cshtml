@@ -31,7 +31,7 @@
                 <label class="sr-only" for="itemNo">Auction Item No.</label>
                 <div class="input-group">
                     <div class="input-group-addon">#</div>
-                    <input type="text" class="form-control" id="auctionItemId" name="auctionItemId" placeholder="123">
+                    <input type="text" class="form-control" id="itemNo" name="itemNo" placeholder="123">
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Start Bidding</button>
@@ -141,14 +141,20 @@
             "iDisplayLength": 100,
             dom: 'Brt',
             stateSave: true,
-            buttons: []
+            buttons: [],
+            "language": {
+              "emptyTable": "You have not placed any bids that are currently winning."
+            }
         });
 
         $('#losingTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Brt',
             stateSave: true,
-            buttons: []
+            buttons: [],
+            "language": {
+              "emptyTable": "You have not placed any bids that are currently losing."
+            }
         });
 
         setTimeout(function () {
