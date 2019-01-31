@@ -160,9 +160,9 @@ namespace GlobeAuction.Helpers
                     bid.UpdateDate = time;
                 }
                 //lost win
-                if (bid.IsWinning && !nowWinning)
+                if (bid.IsWinning && !nowWinning && bid.Bidder.BidderId != bidder.BidderId)
                 {
-                    //send text to this bidder
+                    //send text to this bidder as long as it's not the bidder that just entered the new bid
                     biddersThatLost.Add(bid.Bidder);
                 }
 

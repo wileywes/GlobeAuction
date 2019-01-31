@@ -549,7 +549,7 @@ namespace GlobeAuction.Controllers
                     
                     //after saving DB changes, now go text those bidders
                     var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
-                    var body = string.Format("You have been outbid on item {0}.  Click here to rebid: {1}", itemNo, bidLink);
+                    var body = string.Format("You have been outbid on item # {0} ({1}).  Click here to rebid: {2}", itemNo, item.Title, bidLink);
 
                     var txtHelper = new SmsHelper();
                     foreach (var lostBidder in biddersThatLost)
