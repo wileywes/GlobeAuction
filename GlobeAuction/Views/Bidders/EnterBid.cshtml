@@ -93,15 +93,18 @@
             </div>
 
             <div class="form-group">
-                @Html.Label("Your Bid", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
 
             <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
+                <div class="col-md-offset-2 col-md-10 btn-toolbar">
                     <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+                    
+                    @Html.ActionLink("Return to Bids", "Bids", "Bidders", null, htmlAttributes: new { @class = "btn btn-default" })
+
                 </div>
             </div>
         </div>

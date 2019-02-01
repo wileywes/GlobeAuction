@@ -467,8 +467,9 @@ namespace GlobeAuction.Controllers
                     .Include(b => b.AuctionItem)
                     .Where(b => b.Bidder.BidderId == info.BidderId && b.Bidder.BidderNumber == info.BidderNumber)
                     .ToList();
-
-                var models = bids.Select(b => new BidViewModel(b, b.AuctionItem));
+                
+                var bidsToShow = FilterOutMyExtraLosingBids(bids);
+                var models = bidsToShow.Select(b => new BidViewModel(b, b.AuctionItem));
 
                 ViewBag.BidderInfo = info;
 
@@ -489,6 +490,20 @@ namespace GlobeAuction.Controllers
             {
                 return RedirectToAction("Login", new { returnURl = "/bids" });
             }
+        }
+
+        private List<Bid> FilterOutMyExtraLosingBids(List<Bid> bids)
+        {
+            var bidsToReturn = new List<Bid>();
+            var bidsByItem = bids.GroupBy(b => b.AuctionItem);
+            foreach(var group in bidsByItem)
+            {
+                //for each item, only display my top bid or any that are winning (if winning multiples)
+                var myMaxBidOnThisItem = group.OrderByDescending(b => b.BidAmount).FirstOrDefault();
+                var bidsToInclude = group.Where(b => b.IsWinning || b == myMaxBidOnThisItem);
+                bidsToReturn.AddRange(bidsToInclude);
+            }
+            return bidsToReturn;
         }
 
         [HttpGet]

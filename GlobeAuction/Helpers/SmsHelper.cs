@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -16,10 +17,18 @@ namespace GlobeAuction.Helpers
         {
             TwilioClient.Init(_twilioAccountSid, _twilioAuthToken);
 
-            var message = MessageResource.Create(
-                to: new PhoneNumber(toPhone),
-                messagingServiceSid: _copilotSid,
-                body: body);            
+            try
+            {
+                Utilities.RetryIt(attemptNum =>
+                {
+                    var message = MessageResource.Create(
+                        to: new PhoneNumber(toPhone),
+                        messagingServiceSid: _copilotSid,
+                        body: body);
+                }, "SendSms", 2);
+            }         
+            catch(Exception)
+            { }
         }
     }
 }

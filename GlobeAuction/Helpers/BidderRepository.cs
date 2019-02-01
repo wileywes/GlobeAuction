@@ -33,6 +33,7 @@ namespace GlobeAuction.Helpers
             var encoded = WebUtility.UrlEncode(Convert.ToBase64String(bytes));
 
             HttpContext.Current.Response.Cookies[BidderIdCookieName].Value = encoded;
+            HttpContext.Current.Response.Cookies[BidderIdCookieName].Expires = DateTime.Now.AddMonths(1);
         }
 
         public static void ClearBidderCookie()
