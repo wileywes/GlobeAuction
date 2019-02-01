@@ -648,6 +648,7 @@
     </Content>
     <Content Include="DataTables\Buttons-1.2.4\css\common.scss" />
     <Content Include="DataTables\Buttons-1.2.4\css\mixins.scss" />
+    <Content Include="Content\Files\2019 Solicitation Letter.pdf" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
