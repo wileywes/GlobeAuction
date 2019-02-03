@@ -257,9 +257,17 @@ namespace GlobeAuction.Controllers
 
                     db.SaveChanges();
                     return RedirectToAction("Index");
-            }
+                case "MarkAsReceived":
+                    foreach (var selectedDonation in selectedDonations)
+                    {
+                        selectedDonation.IsReceived = true;
+                    }
 
-            return RedirectToAction("Index");
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                default:
+                    throw new ApplicationException("Unrecognized donation item action");
+            }
         }
 
         [HttpPost, ActionName("SubmitSelectedAuctionItems")]

@@ -145,6 +145,7 @@
                 <th>
                     Has Display
                 </th>
+                <th>Received</th>
                 <th>
                     Use Digital Certificate For Winner
                 </th>
@@ -348,7 +349,7 @@
                     }
                 },
                 {
-                    text: 'Email Certificate when Won',
+                    text: 'Mark as Email Certificate for Winner',
                     action: function (e, dt, node, config) {
                         var data = dt.rows({ selected: true }).data();
                         if (data.length == 0) {
@@ -359,6 +360,23 @@
 
                             if (confirm("Are you sure?  For these items the system will now email a digital certificate to the winner once paid.")) {
                                 $("#donationItemsAction").val("UseDigitalCertificateForWinner");
+                                $('#submitSelectedDonationItemsForm').submit();
+                            }
+                        }
+                    }
+                },
+                {
+                    text: 'Mark as Received',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows for this action.');
+                        }
+                        else {
+                            $("#selectedDonationItemIds").val(getSelectedRows(data));
+
+                            if (confirm("Are you sure?  These items will be marked as received by an auction team volunteer.")) {
+                                $("#donationItemsAction").val("MarkAsReceived");
                                 $('#submitSelectedDonationItemsForm').submit();
                             }
                         }

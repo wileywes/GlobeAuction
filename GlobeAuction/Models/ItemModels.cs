@@ -80,6 +80,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
         public bool HasDisplay { get; set; }
+        public bool IsReceived { get; set; }
 
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }

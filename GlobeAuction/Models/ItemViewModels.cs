@@ -111,6 +111,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int? DollarValue { get; set; }
         public string HasDisplay { get; set; }
+        public string IsReceived { get; set; }
         [Required]
         public int Quantity { get; set; }
         public bool HasWinnerBeenEmailed { get; set; }
@@ -130,6 +131,7 @@ namespace GlobeAuction.Models
             this.ExpirationDate = item.ExpirationDate;
             this.Restrictions = item.Restrictions; //.TruncateTo(50);
             this.HasDisplay = item.HasDisplay ? "Yes" : "No";
+            this.IsReceived = item.IsReceived ? "Yes" : "No";
             this.UseDigitalCertificateForWinner = item.UseDigitalCertificateForWinner ? "Yes" : "No";
             this.Quantity = item.Quantity;
         }
