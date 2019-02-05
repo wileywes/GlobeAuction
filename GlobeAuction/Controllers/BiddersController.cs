@@ -548,13 +548,19 @@ namespace GlobeAuction.Controllers
                     return HttpNotFound();
                 }
 
+                var highestExistingBid = item.AllBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Max();
+
                 if (item.StartingBid > bidAmount)
                 {
-                    ModelState.AddModelError("", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").");
+                    ModelState.AddModelError("", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").  Please increase your bid and try again.");
                 }
                 else if (bidAmount % item.BidIncrement != 0)
                 {
-                    ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").");
+                    ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").  Please adjust your bid and try again.");
+                }
+                else if (bidAmount <= highestExistingBid)
+                {
+                    ModelState.AddModelError("", "Your bid must be higher than the last bid of " + highestExistingBid.ToString("c") + ".  You need to increase your bid and place it again.");
                 }
                 else
                 {
