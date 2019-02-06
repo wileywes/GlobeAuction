@@ -119,7 +119,7 @@ namespace GlobeAuction.Models
             invoice.Bids = invoice.Bids ?? new List<Bid>();
             invoice.StoreItemPurchases = invoice.StoreItemPurchases ?? new List<StoreItemPurchase>();
 
-            CountOfItems = invoice.Bids.Count + invoice.StoreItemPurchases.Count;
+            CountOfItems = invoice.Bids.Count + invoice.StoreItemPurchases.Count + invoice.Bidder.AuctionGuests.Count;
             InvoiceTotal = invoice.Total;
 
             InvoiceTotalPaid = invoice.TotalPaid;

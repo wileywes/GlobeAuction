@@ -22,6 +22,7 @@ namespace GlobeAuction.Controllers
             var invoices = db.Invoices
                 .Include(i => i.Bids)
                 .Include(i => i.Bidder)
+                .Include("Bidder.AuctionGuests")
                 .Include(i => i.PaymentTransaction)
                 .Include(i => i.StoreItemPurchases)
                 .Include("StoreItemPurchases.StoreItem")
