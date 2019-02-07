@@ -106,7 +106,7 @@ namespace GlobeAuction.Models
                 BidderId = invoice.Bidder.BidderId;
                 BidderNumber = invoice.Bidder.BidderNumber;
             }
-            
+
             Name = invoice.FirstName + "  " + invoice.LastName;
             Email = invoice.Email;
             InvoiceId = invoice.InvoiceId;
@@ -119,9 +119,13 @@ namespace GlobeAuction.Models
             invoice.Bids = invoice.Bids ?? new List<Bid>();
             invoice.StoreItemPurchases = invoice.StoreItemPurchases ?? new List<StoreItemPurchase>();
 
-            CountOfItems = invoice.Bids.Count + invoice.StoreItemPurchases.Count + invoice.Bidder?.AuctionGuests?.Count ?? 0;
-            InvoiceTotal = invoice.Total;
+            CountOfItems = invoice.Bids.Count + invoice.StoreItemPurchases.Count;
+            if (InvoiceType == InvoiceType.BidderRegistration)
+            {
+                CountOfItems += invoice.Bidder?.AuctionGuests?.Count ?? 0;
+            }
 
+            InvoiceTotal = invoice.Total;
             InvoiceTotalPaid = invoice.TotalPaid;
         }
     }
