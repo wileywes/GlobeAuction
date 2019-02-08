@@ -67,7 +67,7 @@ textarea {
 }
 
 .nav > li.disabled > a {
-    color: #86754d;
+    color: #FFFFFF;
 }
 
 
@@ -83,14 +83,14 @@ textarea {
 
 .nav > li.disabled > a:hover,
 .nav > li.disabled > a:focus {
-    color: #86754d;
+    color: #FFFFFF;
     text-decoration: none;
     cursor: not-allowed;
     background-color: transparent;
 }
 
 .navbar-inverse .navbar-brand {
-    color: #86754d;
+    color: #FFFFFF;
 }
 
     .navbar-inverse .navbar-brand:hover,
@@ -100,12 +100,12 @@ textarea {
     }
 
 .navbar-inverse .navbar-text {
-    color: #86754d;
+    color: #FFFFFF;
 }
 
 .navbar-inverse .navbar-nav > li > a {
     font-size: 18px;
-    color: #86754d;
+    color: #FFFFFF;
 }
 
     .navbar-inverse .navbar-nav > li > a:hover,
@@ -155,7 +155,7 @@ textarea {
     }
 
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
-        color: #86754d;
+        color: #FFFFFF;
     }
 
         .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
@@ -180,7 +180,7 @@ textarea {
 }
 
 .navbar-inverse .navbar-link {
-    color: #86754d;
+    color: #FFFFFF;
 }
 
     .navbar-inverse .navbar-link:hover {
@@ -212,9 +212,9 @@ tr.shown td.details-control {
 
 
 .btn-gold {
-    color: #86754d;
+    color: #FFFFFF;
     background-color: #B3B3B3;
-    border-color: #86754d;
+    border-color: #FFFFFF;
     font-weight: bold;
 }
 
