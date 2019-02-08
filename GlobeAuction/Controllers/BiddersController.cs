@@ -243,7 +243,7 @@ namespace GlobeAuction.Controllers
             var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
             invoiceRepos.ApplyPaymentToInvoice(ppTrans, regInvoice);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " manually via MarkBidderPaid");
-            return RedirectToAction("Index", "Logs");
+            return RedirectToAction("Index", "LogFiles");
         }
 
         // GET: Bidders/Edit/5
@@ -424,26 +424,37 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var bidder = db.Bidders.FirstOrDefault(b =>
+                var allMatchingBidders = db.Bidders.Where(b =>
                     b.IsDeleted == false &&
                     b.BidderNumber == bidderLookup.BidderNumber &&
                     b.LastName.Equals(bidderLookup.LastName, StringComparison.OrdinalIgnoreCase) &&
-                    b.Email.Equals(bidderLookup.Email, StringComparison.OrdinalIgnoreCase));
+                    b.Email.Equals(bidderLookup.Email, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                if (bidder == null)
+                if (!allMatchingBidders.Any())
                 {
                     ModelState.AddModelError("", "No bidder was found matching this information.");
                 }
                 else
                 {
-                    BidderRepository.SetBidderCookie(bidder);
+                    var repos = new BidderRepository(db);
 
-                    if (!string.IsNullOrEmpty(bidderLookup.RedirectUrl))
+                    foreach (var bidder in allMatchingBidders.OrderBy(b => b.BidderId))
                     {
-                        return Redirect(bidderLookup.RedirectUrl);
+                        if (repos.IsBidderAllowedToBid(bidder))
+                        {
+                            BidderRepository.SetBidderCookie(bidder);
+
+                            if (!string.IsNullOrEmpty(bidderLookup.RedirectUrl))
+                            {
+                                return Redirect(bidderLookup.RedirectUrl);
+                            }
+
+                            return RedirectToAction("Bids");
+                        }
                     }
 
-                    return RedirectToAction("Bids");
+                    //if we get here we didn't find any bidders that could bid
+                    ModelState.AddModelError("", "You must have a paid ticket in order to proceed to the mobile bidding site.");
                 }
             }
 

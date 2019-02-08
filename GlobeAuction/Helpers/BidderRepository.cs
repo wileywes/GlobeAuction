@@ -93,5 +93,17 @@ namespace GlobeAuction.Helpers
 
             return false;
         }
+
+        public bool IsBidderAllowedToBid(Bidder bidder)
+        {
+            //bidder needs to have at least one ticket paid for to bid
+            var invoiceForBidderIfPaid = db.Invoices
+                .FirstOrDefault(i => i.InvoiceType == InvoiceType.BidderRegistration
+                        && i.Bidder != null
+                        && i.Bidder.BidderId == bidder.BidderId
+                        && i.TicketPurchases.Any(g => g.TicketPrice == 0 || g.TicketPricePaid.HasValue));
+
+            return invoiceForBidderIfPaid != null;
+        }
     }
 }

@@ -271,6 +271,22 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidEmail });
         }
 
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult MarkInvoicePaid(int invoiceId, int ppTransId)
+        {
+            var ppTrans = db.PayPalTransactions.Find(ppTransId);
+            var invoice = db.Invoices.Find(invoiceId);
+            if (invoice == null || ppTrans == null)
+            {
+                return HttpNotFound();
+            }
+
+            new InvoiceRepository(db).ApplyPaymentToInvoice(ppTrans, invoice);
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice  " + invoice.InvoiceId + " manually via MarkInvoicerPaid");
+
+            return RedirectToAction("Index", "LogFiles");
+        }
+
         public ActionResult RedirectToPayPal(int iid, string email)
         {
             var invoice = db.Invoices.FirstOrDefault(i => i.InvoiceId == iid && i.Email != null && i.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
