@@ -36,30 +36,30 @@ textarea {
         background: url("/Content/Images/Logo.gif") center 0px no-repeat;
         background-size: 200px 200px;
     }
-    
+
     body {
         padding-top: 205px;
         padding-bottom: 20px;
         color: #000000;
     }
-    
+
     .navbar-nav > li > a {
         padding-top: 0px;
         padding-bottom: 10px;
         line-height: 10px;
     }
 
-    .navbar-default .navbar-nav > .active > a:before,
-    .navbar-nav > li > a:before {
-        background-repeat: no-repeat;
-        background-position: 0 top;
-        content: "";
-        display: inline-block;
-        height: 0px;
-        margin-right: 10px;
-        vertical-align: middle;
-        width: 0px;
-    }
+        .navbar-default .navbar-nav > .active > a:before,
+        .navbar-nav > li > a:before {
+            background-repeat: no-repeat;
+            background-position: 0 top;
+            content: "";
+            display: inline-block;
+            height: 0px;
+            margin-right: 10px;
+            vertical-align: middle;
+            width: 0px;
+        }
 }
 
 .navbar {
@@ -67,7 +67,7 @@ textarea {
 }
 
 .nav > li.disabled > a {
-    color: #FFFFFF;
+    color: #86754d;
 }
 
 
@@ -83,14 +83,14 @@ textarea {
 
 .nav > li.disabled > a:hover,
 .nav > li.disabled > a:focus {
-    color: #FFFFFF;
+    color: #86754d;
     text-decoration: none;
     cursor: not-allowed;
     background-color: transparent;
 }
 
 .navbar-inverse .navbar-brand {
-    color: #FFFFFF;
+    color: #86754d;
 }
 
     .navbar-inverse .navbar-brand:hover,
@@ -100,12 +100,12 @@ textarea {
     }
 
 .navbar-inverse .navbar-text {
-    color: #FFFFFF;
+    color: #86754d;
 }
 
 .navbar-inverse .navbar-nav > li > a {
     font-size: 18px;
-    color: #FFFFFF;
+    color: #86754d;
 }
 
     .navbar-inverse .navbar-nav > li > a:hover,
@@ -155,7 +155,7 @@ textarea {
     }
 
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
-        color: #FFFFFF;
+        color: #86754d;
     }
 
         .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
@@ -180,7 +180,7 @@ textarea {
 }
 
 .navbar-inverse .navbar-link {
-    color: #FFFFFF;
+    color: #86754d;
 }
 
     .navbar-inverse .navbar-link:hover {
@@ -212,9 +212,9 @@ tr.shown td.details-control {
 
 
 .btn-gold {
-    color: #FFFFFF;
+    color: #86754d;
     background-color: #B3B3B3;
-    border-color: #FFFFFF;
+    border-color: #86754d;
     font-weight: bold;
 }
 
@@ -234,19 +234,19 @@ tr.shown td.details-control {
     width: 280px;
 }
 
-.printcontainer { 
-   page-break-after: always; 
-   page-break-inside: avoid;
+.printcontainer {
+    page-break-after: always;
+    page-break-inside: avoid;
 }
 
 
 .table-striped > tbody > tr.selected:nth-child(odd) > td,
 .table-striped > tbody > tr.selected:nth-child(odd) > th {
-  background-color: #A0AEC9;
+    background-color: #A0AEC9;
 }
 
 .table-banded-header {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 
