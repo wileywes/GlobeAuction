@@ -453,6 +453,10 @@
     <Compile Include="Migrations\201902031334170_DonationItemIsReceived.Designer.cs">
       <DependentUpon>201902031334170_DonationItemIsReceived.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902090030456_AuctionItemImageUrl.cs" />
+    <Compile Include="Migrations\201902090030456_AuctionItemImageUrl.Designer.cs">
+      <DependentUpon>201902090030456_AuctionItemImageUrl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -911,6 +915,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902031334170_DonationItemIsReceived.resx">
       <DependentUpon>201902031334170_DonationItemIsReceived.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902090030456_AuctionItemImageUrl.resx">
+      <DependentUpon>201902090030456_AuctionItemImageUrl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

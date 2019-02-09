@@ -35,6 +35,9 @@
                     Item No.
                 </th>
                 <th>
+                    Image
+                </th>
+                <th>
                     Title
                 </th>
                 <th>
@@ -65,6 +68,16 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
+                    }
+                    else
+                    {
+                        <input type="file" name="files" id="file@(item.AuctionItemId)" onchange="javascript:uploadImage(@(item.AuctionItemId));" />
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
@@ -170,6 +183,14 @@
         }
         return ids.trimRight(',');
     }
+
+    //TODO
+    function uploadImage(storeItemId) {
+        $("#storeItemIdForUpload").val(storeItemId);
+        $("#storeItemsAction").val("UploadImage");
+        $('#submitSelectedStoreItemsForm').submit();
+    }
+
 
     $(document).ready(function () {
         var auctionItemsDataTable = $('#auctionItemsTable').dataTable({

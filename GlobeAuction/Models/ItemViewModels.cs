@@ -144,6 +144,7 @@ namespace GlobeAuction.Models
         public int UniqueItemNumber { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string ImageUrl { get; set; }
         public string Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
@@ -169,6 +170,7 @@ namespace GlobeAuction.Models
             this.UniqueItemNumber = i.UniqueItemNumber;
             this.Title = i.Title;
             this.Description = i.Description; //.TruncateTo(50);
+            this.ImageUrl = i.ImageUrl;
             this.Category = i.Category;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;

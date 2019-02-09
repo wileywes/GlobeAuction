@@ -23,6 +23,10 @@ namespace GlobeAuction.Models
         public string Description { get; set; }
         [Required]
         public string Category { get; set; }
+
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
+
         [Required]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
