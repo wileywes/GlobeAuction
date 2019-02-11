@@ -921,6 +921,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Images\AuctionItems\" />
     <Folder Include="Content\Images\BidSheets\" />
   </ItemGroup>
   <PropertyGroup>

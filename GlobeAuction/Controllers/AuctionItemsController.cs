@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using GlobeAuction.Models;
 using GlobeAuction.Helpers;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace GlobeAuction.Controllers
 {
@@ -273,28 +274,22 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedAuctionItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedAuctionItems(string auctionItemsAction, string selectedAuctionItemIds, int? startingAuctionItemNumber)
+        public ActionResult SubmitSelectedAuctionItems(string auctionItemsAction, string selectedAuctionItemIds, int? startingAuctionItemNumber, int? auctionItemIdForUpload, IEnumerable<HttpPostedFileBase> files)
         {
             var selectedAuctionIds = selectedAuctionItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToList();
-
-            if (!selectedAuctionIds.Any())
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var selectedAuctionItems = db.AuctionItems.Where(ai => selectedAuctionIds.Contains(ai.UniqueItemNumber)).ToList();
-            if (!selectedAuctionItems.Any())
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
+            
             var username = User.Identity.GetUserName();
             switch (auctionItemsAction)
             {
                 case "RenumberAuctionItems":
+                    if (!selectedAuctionIds.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var selectedAuctionItems = db.AuctionItems.Where(ai => selectedAuctionIds.Contains(ai.UniqueItemNumber)).ToList();
+                    if (!selectedAuctionItems.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
                     var nextItemNum = startingAuctionItemNumber.GetValueOrDefault(0);
                     if (nextItemNum <= 0)
                     {
@@ -308,7 +303,25 @@ namespace GlobeAuction.Controllers
                         nextItemNum++;
                     }
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    break;
+                case "UploadImage":
+                    //image upload
+                    const string pathBase = "~/Content/images/AuctionItems";
+                    if (!auctionItemIdForUpload.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var auctionItemForImage = db.AuctionItems.Find(auctionItemIdForUpload.Value);
+                    if (auctionItemForImage == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var file = files.FirstOrDefault(f => f != null && f.ContentLength > 0);
+                    if (file == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var fileName = Path.GetFileName(file.FileName);
+                    var path = Path.Combine(Server.MapPath(pathBase), fileName);
+                    file.SaveAs(path);
+
+                    auctionItemForImage.ImageUrl = pathBase + "/" + fileName;
+                    db.SaveChanges();
+                    break;
             }
 
             return RedirectToAction("Index");

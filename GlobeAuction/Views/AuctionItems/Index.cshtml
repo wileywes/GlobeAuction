@@ -16,15 +16,16 @@
             <td>@Html.ActionLink("Store Items List", "Index", "StoreItems") &nbsp; &nbsp;</td>
             <td><a href="#donationItemsAnchor">Donation Items List</a></td>
         </tr>
-    </table>    
+    </table>
 </p>
 
 
-@using (Html.BeginForm("SubmitSelectedAuctionItems", "AuctionItems", FormMethod.Post, new { id = "submitSelectedAuctionItemsForm" }))
+@using (Html.BeginForm("SubmitSelectedAuctionItems", "AuctionItems", FormMethod.Post, new { id = "submitSelectedAuctionItemsForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
     @Html.Hidden("auctionItemsAction");
+    @Html.Hidden("auctionItemIdForUpload");
     @Html.Hidden("selectedAuctionItemIds");
     @Html.Hidden("startingAuctionItemNumber");
 
@@ -64,51 +65,51 @@
         </thead>
         <tbody>
             @foreach (var item in Model.AuctionItems)
-                {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UniqueItemNumber)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
-                    }
-                    else
-                    {
-                        <input type="file" name="files" id="file@(item.AuctionItemId)" onchange="javascript:uploadImage(@(item.AuctionItemId));" />
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DonationItemsCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartingBid)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BidIncrement)
-                </td>
-                <td class="text-nowrap">
-                    @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
-                </td>
-            </tr>
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
+                        }
+                        else
+                        {
+                            <input type="file" name="files" id="file@(item.AuctionItemId)" onchange="javascript:uploadImage(@(item.AuctionItemId));" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DonationItemsCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartingBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidIncrement)
+                    </td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -178,19 +179,17 @@
 
     function getSelectedRows(data) {
         var ids = '';
-        for (var i = 0; i < data.length ; i++) {
+        for (var i = 0; i < data.length; i++) {
             ids += data[i][0] + ',';
         }
         return ids.trimRight(',');
     }
 
-    //TODO
-    function uploadImage(storeItemId) {
-        $("#storeItemIdForUpload").val(storeItemId);
-        $("#storeItemsAction").val("UploadImage");
-        $('#submitSelectedStoreItemsForm').submit();
+    function uploadImage(auctionItemId) {
+        $("#auctionItemIdForUpload").val(auctionItemId);
+        $("#auctionItemsAction").val("UploadImage");
+        $('#submitSelectedAuctionItemsForm').submit();
     }
-
 
     $(document).ready(function () {
         var auctionItemsDataTable = $('#auctionItemsTable').dataTable({
@@ -211,7 +210,7 @@
                         }
                         else {
                             var ids = '';
-                            for (var i = 0; i < data.length ; i++) {
+                            for (var i = 0; i < data.length; i++) {
                                 ids += data[i][0] + ',';
                             }
                             ids = ids.trimRight(',');
@@ -247,7 +246,7 @@
                         }
                         else {
                             var ids = '';
-                            for (var i = 0; i < data.length ; i++) {
+                            for (var i = 0; i < data.length; i++) {
                                 ids += data[i][0] + ',';
                             }
                             ids = ids.trimRight(',');
@@ -280,7 +279,7 @@
                         }
                         else {
                             var ids = '';
-                            for (var i = 0; i < data.length ; i++) {
+                            for (var i = 0; i < data.length; i++) {
                                 ids += data[i][0] + ',';
                             }
                             ids = ids.trimRight(',');
@@ -299,7 +298,7 @@
                         }
                         else {
                             var ids = '';
-                            for (var i = 0; i < data.length ; i++) {
+                            for (var i = 0; i < data.length; i++) {
                                 ids += data[i][0] + ',';
                             }
                             ids = ids.trimRight(',');
@@ -318,7 +317,7 @@
                         }
                         else {
                             var ids = '';
-                            for (var i = 0; i < data.length ; i++) {
+                            for (var i = 0; i < data.length; i++) {
                                 ids += data[i][0] + ',';
                             }
                             ids = ids.trimRight(',');
@@ -361,7 +360,7 @@
                         }
                         else {
                             $("#selectedDonationItemIds").val(getSelectedRows(data));
-                            
+
                             if (confirm("Are you sure?  This will move these items out of the auction items into the store for the catalog.")) {
                                 $("#donationItemsAction").val("MoveDonationItemsToStore");
                                 $('#submitSelectedDonationItemsForm').submit();
