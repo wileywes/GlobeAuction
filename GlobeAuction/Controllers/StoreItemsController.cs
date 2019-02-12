@@ -361,6 +361,34 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost, ActionName("SubmitRafflePurchaseItems")]
+        [ValidateAntiForgeryToken]
+        public ActionResult SubmitRafflePurchaseItems(string rafflePurchasesAction, string selectedStoreItemPurchaseIds)
+        {
+            var selectedStoreItemPurchases = selectedStoreItemPurchaseIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .Select(id => db.StoreItemPurchases.Find(id))
+                .ToList();
+
+            var username = User.Identity.GetUserName();
+            switch (rafflePurchasesAction)
+            {
+                case "MarkPrinted":
+                    if (!selectedStoreItemPurchases.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    foreach(var sip in selectedStoreItemPurchases)
+                    {
+                        sip.IsRafflePrinted = true;
+                    }
+                    db.SaveChanges();
+                    break;
+            }
+
+            return RedirectToAction("Purchases");
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

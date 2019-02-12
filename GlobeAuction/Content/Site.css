@@ -35,6 +35,16 @@ textarea {
         min-height: 204px;
         background: url("/Content/Images/Logo.gif") center 0px no-repeat;
         background-size: 200px 200px;
+        text-align: center;
+    }
+    .navbar-logo a {
+        display: inline-block;
+        width: 200px;
+        height: 200px;
+    }
+
+    .navbar-logo a h1 {
+        display: none;
     }
 
     body {

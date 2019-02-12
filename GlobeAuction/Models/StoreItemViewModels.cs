@@ -92,6 +92,8 @@ namespace GlobeAuction.Models
 
         public bool IsPaid { get { return PricePaid.HasValue; } }
 
+        public bool IsRafflePrinted { get; set; }
+
         [DataType(DataType.EmailAddress)]
         public string Email
         {

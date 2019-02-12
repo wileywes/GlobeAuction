@@ -28,9 +28,9 @@
             <div class="navbar-header">
                 @if (Request.IsAuthenticated)
                 {
-                <div class="pull-left">
-                    @Html.ActionLink(RevenueHelper.GetTotalRevenue().ToString("C"), "AllRevenueReports", "Reports", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
-                </div>
+                    <div class="pull-left">
+                        @Html.ActionLink(RevenueHelper.GetTotalRevenue().ToString("C"), "AllRevenueReports", "Reports", null, htmlAttributes: new { @class = "btn btn-lg btn-gold" })
+                    </div>
                 }
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
@@ -79,6 +79,7 @@
                 else
                 {
                     <div class="navbar-logo">
+                        <a href="/" title="Home"><h1>Home</h1></a>
                         <ul class="nav navbar-nav">
                             <!--<li><a href="/Home"><img src="~/Content/Images/Home.gif" height="150" class="hidden-xs" /><br />HOME</a></li>-->
                             <li><a href="/register"><img src="~/Content/Images/Register.gif" height="150" class="hidden-xs" /><br />TICKETS</a></li>
@@ -89,19 +90,19 @@
                             <!--<li><a href="/bidders/bids"><img src="~/Content/Images/bid.gif" height="150" class="hidden-xs" /><br />BIDS</a></li>-->
                             <li><a href="/account/login" id="loginLink"><img src="~/Content/Images/Volunteer.gif" height="150" class="hidden-xs" /><br />VOLUNTEERS</a></li>
                         </ul>
-                        </div>
-                    }
+                    </div>
+                }
 
-                </div>
             </div>
         </div>
-        <div class="container body-content" id="bodyContainer">
-            @RenderBody()
-            <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year</p>
-            </footer>
-        </div>
+    </div>
+    <div class="container body-content" id="bodyContainer">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year</p>
+        </footer>
+    </div>
 
-    </body>
-    </html>
+</body>
+</html>
