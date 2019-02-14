@@ -11,7 +11,21 @@ namespace GlobeAuction.Models
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
     }
-    
+
+    public class CatalogViewModel
+    {
+        public string SelectedCategory { get; set; }
+        public string SearchString { get; set; }
+        public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
+        public List<CatalogCategoryViewModel> Categories { get; set; }
+    }
+
+    public class CatalogCategoryViewModel
+    {
+        public string Name { get; set; }
+        public int ItemCount { get; set; }
+    }
+
     public class WinnerViewModel
     {
         [Display(Name = "ID")]
@@ -181,6 +195,34 @@ namespace GlobeAuction.Models
         }
     }
 
+    public class CatalogAuctionItemViewModel
+    {
+        public int AuctionItemId { get; set; }
+        [Display(Name = "Item No.")]
+        public int UniqueItemNumber { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
+        public string Category { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public int HighestBid { get; set; }
+
+        public CatalogAuctionItemViewModel()
+        {
+            //empty for model binding
+        }
+
+        public CatalogAuctionItemViewModel(AuctionItem i)
+        {
+            this.AuctionItemId = i.AuctionItemId;
+            this.UniqueItemNumber = i.UniqueItemNumber;
+            this.Title = i.Title;
+            this.Description = i.Description; //.TruncateTo(50);
+            this.ImageUrl = i.ImageUrl;
+            this.Category = i.Category;
+            this.HighestBid = i.AllBids.Select(b => (int)b.BidAmount).DefaultIfEmpty(i.StartingBid).Max();
+        }
+    }
 
     public class BidViewModel
     {

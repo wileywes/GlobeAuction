@@ -758,6 +758,7 @@
     <Content Include="Views\Bidders\Bids.cshtml" />
     <Content Include="Views\Bidders\Login.cshtml" />
     <Content Include="Views\Bidders\EnterBid.cshtml" />
+    <Content Include="Views\AuctionItems\Catalog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

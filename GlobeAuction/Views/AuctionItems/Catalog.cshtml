@@ -1,0 +1,68 @@
+﻿@model GlobeAuction.Models.CatalogViewModel
+
+@{
+    ViewBag.Title = "Auction Catalog";
+}
+
+<div class="sidenav">
+    @foreach (var cat in Model.Categories)
+    {
+        @Html.ActionLink(cat.Name + " (" + cat.ItemCount + ")", "Catalog", new { SelectedCategory = cat.Name })
+    }
+</div>
+
+@using (Html.BeginForm())
+{
+    var cardCount = 0;
+
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="main">
+
+        <div class="row">
+            @for (var i = 0; i < Model.AuctionItems.Count; i++)
+            {
+                if (cardCount % 3 == 0 && cardCount > 0)
+                {
+                    @Html.Raw("</div><br /><div class=\"row\">")
+                }
+
+                @Html.HiddenFor(m => Model.AuctionItems[i].AuctionItemId)
+                <div class="col-md-4">
+                    <div class="card">
+                        @if (!string.IsNullOrEmpty(Model.AuctionItems[i].ImageUrl))
+                        {
+                            <img src="@Url.Content(Model.AuctionItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
+                        }
+                        <div class="card-container">
+                            <h4><b>@Html.DisplayFor(m => Model.AuctionItems[i].Title)</b></h4>
+                            <p>
+                                @Html.DisplayFor(m => Model.AuctionItems[i].Description)
+                                <br />
+                                <table cellspacing="5">
+                                    <tr>
+                                        <td><b>Price:</b></td>
+                                        <td>
+                                            @Html.DisplayFor(m => Model.AuctionItems[i].HighestBid)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            @Html.ActionLink("Bid on Item", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-primary" })
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {
+                    cardCount++;
+                }
+            }
+        </div>
+
+    </div>
+}

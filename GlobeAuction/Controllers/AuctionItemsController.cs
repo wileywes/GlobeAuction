@@ -554,6 +554,25 @@ namespace GlobeAuction.Controllers
             );
         }
 
+        [AllowAnonymous]
+        public ActionResult Catalog(CatalogViewModel model)
+        {
+            var items = db.AuctionItems
+                .Include(i => i.AllBids)
+                .Where(i => i.Category == model.SelectedCategory)
+                .ToList();
+            model.AuctionItems = items.Select(i => new CatalogAuctionItemViewModel(i)).ToList();
+
+            var categories = db.AuctionItems.GroupBy(i => i.Category).Select(g => new { Category = g.Key, Count = g.Count() });
+            model.Categories = categories.Select(c => new CatalogCategoryViewModel
+            {
+                Name = c.Category,
+                ItemCount = c.Count
+            }).ToList();
+
+            return View(model);
+        }
+
         private void AddWinnersInBulkInfo(EnterWinnersInBulkViewModel model)
         {
             var availableMasterItems = db.AuctionItems
