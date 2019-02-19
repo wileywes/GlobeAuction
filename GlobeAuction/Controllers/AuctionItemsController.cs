@@ -557,18 +557,16 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Catalog(CatalogViewModel model)
         {
-            var items = db.AuctionItems
-                .Include(i => i.AllBids)
-                .Where(i => i.Category == model.SelectedCategory)
-                .ToList();
-            model.AuctionItems = items.Select(i => new CatalogAuctionItemViewModel(i)).ToList();
+            var catData = new ItemsRepository(db).GetCatalogData();
+            model.AuctionItems = catData.AuctionItems;
+            model.Categories = catData.Categories;
 
-            var categories = db.AuctionItems.GroupBy(i => i.Category).Select(g => new { Category = g.Key, Count = g.Count() });
-            model.Categories = categories.Select(c => new CatalogCategoryViewModel
+            if (!string.IsNullOrEmpty(model.SelectedCategory))
             {
-                Name = c.Category,
-                ItemCount = c.Count
-            }).ToList();
+                model.AuctionItems = model.AuctionItems.Where(i => i.Category == model.SelectedCategory).ToList();
+            }
+
+            //TODO: search
 
             return View(model);
         }

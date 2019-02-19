@@ -5,6 +5,7 @@
 }
 
 <div class="sidenav">
+    @Html.ActionLink("All (" + Model.TotalItemCount + ")", "Catalog", new { SelectedCategory = "" })
     @foreach (var cat in Model.Categories)
     {
         @Html.ActionLink(cat.Name + " (" + cat.ItemCount + ")", "Catalog", new { SelectedCategory = cat.Name })
@@ -19,6 +20,13 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="main">
+
+        <div class="form-group">
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder="search here" })
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
 
         <div class="row">
             @for (var i = 0; i < Model.AuctionItems.Count; i++)

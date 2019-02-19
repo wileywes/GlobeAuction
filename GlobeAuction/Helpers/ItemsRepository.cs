@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GlobeAuction.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -321,6 +322,36 @@ namespace GlobeAuction.Helpers
             }
 
             return purchasesToReturn;
+        }
+
+        public CatalogData GetCatalogData()
+        {
+            var catFromCache = CacheHelper.GetCatalogDataFromCache();
+            if (catFromCache != null)
+            {
+                var logger = LogManager.GetCurrentClassLogger();
+                logger.Info("Got cat data from cache on " + Environment.MachineName);
+                return catFromCache;
+            }
+
+            var catData = new CatalogData();
+            var items = db.AuctionItems
+                .Include(i => i.AllBids)
+                .ToList();
+            catData.AuctionItems = items.Select(i => new CatalogAuctionItemViewModel(i)).ToList();
+
+            var categories = db.AuctionItems.GroupBy(i => i.Category).Select(g => new { Category = g.Key, Count = g.Count() });
+            catData.Categories = categories.Select(c => new CatalogCategoryViewModel
+            {
+                Name = c.Category,
+                ItemCount = c.Count
+            }).ToList();
+
+            CacheHelper.SetCatalogDataInCache(catData);
+            var log = LogManager.GetCurrentClassLogger();
+            log.Info("Set cat data in cache on " + Environment.MachineName);
+
+            return catData;
         }
     }
 

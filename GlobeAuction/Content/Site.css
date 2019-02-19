@@ -289,29 +289,27 @@ tr.shown td.details-control {
     width: 130px;
     position: fixed;
     z-index: 1;
-    top: 20px;
     left: 10px;
-    background: #eee;
+    background: #86764F;
     overflow-x: hidden;
-    padding: 8px 0;
+    padding: 28px 0;
 }
 
 .sidenav a {
     padding: 6px 8px 6px 16px;
     text-decoration: none;
-    font-size: 25px;
-    color: #2196F3;
+    font-size: 14px;
+    color: #FFFFFF;
     display: block;
 }
 
 .sidenav a:hover {
-    color: #064579;
+    color: #EEEEEE;
 }
 
 .main {
     margin-left: 140px; /* Same width as the sidebar + left position in px */
-    font-size: 28px; /* Increased text to enable scrolling */
-    padding: 0px 10px;
+    padding: 20px 10px;
 }
 
 @media screen and (max-height: 450px) {

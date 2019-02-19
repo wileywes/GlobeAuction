@@ -11,6 +11,12 @@ namespace GlobeAuction.Models
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
     }
+    
+    public class CatalogData
+    {
+        public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
+        public List<CatalogCategoryViewModel> Categories { get; set; }
+    }
 
     public class CatalogViewModel
     {
@@ -18,6 +24,11 @@ namespace GlobeAuction.Models
         public string SearchString { get; set; }
         public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
         public List<CatalogCategoryViewModel> Categories { get; set; }
+
+        public int TotalItemCount
+        {
+            get { return Categories?.Select(c => c.ItemCount).DefaultIfEmpty(0).Sum() ?? 0; }
+        }
     }
 
     public class CatalogCategoryViewModel

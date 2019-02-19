@@ -16,6 +16,12 @@ namespace GlobeAuction
             );
 
             routes.MapRoute(
+                name: "Catalog",
+                url: "catalog",
+                defaults: new { controller = "AuctionItems", action = "Catalog" }
+            );
+
+            routes.MapRoute(
                 name: "Register",
                 url: "register",
                 defaults: new { controller = "Bidders", action = "Register" }
