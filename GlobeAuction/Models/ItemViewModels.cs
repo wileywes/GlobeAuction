@@ -175,6 +175,9 @@ namespace GlobeAuction.Models
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal? HighestBid { get; set; }
+        public int BidCount { get; set; }
         [Required]
         public int Quantity { get; set; }
 
@@ -203,6 +206,12 @@ namespace GlobeAuction.Models
             this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;
             this.DonationItemsTotalValue = i.DonationItems.Sum(d => d.DollarValue.GetValueOrDefault(0));
+
+            if (i.AllBids.Any())
+            {
+                this.HighestBid = i.AllBids.Max(b => b.BidAmount);
+                this.BidCount = i.AllBids.Count();
+            }
         }
     }
 

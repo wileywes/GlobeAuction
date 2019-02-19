@@ -60,6 +60,12 @@
                 <th>
                     Bid Increment
                 </th>
+                <th>
+                    Highest Bid
+                </th>
+                <th>
+                    Bid Count
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -103,6 +109,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.BidIncrement)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HighestBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidCount)
                     </td>
                     <td class="text-nowrap">
                         @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |

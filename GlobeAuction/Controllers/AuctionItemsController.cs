@@ -21,7 +21,11 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Index()
         {
-            var auctionItems = db.AuctionItems.Include(a => a.DonationItems).ToList();
+            var auctionItems = db.AuctionItems
+                .Include(a => a.DonationItems)
+                .Include(a => a.AllBids)
+                .ToList();
+
             var donationItemIdsInAuctionItem = auctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
             var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
 
