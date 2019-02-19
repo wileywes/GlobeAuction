@@ -114,6 +114,9 @@ namespace GlobeAuction.Controllers
                     auctionItem.UpdateBy = User.Identity.GetUserName();
                     auctionItem.Quantity = auctionItemModel.Quantity;
                     db.SaveChanges();
+
+                    CacheHelper.ClearCatalogDataInCache();
+
                     return RedirectToAction("Index");
                 }
             }
@@ -143,6 +146,7 @@ namespace GlobeAuction.Controllers
 
             db.Entry(auctionItem).State = EntityState.Modified;
             db.SaveChanges();
+            CacheHelper.ClearCatalogDataInCache();
             return RedirectToAction("Edit", new { id = auctionItem.AuctionItemId });
         }
 
@@ -174,6 +178,7 @@ namespace GlobeAuction.Controllers
 
             db.AuctionItems.Remove(auctionItem);
             db.SaveChanges();
+            CacheHelper.ClearCatalogDataInCache();
             return RedirectToAction("Index");
         }
 
@@ -200,6 +205,7 @@ namespace GlobeAuction.Controllers
                 nextUniqueId = db.AuctionItems.Max(a => a.UniqueItemNumber) + 1;
             }
 
+            CacheHelper.ClearCatalogDataInCache();
             var username = User.Identity.GetUserName();
             switch (donationItemsAction)
             {
@@ -280,7 +286,8 @@ namespace GlobeAuction.Controllers
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToList();
-            
+
+            CacheHelper.ClearCatalogDataInCache();
             var username = User.Identity.GetUserName();
             switch (auctionItemsAction)
             {
@@ -566,7 +573,13 @@ namespace GlobeAuction.Controllers
                 model.AuctionItems = model.AuctionItems.Where(i => i.Category == model.SelectedCategory).ToList();
             }
 
-            //TODO: search
+            if (!string.IsNullOrEmpty(model.SearchString))
+            {
+                model.AuctionItems = model.AuctionItems
+                    .Where(i => i.Title.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                                i.Description.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    .ToList();
+            }
 
             return View(model);
         }
