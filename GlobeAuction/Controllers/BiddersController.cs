@@ -473,7 +473,7 @@ namespace GlobeAuction.Controllers
                     .ToList();
                 
                 var bidsToShow = FilterOutMyExtraLosingBids(bids);
-                var models = bidsToShow.Select(b => new BidViewModel(b, b.AuctionItem));
+                var models = bidsToShow.Select(b => new BidViewModel(b, b.AuctionItem)).ToList();
 
                 ViewBag.BidderInfo = info;
 
@@ -488,7 +488,7 @@ namespace GlobeAuction.Controllers
                             break;
                     }
                 }
-                return View(models);
+                return View(new ActiveBidsViewModel(models));
             }
             else
             {
@@ -512,14 +512,19 @@ namespace GlobeAuction.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult EnterBid(int itemNo)
+        public ActionResult EnterBid(string itemNo)
         {
             BidderCookieInfo info;
             if (BidderRepository.TryGetBidderInfoFromCookie(out info))
             {
                 ViewBag.BidderInfo = info;
 
-                var item = new ItemsRepository(db).GetItemWithAllBidInfo(itemNo);
+                AuctionItem item = null;
+                int itemNoInt;
+                if (int.TryParse(itemNo, out itemNoInt))
+                {
+                    item = new ItemsRepository(db).GetItemWithAllBidInfo(itemNoInt);
+                }
                 if (item == null)
                 {
                     return RedirectToAction("Bids", new { error = BidErrorType.InvalidItemNumber });

@@ -43,6 +43,13 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ImageUrl)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Quantity)
         </dt>
         <dd>
@@ -115,33 +122,33 @@
         <dd>
             @if (Model.AllBids.Any())
             {
-            <table class="table table-striped table-bordered" id="donationItemsTable">
-                <thead>
-                    <tr>
-                        <th>Bidder No.</th>
-                        <th>Bidder Name</th>
-                        <th>Bid Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var bid in Model.AllBids.OrderBy(b => b.BidAmount))
-                    {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(m => bid.Bidder.BidderNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => bid.Bidder.FirstName)
-                            @Html.DisplayFor(m => bid.Bidder.LastName)
+                <table class="table table-striped table-bordered" id="donationItemsTable">
+                    <thead>
+                        <tr>
+                            <th>Bidder No.</th>
+                            <th>Bidder Name</th>
+                            <th>Bid Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var bid in Model.AllBids.OrderBy(b => b.BidAmount))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(m => bid.Bidder.BidderNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => bid.Bidder.FirstName)
+                                    @Html.DisplayFor(m => bid.Bidder.LastName)
 
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => bid.BidAmount)
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => bid.BidAmount)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
             else
             {

@@ -244,6 +244,24 @@ namespace GlobeAuction.Models
         }
     }
 
+    public class ActiveBidsViewModel
+    {
+        public List<BidViewModel> Bids { get; set; }
+        public List<int> AuctionIdsWinningMultiples { get; set; }
+
+        public ActiveBidsViewModel(List<BidViewModel> bids)
+        {
+            Bids = bids;
+
+            AuctionIdsWinningMultiples = bids
+                .Where(b => b.IsWinning)
+                .GroupBy(b => b.AuctionItem.AuctionItemId)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+        }
+    }
+
     public class BidViewModel
     {
         public int BidId { get; set; }

@@ -4,9 +4,9 @@
     ViewBag.Title = "Enter new Bid";
 }
 
-<h2>Enter a New Bid</h2>
-
-
+<h3>
+    @Html.DisplayFor(m => m.AuctionItem.Title)
+</h3>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -14,110 +14,90 @@
     @Html.Hidden("itemNo", Model.AuctionItem.UniqueItemNumber)
 
     <div class="container">
-        <div class="form-horizontal">
-            <div class="form-group">
-                @Html.Label("Item No", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.UniqueItemNumber, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.Title, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.Description, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Category", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.Category, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Quantity Available", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Starting Bid", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.StartingBid, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Bid Increment", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DisplayFor(model => model.AuctionItem.BidIncrement, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@Url.Content(Model.AuctionItem.ImageUrl)" class="img-responsive" />
             </div>
 
-            <div class="form-group">
-                @Html.Label("Existing Bids", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @if (Model.AllBids.Any())
-                    {
-                        <table class="table table-striped table-bordered" id="donationItemsTable">
-                            <thead>
-                                <tr>
-                                    <th>Bidder #</th>
-                                    <th>Bidder Name</th>
-                                    <th>Amount</th>
-                                    <th>Winning?</th>
+            <div class="col-md-8">
+
+                <p class="lead">Item No. @Model.AuctionItem.UniqueItemNumber</p>
+
+                <p>
+                    <strong>@Html.DisplayNameFor(m => m.AuctionItem.Description):</strong>
+                    <br/>
+                    @Html.DisplayFor(m => m.AuctionItem.Description)
+                </p>
+
+                <p>
+                    <strong>@Html.DisplayNameFor(m => m.AuctionItem.Category):</strong>
+                    @Html.DisplayFor(m => m.AuctionItem.Category)
+                    <br />
+                    <strong>@Html.DisplayNameFor(m => m.AuctionItem.Quantity):</strong>
+                    @Html.DisplayFor(m => m.AuctionItem.Quantity)
+                    <br />
+                    <strong>@Html.DisplayNameFor(m => m.AuctionItem.StartingBid):</strong>
+                    @Html.DisplayFor(m => m.AuctionItem.StartingBid)
+                    <br />
+                    <strong>@Html.DisplayNameFor(m => m.AuctionItem.BidIncrement):</strong>
+                    @Html.DisplayFor(m => m.AuctionItem.BidIncrement)
+                </p>
+            </div>
+        </div>
+
+        <div class="row top10">
+            @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-4 text-right" })
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="row top10">
+            <div class="col-md-offset-4 col-md-8 btn-toolbar">
+                <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+
+                @Html.ActionLink("Return to Bids", "Bids", "Bidders", null, htmlAttributes: new { @class = "btn btn-default" })
+
+            </div>
+        </div>
+
+        <div class="row top20">
+            @Html.Label("Existing Bids", htmlAttributes: new { @class = "control-label col-md-4 text-right" })
+            <div class="col-md-8">
+                @if (Model.AllBids.Any())
+                {
+                    <table class="table table-striped table-bordered" id="donationItemsTable">
+                        <thead>
+                            <tr>
+                                <th>Bidder #</th>
+                                <th>Amount</th>
+                                <th>Winning?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var bid in Model.AllBids.OrderByDescending(b => b.BidAmount))
+                            {
+                                <tr @{if (ViewBag.BidderInfo.BidderId == bid.Bidder.BidderId) { if (bid.IsWinning) { <text> class="myBidWinning" </text>  } else { <text> class="myBidLosing" </text>  } } }>
+                                    <td>
+                                        @Html.DisplayFor(m => bid.Bidder.BidderNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => bid.BidAmount)
+                                    </td>
+                                    <td>
+                                        @(bid.IsWinning ? (ViewBag.BidderInfo.BidderId == bid.Bidder.BidderId ? "You are Currently Winning" : "Current Winner") : string.Empty)
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var bid in Model.AllBids.OrderBy(b => b.BidAmount))
-                                {
-                                    <tr @{if (ViewBag.BidderInfo.BidderId == bid.Bidder.BidderId) { <text> class="info" </text>  } }>
-                                        <td>
-                                            @Html.DisplayFor(m => bid.Bidder.BidderNumber)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => bid.Bidder.FirstName)
-                                            @Html.DisplayFor(m => bid.Bidder.LastName)
-
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => bid.BidAmount)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => bid.IsWinning)
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p>
-                            You are the first bidder!  Enter your bid below.
-                        </p>
-                    }
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10 btn-toolbar">
-                    <input type="submit" class="btn btn-primary" value="Enter new Bid" />
-
-                    @Html.ActionLink("Return to Bids", "Bids", "Bidders", null, htmlAttributes: new { @class = "btn btn-default" })
-
-                </div>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        You are the first bidder!  Enter your bid below.
+                    </p>
+                }
             </div>
         </div>
     </div>
