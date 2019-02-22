@@ -63,7 +63,10 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.AuctionItem.Title)
-                            @(Model.AuctionIdsWinningMultiples.Contains(item.AuctionItem.AuctionItemId) ? " *Multiple Wins*" : string.Empty )
+                            @if (Model.AuctionIdsWinningMultiples.Contains(item.AuctionItem.AuctionItemId))
+                            {
+                                <div class="pull-right">* Multiple Wins *</div>
+                            }
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.BidAmount)
@@ -135,7 +138,7 @@
 
 
 <script type="text/javascript">
-    
+
     $(document).ready(function () {
         $('#winningTable').dataTable({
             "iDisplayLength": 100,

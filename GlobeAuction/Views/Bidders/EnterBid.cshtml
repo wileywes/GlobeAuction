@@ -16,7 +16,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <img src="@Url.Content(Model.AuctionItem.ImageUrl)" class="img-responsive" />
+                @if (!string.IsNullOrEmpty(Model.AuctionItem.ImageUrl))
+                {
+                    <img src="@Url.Content(Model.AuctionItem.ImageUrl)" class="img-responsive" />
+                }
             </div>
 
             <div class="col-md-8">
@@ -25,7 +28,7 @@
 
                 <p>
                     <strong>@Html.DisplayNameFor(m => m.AuctionItem.Description):</strong>
-                    <br/>
+                    <br />
                     @Html.DisplayFor(m => m.AuctionItem.Description)
                 </p>
 
@@ -77,7 +80,7 @@
                         <tbody>
                             @foreach (var bid in Model.AllBids.OrderByDescending(b => b.BidAmount))
                             {
-                                <tr @{if (ViewBag.BidderInfo.BidderId == bid.Bidder.BidderId) { if (bid.IsWinning) { <text> class="myBidWinning" </text>  } else { <text> class="myBidLosing" </text>  } } }>
+                                <tr @{if (ViewBag.BidderInfo.BidderId == bid.Bidder.BidderId) { if (bid.IsWinning) { <text> class="success" </text>  } else { <text> class="warning" </text>  } } }>
                                     <td>
                                         @Html.DisplayFor(m => bid.Bidder.BidderNumber)
                                     </td>

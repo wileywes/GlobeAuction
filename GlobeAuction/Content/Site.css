@@ -342,21 +342,3 @@ tr.shown td.details-control {
     margin-top: 20px;
 }
 
-
-.myBidWinning {
-    background-color: #dff0d8; /* same as bg-success */
-}
-
-.myBidLosing {
-    background-color: #fcf8e3 /* same as bg-warning */
-}
-
-/* supersede bootstrap at the row level for overriding the stripping
-*/
-.table-striped > tbody > tr:nth-child(odd).myBidWinning > td {
-    background-color: #dff0d8;
-}
-.table-striped > tbody > tr:nth-child(odd).myBidLosing > td {
-    background-color: #fcf8e3;
-}
-

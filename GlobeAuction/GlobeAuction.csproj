@@ -508,6 +508,7 @@
     <Content Include="Content\EmailTemplates\styles.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\Images\AuctionItems\placeholder to create directory.jpg" />
     <Content Include="Content\Images\bid.gif" />
     <Content Include="Content\Images\Carousel\GLOBEAuction_01.jpg" />
     <Content Include="Content\Images\Carousel\GLOBEAuction_03.jpg" />
@@ -930,7 +931,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Images\AuctionItems\" />
     <Folder Include="Content\Images\BidSheets\" />
   </ItemGroup>
   <PropertyGroup>
