@@ -18,6 +18,9 @@
             @Html.DisplayNameFor(model => model.Price)
         </th>
         <th>
+            @Html.DisplayNameFor(m => m.PromoCode)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.OnlyVisibleToAdmins)
         </th>
         <th>
@@ -32,32 +35,36 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @(item.OnlyVisibleToAdmins ? "Yes" : "No")
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreateDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdateDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdateBy)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TicketTypeId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TicketTypeId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TicketTypeId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PromoCode)
+            </td>
+            <td>
+                @(item.OnlyVisibleToAdmins ? "Yes" : "No")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateBy)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.TicketTypeId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.TicketTypeId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.TicketTypeId })
+            </td>
+        </tr>
+    }
 
 </table>

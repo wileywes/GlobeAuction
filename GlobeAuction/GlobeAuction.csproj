@@ -462,6 +462,10 @@
     <Compile Include="Migrations\201902120159099_RaffleTicketPrintedFlag.Designer.cs">
       <DependentUpon>201902120159099_RaffleTicketPrintedFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902222131256_TicketTypePromoCode.cs" />
+    <Compile Include="Migrations\201902222131256_TicketTypePromoCode.Designer.cs">
+      <DependentUpon>201902222131256_TicketTypePromoCode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -928,6 +932,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902120159099_RaffleTicketPrintedFlag.resx">
       <DependentUpon>201902120159099_RaffleTicketPrintedFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902222131256_TicketTypePromoCode.resx">
+      <DependentUpon>201902222131256_TicketTypePromoCode.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

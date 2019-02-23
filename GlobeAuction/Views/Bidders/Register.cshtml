@@ -47,6 +47,26 @@ else
     </p>
     <br />
 
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <strong>Have a Promo Code?</strong>
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm("Register", "Bidders", FormMethod.Get, new { @class = "form-inline" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="promoCode" name="promoCode" placeholder="Promo Code">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Apply Promo Code</button>
+            }
+        </div>
+    </div>
+
     using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
