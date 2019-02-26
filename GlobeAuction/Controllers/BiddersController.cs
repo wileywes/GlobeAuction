@@ -123,33 +123,40 @@ namespace GlobeAuction.Controllers
                     bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
                     bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
 
-                    foreach (var guest in bidder.AuctionGuests)
+                    if (bidder.AuctionGuests.Any())
                     {
-                        var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
-                        guest.TicketType = ticketType.Name;
-                        guest.TicketPrice = ticketType.Price;
-                    }
+                        foreach (var guest in bidder.AuctionGuests)
+                        {
+                            var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
+                            guest.TicketType = ticketType.Name;
+                            guest.TicketPrice = ticketType.Price;
+                        }
 
-                    db.Bidders.Add(bidder);
-                    db.SaveChanges();
+                        db.Bidders.Add(bidder);
+                        db.SaveChanges();
 
-                    PaymentMethod? manualPayMethod = null;
-                    if (submitButton.StartsWith("Register and Mark Paid"))
-                    {
-                        if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
-                        if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
-                        if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
-                    }
+                        PaymentMethod? manualPayMethod = null;
+                        if (submitButton.StartsWith("Register and Mark Paid"))
+                        {
+                            if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
+                            if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
+                            if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
+                        }
 
-                    new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
+                        new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
 
-                    if (manualPayMethod.HasValue)
-                    {
-                        return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
+                        if (manualPayMethod.HasValue)
+                        {
+                            return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
+                        }
+                        else
+                        {
+                            return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                        ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact auction@theglobeacademy.net.");
                     }
                 }
                 catch (OutOfStockException oosExc)
