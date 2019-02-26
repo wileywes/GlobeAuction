@@ -21,8 +21,9 @@ namespace GlobeAuction.Models
         [Required]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
+
         [Required]
-        public AuctionCategory Category { get; set; }
+        public virtual AuctionCategory Category { get; set; }
         
         [StringLength(500)]
         public string ImageUrl { get; set; }
@@ -62,7 +63,7 @@ namespace GlobeAuction.Models
         public int DonationItemId { get; set; }
 
         [Required]
-        public AuctionCategory Category { get; set; }
+        public virtual AuctionCategory Category { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -199,5 +200,11 @@ namespace GlobeAuction.Models
 
         [Required]
         public bool IsFundAProject { get; set; }
+
+        /// <summary>
+        /// Should be true for "Live" category
+        /// </summary>
+        [Required]
+        public bool IsOnlyAvailableToAuctionItems { get; set; }
     }
 }

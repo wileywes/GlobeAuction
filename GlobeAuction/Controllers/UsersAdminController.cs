@@ -37,14 +37,14 @@ namespace GlobeAuction.Controllers
             return View();
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             //must to ToList() to close out the DataReader from Users
             return View(UserManager.Users.ToList()
                 .Select(u => new ApplicationUserWithRoleNames(u, RoleManager))
                 .ToList());
         }
-                
+
         //
         // GET: /Users/Edit/1
         public async Task<ActionResult> Edit(string id)

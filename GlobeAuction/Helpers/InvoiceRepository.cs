@@ -48,6 +48,13 @@ namespace GlobeAuction.Helpers
                 }).ToList();
 
             var invoice = CreateInvoiceFromBidder(bidder, null, storeItemPurchases, ticketPurchases, InvoiceType.BidderRegistration, updatedBy);
+
+            if (invoice.Total <= 0)
+            {
+                //force to paid by cash if total is zero
+                manualPayMethod = PaymentMethod.Cash;
+            }
+
             ApplyPotentialManualPayment(invoice, manualPayMethod, updatedBy);
 
             db.Invoices.Add(invoice);

@@ -142,10 +142,10 @@ namespace GlobeAuction.Controllers
                             if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
                             if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
                         }
+                        
+                        var invoice = new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
 
-                        new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
-
-                        if (manualPayMethod.HasValue)
+                        if (manualPayMethod.HasValue || invoice.IsPaid)
                         {
                             return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
                         }

@@ -20,7 +20,12 @@ namespace GlobeAuction.Controllers
         // GET: DonationItems
         public ActionResult Index()
         {
-            return View(db.DonationItems.Where(i => i.IsDeleted == false).ToList());
+            var items = db.DonationItems
+                .Include(d => d.Category)
+                .Where(d => d.IsDeleted == false)
+                .ToList();
+
+            return View(items);
         }
 
         // GET: DonationItems/Details/5
@@ -68,26 +73,37 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, string quantity)
+        public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, string quantity, string categorySelect)
         {
+            //do category with special handling
+            ModelState.Remove("Category");
+
             int qty;
             if (int.TryParse(quantity, out qty) && qty >= 1 && qty <= 20)
             {
-                if (ModelState.IsValid)
+                if (!string.IsNullOrEmpty(categorySelect))
+                {                    
+                    if (ModelState.IsValid)
+                    {
+                        //tie to existing Solicitor by email
+                        var existingSolicitor = db.Solicitors.FirstOrDefault(s => s.Email.Equals(donationItem.Solicitor.Email, StringComparison.OrdinalIgnoreCase));
+                        if (existingSolicitor != null)
+                            donationItem.Solicitor = existingSolicitor;
+
+                        donationItem.Category = db.AuctionCategories.Find(int.Parse(categorySelect));
+                        donationItem.CreateDate = donationItem.UpdateDate = Utilities.GetEasternTimeNow();
+                        donationItem.UpdateBy = donationItem.Solicitor.Email;
+
+                        db.DonationItems.Add(donationItem);
+                        db.SaveChanges();
+
+                        TempData["PreviousSolicitor"] = donationItem.Solicitor;
+                        return RedirectToAction("Create");
+                    }
+                }
+                else
                 {
-                    //tie to existing Solicitor by email
-                    var existingSolicitor = db.Solicitors.FirstOrDefault(s => s.Email.Equals(donationItem.Solicitor.Email, StringComparison.OrdinalIgnoreCase));
-                    if (existingSolicitor != null)
-                        donationItem.Solicitor = existingSolicitor;
-
-                    donationItem.CreateDate = donationItem.UpdateDate = Utilities.GetEasternTimeNow();
-                    donationItem.UpdateBy = donationItem.Solicitor.Email;
-
-                    db.DonationItems.Add(donationItem);
-                    db.SaveChanges();
-
-                    TempData["PreviousSolicitor"] = donationItem.Solicitor;
-                    return RedirectToAction("Create");
+                    ModelState.AddModelError("category", "You must select a category.");
                 }
             }
             else
@@ -120,20 +136,34 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Exclude = "UpdateDate")] DonationItem donationItem)
+        public ActionResult Edit([Bind(Exclude = "UpdateDate")] DonationItem donationItem, string categorySelect)
         {
-            if (ModelState.IsValid)
+            //do category with special handling
+            ModelState.Remove("Category");
+
+            if (!string.IsNullOrEmpty(categorySelect))
             {
-                donationItem.UpdateDate = Utilities.GetEasternTimeNow();
-                donationItem.UpdateBy = User.Identity.GetUserName();
+                if (ModelState.IsValid)
+                {
+                    donationItem.Category = db.AuctionCategories.Find(int.Parse(categorySelect));
+                    //db.Entry(donationItem).Property("Category_AuctionCategoryId").IsModified = true;
 
-                db.Entry(donationItem).State = EntityState.Modified;
+                    donationItem.UpdateDate = Utilities.GetEasternTimeNow();
+                    donationItem.UpdateBy = User.Identity.GetUserName();
 
-                db.Entry(donationItem.Donor).State = EntityState.Modified;
-                db.Entry(donationItem.Solicitor).State = EntityState.Modified;
+                    db.Entry(donationItem).State = EntityState.Modified;
 
-                db.SaveChanges();
-                return RedirectToAction("Index", "AuctionItems");
+                    //donor and solicitor are editable on the page so mark as modified
+                    db.Entry(donationItem.Donor).State = EntityState.Modified;
+                    db.Entry(donationItem.Solicitor).State = EntityState.Modified;
+
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "AuctionItems");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("category", "You must select a category.");
             }
             AddDonationItemControlInfo(donationItem);
             return View(donationItem);
@@ -187,11 +217,12 @@ namespace GlobeAuction.Controllers
 
         private void AddDonationItemControlInfo(DonationItem donationItem)
         {
-            var donationItemCategories = AuctionConstants.DonationItemCategories.Select(c => new SelectListItem { Text = c, Value = c }).ToList();
-            
+            var categories = new ItemsRepository(db).GetCatalogData().Categories.Where(c => !c.IsOnlyForAuctionItems);
+            var donationItemCategories = categories.Select(c => new SelectListItem { Text = c.Name, Value = c.AuctionCategoryId.ToString() }).ToList();
+
             if (donationItem != null && donationItem.Category != null)
             {
-                var selected = donationItemCategories.FirstOrDefault(c => c.Value.Equals(donationItem.Category));
+                var selected = donationItemCategories.FirstOrDefault(c => c.Value.Equals(donationItem.Category.AuctionCategoryId.ToString()));
                 if (selected != null) selected.Selected = true;
             }            
 

@@ -42,7 +42,7 @@ namespace GlobeAuction.Helpers
             {
                 BidderRepository.TryGetBidderInfoFromCookie(out bidInfo);
             }
-            catch (Exception e2)
+            catch (Exception)
             {
             }
 

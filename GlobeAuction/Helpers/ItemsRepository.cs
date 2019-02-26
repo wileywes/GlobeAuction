@@ -11,6 +11,7 @@ namespace GlobeAuction.Helpers
 {
     public class ItemsRepository
     {
+        private static CatalogData _catalogCache;
         private ApplicationDbContext db;
 
         public ItemsRepository(ApplicationDbContext context)
@@ -326,12 +327,9 @@ namespace GlobeAuction.Helpers
 
         public CatalogData GetCatalogData()
         {
-            var catFromCache = CacheHelper.GetCatalogDataFromCache();
-            if (catFromCache != null)
+            if (_catalogCache != null)
             {
-                var logger = LogManager.GetCurrentClassLogger();
-                logger.Info("Got cat data from cache on " + Environment.MachineName);
-                return catFromCache;
+                return _catalogCache;
             }
 
             var catData = new CatalogData();
@@ -340,18 +338,30 @@ namespace GlobeAuction.Helpers
                 .ToList();
             catData.AuctionItems = items.Select(i => new CatalogAuctionItemViewModel(i)).ToList();
 
-            var categories = db.AuctionItems.GroupBy(i => i.Category).Select(g => new { Category = g.Key, Count = g.Count() });
-            catData.Categories = categories.Select(c => new CatalogCategoryViewModel
-            {
-                Name = c.Category,
-                ItemCount = c.Count
-            }).ToList();
+            //categories with items
+            var categories = db.AuctionItems.GroupBy(i => i.Category).Select(g => new { Category = g.Key, Count = g.Count() }).ToList();
+            catData.Categories = categories.Select(c => new CatalogCategoryViewModel(c.Category.AuctionCategoryId, c.Category.Name, c.Count, c.Category.IsOnlyAvailableToAuctionItems)).ToList();
 
-            CacheHelper.SetCatalogDataInCache(catData);
-            var log = LogManager.GetCurrentClassLogger();
-            log.Info("Set cat data in cache on " + Environment.MachineName);
+            //categories without items
+            var allCategories = db.AuctionCategories.ToList();
+            foreach(var cat in allCategories)
+            {
+                if (catData.Categories.FirstOrDefault(c => c.AuctionCategoryId == cat.AuctionCategoryId) == null)
+                {
+                    catData.Categories.Add(new CatalogCategoryViewModel(cat.AuctionCategoryId, cat.Name, 0, cat.IsOnlyAvailableToAuctionItems));
+                }
+            }
+
+            catData.Categories = catData.Categories.OrderBy(c => c.Name).ToList();
+
+            _catalogCache = catData;
 
             return catData;
+        }
+
+        public void ClearCatalogDataCache()
+        {
+            _catalogCache = null;
         }
     }
 

@@ -239,7 +239,6 @@
     </Compile>
     <Compile Include="Helpers\BackgroundMaintenance.cs" />
     <Compile Include="Helpers\BidderRepository.cs" />
-    <Compile Include="Helpers\CacheHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\RevenueHelper.cs" />
     <Compile Include="Helpers\SmsHelper.cs" />
@@ -466,6 +465,10 @@
     <Compile Include="Migrations\201902222131256_TicketTypePromoCode.cs" />
     <Compile Include="Migrations\201902222131256_TicketTypePromoCode.Designer.cs">
       <DependentUpon>201902222131256_TicketTypePromoCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902261311153_AuctionCategoriesModel.cs" />
+    <Compile Include="Migrations\201902261311153_AuctionCategoriesModel.Designer.cs">
+      <DependentUpon>201902261311153_AuctionCategoriesModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -941,6 +944,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902222131256_TicketTypePromoCode.resx">
       <DependentUpon>201902222131256_TicketTypePromoCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902261311153_AuctionCategoriesModel.resx">
+      <DependentUpon>201902261311153_AuctionCategoriesModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

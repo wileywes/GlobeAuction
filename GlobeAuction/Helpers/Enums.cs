@@ -29,7 +29,9 @@ namespace GlobeAuction.Models
     public class AuctionConstants
     {
         public static readonly string FundaProjectCategoryName = "Fund-a-Project";
+
         /*
+         * ALSO "Live"
         public static readonly List<string> DonationItemCategories = new List<string>
         {
             "Gift Card Grab",

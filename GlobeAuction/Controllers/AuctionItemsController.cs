@@ -24,10 +24,15 @@ namespace GlobeAuction.Controllers
             var auctionItems = db.AuctionItems
                 .Include(a => a.DonationItems)
                 .Include(a => a.AllBids)
+                .Include(a => a.Category)
                 .ToList();
 
             var donationItemIdsInAuctionItem = auctionItems.SelectMany(ai => ai.DonationItems.Select(di => di.DonationItemId)).ToList();
-            var donationItemsNotInAuctionItem = db.DonationItems.Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId)).ToList();
+
+            var donationItemsNotInAuctionItem = db.DonationItems
+                .Include(a => a.Category)
+                .Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId))
+                .ToList();
 
             var bidderIdToNumber = db.Bidders.ToDictionary(b => b.BidderId, b => b.BidderNumber);
 
@@ -111,7 +116,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.UniqueItemNumber = auctionItemModel.UniqueItemNumber;
                     auctionItem.Title = auctionItemModel.Title;
                     auctionItem.Description = auctionItemModel.Description;
-                    auctionItem.Category = auctionItemModel.Category;
+                    auctionItem.Category = db.AuctionCategories.Find(int.Parse(auctionItemModel.Category));
                     auctionItem.StartingBid = auctionItemModel.StartingBid;
                     auctionItem.BidIncrement = auctionItemModel.BidIncrement;
                     auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
@@ -119,7 +124,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.Quantity = auctionItemModel.Quantity;
                     db.SaveChanges();
 
-                    new CatalogDataCache().ClearCache();
+                    new ItemsRepository(db).ClearCatalogDataCache();
 
                     return RedirectToAction("Index");
                 }
@@ -150,7 +155,7 @@ namespace GlobeAuction.Controllers
 
             db.Entry(auctionItem).State = EntityState.Modified;
             db.SaveChanges();
-            new CatalogDataCache().ClearCache();
+            new ItemsRepository(db).ClearCatalogDataCache();
             return RedirectToAction("Edit", new { id = auctionItem.AuctionItemId });
         }
 
@@ -182,7 +187,7 @@ namespace GlobeAuction.Controllers
 
             db.AuctionItems.Remove(auctionItem);
             db.SaveChanges();
-            new CatalogDataCache().ClearCache();
+            new ItemsRepository(db).ClearCatalogDataCache();
             return RedirectToAction("Index");
         }
 
@@ -209,7 +214,7 @@ namespace GlobeAuction.Controllers
                 nextUniqueId = db.AuctionItems.Max(a => a.UniqueItemNumber) + 1;
             }
 
-            new CatalogDataCache().ClearCache();
+            new ItemsRepository(db).ClearCatalogDataCache();
             var username = User.Identity.GetUserName();
             switch (donationItemsAction)
             {
@@ -291,7 +296,7 @@ namespace GlobeAuction.Controllers
                 .Select(int.Parse)
                 .ToList();
 
-            new CatalogDataCache().ClearCache();
+            new ItemsRepository(db).ClearCatalogDataCache();
             var username = User.Identity.GetUserName();
             switch (auctionItemsAction)
             {
@@ -612,22 +617,19 @@ namespace GlobeAuction.Controllers
 
         private void AddAuctionItemControlInfo(AuctionItemViewModel item)
         {
-            AddAuctionItemCategoryControlInfo(item?.Category != null ? item.Category.Name : null);
+            AddAuctionItemCategoryControlInfo(item?.Category);
         }
 
-        private void AddAuctionItemCategoryControlInfo(string selectedCategory)
+        private void AddAuctionItemCategoryControlInfo(string selectedCategoryName)
         {
-            var auctionItemCategories = AuctionConstants.DonationItemCategories.Select(c => new SelectListItem { Text = c, Value = c }).ToList();
+            var categories = new ItemsRepository(db).GetCatalogData().Categories;
+            var auctionItemCategories = categories.Select(c => new SelectListItem { Text = c.Name, Value = c.AuctionCategoryId.ToString() }).ToList();
 
-            //additional categories for auction items
-            auctionItemCategories.Add(new SelectListItem { Text = "Live", Value = "Live" });
-
-            if (!string.IsNullOrEmpty(selectedCategory))
+            if (!string.IsNullOrEmpty(selectedCategoryName))
             {
-                var selected = auctionItemCategories.FirstOrDefault(c => c.Value.Equals(selectedCategory));
+                var selected = auctionItemCategories.FirstOrDefault(c => c.Text.Equals(selectedCategoryName));
                 if (selected != null) selected.Selected = true;
             }
-
 
             ViewBag.AuctionItemCategories = auctionItemCategories;
         }

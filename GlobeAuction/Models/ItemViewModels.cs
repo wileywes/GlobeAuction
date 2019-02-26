@@ -33,8 +33,18 @@ namespace GlobeAuction.Models
 
     public class CatalogCategoryViewModel
     {
-        public string Name { get; set; }
-        public int ItemCount { get; set; }
+        public int AuctionCategoryId { get; private set; }
+        public string Name { get; private set; }
+        public int ItemCount { get; private set; }
+        public bool IsOnlyForAuctionItems { get; private set; }
+
+        public CatalogCategoryViewModel(int auctionCategoryId, string name, int itemCount, bool isOnlyForAuctionItems)
+        {
+            AuctionCategoryId = auctionCategoryId;
+            Name = name;
+            ItemCount = itemCount;
+            IsOnlyForAuctionItems = isOnlyForAuctionItems;
+        }
     }
 
     public class WinnerViewModel
@@ -122,7 +132,7 @@ namespace GlobeAuction.Models
     {
         public int DonationItemId { get; set; }
         [Required]
-        public AuctionCategory Category { get; set; }
+        public string Category { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
@@ -148,7 +158,7 @@ namespace GlobeAuction.Models
 
         public DonationItemViewModel(DonationItem item)
         {
-            this.Category = item.Category;
+            this.Category = item.Category.Name;
             this.Title = item.Title;
             this.Description = item.Description; //.TruncateTo(50);
             this.DollarValue = item.DollarValue;
@@ -170,7 +180,7 @@ namespace GlobeAuction.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public AuctionCategory Category { get; set; }
+        public string Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -199,7 +209,7 @@ namespace GlobeAuction.Models
             this.Title = i.Title;
             this.Description = i.Description; //.TruncateTo(50);
             this.ImageUrl = i.ImageUrl;
-            this.Category = i.Category;
+            this.Category = i.Category.Name;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
             this.Quantity = i.Quantity;

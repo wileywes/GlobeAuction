@@ -47,7 +47,7 @@ namespace GlobeAuction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AuctionCategoryId,Name,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject")] AuctionCategory auctionCategory)
+        public ActionResult Create([Bind(Include = "AuctionCategoryId,Name,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject,IsOnlyAvailableToAuctionItems")] AuctionCategory auctionCategory)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace GlobeAuction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AuctionCategoryId,Name,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject")] AuctionCategory auctionCategory)
+        public ActionResult Edit([Bind(Include = "AuctionCategoryId,Name,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject,IsOnlyAvailableToAuctionItems")] AuctionCategory auctionCategory)
         {
             if (ModelState.IsValid)
             {
@@ -111,9 +111,24 @@ namespace GlobeAuction.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             AuctionCategory auctionCategory = db.AuctionCategories.Find(id);
-            db.AuctionCategories.Remove(auctionCategory);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (auctionCategory == null)
+            {
+                return HttpNotFound();
+            }
+
+            var auctionItemCount = db.AuctionItems.Count(i => i.Category.AuctionCategoryId == id);
+
+            if (auctionItemCount > 0)
+            {
+                ModelState.AddModelError("", $"There are still {auctionItemCount} auction items tied to this category.  You must move these items to a different category first.");
+            }
+            else
+            {
+                db.AuctionCategories.Remove(auctionCategory);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(auctionCategory);
         }
 
         protected override void Dispose(bool disposing)

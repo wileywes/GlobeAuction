@@ -29,12 +29,14 @@ else
                     <h4>
                         Raffle ticket numbers are:
                     </h4>
-                    @foreach (var raffleDescription in Model.RaffleTicketNumbersCreated)
-                    {
-                        <li>
-                            @raffleDescription
-                        </li>
-                    }
+                    <ul>
+                        @foreach (var raffleDescription in Model.RaffleTicketNumbersCreated)
+                        {
+                            <li>
+                                @raffleDescription
+                            </li>
+                        }
+                    </ul>
                 </p><br />
             }
 
@@ -71,7 +73,7 @@ else
     using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        
+
         <div class="form-horizontal">
             <h4>Contact Information</h4>
             <hr />

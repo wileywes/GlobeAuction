@@ -50,7 +50,7 @@ namespace GlobeAuction.Controllers
             //fund-a-project
             var fundProjectBids = db.Bids
                 .Include(i => i.Invoice)
-                .Where(b => b.AuctionItem.Category == AuctionConstants.FundaProjectCategoryName)
+                .Where(b => b.AuctionItem.Category.IsFundAProject)
                 .ToList();
 
             var fundAProject = new FundaProjectRevenueReportModel
