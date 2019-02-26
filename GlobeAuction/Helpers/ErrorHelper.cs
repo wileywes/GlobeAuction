@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using GlobeAuction.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -36,15 +37,28 @@ namespace GlobeAuction.Helpers
                 }
             }
 
+            BidderCookieInfo bidInfo = null;
+            try
+            {
+                BidderRepository.TryGetBidderInfoFromCookie(out bidInfo);
+            }
+            catch (Exception e2)
+            {
+            }
+
             var msg = string.Format("User:{0} Url:{1} Error:{2}", user, request.Url, lastException);
 
             logger.Error(msg);
 
             try
             {
-                var body = GetErrorParam("User", user) +
+                var body = GetErrorParam("Bidder No", bidInfo?.BidderNumber) +
+                    GetErrorParam("Bidder Email", bidInfo?.Email) +
+                    GetErrorParam("Bidder LName", bidInfo?.LastName) +
+                    GetErrorParam("User", user) +
                     GetErrorParam("Url", request.Url) +
                     GetErrorParam("UserAgent", request.UserAgent) +
+                    GetErrorParam("HttpMethod", request.HttpMethod) +
                     GetErrorParam("Source", caller) +
                     GetErrorParam("Referrer", request.UrlReferrer) +
                     GetErrorParam("Exception", lastException);

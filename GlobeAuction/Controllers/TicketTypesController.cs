@@ -49,7 +49,7 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TicketTypeId,Name,Price,OnlyVisibleToAdmins")] TicketType ticketType)
+        public ActionResult Create([Bind(Include = "TicketTypeId,Name,Price,PromoCode,OnlyVisibleToAdmins")] TicketType ticketType)
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace GlobeAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TicketTypeId,Name,Price,OnlyVisibleToAdmins,CreateDate")] TicketType ticketType)
+        public ActionResult Edit([Bind(Include = "TicketTypeId,Name,Price,PromoCode,OnlyVisibleToAdmins,CreateDate")] TicketType ticketType)
         {
             if (ModelState.IsValid)
             {

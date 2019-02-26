@@ -16,6 +16,7 @@ namespace GlobeAuction.Models
         public decimal Price { get; set; }
 
         public bool OnlyVisibleToAdmins { get; set; }
+        public string PromoCode { get; set; }
         
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }

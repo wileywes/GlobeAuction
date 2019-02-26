@@ -61,7 +61,7 @@ namespace GlobeAuction.Controllers
 
         // GET: Bidders/Register
         [AllowAnonymous]
-        public ActionResult Register(int? bid, string bem)
+        public ActionResult Register(int? bid, string bem, string promoCode)
         {
             var raffleItems = db.StoreItems.Where(s => s.CanPurchaseInBidderRegistration && s.IsDeleted == false && s.IsRaffleTicket).ToList();
             if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))
@@ -70,7 +70,7 @@ namespace GlobeAuction.Controllers
                 raffleItems = raffleItems.Where(t => t.OnlyVisibleToAdmins == false).ToList();
             }
 
-            AddBidderControlInfo();
+            AddBidderControlInfo(promoCode);
             var newBidder = new BidderRegistrationViewModel()
             {
                 AuctionGuests = new List<AuctionGuestViewModel>(Enumerable.Repeat(new AuctionGuestViewModel(), 6)),
@@ -104,7 +104,7 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register([Bind(Exclude = "BidderId")] BidderRegistrationViewModel bidderViewModel, string submitButton)
+        public ActionResult Register([Bind(Exclude = "BidderId")] BidderRegistrationViewModel bidderViewModel, string submitButton, string promoCode)
         {
             if (ModelState.IsValid)
             {
@@ -165,7 +165,7 @@ namespace GlobeAuction.Controllers
                 }
             }
 
-            AddBidderControlInfo();
+            AddBidderControlInfo(promoCode);
             return View(bidderViewModel);
         }
 
@@ -625,16 +625,18 @@ namespace GlobeAuction.Controllers
             base.Dispose(disposing);
         }
 
-        private void AddBidderControlInfo()
+        private void AddBidderControlInfo(string promoCode)
         {
             //TICKETS
             var ticketTypes = db.TicketTypes.ToList();
 
-            if (!Request.IsAuthenticated || !User.IsInRole(AuctionRoles.CanAdminUsers))
-            {
-                //remove admin-only ticket types
-                ticketTypes = ticketTypes.Where(t => t.OnlyVisibleToAdmins == false).ToList();
-            }
+            var userIsAdmin = Request.IsAuthenticated && User.IsInRole(AuctionRoles.CanAdminUsers);
+            
+            //remove admin-only ticket types if not an admin
+            ticketTypes = ticketTypes.Where(t => userIsAdmin || t.OnlyVisibleToAdmins == false).ToList();
+
+            //remove promo code tickets unless they have entered the promo code
+            ticketTypes = ticketTypes.Where(t => userIsAdmin || string.IsNullOrEmpty(t.PromoCode) || t.PromoCode.Equals(promoCode, StringComparison.OrdinalIgnoreCase)).ToList();
 
             ViewBag.TicketTypes = ticketTypes
                 .OrderByDescending(t => t.Price)
