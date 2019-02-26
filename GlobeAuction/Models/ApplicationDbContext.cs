@@ -50,5 +50,7 @@ namespace GlobeAuction.Models
         public DbSet<StoreItemPurchase> StoreItemPurchases { get; set; }
 
         public DbSet<Donor> Donors { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.AuctionCategory> AuctionCategories { get; set; }
     }
 }

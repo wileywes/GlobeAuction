@@ -22,8 +22,8 @@ namespace GlobeAuction.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
         [Required]
-        public string Category { get; set; }
-
+        public AuctionCategory Category { get; set; }
+        
         [StringLength(500)]
         public string ImageUrl { get; set; }
 
@@ -62,7 +62,7 @@ namespace GlobeAuction.Models
         public int DonationItemId { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public AuctionCategory Category { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -182,5 +182,22 @@ namespace GlobeAuction.Models
         public string UpdateBy { get; set; }
 
         public virtual Invoice Invoice { get; set; }
+    }
+
+    public class AuctionCategory
+    {
+        public int AuctionCategoryId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public DateTime BidOpenDateLtz { get; set; }
+
+        [Required]
+        public DateTime BidCloseDateLtz { get; set; }
+
+        [Required]
+        public bool IsFundAProject { get; set; }
     }
 }

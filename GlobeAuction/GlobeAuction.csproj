@@ -220,6 +220,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AuctionCategoriesController.cs" />
     <Compile Include="Controllers\AuctionItemsController.cs" />
     <Compile Include="Controllers\DonorsController.cs" />
     <Compile Include="Controllers\InvoicesController.cs" />
@@ -765,6 +766,11 @@
     <Content Include="Views\Bidders\Login.cshtml" />
     <Content Include="Views\Bidders\EnterBid.cshtml" />
     <Content Include="Views\AuctionItems\Catalog.cshtml" />
+    <Content Include="Views\AuctionCategories\Create.cshtml" />
+    <Content Include="Views\AuctionCategories\Delete.cshtml" />
+    <Content Include="Views\AuctionCategories\Details.cshtml" />
+    <Content Include="Views\AuctionCategories\Edit.cshtml" />
+    <Content Include="Views\AuctionCategories\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -189,7 +189,7 @@ namespace GlobeAuction.Controllers
         {
             var donationItemCategories = AuctionConstants.DonationItemCategories.Select(c => new SelectListItem { Text = c, Value = c }).ToList();
             
-            if (donationItem != null && !string.IsNullOrEmpty(donationItem.Category))
+            if (donationItem != null && donationItem.Category != null)
             {
                 var selected = donationItemCategories.FirstOrDefault(c => c.Value.Equals(donationItem.Category));
                 if (selected != null) selected.Selected = true;

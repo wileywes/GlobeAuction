@@ -1,24 +1,47 @@
 ﻿using GlobeAuction.Models;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace GlobeAuction.Helpers
 {
-    public static class CacheHelper
+    public abstract class CacheHelper<T> where T : class
     {
-        private static CatalogData _catalogData;
+        private static ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
 
-        public static CatalogData GetCatalogDataFromCache()
+        private readonly string _key;
+
+        public CacheHelper(string cacheKey)
         {
-            return _catalogData;
+            _key = cacheKey;
         }
 
-        public static void SetCatalogDataInCache(CatalogData data)
+        public T GetFromCache()
         {
-            _catalogData = data;
+            if (_cache.TryGetValue(_key, out object val))
+            {
+                return val as T;
+            }
+            return default(T);
         }
 
-        public static void ClearCatalogDataInCache()
+        public void SetCache(T data)
         {
-            _catalogData = null;
+            _cache.AddOrUpdate(_key, data, (key, o1) => data);
         }
+
+        public void ClearCache()
+        {
+            _cache.TryRemove(_key, out object val);
+        }
+    }
+
+    public class CatalogDataCache : CacheHelper<CatalogData>
+    {
+        public CatalogDataCache() : base ("CatalogData") { }
+    }
+
+    public class AuctionCategoriesCache : CacheHelper<List<AuctionCategory>>
+    {
+        public AuctionCategoriesCache() : base("AuctionCategories") { }
     }
 }

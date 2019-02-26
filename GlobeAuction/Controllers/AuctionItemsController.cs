@@ -119,7 +119,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.Quantity = auctionItemModel.Quantity;
                     db.SaveChanges();
 
-                    CacheHelper.ClearCatalogDataInCache();
+                    new CatalogDataCache().ClearCache();
 
                     return RedirectToAction("Index");
                 }
@@ -150,7 +150,7 @@ namespace GlobeAuction.Controllers
 
             db.Entry(auctionItem).State = EntityState.Modified;
             db.SaveChanges();
-            CacheHelper.ClearCatalogDataInCache();
+            new CatalogDataCache().ClearCache();
             return RedirectToAction("Edit", new { id = auctionItem.AuctionItemId });
         }
 
@@ -182,7 +182,7 @@ namespace GlobeAuction.Controllers
 
             db.AuctionItems.Remove(auctionItem);
             db.SaveChanges();
-            CacheHelper.ClearCatalogDataInCache();
+            new CatalogDataCache().ClearCache();
             return RedirectToAction("Index");
         }
 
@@ -209,7 +209,7 @@ namespace GlobeAuction.Controllers
                 nextUniqueId = db.AuctionItems.Max(a => a.UniqueItemNumber) + 1;
             }
 
-            CacheHelper.ClearCatalogDataInCache();
+            new CatalogDataCache().ClearCache();
             var username = User.Identity.GetUserName();
             switch (donationItemsAction)
             {
@@ -291,7 +291,7 @@ namespace GlobeAuction.Controllers
                 .Select(int.Parse)
                 .ToList();
 
-            CacheHelper.ClearCatalogDataInCache();
+            new CatalogDataCache().ClearCache();
             var username = User.Identity.GetUserName();
             switch (auctionItemsAction)
             {
@@ -574,7 +574,7 @@ namespace GlobeAuction.Controllers
 
             if (!string.IsNullOrEmpty(model.SelectedCategory))
             {
-                model.AuctionItems = model.AuctionItems.Where(i => i.Category == model.SelectedCategory).ToList();
+                model.AuctionItems = model.AuctionItems.Where(i => i.Category.Name == model.SelectedCategory).ToList();
             }
 
             if (!string.IsNullOrEmpty(model.SearchString))
@@ -612,7 +612,7 @@ namespace GlobeAuction.Controllers
 
         private void AddAuctionItemControlInfo(AuctionItemViewModel item)
         {
-            AddAuctionItemCategoryControlInfo(item != null ? item.Category : null);
+            AddAuctionItemCategoryControlInfo(item?.Category != null ? item.Category.Name : null);
         }
 
         private void AddAuctionItemCategoryControlInfo(string selectedCategory)

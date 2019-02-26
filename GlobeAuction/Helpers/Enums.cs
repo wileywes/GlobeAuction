@@ -29,7 +29,7 @@ namespace GlobeAuction.Models
     public class AuctionConstants
     {
         public static readonly string FundaProjectCategoryName = "Fund-a-Project";
-
+        /*
         public static readonly List<string> DonationItemCategories = new List<string>
         {
             "Gift Card Grab",
@@ -43,7 +43,7 @@ namespace GlobeAuction.Models
             "Class Art",
             FundaProjectCategoryName,
             "Food Donations"
-        };
+        };*/
 
         public static readonly List<string> TeacherNames = new List<string>
         {

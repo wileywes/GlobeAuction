@@ -122,7 +122,7 @@ namespace GlobeAuction.Models
     {
         public int DonationItemId { get; set; }
         [Required]
-        public string Category { get; set; }
+        public AuctionCategory Category { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
@@ -170,7 +170,7 @@ namespace GlobeAuction.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public string Category { get; set; }
+        public AuctionCategory Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -223,7 +223,7 @@ namespace GlobeAuction.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public string Category { get; set; }
+        public AuctionCategory Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int HighestBid { get; set; }
 
