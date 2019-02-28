@@ -22,7 +22,6 @@ namespace GlobeAuction.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Required]
         public virtual AuctionCategory Category { get; set; }
         
         [StringLength(500)]
@@ -62,7 +61,6 @@ namespace GlobeAuction.Models
         [Key]
         public int DonationItemId { get; set; }
 
-        [Required]
         public virtual AuctionCategory Category { get; set; }
 
         [Required]
@@ -193,18 +191,22 @@ namespace GlobeAuction.Models
         public string Name { get; set; }
 
         [Required]
+        [Display(Name = "Open Bidding (EST)")]
         public DateTime BidOpenDateLtz { get; set; }
 
         [Required]
+        [Display(Name = "Close Bidding (EST)")]
         public DateTime BidCloseDateLtz { get; set; }
 
         [Required]
+        [Display(Name = "Fund-a-Project")]
         public bool IsFundAProject { get; set; }
 
         /// <summary>
         /// Should be true for "Live" category
         /// </summary>
         [Required]
+        [Display(Name = "Hide from Donate Form")]
         public bool IsOnlyAvailableToAuctionItems { get; set; }
     }
 }

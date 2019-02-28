@@ -470,6 +470,10 @@
     <Compile Include="Migrations\201902261311153_AuctionCategoriesModel.Designer.cs">
       <DependentUpon>201902261311153_AuctionCategoriesModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902281656381_CategoryReferenceNullableOnItems.cs" />
+    <Compile Include="Migrations\201902281656381_CategoryReferenceNullableOnItems.Designer.cs">
+      <DependentUpon>201902281656381_CategoryReferenceNullableOnItems.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -947,6 +951,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902261311153_AuctionCategoriesModel.resx">
       <DependentUpon>201902261311153_AuctionCategoriesModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902281656381_CategoryReferenceNullableOnItems.resx">
+      <DependentUpon>201902281656381_CategoryReferenceNullableOnItems.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

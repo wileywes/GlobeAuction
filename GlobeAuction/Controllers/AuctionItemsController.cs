@@ -106,9 +106,15 @@ namespace GlobeAuction.Controllers
                 var auctionItem = db.AuctionItems.FirstOrDefault(ai => ai.AuctionItemId == auctionItemModel.AuctionItemId);
                 if (auctionItem == null) return HttpNotFound();
 
+                var category = db.AuctionCategories.FirstOrDefault(c => c.Name == auctionItemModel.Category);
+
                 if (auctionItem.AllBids.Any(b => b.IsPaid))
                 {
                     ModelState.AddModelError("uniqueItemNumber", "Cannot change the item once it's on an invoice.  If this is just testing you can delete the invoice to free up the item again.");
+                }
+                else if (category == null)
+                {
+                    ModelState.AddModelError("category", "You must select a valid auction item category.");
                 }
                 else
                 {
@@ -116,7 +122,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.UniqueItemNumber = auctionItemModel.UniqueItemNumber;
                     auctionItem.Title = auctionItemModel.Title;
                     auctionItem.Description = auctionItemModel.Description;
-                    auctionItem.Category = db.AuctionCategories.Find(int.Parse(auctionItemModel.Category));
+                    auctionItem.Category = category;
                     auctionItem.StartingBid = auctionItemModel.StartingBid;
                     auctionItem.BidIncrement = auctionItemModel.BidIncrement;
                     auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
@@ -623,7 +629,7 @@ namespace GlobeAuction.Controllers
         private void AddAuctionItemCategoryControlInfo(string selectedCategoryName)
         {
             var categories = new ItemsRepository(db).GetCatalogData().Categories;
-            var auctionItemCategories = categories.Select(c => new SelectListItem { Text = c.Name, Value = c.AuctionCategoryId.ToString() }).ToList();
+            var auctionItemCategories = categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Name }).ToList();
 
             if (!string.IsNullOrEmpty(selectedCategoryName))
             {

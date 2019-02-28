@@ -145,8 +145,9 @@ namespace GlobeAuction.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    db.DonationItems.Attach(donationItem);
+                    db.Entry(donationItem).Reference("Category").Load();
                     donationItem.Category = db.AuctionCategories.Find(int.Parse(categorySelect));
-                    //db.Entry(donationItem).Property("Category_AuctionCategoryId").IsModified = true;
 
                     donationItem.UpdateDate = Utilities.GetEasternTimeNow();
                     donationItem.UpdateBy = User.Identity.GetUserName();
@@ -189,7 +190,7 @@ namespace GlobeAuction.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            DonationItem donationItem = db.DonationItems.Find(id);
+            DonationItem donationItem = db.DonationItems.Include(d => d.Category).First(d => d.DonationItemId == id);
             donationItem.IsDeleted = true;
             donationItem.UpdateBy = User.Identity.GetUserName();
             if (string.IsNullOrEmpty(donationItem.Title)) donationItem.Title = "No Title";

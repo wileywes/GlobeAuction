@@ -23,6 +23,9 @@
         <th>
             @Html.DisplayNameFor(model => model.IsFundAProject)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsOnlyAvailableToAuctionItems)
+        </th>
         <th></th>
     </tr>
 
@@ -41,9 +44,12 @@
             @Html.DisplayFor(modelItem => item.IsFundAProject)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.AuctionCategoryId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.AuctionCategoryId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.AuctionCategoryId })
+            @Html.DisplayFor(modelItem => item.IsOnlyAvailableToAuctionItems)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.AuctionCategoryId }) |
+            @Html.ActionLink("Details", "Details", new { id = item.AuctionCategoryId }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.AuctionCategoryId })
         </td>
     </tr>
 }
