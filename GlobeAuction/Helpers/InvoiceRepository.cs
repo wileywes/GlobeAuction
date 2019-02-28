@@ -141,7 +141,7 @@ namespace GlobeAuction.Helpers
             return invoice;
         }
 
-        private void ApplyPotentialManualPayment(Invoice invoice, PaymentMethod? manualPayMethod, string updatedBy)
+        public void ApplyPotentialManualPayment(Invoice invoice, PaymentMethod? manualPayMethod, string updatedBy)
         {
             if (manualPayMethod.HasValue)
             {

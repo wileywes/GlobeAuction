@@ -253,6 +253,28 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index", "LogFiles");
         }
 
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult MarkBidderPaidManually(int bidderId)
+        {
+            var bidder = db.Bidders.Find(bidderId);
+            if (bidder == null) return HttpNotFound();
+
+            var invoiceRepos = new InvoiceRepository(db);
+            var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
+            var isPaidAlready = regInvoice.IsPaid;
+            invoiceRepos.ApplyPotentialManualPayment(regInvoice, PaymentMethod.Cash, User.Identity.GetUserName());
+            db.SaveChanges();
+
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " manually via MarkBidderPaidManually");
+
+            if (!isPaidAlready)
+            {
+                new EmailHelper().SendInvoicePaymentConfirmation(regInvoice, true);
+            }
+
+            return RedirectToAction("Index", "LogFiles");
+        }
+
         // GET: Bidders/Edit/5
         [Authorize(Roles = AuctionRoles.CanEditBidders)]
         public ActionResult Edit(int? id)

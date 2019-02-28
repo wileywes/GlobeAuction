@@ -23,7 +23,7 @@ namespace GlobeAuction.Migrations
             Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Gift Card Grab', '2019-12-31', '2019-12-31', 0, 0)");
             Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Experiences and Entertainment', '2019-12-31', '2019-12-31', 0, 0)");
             Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Getaways', '2019-12-31', '2019-12-31', 0, 0)");
-            Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Health Beauty and Fitness', '2019-12-31', '2019-12-31', 0, 0)");
+            Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Health, Beauty and Fitness', '2019-12-31', '2019-12-31', 0, 0)");
             Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Children''s Corner', '2019-12-31', '2019-12-31', 0, 0)");
             Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Home Goods and Services', '2019-12-31', '2019-12-31', 0, 0)");
             Sql("INSERT INTO [dbo].[AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems) VALUES ('Teacher Treasure', '2019-12-31', '2019-12-31', 0, 0)");
