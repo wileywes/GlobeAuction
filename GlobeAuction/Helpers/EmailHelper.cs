@@ -94,15 +94,17 @@ namespace GlobeAuction.Helpers
 
                 if (invoice.Bids.Any(w => w.AuctionItem.DonationItems.Any(di => di.UseDigitalCertificateForWinner)))
                 {
-                    footerNotes = "* Certificate for this item will be emailed to you";
+                    footerNotes = "* Certificate for this item will be emailed to you.  ";
                 }
             }
 
-            if (invoice.StoreItemPurchases != null)
+            if (invoice.StoreItemPurchases != null && invoice.StoreItemPurchases.Any())
             {
                 lines.AddRange(invoice.StoreItemPurchases
                     .Where(s => s.IsPaid)
                     .Select(GetStoreItemPurchaseLineString));
+
+                footerNotes += "All gift card purchases can be picked up at the front office of Lower Campus during regular school hours beginning Friday, March 15.";
             }
             
             var body = GetInvoiceEmail(
