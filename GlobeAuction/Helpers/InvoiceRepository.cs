@@ -98,7 +98,8 @@ namespace GlobeAuction.Helpers
         {
             var allPurchases = new List<BuyItemViewModel>();
             if (buyModel.RaffleItems != null) allPurchases.AddRange(buyModel.RaffleItems);
-            if (buyModel.StoreItems != null) allPurchases.AddRange(buyModel.StoreItems);
+            if (buyModel.FundAProjectItems != null) allPurchases.AddRange(buyModel.FundAProjectItems);
+            if (buyModel.GeneralStoreItems != null) allPurchases.AddRange(buyModel.GeneralStoreItems);
 
             var storeItemPurchases = new ItemsRepository(db).GetStorePurchasesWithIndividualizedRaffleTickets(allPurchases);
 

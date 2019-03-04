@@ -157,7 +157,8 @@ namespace GlobeAuction.Models
         public string ZipCode { get; set; }
 
         public List<BuyItemViewModel> RaffleItems { get; set; }
-        public List<BuyItemViewModel> StoreItems { get; set; }
+        public List<BuyItemViewModel> FundAProjectItems { get; set; }
+        public List<BuyItemViewModel> GeneralStoreItems { get; set; }
 
         public bool ShowInvoiceCreatedSuccessMessage { get; set; }
         public int? InvoiceIdCreated { get; set; }
@@ -198,6 +199,11 @@ namespace GlobeAuction.Models
             QuantityAvailable = si.Quantity;
             HasUnlimitedQuantity = si.HasUnlimitedQuantity;
             DonationItemValue = si?.DonationItem?.DollarValue;
+        }
+
+        public bool IsFundAProject()
+        {
+            return Title.ToLowerInvariant().Replace("-", "").Contains("fundaproject");
         }
     }
 }

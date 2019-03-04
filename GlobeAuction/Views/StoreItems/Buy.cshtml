@@ -52,41 +52,111 @@ else
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-horizontal">
-            <h2>Raffle Tickets</h2>
+    <div class="form-horizontal">
+        <h2>Raffle Tickets</h2>
+        <hr />
+        <div class="row">
+            @for (var i = 0; i < Model.RaffleItems.Count; i++)
+            {
+                if (cardCount % 3 == 0 && cardCount > 0)
+                {
+                    @Html.Raw("</div><br /><div class=\"row\">")
+                }
+
+                @Html.HiddenFor(m => Model.RaffleItems[i].StoreItemId)
+                <div class="col-md-4">
+                    <div class="card">
+                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].ImageUrl))
+                        {
+                            <img src="@Url.Content(Model.RaffleItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
+                        }
+                        <div class="card-container">
+                            <h4><b>@Html.DisplayFor(m => Model.RaffleItems[i].Title)</b></h4>
+                            <p>
+                                @Html.DisplayFor(m => Model.RaffleItems[i].Description)
+                                <br />
+                                <table cellspacing="5">
+                                    <tr>
+                                        <td><b>Price:</b></td>
+                                        <td>
+                                            @Html.DisplayFor(m => Model.RaffleItems[i].Price)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Quantity:&nbsp;&nbsp;</b></td>
+                                        <td>
+                                            @Html.EditorFor(m => Model.RaffleItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
+                                            @Html.ValidationMessageFor(model => Model.RaffleItems[i].QuantityPurchased, "", new { @class = "text-danger" })
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {
+                    cardCount++;
+                }
+            }
+        </div>
+
+        <a name="fap"></a>
+
+        <br />
+
+        @if (Model.FundAProjectItems.Any())
+        {
+            <h2>Fund-A-Project</h2>
             <hr />
+            <h4>
+                @Html.DisplayFor(m => Model.FundAProjectItems.First().Description)
+            </h4>
+            {
+                cardCount = 0;
+            }
             <div class="row">
-                @for (var i = 0; i < Model.RaffleItems.Count; i++)
+                @for (var i = 0; i < Model.FundAProjectItems.Count; i++)
                 {
                     if (cardCount % 3 == 0 && cardCount > 0)
                     {
                         @Html.Raw("</div><br /><div class=\"row\">")
                     }
 
-                    @Html.HiddenFor(m => Model.RaffleItems[i].StoreItemId)
+                    @Html.HiddenFor(m => Model.FundAProjectItems[i].StoreItemId)
                     <div class="col-md-4">
                         <div class="card">
-                            @if (!string.IsNullOrEmpty(Model.RaffleItems[i].ImageUrl))
+                            @if (!string.IsNullOrEmpty(Model.FundAProjectItems[i].ImageUrl))
                             {
-                                <img src="@Url.Content(Model.RaffleItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
+                                <img src="@Url.Content(Model.FundAProjectItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                             }
                             <div class="card-container">
-                                <h4><b>@Html.DisplayFor(m => Model.RaffleItems[i].Title)</b></h4>
+                                <h4><b>@Html.DisplayFor(m => Model.FundAProjectItems[i].Title)</b></h4>
                                 <p>
-                                    @Html.DisplayFor(m => Model.RaffleItems[i].Description)
-                                    <br />
                                     <table cellspacing="5">
                                         <tr>
                                             <td><b>Price:</b></td>
                                             <td>
-                                                @Html.DisplayFor(m => Model.RaffleItems[i].Price)
+                                                @Html.DisplayFor(m => Model.FundAProjectItems[i].Price)
+                                                @if (Model.FundAProjectItems[i].DonationItemValue.GetValueOrDefault(0) > 0)
+                                                {
+                                                    @Html.Raw($" (value {Model.FundAProjectItems[i].DonationItemValue.Value:C})");
+                                                }
                                             </td>
                                         </tr>
+                                        @if (Model.FundAProjectItems[i].HasUnlimitedQuantity == false)
+                                        {
+                                            <tr>
+                                                <td><b>Available:</b></td>
+                                                <td>
+                                                    @Html.DisplayFor(m => Model.FundAProjectItems[i].QuantityAvailable)
+                                                </td>
+                                            </tr>
+                                        }
                                         <tr>
                                             <td><b>Quantity:&nbsp;&nbsp;</b></td>
                                             <td>
-                                                @Html.EditorFor(m => Model.RaffleItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
-                                                @Html.ValidationMessageFor(model => Model.RaffleItems[i].QuantityPurchased, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(m => Model.FundAProjectItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
+                                                @Html.ValidationMessageFor(model => Model.FundAProjectItems[i].QuantityPurchased, "", new { @class = "text-danger" })
                                             </td>
                                         </tr>
                                     </table>
@@ -99,174 +169,172 @@ else
                     }
                 }
             </div>
-
-            <a name="fap"></a>
-
             <br />
+        }
 
-            @if (Model.StoreItems.Any())
+        @if (Model.GeneralStoreItems.Any())
+        {
+            <h2>Store Items</h2>
+            <hr />
+            <h4>
+                @Html.DisplayFor(m => Model.GeneralStoreItems.First().Description)
+            </h4>
             {
-                <h2>Fund-A-Project</h2>
-                <hr />
-                <h4>
-                    @Html.DisplayFor(m => Model.StoreItems.First().Description)
-                </h4>
+                cardCount = 0;
+            }
+            <div class="row">
+                @for (var i = 0; i < Model.GeneralStoreItems.Count; i++)
                 {
-                    cardCount = 0;
-                }
-                <div class="row">
-                    @for (var i = 0; i < Model.StoreItems.Count; i++)
+                    if (cardCount % 3 == 0 && cardCount > 0)
                     {
-                        if (cardCount % 3 == 0 && cardCount > 0)
-                        {
-                            @Html.Raw("</div><br /><div class=\"row\">")
-                        }
+                        @Html.Raw("</div><br /><div class=\"row\">")
+                    }
 
-                        @Html.HiddenFor(m => Model.StoreItems[i].StoreItemId)
-                        <div class="col-md-4">
-                            <div class="card">
-                                @if (!string.IsNullOrEmpty(Model.StoreItems[i].ImageUrl))
-                                {
-                                    <img src="@Url.Content(Model.StoreItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
-                                }
-                                <div class="card-container">
-                                    <h4><b>@Html.DisplayFor(m => Model.StoreItems[i].Title)</b></h4>
-                                    <p>
-                                        <table cellspacing="5">
+                    @Html.HiddenFor(m => Model.GeneralStoreItems[i].StoreItemId)
+                    <div class="col-md-4">
+                        <div class="card">
+                            @if (!string.IsNullOrEmpty(Model.GeneralStoreItems[i].ImageUrl))
+                            {
+                                <img src="@Url.Content(Model.GeneralStoreItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
+                            }
+                            <div class="card-container">
+                                <h4><b>@Html.DisplayFor(m => Model.GeneralStoreItems[i].Title)</b></h4>
+                                <p>
+                                    <table cellspacing="5">
+                                        <tr>
+                                            <td><b>Price:</b></td>
+                                            <td>
+                                                @Html.DisplayFor(m => Model.GeneralStoreItems[i].Price)
+                                                @if (Model.GeneralStoreItems[i].DonationItemValue.GetValueOrDefault(0) > 0)
+                                                {
+                                                    @Html.Raw($" (value {Model.GeneralStoreItems[i].DonationItemValue.Value:C})");
+                                                }
+                                            </td>
+                                        </tr>
+                                        @if (Model.GeneralStoreItems[i].HasUnlimitedQuantity == false)
+                                        {
                                             <tr>
-                                                <td><b>Price:</b></td>
+                                                <td><b>Available:</b></td>
                                                 <td>
-                                                    @Html.DisplayFor(m => Model.StoreItems[i].Price)
-                                                    @if (Model.StoreItems[i].DonationItemValue.GetValueOrDefault(0) > 0)
-                                                    {
-                                                        @Html.Raw($" (value {Model.StoreItems[i].DonationItemValue.Value:C})");
-                                                    }
+                                                    @Html.DisplayFor(m => Model.GeneralStoreItems[i].QuantityAvailable)
                                                 </td>
                                             </tr>
-                                            @if (Model.StoreItems[i].HasUnlimitedQuantity == false)
-                                            {
-                                                <tr>
-                                                    <td><b>Available:</b></td>
-                                                    <td>
-                                                        @Html.DisplayFor(m => Model.StoreItems[i].QuantityAvailable)
-                                                    </td>
-                                                </tr>
-                                            }
-                                            <tr>
-                                                <td><b>Quantity:&nbsp;&nbsp;</b></td>
-                                                <td>
-                                                    @Html.EditorFor(m => Model.StoreItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
-                                                    @Html.ValidationMessageFor(model => Model.StoreItems[i].QuantityPurchased, "", new { @class = "text-danger" })
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </p>
-                                </div>
+                                        }
+                                        <tr>
+                                            <td><b>Quantity:&nbsp;&nbsp;</b></td>
+                                            <td>
+                                                @Html.EditorFor(m => Model.GeneralStoreItems[i].QuantityPurchased, new { htmlAttributes = new { @class = "" } })
+                                                @Html.ValidationMessageFor(model => Model.GeneralStoreItems[i].QuantityPurchased, "", new { @class = "text-danger" })
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p>
                             </div>
                         </div>
-                        {
-                            cardCount++;
-                        }
+                    </div>
+                    {
+                        cardCount++;
                     }
-                </div>
-                <br />
-            }
-
-            @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-            {
-                <h4>Lookup Bidder</h4>
-                <hr />
-
-                <div class="alert alert-warning" style="display:none" id="divNoBidderFound">
-                    Unable to find a matching bidder.  Try again or just enter the information in the "Your Contact Information" section.
-                </div>
-
-                <div class="form-group">
-                    @Html.Label("Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.TextBox("bidderNumber")
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.Label("Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.TextBox("bidderLastName")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="button" class="btn btn-primary" id="btnLookupBidder" value="Lookup Bidder" />
-                    </div>
-                </div>
-            }
-
-
-            <h2>Your Contact Information</h2>
-            <p>
-                If you have previously registered for the auction event please use the same Last Name and Email so that
-                we can link your purchases together for you.
-            </p>
-            <hr />
-            @Html.HiddenFor(m => m.BidderId)
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
-                </div>
+                }
             </div>
             <br />
+        }
+
+        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+        {
+            <h4>Lookup Bidder</h4>
+            <hr />
+
+            <div class="alert alert-warning" style="display:none" id="divNoBidderFound">
+                Unable to find a matching bidder.  Try again or just enter the information in the "Your Contact Information" section.
+            </div>
 
             <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
-                    {
-                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
-                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
-                        <input type="submit" name="submitButton" value="Invoice and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
-                        <br /><br />
-                        <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
-                    }
-                    else
-                    {
-                        <input type="submit" name="submitButton" value="Buy Now" class="btn btn-primary btn-lg" />
-                    }
+                @Html.Label("Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("bidderNumber")
                 </div>
             </div>
+            <div class="form-group">
+                @Html.Label("Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("bidderLastName")
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" class="btn btn-primary" id="btnLookupBidder" value="Lookup Bidder" />
+                </div>
+            </div>
+        }
+
+
+        <h2>Your Contact Information</h2>
+        <p>
+            If you have previously registered for the auction event please use the same Last Name and Email so that
+            we can link your purchases together for you.
+        </p>
+        <hr />
+        @Html.HiddenFor(m => m.BidderId)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
         </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.ZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
+                {
+                    <input type="submit" name="submitButton" value="Invoice and Mark Paid (Cash)" class="btn btn-primary btn-lg" />
+                    <input type="submit" name="submitButton" value="Invoice and Mark Paid (Check)" class="btn btn-primary btn-lg" />
+                    <input type="submit" name="submitButton" value="Invoice and Mark Paid (PayPal)" class="btn btn-primary btn-lg" />
+                    <br /><br />
+                    <input type="submit" name="submitButton" value="Buy Now (for Myself)" class="btn btn-default btn-sm" />
+                }
+                else
+                {
+                    <input type="submit" name="submitButton" value="Buy Now" class="btn btn-primary btn-lg" />
+                }
+            </div>
+        </div>
+    </div>
     }
 }
 
