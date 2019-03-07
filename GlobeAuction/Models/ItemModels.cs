@@ -208,5 +208,11 @@ namespace GlobeAuction.Models
         [Required]
         [Display(Name = "Hide from Donate Form")]
         public bool IsOnlyAvailableToAuctionItems { get; set; }
+
+        [Display(Name = "Starting Item No.")]
+        public int? ItemNumberStart { get; set; }
+
+        [Display(Name = "Ending Item No.")]
+        public int? ItemNumberEnd { get; set; }
     }
 }

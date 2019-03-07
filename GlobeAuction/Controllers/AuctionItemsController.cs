@@ -212,20 +212,17 @@ namespace GlobeAuction.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var selectedDonations = selectedDonationIds.Select(id => db.DonationItems.Find(id)).ToList();
-            var nextUniqueId = 1;
-
-            if (db.AuctionItems.Any())
-            {
-                nextUniqueId = db.AuctionItems.Max(a => a.UniqueItemNumber) + 1;
-            }
-
+            var selectedDonations = db.DonationItems
+                .Include(d => d.Category)
+                .Where(i => selectedDonationIds.Contains(i.DonationItemId))
+                .ToList();
+            
             new ItemsRepository(db).ClearCatalogDataCache();
             var username = User.Identity.GetUserName();
             switch (donationItemsAction)
             {
                 case "MakeBasket":
-                    var basket = ItemsRepository.CreateAuctionItemForDonations(nextUniqueId, selectedDonations, username);
+                    var basket = new ItemsRepository(db).CreateAuctionItemForDonations(selectedDonations, username);
                     db.AuctionItems.Add(basket);
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = basket.AuctionItemId });
@@ -233,11 +230,9 @@ namespace GlobeAuction.Controllers
                 case "MakeSingle":
                     foreach (var selectedDonation in selectedDonations)
                     {
-                        var auctionItem = ItemsRepository.CreateAuctionItemForDonation(nextUniqueId, selectedDonation, username);
+                        var auctionItem = new ItemsRepository(db).CreateAuctionItemForDonation(selectedDonation, username);
                         db.AuctionItems.Add(auctionItem);
-                        nextUniqueId++;
                     }
-
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 case "AddToBasket":

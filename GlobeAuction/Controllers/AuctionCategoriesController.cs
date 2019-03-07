@@ -47,7 +47,7 @@ namespace GlobeAuction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AuctionCategoryId,Name,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject,IsOnlyAvailableToAuctionItems")] AuctionCategory auctionCategory)
+        public ActionResult Create([Bind(Include = "AuctionCategoryId,Name,ItemNumberStart,ItemNumberEnd,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject,IsOnlyAvailableToAuctionItems")] AuctionCategory auctionCategory)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace GlobeAuction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AuctionCategoryId,Name,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject,IsOnlyAvailableToAuctionItems")] AuctionCategory auctionCategory)
+        public ActionResult Edit([Bind(Include = "AuctionCategoryId,Name,ItemNumberStart,ItemNumberEnd,BidOpenDateLtz,BidCloseDateLtz,IsFundAProject,IsOnlyAvailableToAuctionItems")] AuctionCategory auctionCategory)
         {
             if (ModelState.IsValid)
             {

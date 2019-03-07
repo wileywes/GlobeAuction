@@ -19,12 +19,12 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        public static AuctionItem CreateAuctionItemForDonation(int uniqueId, DonationItem item, string username)
+        public AuctionItem CreateAuctionItemForDonation(DonationItem item, string username)
         {
-            return CreateAuctionItemForDonations(uniqueId, new List<DonationItem> { item }, username);
+            return CreateAuctionItemForDonations(new List<DonationItem> { item }, username);
         }
 
-        public static AuctionItem CreateAuctionItemForDonations(int uniqueId, List<DonationItem> items, string username)
+        public AuctionItem CreateAuctionItemForDonations(List<DonationItem> items, string username)
         {
             if (!items.Any()) throw new ApplicationException("You must select at least one donation item");
 
@@ -50,6 +50,9 @@ namespace GlobeAuction.Helpers
                 .OrderByDescending(g => g.Count())
                 .First().Key;
 
+            //unique item number comes from category if defined, otherwise we take the max
+            var uniqueId = CalculateNextAuctionItemNumber(mostCommonCategory);
+
             return new AuctionItem
             {
                 UniqueItemNumber = uniqueId,
@@ -64,6 +67,74 @@ namespace GlobeAuction.Helpers
                 DonationItems = items,
                 Quantity = items.Count == 1 ? items.First().Quantity : 1
             };
+        }
+
+        private int CalculateNextAuctionItemNumber(AuctionCategory mostCommonCategory)
+        {
+            int? uniqueId = null;
+            var categoriesWithRanges = db.AuctionCategories.Where(c => c.ItemNumberStart.HasValue && c.ItemNumberEnd.HasValue).ToList();
+
+            if (categoriesWithRanges.Any())
+            {
+                var catStart = mostCommonCategory?.ItemNumberStart.GetValueOrDefault(0);
+                var catEnd = mostCommonCategory?.ItemNumberEnd.GetValueOrDefault(0);
+                if (catStart > 0 && catEnd > 0 && catStart < catEnd)
+                {
+                    var highestInCategory = db.AuctionItems
+                        .Where(a => a.Category.AuctionCategoryId == mostCommonCategory.AuctionCategoryId)
+                        .OrderByDescending(a => a.UniqueItemNumber)
+                        .FirstOrDefault();
+
+                    if (highestInCategory != null)
+                    {
+                        //take the next one up as long as we aren't at the end
+                        if (highestInCategory.UniqueItemNumber < catEnd)
+                        {
+                            uniqueId = highestInCategory.UniqueItemNumber + 1;
+                        }
+                    }
+                    else
+                    {
+                        //nothing in category yet so start at the beginning
+                        uniqueId = catStart;
+                    }
+
+                    //make sure our derived value isn't taken
+                    if (uniqueId.HasValue)
+                    {
+                        var existingAlreadyUsing = db.AuctionItems.FirstOrDefault(a => a.UniqueItemNumber == uniqueId);
+                        if (existingAlreadyUsing != null) uniqueId = null;
+                    }
+                }
+
+                if (!uniqueId.HasValue)
+                {
+                    //go to the end of the list
+                    var topOfCategories = categoriesWithRanges.Max(c => c.ItemNumberEnd.Value) + 1;
+
+                    var topOfItems = 0;
+                    if (db.AuctionItems.Any())
+                    {
+                        topOfItems = db.AuctionItems.Max(a => a.UniqueItemNumber) + 1;
+                    }
+
+                    uniqueId = Math.Max(topOfCategories, topOfItems);
+                }
+            }
+            else
+            {
+                //not using category ranges so just do based on items
+                if (db.AuctionItems.Any())
+                {
+                    uniqueId = db.AuctionItems.Max(a => a.UniqueItemNumber) + 1;
+                }
+                else
+                {
+                    uniqueId = 1;
+                }
+            }
+
+            return uniqueId.Value;
         }
 
         public void CreateStoreItemsForDonations(List<DonationItem> items, string username)
