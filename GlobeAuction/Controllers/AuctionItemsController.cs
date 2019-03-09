@@ -457,7 +457,136 @@ namespace GlobeAuction.Controllers
 
             return View(model);
         }
-        
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult EnterWinners()
+        {
+            AddAuctionItemCategoryControlInfo(null);
+
+            return View(new EnterWinnersViewModel());
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult GetNextAuctionItemWithNoWinner(string selectedCategory, int currentUniqueItemNumber)
+        {
+            var nextItems = db.AuctionItems.Where(ai =>
+                    ai.AllBids.Count == 0 &&
+                    ai.Quantity == 1 &&
+                    ai.Category.Name == selectedCategory &&
+                    ai.UniqueItemNumber > currentUniqueItemNumber)
+                .OrderBy(ai => ai.UniqueItemNumber)
+                .ToList();
+
+            var nextItem = nextItems.FirstOrDefault();
+
+            var hasNext = nextItems.Count > 1;
+            var hasPrevious = db.AuctionItems.Any(ai =>
+                    ai.AllBids.Count == 0 &&
+                    ai.Quantity == 1 &&
+                    ai.Category.Name == selectedCategory &&
+                    ai.UniqueItemNumber <= currentUniqueItemNumber);
+
+            if (nextItem == null)
+            {
+                return Json(new { hasResult = false }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(
+                new
+                {
+                    hasResult = true,
+                    hasNext,
+                    hasPrevious,
+                    auctionItemId = nextItem.AuctionItemId,
+                    title = nextItem.Title,
+                    description = nextItem.Description,
+                    uniqueItemNumber = nextItem.UniqueItemNumber
+                },
+                JsonRequestBehavior.AllowGet
+            );
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult GetPreviousAuctionItemWithNoWinner(string selectedCategory, int currentUniqueItemNumber)
+        {
+            var previousItems = db.AuctionItems.Where(ai =>
+                    ai.AllBids.Count == 0 &&
+                    ai.Quantity == 1 &&
+                    ai.Category.Name == selectedCategory &&
+                    ai.UniqueItemNumber < currentUniqueItemNumber)
+                .OrderByDescending(ai => ai.UniqueItemNumber)
+                .ToList();
+
+            var previousItem = previousItems.FirstOrDefault();
+            var hasPrevious = previousItems.Count > 1;
+            var hasNext = db.AuctionItems.Any(ai =>
+                    ai.AllBids.Count == 0 &&
+                    ai.Quantity == 1 &&
+                    ai.Category.Name == selectedCategory &&
+                    ai.UniqueItemNumber >= currentUniqueItemNumber);
+
+            if (previousItem == null)
+            {
+                return Json(new { hasResult = false }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(
+                new
+                {
+                    hasResult = true,
+                    hasNext,
+                    hasPrevious,
+                    auctionItemId = previousItem.AuctionItemId,
+                    title = previousItem.Title,
+                    description = previousItem.Description,
+                    uniqueItemNumber = previousItem.UniqueItemNumber
+                },
+                JsonRequestBehavior.AllowGet
+            );
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult SaveAuctionItemWinner(int auctionItemId, int uniqueItemNumber, string winningBidderId, string winningAmount)
+        {
+            int winningBidderIdInt;
+            decimal winningAmountDecimal;
+
+            if (!int.TryParse(winningBidderId, out winningBidderIdInt))
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Winning Bidder # must be a whole number." }, JsonRequestBehavior.AllowGet);
+            }
+            if (!decimal.TryParse(winningAmount, out winningAmountDecimal))
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Winning Bid Amount must be a whole number." }, JsonRequestBehavior.AllowGet);
+            }
+
+            var auctionItem = db.AuctionItems.FirstOrDefault(ai =>
+                ai.AuctionItemId == auctionItemId &&
+                ai.UniqueItemNumber == uniqueItemNumber);
+
+            if (auctionItem == null)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Unable to find auction item." }, JsonRequestBehavior.AllowGet);
+            }
+            if (auctionItem.AllBids.Count > 0)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Auction Item is already marked as won.  You must use the Auction Item edit screen to update this now." }, JsonRequestBehavior.AllowGet);
+            }
+            if (auctionItem.Quantity > 0)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Cannot assign a winner to an auction item that is a master item for multiple winners.  Use the bulk winner entry screen instead." }, JsonRequestBehavior.AllowGet);
+            }
+
+            var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderNumber == winningBidderIdInt);
+
+            if (bidder == null)
+            {
+                return Json(new { wasSuccessful = false, errorMsg = "Unable to find bidder " + winningBidderIdInt + "." }, JsonRequestBehavior.AllowGet);
+            }
+
+            new ItemsRepository(db).EnterNewBidAndRecalcWinners(auctionItem, bidder, winningAmountDecimal, out List<Bidder> biddersThatLost);
+
+            return Json(new { wasSuccessful = true }, JsonRequestBehavior.AllowGet);
+        }
+
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult EnterWinnersInBulk()
         {
@@ -598,11 +727,15 @@ namespace GlobeAuction.Controllers
         {
             var availableMasterItems = db.AuctionItems
                 .Where(ai => ai.Quantity > 1)
-                .OrderBy(ai => ai.Category)
+                .OrderBy(ai => ai.Category.Name)
                 .ThenBy(ai => ai.Title)
                 .ToList();
 
-            var selectListItems = availableMasterItems.Select(i => new SelectListItem { Text = i.Category + " - " + i.Title, Value = i.AuctionItemId.ToString() }).ToList();
+            var selectListItems = availableMasterItems.Select(i => 
+            new SelectListItem {
+                Text = i.Category.Name + " - " + i.Title,
+                Value = i.AuctionItemId.ToString()
+            }).ToList();
             
             ViewBag.AvailableMasterItems = selectListItems;
         }

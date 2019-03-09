@@ -782,6 +782,7 @@
     <Content Include="Views\AuctionCategories\Details.cshtml" />
     <Content Include="Views\AuctionCategories\Edit.cshtml" />
     <Content Include="Views\AuctionCategories\Index.cshtml" />
+    <Content Include="Views\AuctionItems\EnterWinners.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
