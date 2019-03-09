@@ -12,70 +12,77 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table table-striped table-bordered" id="categoriesTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ItemNumberStart)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ItemNumberEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BidOpenDateLtz)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BidCloseDateLtz)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsFundAProject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsOnlyAvailableToAuctionItems)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
 
-        @foreach (var item in Model.OrderBy(m => m.Name))
-        {
+@using (Html.BeginForm("SubmitCategoriesAction", "AuctionCategories", FormMethod.Post, new { id = "submitCategoriesActionForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Hidden("categoriesAction");
+
+    <table class="table table-striped table-bordered" id="categoriesTable">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ItemNumberStart)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ItemNumberEnd)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BidOpenDateLtz)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BidCloseDateLtz)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsFundAProject)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsOnlyAvailableToAuctionItems)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.AuctionCategoryId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.AuctionCategoryId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.AuctionCategoryId })
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ItemNumberStart)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ItemNumberEnd)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidOpenDateLtz)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BidCloseDateLtz)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsFundAProject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsOnlyAvailableToAuctionItems)
+                </th>
+                <th></th>
             </tr>
-        }
+        </thead>
+        <tbody>
 
-    </tbody>
-</table>
+            @foreach (var item in Model.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ItemNumberStart)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ItemNumberEnd)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidOpenDateLtz)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidCloseDateLtz)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsFundAProject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsOnlyAvailableToAuctionItems)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionCategoryId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.AuctionCategoryId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionCategoryId })
+                    </td>
+                </tr>
+            }
 
+        </tbody>
+    </table>
+}
 
 
 <script type="text/javascript">
@@ -89,7 +96,21 @@
                 {
                     extend: 'excelHtml5',
                     title: 'Export'
-                }
+                },
+                {
+                    text: 'Open All Categories Now',
+                    action: function (e, dt, node, config) {
+                        $("#categoriesAction").val("OpenAllNow");
+                        $('#submitCategoriesActionForm').submit();
+                    }
+                },
+                {
+                    text: 'Close All Categories Now',
+                    action: function (e, dt, node, config) {
+                        $("#categoriesAction").val("CloseAllNow");
+                        $('#submitCategoriesActionForm').submit();
+                    }
+                },
             ],
             select: {
                 style: 'os'

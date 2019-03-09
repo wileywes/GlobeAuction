@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GlobeAuction.Helpers;
 using GlobeAuction.Models;
 
 namespace GlobeAuction.Controllers
@@ -20,6 +21,41 @@ namespace GlobeAuction.Controllers
         {
             return View(db.AuctionCategories.ToList());
         }
+
+
+        [HttpPost, ActionName("SubmitCategoriesAction")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult SubmitCategoriesAction(string categoriesAction)
+        {
+            var currentEst = Utilities.GetEasternTimeNow();
+            switch (categoriesAction)
+            {
+                case "OpenAllNow":
+                    foreach(var cat in db.AuctionCategories)
+                    {
+                        cat.BidOpenDateLtz = currentEst.AddDays(-30);
+                        cat.BidCloseDateLtz = currentEst.AddDays(30);
+                    }
+                    db.SaveChanges();
+                    new ItemsRepository(db).ClearCatalogDataCache();
+                    break;
+                case "CloseAllNow":
+                    foreach (var cat in db.AuctionCategories)
+                    {
+                        cat.BidOpenDateLtz = currentEst.AddDays(120);
+                        cat.BidCloseDateLtz = currentEst.AddDays(120);
+                    }
+                    db.SaveChanges();
+                    new ItemsRepository(db).ClearCatalogDataCache();
+                    break;
+                default:
+                    throw new ApplicationException("Unrecognized action");
+            }
+
+            return RedirectToAction("Index");
+        }
+
 
         // GET: AuctionCategories/Details/5
         public ActionResult Details(int? id)

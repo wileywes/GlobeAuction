@@ -232,8 +232,8 @@ namespace GlobeAuction.Controllers
                     {
                         var auctionItem = new ItemsRepository(db).CreateAuctionItemForDonation(selectedDonation, username);
                         db.AuctionItems.Add(auctionItem);
+                        db.SaveChanges(); //save between each so that the next item calculates the correct Item No.
                     }
-                    db.SaveChanges();
                     return RedirectToAction("Index");
                 case "AddToBasket":
                     if (!basketItemNumber.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
