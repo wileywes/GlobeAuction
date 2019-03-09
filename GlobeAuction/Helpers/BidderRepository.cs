@@ -103,7 +103,18 @@ namespace GlobeAuction.Helpers
                         && i.Bidder.BidderId == bidder.BidderId
                         && i.TicketPurchases.Any(g => g.TicketPrice == 0 || g.TicketPricePaid.HasValue));
 
-            return invoiceForBidderIfPaid != null;
+            if (invoiceForBidderIfPaid != null) return true;
+
+            //allow bidder to bid if the payment is pending
+            var invoiceWithPaymentPending = db.Invoices
+                .FirstOrDefault(i => i.InvoiceType == InvoiceType.BidderRegistration
+                        && i.Bidder != null
+                        && i.Bidder.BidderId == bidder.BidderId
+                        && i.PaymentTransaction.PaymentStatus == "Pending");
+
+            if (invoiceWithPaymentPending != null) return true;
+
+            return false;
         }
     }
 }
