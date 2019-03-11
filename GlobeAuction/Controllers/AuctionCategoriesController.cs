@@ -89,6 +89,7 @@ namespace GlobeAuction.Controllers
             {
                 db.AuctionCategories.Add(auctionCategory);
                 db.SaveChanges();
+                new ItemsRepository(db).ClearCatalogDataCache();
                 return RedirectToAction("Index");
             }
 
@@ -121,6 +122,7 @@ namespace GlobeAuction.Controllers
             {
                 db.Entry(auctionCategory).State = EntityState.Modified;
                 db.SaveChanges();
+                new ItemsRepository(db).ClearCatalogDataCache();
                 return RedirectToAction("Index");
             }
             return View(auctionCategory);
@@ -162,6 +164,7 @@ namespace GlobeAuction.Controllers
             {
                 db.AuctionCategories.Remove(auctionCategory);
                 db.SaveChanges();
+                new ItemsRepository(db).ClearCatalogDataCache();
                 return RedirectToAction("Index");
             }
             return View(auctionCategory);

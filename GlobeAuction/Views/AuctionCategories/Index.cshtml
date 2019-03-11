@@ -25,6 +25,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
+                <th>Bid Status</th>
                 <th>
                     @Html.DisplayNameFor(model => model.ItemNumberStart)
                 </th>
@@ -53,6 +54,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @(item.IsBiddingOpen ? "Open" : "Closed")
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ItemNumberStart)

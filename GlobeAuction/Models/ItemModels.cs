@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobeAuction.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -214,5 +215,14 @@ namespace GlobeAuction.Models
 
         [Display(Name = "Ending Item No.")]
         public int? ItemNumberEnd { get; set; }
+
+        public bool IsBiddingOpen
+        {
+            get
+            {
+                var localTime = Utilities.GetEasternTimeNow();
+                return localTime > BidOpenDateLtz && localTime < BidCloseDateLtz;
+            }
+        }
     }
 }

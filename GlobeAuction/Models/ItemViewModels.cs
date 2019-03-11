@@ -187,6 +187,7 @@ namespace GlobeAuction.Models
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public string Category { get; set; }
+        public bool IsBiddingForCategoryOpen { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -216,6 +217,7 @@ namespace GlobeAuction.Models
             this.Description = i.Description; //.TruncateTo(50);
             this.ImageUrl = i.ImageUrl;
             this.Category = i.Category.Name;
+            this.IsBiddingForCategoryOpen = i.Category.IsBiddingOpen;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
             this.Quantity = i.Quantity;
@@ -262,6 +264,7 @@ namespace GlobeAuction.Models
 
     public class ActiveBidsViewModel
     {
+        public bool IsReadyForCheckout { get; set; }
         public List<BidViewModel> Bids { get; set; }
         public List<int> AuctionIdsWinningMultiples { get; set; }
 
@@ -275,6 +278,10 @@ namespace GlobeAuction.Models
                 .Where(g => g.Count() > 1)
                 .Select(g => g.Key)
                 .ToList();
+
+            var winningBidsInOpenCategories = bids.Count(b => b.IsWinning && b.AuctionItem.IsBiddingForCategoryOpen);
+            var winningBidsInClosedCategories = bids.Count(b => b.IsWinning && !b.AuctionItem.IsBiddingForCategoryOpen);
+            IsReadyForCheckout = winningBidsInOpenCategories == 0 && winningBidsInClosedCategories > 0;
         }
     }
 

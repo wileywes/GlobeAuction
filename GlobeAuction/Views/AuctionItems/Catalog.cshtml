@@ -23,7 +23,7 @@
 
         <div class="form-group">
             <div class="input-group">
-                @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder="search here" })
+                @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder = "search here" })
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
@@ -58,7 +58,10 @@
                                     <tr>
                                         <td></td>
                                         <td>
-                                            @Html.ActionLink("Bid on Item", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-primary" })
+                                            @if (Model.AuctionItems[i].Category.IsBiddingOpen)
+                                            {
+                                                @Html.ActionLink("Bid on Item", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-primary" })
+                                            }
                                         </td>
                                     </tr>
                                 </table>

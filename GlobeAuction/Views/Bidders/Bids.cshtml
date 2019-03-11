@@ -16,7 +16,10 @@
 
 <p>
     <ul class="list-inline">
-        <li>@Html.ActionLink("Pay for Winnings", "ReviewBidderWinnings", "Invoices", new { bid = ViewBag.BidderInfo.BidderId, email = ViewBag.BidderInfo.Email })</li>
+        @if (Model.IsReadyForCheckout)
+        {
+            <li>@Html.ActionLink("Pay for Winnings", "ReviewBidderWinnings", "Invoices", new { bid = ViewBag.BidderInfo.BidderId, email = ViewBag.BidderInfo.Email }, null)</li>
+        }
         <li><a href="/catalog">Catalog</a></li>
     </ul>
 </p>

@@ -406,6 +406,7 @@ namespace GlobeAuction.Helpers
             var catData = new CatalogData();
             var items = db.AuctionItems
                 .Include(i => i.AllBids)
+                .Include(i => i.Category)
                 .ToList();
             catData.AuctionItems = items.Select(i => new CatalogAuctionItemViewModel(i)).ToList();
 

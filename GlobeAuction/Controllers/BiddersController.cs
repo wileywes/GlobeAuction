@@ -600,6 +600,10 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("", "Your bid must be higher than the last bid of " + highestExistingBid.ToString("c") + ".  You need to increase your bid and place it again.");
                 }
+                else if (!item.Category.IsBiddingOpen)
+                {
+                    ModelState.AddModelError("", "Bidding is currently closed for this category.");
+                }
                 else
                 {
                     //enter the bid and return success on the Bids list page
