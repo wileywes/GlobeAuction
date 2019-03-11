@@ -297,6 +297,13 @@ namespace GlobeAuction.Models
         [Display(Name ="Winning?")]
         public bool IsWinning { get; set; }
 
+        /// <summary>
+        /// empty for model binding
+        /// </summary>
+        public BidViewModel()
+        {
+        }
+
         public BidViewModel(Bid bid, AuctionItem item)
         {
             BidId = bid.BidId;

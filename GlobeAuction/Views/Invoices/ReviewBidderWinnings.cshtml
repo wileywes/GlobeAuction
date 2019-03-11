@@ -69,6 +69,7 @@
                             @for (var i = 0; i < Model.AuctionItemsNotInInvoice.Count; i++)
                             {
                                 @Html.HiddenFor(m => Model.AuctionItemsNotInInvoice[i].BidId)
+                                @Html.HiddenFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItem.AuctionItemId)
                                 <tr>
                                     <td>
                                         @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
@@ -273,7 +274,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(m => item.Category)
+                                        @Html.DisplayFor(m => item.Category.Name)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(m => item.Title)

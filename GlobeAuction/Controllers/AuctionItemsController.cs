@@ -122,6 +122,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.UniqueItemNumber = auctionItemModel.UniqueItemNumber;
                     auctionItem.Title = auctionItemModel.Title;
                     auctionItem.Description = auctionItemModel.Description;
+                    auctionItem.ImageUrl = auctionItemModel.ImageUrl;
                     auctionItem.Category = category;
                     auctionItem.StartingBid = auctionItemModel.StartingBid;
                     auctionItem.BidIncrement = auctionItemModel.BidIncrement;
@@ -722,6 +723,25 @@ namespace GlobeAuction.Controllers
             }
 
             return View(model);
+        }
+
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult DeleteBidFromItem(int aid, int bidId)
+        {
+            var auctionItem = db.AuctionItems.Find(aid);
+            if (auctionItem == null) return HttpNotFound();
+
+            var bid = auctionItem.AllBids.FirstOrDefault(b => b.BidId == bidId);
+            if (bid == null)
+            {
+                return HttpNotFound();
+            }
+
+            db.Bids.Remove(bid);
+            db.SaveChanges();
+
+            return RedirectToAction("Details", new { id = aid });
         }
 
         private void AddWinnersInBulkInfo(EnterWinnersInBulkViewModel model)

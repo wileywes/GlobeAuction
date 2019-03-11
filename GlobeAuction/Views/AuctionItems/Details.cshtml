@@ -129,6 +129,7 @@
                             <th>Bidder No.</th>
                             <th>Bidder Name</th>
                             <th>Bid Amount</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -145,6 +146,12 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(m => bid.BidAmount)
+                                </td>
+                                <td class="text-nowrap">
+                                    @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners))
+                                    {
+                                        @Html.ActionLink("Delete", "DeleteBidFromItem", new { bidId = bid.BidId, aid = Model.AuctionItemId }, null)
+                                    }
                                 </td>
                             </tr>
                         }
