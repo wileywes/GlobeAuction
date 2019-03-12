@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GlobeAuction.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -240,6 +241,7 @@ namespace GlobeAuction.Models
         public int UniqueItemNumber { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string DescriptionTruncated { get; set; }
         public string ImageUrl { get; set; }
         public AuctionCategory Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
@@ -256,6 +258,7 @@ namespace GlobeAuction.Models
             this.UniqueItemNumber = i.UniqueItemNumber;
             this.Title = i.Title;
             this.Description = i.Description; //.TruncateTo(50);
+            this.DescriptionTruncated = i.Description.TruncateTo(200);
             this.ImageUrl = i.ImageUrl;
             this.Category = i.Category;
             this.HighestBid = i.AllBids.Select(b => (int)b.BidAmount).DefaultIfEmpty(i.StartingBid).Max();
