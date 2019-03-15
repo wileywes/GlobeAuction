@@ -543,6 +543,7 @@
     <Content Include="Content\Images\Carousel\GLOBEAuction_12.jpg" />
     <Content Include="Content\Images\Carousel\GLOBEAuction_13.jpg" />
     <Content Include="Content\Images\Carousel\GLOBEAuction_14.jpg" />
+    <Content Include="Content\Images\catalog.gif" />
     <Content Include="Content\Images\checkmark.jpg" />
     <Content Include="Content\Images\checkmark.png" />
     <Content Include="Content\Images\controls.png" />
