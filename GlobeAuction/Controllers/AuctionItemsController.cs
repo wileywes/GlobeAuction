@@ -722,6 +722,20 @@ namespace GlobeAuction.Controllers
                     .ToList();
             }
 
+            BidderCookieInfo bidderInfo;
+            if (BidderRepository.TryGetBidderInfoFromCookie(out bidderInfo))
+            {
+                model.IsBidderLoggedIn = true;
+                model.BidderCatalogFavoriteAuctionItemIds = db.Bidders
+                    .Where(b => b.BidderId == bidderInfo.BidderId && b.BidderNumber == bidderInfo.BidderNumber)
+                    .SelectMany(b => b.CatalogFavorites)
+                    .Select(f => f.AuctionItem.AuctionItemId)
+                    .ToList();
+            }
+
+            //sort by category then item no
+            model.AuctionItems = model.AuctionItems.OrderBy(a => a.Category.Name).ThenBy(a => a.UniqueItemNumber).ToList();
+
             return View(model);
         }
 

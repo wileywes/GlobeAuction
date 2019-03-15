@@ -142,7 +142,7 @@ namespace GlobeAuction.Controllers
                             if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
                             if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
                         }
-                        
+
                         var invoice = new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
 
                         if (manualPayMethod.HasValue || invoice.IsPaid)
@@ -500,7 +500,7 @@ namespace GlobeAuction.Controllers
                     .Include(b => b.AuctionItem)
                     .Where(b => b.Bidder.BidderId == info.BidderId && b.Bidder.BidderNumber == info.BidderNumber)
                     .ToList();
-                
+
                 var bidsToShow = FilterOutMyExtraLosingBids(bids);
                 var models = bidsToShow.Select(b => new BidViewModel(b, b.AuctionItem)).ToList();
 
@@ -529,7 +529,7 @@ namespace GlobeAuction.Controllers
         {
             var bidsToReturn = new List<Bid>();
             var bidsByItem = bids.GroupBy(b => b.AuctionItem);
-            foreach(var group in bidsByItem)
+            foreach (var group in bidsByItem)
             {
                 //for each item, only display my top bid or any that are winning (if winning multiples)
                 var myMaxBidOnThisItem = group.OrderByDescending(b => b.BidAmount).FirstOrDefault();
@@ -537,6 +537,44 @@ namespace GlobeAuction.Controllers
                 bidsToReturn.AddRange(bidsToInclude);
             }
             return bidsToReturn;
+        }
+
+        [AllowAnonymous]
+        public ActionResult UpdateCatalogFavorite(int auctionItemId)
+        {
+            Bidder bidder;
+            if (new BidderRepository(db).TryGetValidatedBidderFromCookie(out bidder))
+            {
+                var item = db.AuctionItems.Find(auctionItemId);
+                if (item == null)
+                {
+                    return Json(new { success = false, error = "Item not found" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var existingFavorite = db.Bidders
+                    .Where(b => b.BidderId == bidder.BidderId && b.BidderNumber == bidder.BidderNumber)
+                    .SelectMany(b => b.CatalogFavorites)
+                    .FirstOrDefault(f => f.AuctionItem.AuctionItemId == auctionItemId);
+
+                //if it doesn't exist then create it otherwise remove it (basically just flip it)
+                if (existingFavorite == null)
+                {
+                    var fav = new CatalogFavorite { AuctionItem = item };
+                    bidder.CatalogFavorites.Add(fav);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    db.CatalogFavorites.Remove(existingFavorite);
+                    db.SaveChanges();
+                }
+
+                return Json(new { success = true, error = "" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, error = "You must log in first" }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpGet]
@@ -558,8 +596,8 @@ namespace GlobeAuction.Controllers
                 {
                     return RedirectToAction("Bids", new { error = BidErrorType.InvalidItemNumber });
                 }
-                var nextBidIncrement = item.AllBids.Any() ? 
-                    item.AllBids.Max(b => b.BidAmount) + item.BidIncrement : 
+                var nextBidIncrement = item.AllBids.Any() ?
+                    item.AllBids.Max(b => b.BidAmount) + item.BidIncrement :
                     item.StartingBid;
 
                 var model = GetBidEnterModel(item, nextBidIncrement);
@@ -609,7 +647,7 @@ namespace GlobeAuction.Controllers
                     //enter the bid and return success on the Bids list page
                     List<Bidder> biddersThatLost;
                     new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmount, out biddersThatLost);
-                    
+
                     //after saving DB changes, now go text those bidders
                     var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
                     var body = string.Format("You have been outbid on item # {0} ({1}).  Click here to rebid: {2}", itemNo, item.Title, bidLink);
@@ -657,7 +695,7 @@ namespace GlobeAuction.Controllers
             var ticketTypes = db.TicketTypes.ToList();
 
             var userIsAdmin = Request.IsAuthenticated && User.IsInRole(AuctionRoles.CanAdminUsers);
-            
+
             //remove admin-only ticket types if not an admin
             ticketTypes = ticketTypes.Where(t => userIsAdmin || t.OnlyVisibleToAdmins == false).ToList();
 

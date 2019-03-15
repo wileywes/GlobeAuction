@@ -12,7 +12,7 @@
     }
 </div>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Catalog", "AuctionItems", FormMethod.Post, new { @class = "form-inline" }))
 {
     var cardCount = 0;
 
@@ -21,13 +21,19 @@
 
     <div class="main">
 
-        <div class="form-group">
-            <div class="input-group">
-                @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder = "search here" })
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Search</strong></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder = "search here" })
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Search</button>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-
+        
         <div class="row">
             @for (var i = 0; i < Model.AuctionItems.Count; i++)
             {
@@ -49,18 +55,38 @@
                                 @Html.DisplayFor(m => Model.AuctionItems[i].DescriptionTruncated)
                                 <br />
                                 <table cellspacing="5">
-                                    <tr>
-                                        <td><b>Price:</b></td>
-                                        <td>
-                                            @Html.DisplayFor(m => Model.AuctionItems[i].HighestBid)
-                                        </td>
-                                    </tr>
+                                    @if (Model.AuctionItems[i].Category.IsBiddingOpen)
+                                    {
+                                        <tr>
+                                            <td><b>Price:</b></td>
+                                            <td>
+                                                @Html.DisplayFor(m => Model.AuctionItems[i].HighestBid)
+                                            </td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td></td>
                                         <td>
-                                            @if (Model.AuctionItems[i].Category.IsBiddingOpen)
+                                            @if (Model.IsBidderLoggedIn)
                                             {
-                                                @Html.ActionLink("Bid on Item", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-primary" })
+                                                if (Model.AuctionItems[i].Category.IsBiddingOpen)
+                                                {
+                                                    @Html.ActionLink("Bid", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+                                                }
+                                                if (Model.BidderCatalogFavoriteAuctionItemIds.Contains(Model.AuctionItems[i].AuctionItemId))
+                                                {
+                                                    <button type="button" class="btn btn-info" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">My Favorite</button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-default" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">Mark Favorite</button>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                /*
+                                                @Html.ActionLink("Login to Tag Favorites", "Login", "Bidders", new { returnURl = "/catalog" }, new { @class = "btn btn-default" })
+                                                */
                                             }
                                         </td>
                                     </tr>
@@ -77,3 +103,30 @@
 
     </div>
 }
+
+
+<script type="text/javascript">
+    function markCatalogFavorite(auctionItemId, button) {
+
+        if (auctionItemId == null || auctionItemId == '') {
+            alert('No auction item id found.')
+        }
+        else {
+            $.getJSON('@Url.Action("UpdateCatalogFavorite", "Bidders")', { auctionItemId: auctionItemId }, function (response) {
+                if (response.success) {
+                    if (button.className == "btn btn-default") {
+                        button.className = "btn btn-info";
+                        button.innerHTML = "My Favorite";
+                    }
+                    else {
+                        button.className = "btn btn-default";
+                        button.innerHTML = "Mark Favorite";
+                    }
+                }
+                else {
+                    alert(response.error);
+                }
+            });
+        }
+    }
+</script>

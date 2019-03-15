@@ -48,6 +48,13 @@ namespace GlobeAuction.Models
         public virtual List<AuctionGuest> AuctionGuests { get; set; }
         public virtual List<Student> Students { get; set; }
         public virtual List<Bid> Bids { get; set; }
+        public virtual List<CatalogFavorite> CatalogFavorites { get; set; }
+    }
+
+    public class CatalogFavorite
+    {
+        public int CatalogFavoriteId { get; set; }
+        public AuctionItem AuctionItem { get; set; }
     }
 
     public class AuctionGuest

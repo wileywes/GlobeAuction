@@ -25,6 +25,8 @@ namespace GlobeAuction.Models
         public string SearchString { get; set; }
         public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
         public List<CatalogCategoryViewModel> Categories { get; set; }
+        public bool IsBidderLoggedIn { get; set; }
+        public List<int> BidderCatalogFavoriteAuctionItemIds { get; set; }
 
         public int TotalItemCount
         {

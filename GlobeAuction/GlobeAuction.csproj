@@ -478,6 +478,10 @@
     <Compile Include="Migrations\201903072207441_ItemNumberRangeForAuctionCategory.Designer.cs">
       <DependentUpon>201903072207441_ItemNumberRangeForAuctionCategory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903140242394_BidderCatalogFavorites.cs" />
+    <Compile Include="Migrations\201903140242394_BidderCatalogFavorites.Designer.cs">
+      <DependentUpon>201903140242394_BidderCatalogFavorites.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -962,6 +966,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903072207441_ItemNumberRangeForAuctionCategory.resx">
       <DependentUpon>201903072207441_ItemNumberRangeForAuctionCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903140242394_BidderCatalogFavorites.resx">
+      <DependentUpon>201903140242394_BidderCatalogFavorites.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

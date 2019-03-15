@@ -40,7 +40,7 @@ namespace GlobeAuction.Models
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Bidder> Bidders { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
-
+        public DbSet<CatalogFavorite> CatalogFavorites { get; set; }
         public DbSet<AuctionGuest> AuctionGuests { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<PayPalTransaction> PayPalTransactions { get; set; }
