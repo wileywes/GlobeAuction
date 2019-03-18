@@ -97,7 +97,7 @@
                                     #
                                     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                                     {
-                                        @Html.ActionLink(item.AuctionItem.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItem.AuctionItemId }, new { target = "_blank" })
+                                        @Html.ActionLink(item.AuctionItem.UniqueItemNumber.ToString(), "Details", "AuctionItems", new { id = item.AuctionItem.AuctionItemId }, new { target = "_blank" })
                                     }
                                     else
                                     {

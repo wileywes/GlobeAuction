@@ -139,9 +139,12 @@ namespace GlobeAuction.Controllers
             }
 
             var auctionItemIds = model.AuctionItemsNotInInvoice.Select(i => i.AuctionItem.AuctionItemId).ToList();
-            var winnings = db.Bids.Where(bid => auctionItemIds.Contains(bid.AuctionItem.AuctionItemId) &&
-                    bid.Bidder.BidderId== bidder.BidderId &&
-                    bid.Invoice == null).ToList();
+            var winnings = db.Bids
+                .Include(b => b.AuctionItem)
+                .Where(bid => auctionItemIds.Contains(bid.AuctionItem.AuctionItemId) &&
+                    bid.Bidder.BidderId == bidder.BidderId &&
+                    bid.Invoice == null)
+                    .ToList();
 
             if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 

@@ -242,11 +242,15 @@ namespace GlobeAuction.Helpers
                 db.StoreItemPurchases.Remove(sip);
             }
 
-            foreach (var bid in db.Bids.Where(p => p.Invoice.InvoiceId == invoice.InvoiceId))
+            foreach (var bid in invoice.Bids) // db.Bids.Where(p => p.Invoice.InvoiceId == invoice.InvoiceId))
             {
                 //detach auction items
                 bid.Invoice = null;
                 bid.AmountPaid = null;
+
+                //force re-load these since they are required?
+                bid.Bidder = bid.Bidder;
+                bid.AuctionItem = bid.AuctionItem;
             }
 
             db.Invoices.Remove(invoice);
