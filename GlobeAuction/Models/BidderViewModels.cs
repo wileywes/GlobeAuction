@@ -102,12 +102,14 @@ namespace GlobeAuction.Models
     public class BidderForPayPal
     {
         public int BidderId { get; set; }
+        public int InvoiceId { get; set; }
         public string PayPalBusiness { get; set; }
         public List<PayPalPaymentLine> LineItems { get; set; }
 
         public BidderForPayPal(Bidder bidder, Invoice invoice)
         {
             BidderId = bidder.BidderId;
+            InvoiceId = invoice.InvoiceId;
             PayPalBusiness = ConfigurationManager.AppSettings["PayPalBusiness"];
 
             if (bidder.AuctionGuests == null || !bidder.AuctionGuests.Any()) throw new ApplicationException("No auction guests found");

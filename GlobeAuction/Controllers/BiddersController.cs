@@ -210,29 +210,46 @@ namespace GlobeAuction.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
-        public ActionResult PayPalComplete(FormCollection form)
+        //[HttpPost, HttpGet]
+        public ActionResult PayPalComplete(int? bid, int? iid, FormCollection form)
         {
-            var ppTrans = new PayPalTransaction(form);
-            db.PayPalTransactions.Add(ppTrans);
-            db.SaveChanges(); //go ahead and record the transaction
-
-            var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
-            if (!bidderId.HasValue)
+            Bidder bidder;
+            if (form != null && form.AllKeys.Count() > 0 && form["txn_id"] != null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+                var ppTrans = new PayPalTransaction(form);
+                db.PayPalTransactions.Add(ppTrans);
+                db.SaveChanges(); //go ahead and record the transaction
 
-            Bidder bidder = db.Bidders.Find(bidderId.Value);
-            if (bidder == null)
+                var bidderId = BidderRepository.GetBidderIdFromTransaction(ppTrans);
+                if (!bidderId.HasValue)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+
+                bidder = db.Bidders.Find(bidderId.Value);
+                if (bidder == null)
+                {
+                    return HttpNotFound();
+                }
+
+                var invoiceRepos = new InvoiceRepository(db);
+                var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
+                invoiceRepos.ApplyPaymentToInvoice(ppTrans, regInvoice);
+                NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
+            }
+            else if (bid.HasValue && iid.HasValue)
+            {
+                bidder = db.Bidders.Find(bid.Value);
+                if (bidder == null)
+                {
+                    return HttpNotFound();
+                }
+                NLog.LogManager.GetCurrentClassLogger().Info($"Bidder id:{bidder.BidderId} lname:{bidder.LastName} came back from PayPal via cart GET");
+            }
+            else
             {
                 return HttpNotFound();
             }
-
-            var invoiceRepos = new InvoiceRepository(db);
-            var regInvoice = invoiceRepos.GetRegistrationInvoiceForBidder(bidder);
-            invoiceRepos.ApplyPaymentToInvoice(ppTrans, regInvoice);
-            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for bidder " + bidder.BidderId + " via cart post-back");
 
             var viewModel = GetBidderViewModel(bidder);
             return View(viewModel);
