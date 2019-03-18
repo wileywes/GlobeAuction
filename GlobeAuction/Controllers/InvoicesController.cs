@@ -172,39 +172,21 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult RemoveBidFromUnpaidInvoice(int invoiceId, int bidId)
         {
-            var invoice = db.Invoices.Find(invoiceId);
-            if (invoice == null) return HttpNotFound();
-            if (invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            //grab a copy before we delete the invoice
-            var bidderId = invoice.Bidder.BidderId;
-            var bidderEmail = invoice.Bidder.Email;
-
-            var item = db.Bids.FirstOrDefault(b => b.Invoice != null && b.Invoice.InvoiceId == invoiceId && b.BidId == bidId);
-            if (item == null)
-            {
-                return HttpNotFound();
-            }
-
-            item.Invoice = null;
-            invoice.Bids.Remove(invoice.Bids.First(ai => ai.BidId == bidId));
-
-            //delete the invoice entirely if there are no more lines on it
-            if (invoice.Bids.Count == 0 && invoice.StoreItemPurchases.Count == 0 && invoice.TicketPurchases.Count == 0)
-            {
-                db.Invoices.Remove(invoice);
-            }
-            db.SaveChanges();
-
-            return RedirectToAction("ReviewBidderWinnings", new { bid = bidderId, email = bidderEmail });
+            return RemoveBidFromInvoice(invoiceId, bidId, false);
         }
 
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult RemoveBidFromPaidInvoice(int invoiceId, int bidId)
         {
+            return RemoveBidFromInvoice(invoiceId, bidId, true);
+        }
+
+        private ActionResult RemoveBidFromInvoice(int invoiceId, int bidId, bool invoiceShouldBeCurrentlyPaid)
+        {
             var invoice = db.Invoices.Find(invoiceId);
             if (invoice == null) return HttpNotFound();
-            if (!invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (invoiceShouldBeCurrentlyPaid && !invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (!invoiceShouldBeCurrentlyPaid && invoice.IsPaid) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             //grab a copy before we delete the invoice
             var bidderId = invoice.Bidder.BidderId;
@@ -221,21 +203,31 @@ namespace GlobeAuction.Controllers
             item.Invoice = null;
             invoice.Bids.Remove(invoice.Bids.First(ai => ai.BidId == bidId));
 
+            //delete the invoice entirely if there are no more lines on it
+            if (invoice.Bids.Count == 0 && invoice.StoreItemPurchases.Count == 0 && invoice.TicketPurchases.Count == 0)
+            {
+                db.Invoices.Remove(invoice);
+            }
+
             db.SaveChanges();
 
-            var body = "The following item was removed from a paid invoice.  The winner likely needs to be refunded via PayPal:<br/><br/>" +
-                $"<b>Invoice #:</b> {invoice.InvoiceId}<br />" +
-                $"<b>Bidder #:</b> {bidderNumber}<br />" +
-                $"<b>Bidder Name:</b> {bidderNumber}<br />" +
-                $"<b>Bidder Email:</b> {bidderName}<br />" +
-                $"<b>Item #:</b> {item.AuctionItem.UniqueItemNumber}<br />" +
-                $"<b>Amount Paid:</b> {item.BidAmount:C}<br />" +
-                $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />" +
-                $"<b>Invoice Type:</b> {invoice.InvoiceType}<br />";
+            if (invoiceShouldBeCurrentlyPaid)
+            {
+                //paid invoices send an email to refund later
+                var body = "The following item was removed from a paid invoice.  The winner likely needs to be refunded via PayPal:<br/><br/>" +
+                    $"<b>Invoice #:</b> {invoice.InvoiceId}<br />" +
+                    $"<b>Bidder #:</b> {bidderNumber}<br />" +
+                    $"<b>Bidder Name:</b> {bidderNumber}<br />" +
+                    $"<b>Bidder Email:</b> {bidderName}<br />" +
+                    $"<b>Item #:</b> {item.AuctionItem.UniqueItemNumber}<br />" +
+                    $"<b>Amount Paid:</b> {item.BidAmount:C}<br />" +
+                    $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />" +
+                    $"<b>Invoice Type:</b> {invoice.InvoiceType}<br />";
 
-            new EmailHelper().SendEmail("robynloren@gmail.com", "Paid Item Removed from Invoice - Refund Needed", body);
+                new EmailHelper().SendEmail("auction@theglobeacademy.net", "Paid Item Removed from Invoice - Refund Needed", body);
+            }
 
-            return RedirectToAction("ReviewBidderWinnings", new { bid = bidId, email = bidderEmail });
+            return RedirectToAction("ReviewBidderWinnings", new { bid = bidderId, email = bidderEmail });
         }
 
         [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]

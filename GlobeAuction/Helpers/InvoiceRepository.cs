@@ -205,6 +205,10 @@ namespace GlobeAuction.Helpers
 
                 foreach(var bid in invoice.Bids)
                 {
+                    //have to set these for some reason
+                    bid.AuctionItem = bid.AuctionItem;
+                    bid.Bidder = bid.Bidder;
+
                     bid.AmountPaid = bid.BidAmount;
                 }
 

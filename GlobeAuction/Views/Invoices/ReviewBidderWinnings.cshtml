@@ -74,7 +74,7 @@
                                     <td>
                                         @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                                         {
-                                            @Html.ActionLink(Model.AuctionItemsNotInInvoice[i].AuctionItem.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = Model.AuctionItemsNotInInvoice[i].AuctionItem.AuctionItemId }, new { target = "_blank" })
+                                            @Html.ActionLink(Model.AuctionItemsNotInInvoice[i].AuctionItem.UniqueItemNumber.ToString(), "Details", "AuctionItems", new { id = Model.AuctionItemsNotInInvoice[i].AuctionItem.AuctionItemId }, new { target = "_blank" })
                                         }
                                         else
                                         {
@@ -266,7 +266,7 @@
                                     <td>
                                         @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditItems))
                                         {
-                                            @Html.ActionLink(item.UniqueItemNumber.ToString(), "Edit", "AuctionItems", new { id = item.AuctionItemId }, new { target = "_blank" })
+                                            @Html.ActionLink(item.UniqueItemNumber.ToString(), "Details", "AuctionItems", new { id = item.AuctionItemId }, new { target = "_blank" })
                                         }
                                         else
                                         {
