@@ -641,6 +641,7 @@ namespace GlobeAuction.Controllers
                     return HttpNotFound();
                 }
 
+                var canBid = item.Category.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers));
                 var highestExistingBid = item.AllBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Max();
 
                 if (item.StartingBid > bidAmount)
@@ -655,7 +656,7 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("", "Your bid must be higher than the last bid of " + highestExistingBid.ToString("c") + ".  You need to increase your bid and place it again.");
                 }
-                else if (!item.Category.IsBiddingOpen)
+                else if (!canBid)
                 {
                     ModelState.AddModelError("", "Bidding is currently closed for this category.");
                 }
