@@ -332,6 +332,7 @@ namespace GlobeAuction.Models
         public AuctionItemViewModel AuctionItem { get; set; }
         public List<BidViewModel> AllBids { get; set; }
         public decimal BidAmount { get; set; }
+        public bool IsBiddingOpen { get; set; }
     }
 
     public enum BidErrorType

@@ -57,7 +57,10 @@
 
         <div class="row top10">
             <div class="col-md-offset-4 col-md-8 btn-toolbar">
-                <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+                @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
+                {
+                    <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+                }
 
                 @Html.ActionLink("Return to Bids", "Bids", "Bidders", null, htmlAttributes: new { @class = "btn btn-default" })
 

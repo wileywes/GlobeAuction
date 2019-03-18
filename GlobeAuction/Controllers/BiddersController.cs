@@ -693,7 +693,8 @@ namespace GlobeAuction.Controllers
             {
                 AuctionItem = new AuctionItemViewModel(item),
                 AllBids = item.AllBids.Select(b => new BidViewModel(b, item)).ToList(),
-                BidAmount = bidAmount
+                BidAmount = bidAmount,
+                IsBiddingOpen = item.Category.IsBiddingOpen
             };
         }
 
