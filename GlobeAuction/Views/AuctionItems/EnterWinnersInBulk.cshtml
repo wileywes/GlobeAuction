@@ -114,6 +114,14 @@
             });
         }
     }
+
+    $(document).ready(function () {
+        var selectedAuctionItemId = $('#SelectedAuctionItemId').val();
+
+        if (selectedAuctionItemId != null && selectedAuctionItemId != '') {
+            getAuctionItemInfo();
+        }
+    });
 </script>
 
 
