@@ -32,16 +32,16 @@ textarea {
 /* Overrides to bootstrap.css */
 @media (min-width: 767px) {
     .navbar-logo {
-        min-height: 204px;
+        min-height: 170px;
         background: url("/Content/Images/Logo.gif") center 0px no-repeat;
-        background-size: 200px 200px;
+        background-size: 170px 170px;
         text-align: center;
     }
 
         .navbar-logo a {
             display: inline-block;
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
         }
 
             .navbar-logo a h1 {
@@ -49,7 +49,7 @@ textarea {
             }
 
     body {
-        padding-top: 205px;
+        padding-top: 171px;
         padding-bottom: 20px;
         color: #000000;
     }
@@ -295,17 +295,17 @@ tr.shown td.details-control {
     padding: 28px 0;
 }
 
-.sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 14px;
-    color: #FFFFFF;
-    display: block;
-}
+    .sidenav a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        color: #FFFFFF;
+        display: block;
+    }
 
-.sidenav a:hover {
-    color: #EEEEEE;
-}
+        .sidenav a:hover {
+            color: #EEEEEE;
+        }
 
 .main {
     margin-left: 140px; /* Same width as the sidebar + left position in px */
@@ -313,13 +313,13 @@ tr.shown td.details-control {
 }
 
 @media screen and (max-height: 450px) {
-.sidenav {
-    padding-top: 15px;
-}
-
-    .sidenav a {
-        font-size: 18px;
+    .sidenav {
+        padding-top: 15px;
     }
+
+        .sidenav a {
+            font-size: 18px;
+        }
 }
 
 .top5 {
@@ -341,4 +341,3 @@ tr.shown td.details-control {
 .top20 {
     margin-top: 20px;
 }
-
