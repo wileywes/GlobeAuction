@@ -35,7 +35,7 @@ textarea {
         min-height: 170px;
         background: url("/Content/Images/Logo.gif") center 0px no-repeat;
         background-size: 170px 170px;
-        text-align: center;
+        /*text-align: center;*/
     }
 
         .navbar-logo a {
@@ -87,7 +87,9 @@ textarea {
 }
 
 .navbar-nav > li > a {
+    padding-left: 0px;
     padding-top: 15px;
+    padding-right: 0px;
     padding-bottom: 10px;
     line-height: 10px;
 }
