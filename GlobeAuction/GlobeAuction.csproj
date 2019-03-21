@@ -804,6 +804,7 @@
     <Content Include="Views\AuctionCategories\Edit.cshtml" />
     <Content Include="Views\AuctionCategories\Index.cshtml" />
     <Content Include="Views\AuctionItems\EnterWinners.cshtml" />
+    <Content Include="Views\AuctionItems\CatalogItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

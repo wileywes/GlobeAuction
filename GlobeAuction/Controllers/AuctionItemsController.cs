@@ -739,6 +739,22 @@ namespace GlobeAuction.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
+        public ActionResult CatalogItem(string itemNo)
+        {
+            AuctionItem item = null;
+            int itemNoInt;
+            if (int.TryParse(itemNo, out itemNoInt))
+            {
+                item = new ItemsRepository(db).GetItemWithAllBidInfo(itemNoInt);
+            }
+            if (item == null)
+            {
+                return RedirectToAction("Catalog");
+            }
+            var viewItem = new AuctionItemViewModel(item);
+            return View(viewItem);
+        }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult DeleteBidFromItem(int aid, int bidId)

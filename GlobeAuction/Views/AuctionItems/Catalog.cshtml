@@ -73,6 +73,10 @@
                                                 {
                                                     @Html.ActionLink("Bid", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
                                                 }
+                                                else
+                                                {
+                                                    @Html.ActionLink("Details", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+                                                }
                                                 if (Model.BidderCatalogFavoriteAuctionItemIds.Contains(Model.AuctionItems[i].AuctionItemId))
                                                 {
                                                     <button type="button" class="btn btn-info" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">My Favorite</button>
@@ -84,6 +88,8 @@
                                             }
                                             else
                                             {
+                                                @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+
                                                 /*
                                                 @Html.ActionLink("Login to Tag Favorites", "Login", "Bidders", new { returnURl = "/catalog" }, new { @class = "btn btn-default" })
                                                 */

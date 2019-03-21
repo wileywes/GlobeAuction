@@ -1,0 +1,53 @@
+﻿@model GlobeAuction.Models.AuctionItemViewModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<h3>
+    @Html.DisplayFor(m => m.Title)
+</h3>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Url.Content(Model.ImageUrl)" class="img-responsive" />
+                }
+            </div>
+
+            <div class="col-md-8">
+
+                <p class="lead">Item No. @Model.UniqueItemNumber</p>
+
+                <p>
+                    <strong>@Html.DisplayNameFor(m => m.Description):</strong>
+                    <br />
+                    @Html.DisplayFor(m => m.Description)
+                </p>
+
+                <p>
+                    <strong>@Html.DisplayNameFor(m => m.Category):</strong>
+                    @Html.DisplayFor(m => m.Category)
+                    <br />
+                    <strong>@Html.DisplayNameFor(m => m.Quantity):</strong>
+                    @Html.DisplayFor(m => m.Quantity)
+                    <br />
+                    <strong>@Html.DisplayNameFor(m => m.StartingBid):</strong>
+                    @Html.DisplayFor(m => m.StartingBid)
+                    <br />
+                    <strong>@Html.DisplayNameFor(m => m.BidIncrement):</strong>
+                    @Html.DisplayFor(m => m.BidIncrement)
+                </p>
+            </div>
+        </div>
+
+        <div class="row top10">
+            <div class="col-md-offset-4 col-md-8 btn-toolbar">
+                @Html.ActionLink("Back", null, null, null, new { href = Request.UrlReferrer, @class = "btn btn-primary" })
+            </div>
+        </div>
+
+    </div>

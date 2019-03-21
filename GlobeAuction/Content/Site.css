@@ -288,7 +288,7 @@ tr.shown td.details-control {
 
 
 .sidenav {
-    width: 130px;
+    width: 140px;
     position: fixed;
     z-index: 1;
     left: 10px;
@@ -320,7 +320,7 @@ tr.shown td.details-control {
     }
 
         .sidenav a {
-            font-size: 18px;
+            font-size: 12px;
         }
 }
 
