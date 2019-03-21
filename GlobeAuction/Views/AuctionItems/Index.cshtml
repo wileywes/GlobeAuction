@@ -60,6 +60,8 @@
                 <th>
                     Bid Increment
                 </th>
+                <th>Has Digital Item(s)</th>
+                <th>Restrictions</th>
                 <th>
                     Highest Bid
                 </th>
@@ -109,6 +111,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.BidIncrement)
+                    </td>
+                    <td>
+                        @(item.DonationItems.Any(i => i.UseDigitalCertificateForWinner) ? "Yes" : "No")
+                    </td>
+                    <td>
+                        @(string.Join(" ", item.DonationItems.Select(d => d.Restrictions)))
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.HighestBid)
