@@ -43,6 +43,7 @@ namespace GlobeAuction.Models
         public bool IsCheckoutNudgeTextSent { get; set; }
         
         public bool AttendedEvent { get; set; }
+        public bool IsCatalogNudgeEmailSent { get; set; }
 
         //children
         public virtual List<AuctionGuest> AuctionGuests { get; set; }

@@ -90,9 +90,7 @@
                                             {
                                                 @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
 
-                                                /*
-                                                @Html.ActionLink("Login to Tag Favorites", "Login", "Bidders", new { returnURl = "/catalog" }, new { @class = "btn btn-default" })
-                                                */
+                                                @Html.ActionLink("Login to Favorite", "Login", "Bidders", new { returnURl = Request.Url }, new { @class = "btn btn-default" })
                                             }
                                         </td>
                                     </tr>

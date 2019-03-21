@@ -392,6 +392,25 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
+        public void SendBidderCatalogNudge(Bidder bidder)
+        {
+            var body = GetBidderCatalogNudgeEmail(bidder.BidderNumber);
+
+            SendEmail(bidder.Email, "Your Bid Number for The GLOBE Auction", body);
+        }
+
+        private string GetBidderCatalogNudgeEmail(int bidderNumber)
+        {
+            var body = GetEmailBody("catalogLaunchNudge");
+
+            body = ReplaceToken("SiteName", _siteName, body);
+            body = ReplaceToken("SiteUrl", _siteUrl, body);
+            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("BidderNumber", bidderNumber.ToString(), body);
+
+            return body;
+        }
+
         private static string ReplaceToken(string tokenKey, string value, string body)
         {
             var token = string.Format("<!--%{0}%-->", tokenKey);

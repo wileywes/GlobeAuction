@@ -106,6 +106,14 @@
         </div>
     </div>
 
+    <div class="form-group">
+        @Html.MyLabelFor(model => model.IsCatalogNudgeEmailSent, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(model => model.IsCatalogNudgeEmailSent, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.IsCatalogNudgeEmailSent, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
 
     <div class="form-group">
         @Html.MyLabelFor(model => model.CreateDate, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -194,7 +202,7 @@
                 </dd>
             }
         }
-        </dl>
+    </dl>
     <br />
 
 

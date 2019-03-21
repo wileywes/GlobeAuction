@@ -404,8 +404,13 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitBiddersAction")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditBidders)]
-        public ActionResult SubmitBiddersAction(string biddersAction, string startingPaddleNumber)
+        public ActionResult SubmitBiddersAction(string biddersAction, string selectedBidderNumbers, string startingPaddleNumber)
         {
+            var bidderNumbers = selectedBidderNumbers
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToList();
+
             switch (biddersAction)
             {
                 case "RenumberBidderPaddles":
@@ -431,6 +436,21 @@ namespace GlobeAuction.Controllers
                         currentBidNum++;
                     }
                     db.SaveChanges();
+                    return RedirectToAction("Index");
+                case "SendCatalogNudgeEmail":
+                    if (!bidderNumbers.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var selectedBidders = db.Bidders.Where(ai => bidderNumbers.Contains(ai.BidderNumber)).ToList();
+                    if (!selectedBidders.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var emailHelper = new EmailHelper();
+                    foreach(var bidder in selectedBidders)
+                    {
+                        emailHelper.SendBidderCatalogNudge(bidder);
+                        bidder.IsCatalogNudgeEmailSent = true;
+                    }
+                    db.SaveChanges();
+
                     return RedirectToAction("Index");
             }
 
