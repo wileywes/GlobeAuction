@@ -374,10 +374,15 @@ namespace GlobeAuction.Helpers
 
         public void SendBidderPaymentReminder(Bidder bidder)
         {
-            var url = string.Format("{0}/Bidders/RedirectToPayPal/{1}", _siteUrl, bidder.BidderId);
+            var url = GetBidderPayLink(bidder.BidderId);
             var body = GetPaymentReminderEmail(url);
 
             SendEmail(bidder.Email, "Ticket Payment Reminder", body);
+        }
+
+        private static string GetBidderPayLink(int bidderId)
+        {
+            return string.Format("{0}/Bidders/RedirectToPayPal/{1}", _siteUrl, bidderId);
         }
 
         private string GetPaymentReminderEmail(string paymentUrl)
@@ -392,21 +397,23 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        public void SendBidderCatalogNudge(Bidder bidder)
+        public void SendBidderCatalogNudge(Bidder bidder, bool hasBidderPaid)
         {
-            var body = GetBidderCatalogNudgeEmail(bidder.BidderNumber);
+            var url = GetBidderPayLink(bidder.BidderId);
+            var body = GetBidderCatalogNudgeEmail(bidder.BidderNumber, hasBidderPaid, url);
 
             SendEmail(bidder.Email, "Your Bid Number for The GLOBE Auction", body);
         }
 
-        private string GetBidderCatalogNudgeEmail(int bidderNumber)
+        private string GetBidderCatalogNudgeEmail(int bidderNumber, bool hasBidderPaid, string paymentUrl)
         {
-            var body = GetEmailBody("catalogLaunchNudge");
+            var body = GetEmailBody(hasBidderPaid ? "catalogLaunchNudge" : "catalogLaunchNudgeForUnpaidBidder");
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
             body = ReplaceToken("SiteEmail", _gmailUsername, body);
             body = ReplaceToken("BidderNumber", bidderNumber.ToString(), body);
+            body = ReplaceToken("CompletePaymentUrl", paymentUrl, body);
 
             return body;
         }

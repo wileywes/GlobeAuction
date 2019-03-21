@@ -444,9 +444,11 @@ namespace GlobeAuction.Controllers
                     if (!selectedBidders.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
                     var emailHelper = new EmailHelper();
+                    var bidRepos = new BidderRepository(db);
                     foreach(var bidder in selectedBidders)
                     {
-                        emailHelper.SendBidderCatalogNudge(bidder);
+                        var hasPaid = bidRepos.HasBidderPaidForRegistration(bidder);
+                        emailHelper.SendBidderCatalogNudge(bidder, hasPaid);
                         bidder.IsCatalogNudgeEmailSent = true;
                     }
                     db.SaveChanges();

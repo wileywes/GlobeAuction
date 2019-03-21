@@ -116,5 +116,15 @@ namespace GlobeAuction.Helpers
 
             return false;
         }
+
+        public bool HasBidderPaidForRegistration(Bidder bidder)
+        {
+            var paidInvoice = db.Invoices
+                .FirstOrDefault(i => i.InvoiceType == InvoiceType.BidderRegistration
+                        && i.Bidder != null
+                        && i.Bidder.BidderId == bidder.BidderId
+                        && i.IsPaid);
+            return paidInvoice != null;
+        }
     }
 }
