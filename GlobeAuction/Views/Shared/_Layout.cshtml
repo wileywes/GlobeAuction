@@ -53,6 +53,7 @@
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners) || User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
                         {
                             <li>@Html.ActionLink("Winners", "Winners", "AuctionItems")</li>
+                            <li>@Html.ActionLink("Raffles", "RafflePurchases", "StoreItems")</li>
                         }
                         @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
                         {

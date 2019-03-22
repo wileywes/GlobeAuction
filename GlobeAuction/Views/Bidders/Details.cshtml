@@ -71,6 +71,13 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.RegistrationInvoice.IsPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RegistrationInvoice.IsPaid)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.PaymentMethod)
         </dt>
         <dd>
@@ -108,7 +115,14 @@
 
     </dl>
 
-    @Html.ActionLink("Mark As Attended", "MarkAsAttended", "Bidders", new { id = Model.BidderId }, htmlAttributes: new { @class = "btn btn-primary" })
+    <div class="btn-toolbar">
+        @Html.ActionLink("Mark As Attended", "MarkAsAttended", "Bidders", new { id = Model.BidderId }, htmlAttributes: new { @class = "btn btn-primary" })
+
+        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) && !Model.RegistrationInvoice.IsPaid)
+        {
+            @Html.ActionLink("Mark as Paid (Cash)", "MarkBidderPaidManually", "Bidders", new { bidderId = Model.BidderId }, htmlAttributes: new { @class = "btn btn-default" })
+        }
+    </div>
 
     <h4>Student(s)</h4>
     <hr />

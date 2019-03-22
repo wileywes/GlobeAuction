@@ -10,13 +10,12 @@
 <h2>Store Items</h2>
 
 <p>
-    <table>
-        <tr>
-            <td>@Html.ActionLink("Create New", "Create") &nbsp; &nbsp;</td>
-            <td><a href="/store" target="_blank">See the Store</a> &nbsp; &nbsp;</td>
-            <td>@Html.ActionLink("See Purchases", "Purchases")</td>
-        </tr>
-    </table>
+    <ul class="list-inline">
+        <li>@Html.ActionLink("Create New", "Create")</li>
+        <li><a href="/store" target="_blank">See the Store</a></li>
+        <li>@Html.ActionLink("See All Purchases", "Purchases")</li>
+        <li>@Html.ActionLink("See Raffle Purchases", "RafflePurchases")</li>
+    </ul>
 </p>
 
 @using (Html.BeginForm("SubmitSelectedStoreItems", "StoreItems", FormMethod.Post, new { id = "submitSelectedStoreItemsForm", enctype = "multipart/form-data" }))
@@ -108,20 +107,20 @@
                                 </tr>
                                 @foreach (var comp in item.BundleComponents)
                                 {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(m => comp.StoreItemId)
-                                    </td>
-                                    <td>
-                                        @(Model.First(i => i.StoreItemId == comp.StoreItemId).Title)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(m => comp.Quantity)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(m => comp.ComponentUnitPrice)
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(m => comp.StoreItemId)
+                                        </td>
+                                        <td>
+                                            @(Model.First(i => i.StoreItemId == comp.StoreItemId).Title)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(m => comp.Quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(m => comp.ComponentUnitPrice)
+                                        </td>
+                                    </tr>
                                 }
                             </table>
                         }

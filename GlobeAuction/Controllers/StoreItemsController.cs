@@ -159,8 +159,40 @@ namespace GlobeAuction.Controllers
         [Authorize]
         public ActionResult Purchases()
         {
-            var models = db.StoreItemPurchases.ToList()
-                .Select(i => Mapper.Map<StoreItemPurchaseViewModel>(i))
+            var models = db.StoreItemPurchases
+                .Include(p => p.StoreItem)
+                .Include(p => p.Invoice)
+                .Include(p => p.Invoice.Bidder)
+                .ToList()
+                .Select(i =>
+                {
+                    var viewModel = Mapper.Map<StoreItemPurchaseViewModel>(i);
+                    viewModel.Bidder = i.Invoice.Bidder;
+                    viewModel.Invoice = i.Invoice;
+                    viewModel.StoreItem = Mapper.Map<StoreItemViewModel>(i.StoreItem);
+                    return viewModel;
+                })
+                .ToList();
+            return View(models);
+        }
+
+        [Authorize]
+        public ActionResult RafflePurchases()
+        {
+            var models = db.StoreItemPurchases
+                .Include(p => p.StoreItem)
+                .Include(p => p.Invoice)
+                .Include(p => p.Invoice.Bidder)
+                .Where(p => p.PricePaid.HasValue && p.StoreItem.IsRaffleTicket)
+                .ToList()
+                .Select(i =>
+                {
+                    var viewModel = Mapper.Map<StoreItemPurchaseViewModel>(i);
+                    viewModel.Bidder = i.Invoice.Bidder;
+                    viewModel.Invoice = i.Invoice;
+                    viewModel.StoreItem = Mapper.Map<StoreItemViewModel>(i.StoreItem);
+                    return viewModel;
+                })
                 .ToList();
             return View(models);
         }
@@ -249,7 +281,7 @@ namespace GlobeAuction.Controllers
 
         private void ApplyBundleComponentsFromViewToModel(StoreItemViewModel storeItemViewModel, StoreItem storeItem)
         {
-            storeItem.BundleComponents = (storeItemViewModel?.BundleComponents == null?
+            storeItem.BundleComponents = (storeItemViewModel?.BundleComponents == null ?
                 new List<BundleComponent>() :
                 storeItemViewModel?.BundleComponents.Where(c => c.StoreItemId > 0 && c.Quantity > 0).ToList());
 
@@ -275,7 +307,7 @@ namespace GlobeAuction.Controllers
                 {
                     foreach (var comp in storeItem.BundleComponents)
                     {
-                        comp.BundleParent = storeItem;                        
+                        comp.BundleParent = storeItem;
                     }
                 }
 
@@ -321,7 +353,7 @@ namespace GlobeAuction.Controllers
             }
             return RedirectToAction("Index");
         }
-        
+
         [HttpPost, ActionName("SubmitSelectedStoreItems")]
         [ValidateAntiForgeryToken]
         public ActionResult SubmitSelectedStoreItems(string storeItemsAction, string selectedStoreItemIds, int? storeItemIdForUpload, IEnumerable<HttpPostedFileBase> files)
@@ -384,7 +416,7 @@ namespace GlobeAuction.Controllers
                 case "MarkPrinted":
                     if (!selectedStoreItemPurchases.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-                    foreach(var sip in selectedStoreItemPurchases)
+                    foreach (var sip in selectedStoreItemPurchases)
                     {
                         sip.IsRafflePrinted = true;
                     }

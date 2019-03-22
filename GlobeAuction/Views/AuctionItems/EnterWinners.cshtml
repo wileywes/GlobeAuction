@@ -71,6 +71,7 @@
 
 <script type="text/javascript">
     $('#SelectedCategory').change(function () {
+        $('#currentUniqueItemNumber').val(-1);
         $('#currentAuctionItemId').val(-1);
         getNextAuctionItemWithNoWinner(true);
     });

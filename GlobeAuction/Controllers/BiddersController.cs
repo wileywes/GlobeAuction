@@ -270,7 +270,7 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index", "LogFiles");
         }
 
-        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult MarkBidderPaidManually(int bidderId)
         {
             var bidder = db.Bidders.Find(bidderId);
@@ -289,7 +289,7 @@ namespace GlobeAuction.Controllers
                 new EmailHelper().SendInvoicePaymentConfirmation(regInvoice, true);
             }
 
-            return RedirectToAction("Index", "LogFiles");
+            return RedirectToAction("Index", "Bidders");
         }
 
         // GET: Bidders/Edit/5
