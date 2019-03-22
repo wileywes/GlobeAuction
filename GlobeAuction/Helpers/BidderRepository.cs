@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -125,6 +126,22 @@ namespace GlobeAuction.Helpers
                         && i.Bidder.BidderId == bidder.BidderId
                         && i.IsPaid);
             return paidInvoice != null;
+        }
+
+        public List<int> GetBidderCatalogFavoriteAuctionItemIds(int bidderId, int bidderNumer)
+        {
+            return db.Bidders
+                    .Where(b => b.BidderId == bidderId && b.BidderNumber == bidderNumer)
+                    .SelectMany(b => b.CatalogFavorites)
+                    .Select(f => f.AuctionItem.AuctionItemId)
+                    .ToList();
+        }
+
+        public List<CatalogAuctionItemViewModel> GetBidderCatalogFavorites(int bidderId, int bidderNumber)
+        {
+            var auctionItemIds = GetBidderCatalogFavoriteAuctionItemIds(bidderId, bidderNumber);
+            var catData = new ItemsRepository(db).GetCatalogData();
+            return auctionItemIds.Select(id => catData.GetItemByAuctionId(id)).ToList();
         }
     }
 }

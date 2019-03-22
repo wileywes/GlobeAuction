@@ -136,6 +136,40 @@
     </div>
 </div>
 
+<div class="panel panel-default">
+    <div class="panel-heading"><strong>Catalog Favorites</strong></div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered" id="losingTable">
+            <thead>
+                <tr>
+                    <th>Item No.</th>
+                    <th>Title</th>
+                    <th>Current Bid</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CatalogFavorites)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HighestBid)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Details", "EnterBid", new { itemNo = item.UniqueItemNumber })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script type="text/javascript">
 

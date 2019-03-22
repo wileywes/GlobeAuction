@@ -542,6 +542,7 @@ namespace GlobeAuction.Controllers
 
                 var bidsToShow = FilterOutMyExtraLosingBids(bids);
                 var models = bidsToShow.Select(b => new BidViewModel(b, b.AuctionItem)).ToList();
+                var itemFavs = new BidderRepository(db).GetBidderCatalogFavorites(info.BidderId, info.BidderNumber);
 
                 ViewBag.BidderInfo = info;
 
@@ -556,7 +557,7 @@ namespace GlobeAuction.Controllers
                             break;
                     }
                 }
-                return View(new ActiveBidsViewModel(models));
+                return View(new ActiveBidsViewModel(models, itemFavs));
             }
             else
             {

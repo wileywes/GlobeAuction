@@ -343,3 +343,7 @@ tr.shown td.details-control {
 .top20 {
     margin-top: 20px;
 }
+
+.btn-space {
+    margin-right: 5px;
+}

@@ -66,16 +66,16 @@
                                     }
                                     <tr>
                                         <td></td>
-                                        <td>
+                                        <td class="btn-toolbar">
                                             @if (Model.IsBidderLoggedIn)
                                             {
                                                 if (Model.AuctionItems[i].Category.IsBiddingOpen)
                                                 {
-                                                    @Html.ActionLink("Bid", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+                                                    @Html.ActionLink("Bid", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default btn-space" })
                                                 }
                                                 else
                                                 {
-                                                    @Html.ActionLink("Details", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+                                                    @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
                                                 }
                                                 if (Model.BidderCatalogFavoriteAuctionItemIds.Contains(Model.AuctionItems[i].AuctionItemId))
                                                 {

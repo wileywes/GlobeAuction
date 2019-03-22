@@ -17,6 +17,17 @@ namespace GlobeAuction.Models
     {
         public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
         public List<CatalogCategoryViewModel> Categories { get; set; }
+
+        private Dictionary<int, CatalogAuctionItemViewModel> _itemsByAuctionId;
+        public CatalogAuctionItemViewModel GetItemByAuctionId(int auctionId)
+        {
+            if (_itemsByAuctionId == null)
+            {
+                _itemsByAuctionId = AuctionItems.ToDictionary(i => i.AuctionItemId, i => i);
+            }
+
+            return _itemsByAuctionId[auctionId];
+        }
     }
 
     public class CatalogViewModel
@@ -271,11 +282,13 @@ namespace GlobeAuction.Models
     {
         public bool IsReadyForCheckout { get; set; }
         public List<BidViewModel> Bids { get; set; }
+        public List<CatalogAuctionItemViewModel> CatalogFavorites { get; set; }
         public List<int> AuctionIdsWinningMultiples { get; set; }
 
-        public ActiveBidsViewModel(List<BidViewModel> bids)
+        public ActiveBidsViewModel(List<BidViewModel> bids, List<CatalogAuctionItemViewModel> catalogFavorites)
         {
             Bids = bids;
+            CatalogFavorites = catalogFavorites;
 
             AuctionIdsWinningMultiples = bids
                 .Where(b => b.IsWinning)

@@ -726,11 +726,7 @@ namespace GlobeAuction.Controllers
             if (BidderRepository.TryGetBidderInfoFromCookie(out bidderInfo))
             {
                 model.IsBidderLoggedIn = true;
-                model.BidderCatalogFavoriteAuctionItemIds = db.Bidders
-                    .Where(b => b.BidderId == bidderInfo.BidderId && b.BidderNumber == bidderInfo.BidderNumber)
-                    .SelectMany(b => b.CatalogFavorites)
-                    .Select(f => f.AuctionItem.AuctionItemId)
-                    .ToList();
+                model.BidderCatalogFavoriteAuctionItemIds = new BidderRepository(db).GetBidderCatalogFavoriteAuctionItemIds(bidderInfo.BidderId, bidderInfo.BidderNumber);
             }
 
             //sort by category then item no
