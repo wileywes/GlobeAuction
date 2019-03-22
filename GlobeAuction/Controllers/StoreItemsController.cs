@@ -424,7 +424,7 @@ namespace GlobeAuction.Controllers
                     break;
             }
 
-            return RedirectToAction("Purchases");
+            return RedirectToAction("RafflePurchases");
         }
 
 

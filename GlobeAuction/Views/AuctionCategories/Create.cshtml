@@ -67,6 +67,17 @@
     </div>
 
     <div class="form-group">
+        @Html.MyLabelFor(model => model.IsAvailableForMobileBidding, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                @Html.EditorFor(model => model.IsAvailableForMobileBidding)
+                @Html.ValidationMessageFor(model => model.IsAvailableForMobileBidding, "", new { @class = "text-danger" })
+                (checking this allows for winners to be entered in bulk)
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
         @Html.MyLabelFor(model => model.IsOnlyAvailableToAuctionItems, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             <div class="checkbox">

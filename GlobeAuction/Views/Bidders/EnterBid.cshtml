@@ -51,7 +51,14 @@
         <div class="row top10">
             @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-4 text-right" })
             <div class="col-md-8">
-                @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
+                @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
+                {
+                    @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                else
+                {
+                    <span>Mobile bidding is not available for this item.</span>
+                }
             </div>
         </div>
 
@@ -101,7 +108,7 @@
                 else
                 {
                     <p>
-                        You are the first bidder!  Enter your bid below.
+                        There are currently no bids on this item.
                     </p>
                 }
             </div>

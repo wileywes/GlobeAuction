@@ -42,6 +42,9 @@
                     @Html.DisplayNameFor(model => model.IsFundAProject)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.IsAvailableForMobileBidding)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.IsOnlyAvailableToAuctionItems)
                 </th>
                 <th></th>
@@ -71,10 +74,13 @@
                         @Html.DisplayFor(modelItem => item.BidCloseDateLtz)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsFundAProject)
+                        @(item.IsFundAProject ? "Yes" : "No")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsOnlyAvailableToAuctionItems)
+                        @(item.IsAvailableForMobileBidding ? "Yes" : "No")
+                    </td>
+                    <td>
+                        @(item.IsOnlyAvailableToAuctionItems ? "Yes" : "No")
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.AuctionCategoryId }) |

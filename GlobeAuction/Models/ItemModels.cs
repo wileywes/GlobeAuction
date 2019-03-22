@@ -203,6 +203,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Fund-a-Project")]
         public bool IsFundAProject { get; set; }
 
+        [Display(Name = "Allows Mobile Bidding")]
+        public bool IsAvailableForMobileBidding { get; set; }
+
         /// <summary>
         /// Should be true for "Live" category
         /// </summary>
@@ -221,7 +224,7 @@ namespace GlobeAuction.Models
             get
             {
                 var localTime = Utilities.GetEasternTimeNow();
-                return localTime > BidOpenDateLtz && localTime < BidCloseDateLtz;
+                return IsAvailableForMobileBidding && localTime > BidOpenDateLtz && localTime < BidCloseDateLtz;
             }
         }
     }
