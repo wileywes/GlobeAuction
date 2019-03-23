@@ -36,6 +36,7 @@ namespace GlobeAuction.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [ValidateInput(false)]
         public HttpStatusCodeResult Receive(FormCollection form)
         {
             if (ShouldIgnoreIpn(form))
