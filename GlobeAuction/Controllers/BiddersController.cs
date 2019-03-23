@@ -681,12 +681,12 @@ namespace GlobeAuction.Controllers
 
                 var canBid = item.Category.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers));
                 var highestExistingBid = item.AllBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Max();
-
+                
                 if (item.StartingBid > bidAmount)
                 {
                     ModelState.AddModelError("", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").  Please increase your bid and try again.");
                 }
-                else if (bidAmount % item.BidIncrement != 0)
+                else if ((bidAmount - item.StartingBid) % item.BidIncrement != 0)
                 {
                     ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").  Please adjust your bid and try again.");
                 }
