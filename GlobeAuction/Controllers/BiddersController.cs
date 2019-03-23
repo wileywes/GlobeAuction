@@ -114,7 +114,22 @@ namespace GlobeAuction.Controllers
                     var updatedBy = User.Identity.GetUserName();
                     if (string.IsNullOrEmpty(updatedBy)) updatedBy = bidder.Email;
 
+                    var biddersIdsOverZero = db.Bidders.Where(b => b.BidderNumber > 0).Select(b => b.BidderNumber).ToList();
+
+                    //default to next one up
                     var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
+
+                    //fill in gaps
+                    var lowestExistingBidderOverZero = biddersIdsOverZero.DefaultIfEmpty(1).Min();
+                    for (int i= lowestExistingBidderOverZero; i < 1000; i++)
+                    {
+                        if (biddersIdsOverZero.Contains(i) == false)
+                        {
+                            nextBidderNumber = i;
+                            break;
+                        }
+                    }
+
                     bidder.BidderNumber = nextBidderNumber;
                     bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
                     bidder.UpdateBy = updatedBy;
