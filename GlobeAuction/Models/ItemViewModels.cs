@@ -28,6 +28,15 @@ namespace GlobeAuction.Models
 
             return _itemsByAuctionId[auctionId];
         }
+
+        public void UpdateHighestBidForAuctionId(int auctionId, int newHighestBid)
+        {
+            CatalogAuctionItemViewModel item;
+            if (_itemsByAuctionId.TryGetValue(auctionId, out item))
+            {
+                item.HighestBid = newHighestBid;
+            }
+        }
     }
 
     public class CatalogViewModel

@@ -75,22 +75,22 @@
                                                 }
                                                 else
                                                 {
-                                                    @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+                                                    @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default btn-space" })
                                                 }
                                                 if (Model.BidderCatalogFavoriteAuctionItemIds.Contains(Model.AuctionItems[i].AuctionItemId))
                                                 {
-                                                    <button type="button" class="btn btn-info" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">My Favorite</button>
+                                                    <button type="button" class="btn btn-info btn-space" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">My Favorite</button>
                                                 }
                                                 else
                                                 {
-                                                    <button type="button" class="btn btn-default" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">Mark Favorite</button>
+                                                    <button type="button" class="btn btn-default btn-space" onclick="javascript:markCatalogFavorite(@Model.AuctionItems[i].AuctionItemId, this);">Mark Favorite</button>
                                                 }
                                             }
                                             else
                                             {
-                                                @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default" })
+                                                @Html.ActionLink("Details", "CatalogItem", "AuctionItems", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default btn-space" })
 
-                                                @Html.ActionLink("Login to Favorite", "Login", "Bidders", new { returnURl = Request.Url }, new { @class = "btn btn-default" })
+                                                @Html.ActionLink("Login to Favorite", "Login", "Bidders", new { returnURl = Request.Url }, new { @class = "btn btn-default btn-space" })
                                             }
                                         </td>
                                     </tr>
@@ -119,11 +119,11 @@
             $.getJSON('@Url.Action("UpdateCatalogFavorite", "Bidders")', { auctionItemId: auctionItemId }, function (response) {
                 if (response.success) {
                     if (button.className == "btn btn-default") {
-                        button.className = "btn btn-info";
+                        button.className = "btn btn-info btn-space";
                         button.innerHTML = "My Favorite";
                     }
                     else {
-                        button.className = "btn btn-default";
+                        button.className = "btn btn-default btn-space";
                         button.innerHTML = "Mark Favorite";
                     }
                 }

@@ -244,6 +244,9 @@ namespace GlobeAuction.Helpers
                 index++;
             }
             db.SaveChanges();
+
+            var highestBid = item.AllBids.Select(b => b.BidAmount).Max();
+            UpdateHighestBidForCachedItem(item.AuctionItemId, (int)highestBid);
         }
 
         public static string GetItemNameForPayPalCart(AuctionItem item)
@@ -432,6 +435,14 @@ namespace GlobeAuction.Helpers
             log.Info("Loaded catalog data from DB on " + Environment.MachineName);
 
             return catData;
+        }
+
+        public void UpdateHighestBidForCachedItem(int auctionId, int newHighestBid)
+        {
+            if (_catalogCache != null)
+            {
+                _catalogCache.UpdateHighestBidForAuctionId(auctionId, newHighestBid);
+            }
         }
 
         public void ClearCatalogDataCache()
