@@ -355,7 +355,7 @@ namespace GlobeAuction.Controllers
         }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
-        public ActionResult PrintAllPackSlips(bool? useMockData)
+        public ActionResult PrintAllPackSlips(bool? useMockData, bool? onlyPhysicalItems)
         {
             if (User.Identity.GetUserName() != "williams.wes@gmail.com")
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -369,6 +369,12 @@ namespace GlobeAuction.Controllers
             {
                 winningsByBidder = new ItemsRepository(db).GetWinningsByBidder();
             }
+
+            if (onlyPhysicalItems.GetValueOrDefault(false))
+            {
+                winningsByBidder = winningsByBidder.Where(w => w.HasPhysicalWinnings).ToList();
+            }
+
             var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }

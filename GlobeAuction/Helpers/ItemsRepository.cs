@@ -442,6 +442,14 @@ namespace GlobeAuction.Helpers
         public Bidder Bidder { get; set; }
         public List<Bid> Winnings { get; set; }
         public bool AreWinningsAllPaidFor { get; set; }
+
+        public bool HasPhysicalWinnings
+        {
+            get
+            {
+                return Winnings.Any(w => w.AuctionItem.DonationItems.Any(d => !d.UseDigitalCertificateForWinner));
+            }
+        }
     }
 
     public class OutOfStockException : ApplicationException

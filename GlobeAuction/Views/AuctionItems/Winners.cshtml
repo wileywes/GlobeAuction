@@ -163,6 +163,12 @@
                     }
                 },
                 {
+                    text: 'Print Physical-Only Pick Slips',
+                    action: function (e, dt, node, config) {
+                        window.open('/AuctionItems/PrintAllPackSlips?onlyPhysicalItems=true', '_blank');
+                    }
+                },
+                {
                     text: 'Email All Winners',
                     action: function (e, dt, node, config) {
                         if (isAdmin) {
