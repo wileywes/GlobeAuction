@@ -78,6 +78,13 @@
         </dd>
 
         <dt>
+            Can Checkin Payment Pending
+        </dt>
+        <dd>
+            @(!Model.RegistrationInvoice.IsPaid && Model.RegistrationInvoice.PaymentTransaction?.PaymentStatus == "Pending" ? "Yes" : "No")
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.PaymentMethod)
         </dt>
         <dd>
