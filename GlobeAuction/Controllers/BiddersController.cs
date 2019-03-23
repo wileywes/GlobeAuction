@@ -666,7 +666,7 @@ namespace GlobeAuction.Controllers
 
         [HttpPost, ActionName("EnterBid")]
         [AllowAnonymous]
-        public ActionResult EnterBidConfirmed(int itemNo, decimal bidAmount)
+        public ActionResult EnterBidConfirmed(int itemNo, decimal? bidAmount)
         {
             Bidder bidder;
             if (new BidderRepository(db).TryGetValidatedBidderFromCookie(out bidder))
@@ -681,16 +681,21 @@ namespace GlobeAuction.Controllers
 
                 var canBid = item.Category.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers));
                 var highestExistingBid = item.AllBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Max();
-                
-                if (item.StartingBid > bidAmount)
+                var bidAmountValue = bidAmount.GetValueOrDefault(99999);
+
+                if (!bidAmount.HasValue)
+                {
+                    ModelState.AddModelError("","You must enter a bid amount.");
+                }
+                else if (item.StartingBid > bidAmountValue)
                 {
                     ModelState.AddModelError("", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").  Please increase your bid and try again.");
                 }
-                else if ((bidAmount - item.StartingBid) % item.BidIncrement != 0)
+                else if ((bidAmountValue - item.StartingBid) % item.BidIncrement != 0)
                 {
                     ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").  Please adjust your bid and try again.");
                 }
-                else if (bidAmount <= highestExistingBid)
+                else if (bidAmountValue <= highestExistingBid)
                 {
                     ModelState.AddModelError("", "Your bid must be higher than the last bid of " + highestExistingBid.ToString("c") + ".  You need to increase your bid and place it again.");
                 }
@@ -702,7 +707,7 @@ namespace GlobeAuction.Controllers
                 {
                     //enter the bid and return success on the Bids list page
                     List<Bidder> biddersThatLost;
-                    new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmount, out biddersThatLost);
+                    new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmountValue, out biddersThatLost);
 
                     //after saving DB changes, now go text those bidders
                     var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
@@ -717,7 +722,7 @@ namespace GlobeAuction.Controllers
                     return RedirectToAction("Bids", "Bidders");
                 }
 
-                var model = GetBidEnterModel(item, bidAmount);
+                var model = GetBidEnterModel(item, bidAmountValue);
                 return View(model);
             }
             else
