@@ -201,6 +201,7 @@ namespace GlobeAuction.Helpers
         {
             return db.AuctionItems
                 .Include(a => a.AllBids)
+                .Include(a => a.DonationItems)
                 .Include("AllBids.Bidder")
                 .FirstOrDefault(a => a.UniqueItemNumber == itemNo);
         }
@@ -427,6 +428,8 @@ namespace GlobeAuction.Helpers
             catData.Categories = catData.Categories.OrderBy(c => c.Name).ToList();
 
             _catalogCache = catData;
+            var log = LogManager.GetCurrentClassLogger();
+            log.Info("Loaded catalog data from DB on " + Environment.MachineName);
 
             return catData;
         }

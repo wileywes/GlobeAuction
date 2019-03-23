@@ -44,6 +44,20 @@
                     <br />
                     <strong>@Html.DisplayNameFor(m => m.AuctionItem.BidIncrement):</strong>
                     @Html.DisplayFor(m => m.AuctionItem.BidIncrement)
+
+                    @if (Model.AuctionItem.DonationItems.Any(d => d.ExpirationDate.HasValue))
+                    {
+                        <br />
+                        <strong>Expiration Date:</strong>
+                        @(Model.AuctionItem.DonationItems.Select(d => d.ExpirationDate.GetValueOrDefault(DateTime.MaxValue)).Min().ToString("yyyy-MM-dd"))
+                    }
+
+                    @if (Model.AuctionItem.DonationItems.Any(d => !string.IsNullOrEmpty(d.Restrictions)))
+                    {
+                        <br />
+                        <strong>Restrictions:</strong>
+                        @(string.Join(" ", Model.AuctionItem.DonationItems.Select(d => d.Restrictions)))
+                    }
                 </p>
             </div>
         </div>
