@@ -354,7 +354,7 @@ namespace GlobeAuction.Controllers
             return View(models);
         }
 
-        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        [Authorize(Roles = AuctionRoles.CanEditWinners + "," + AuctionRoles.CanCheckoutWinners)]
         public ActionResult PrintAllPackSlips(bool? useMockData, bool? onlyPhysicalItems)
         {
             if (User.Identity.GetUserName() != "williams.wes@gmail.com")

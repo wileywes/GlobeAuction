@@ -46,7 +46,7 @@ namespace GlobeAuction.Controllers
             }
             return View(invoice);
         }
-        
+
         public ActionResult Checkout()
         {
             return View(new BidderLookupModel());
@@ -119,7 +119,7 @@ namespace GlobeAuction.Controllers
                 .OrderBy(si => si.Price)
                 .Select(si => new BuyItemViewModel(si))
                 .ToList();
-            
+
             var viewModel = new ReviewBidderWinningsViewModel(bidder, invoicesForBidder, auctionWinningsForBidderNotInInvoice, storeItemsAvailableToPurchase);
 
             viewModel.ShowManuallyPaidSuccess = manualPaidSuccessful.GetValueOrDefault(false);
@@ -143,7 +143,7 @@ namespace GlobeAuction.Controllers
                 .Include(b => b.AuctionItem)
                 .Where(bid => auctionItemIds.Contains(bid.AuctionItem.AuctionItemId) &&
                     bid.Bidder.BidderId == bidder.BidderId &&
-                    bid.Invoice == null)
+                    bid.Invoice == null && bid.IsWinning)
                     .ToList();
 
             if (!winnings.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -165,7 +165,7 @@ namespace GlobeAuction.Controllers
             {
                 return RedirectToAction("ReviewBidderWinnings", new { bid = invoice.Bidder.BidderId, email = invoice.Bidder.Email, manualPaidSuccessful = true });
             }
-            
+
             return RedirectToAction("RedirectToPayPal", new { iid = invoice.InvoiceId, email = invoice.Email });
         }
 
@@ -252,7 +252,7 @@ namespace GlobeAuction.Controllers
             {
                 item.StoreItem.Quantity += item.Quantity;
             }
-                    
+
             db.StoreItemPurchases.Remove(item);
 
             //delete the invoice entirely if there are no more lines on it
@@ -294,7 +294,7 @@ namespace GlobeAuction.Controllers
 
             return View(model);
         }
-        
+
         [HttpPost]
         public ActionResult PayPalComplete(FormCollection form)
         {
@@ -325,7 +325,7 @@ namespace GlobeAuction.Controllers
 
             return View(invoice);
         }
-        
+
         // GET: Invoices/Delete/5
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult Delete(int? id)
