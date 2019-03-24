@@ -105,7 +105,7 @@ namespace GlobeAuction.Controllers
             var auctionWinningsForBidderNotInInvoice = db.Bids
                 .Include(a => a.AuctionItem)
                 .Include("AuctionItem.DonationItems")
-                .Where(a => a.Bidder.BidderId == bidder.BidderId && a.Invoice == null)
+                .Where(a => a.Bidder.BidderId == bidder.BidderId && a.Invoice == null && a.IsWinning)
                 .ToList();
 
             var storeItems = db.StoreItems.Where(s => s.CanPurchaseInAuctionCheckout && s.IsDeleted == false).ToList();
