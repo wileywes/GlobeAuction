@@ -100,6 +100,7 @@ namespace GlobeAuction.Models
         public bool IsPaid { get { return PricePaid.HasValue; } }
 
         public bool IsRafflePrinted { get; set; }
+        public bool HasWinnerBeenEmailed { get; set; }
 
         public virtual PayPalTransaction PurchaseTransaction { get; set; }
         public virtual Invoice Invoice { get; set; }

@@ -13,7 +13,7 @@ namespace GlobeAuction.Helpers
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private ApplicationDbContext db = new ApplicationDbContext();
         private DateTime _lastMaintenance = DateTime.MinValue;
-        private static readonly TimeSpan TimeBetweenMaintenance = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan TimeBetweenMaintenance = TimeSpan.FromMinutes(60);
         private readonly string _baseFilePath;
 
         public BackgroundMaintenance(string baseFilePath)
@@ -74,36 +74,37 @@ namespace GlobeAuction.Helpers
             var allWinnings = new ItemsRepository(db).GetWinningsByBidder();
             foreach(var winning in allWinnings)
             {
-                var paidForBids = winning.Winnings.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid).ToList();
+                var paidForBids = winning.Winnings.Where(ai => ai.Invoice != null && ai.Invoice.IsPaid && ai.HasWinnerBeenEmailed == false).ToList();
 
                 foreach(var paidBid in paidForBids)
                 {
-                    foreach(var donationItem in paidBid.AuctionItem.DonationItems.Where(di => di.UseDigitalCertificateForWinner && di.HasWinnerBeenEmailed == false))
+                    foreach(var donationItem in paidBid.AuctionItem.DonationItems.Where(di => di.UseDigitalCertificateForWinner))
                     {
-                        emailHelper.SendDonationItemCertificate(winning.Bidder, donationItem);
-
-                        donationItem.HasWinnerBeenEmailed = true;
-                        db.SaveChanges();
+                        emailHelper.SendDonationItemCertificate(winning.Bidder, donationItem, paidBid.BidId);
                     }
+
+                    paidBid.HasWinnerBeenEmailed = true;
+                    db.SaveChanges();
                 }
             }
 
             //now do store purchases
             var invoicesWithDonationItemToSend = db.Invoices
-                .Where(i => i.IsPaid && i.StoreItemPurchases.Any(sip => sip.StoreItem.DonationItem != null && sip.StoreItem.DonationItem.UseDigitalCertificateForWinner && sip.StoreItem.DonationItem.HasWinnerBeenEmailed == false))
+                .Where(i => i.IsPaid && i.StoreItemPurchases.Any(sip => sip.StoreItem.DonationItem != null && sip.StoreItem.DonationItem.UseDigitalCertificateForWinner && sip.HasWinnerBeenEmailed == false))
                 .ToList();
 
             foreach(var invoice in invoicesWithDonationItemToSend)
             {
                 var sipToSend = invoice.StoreItemPurchases
-                    .Where(sip => sip.StoreItem.DonationItem != null && sip.StoreItem.DonationItem.UseDigitalCertificateForWinner && sip.StoreItem.DonationItem.HasWinnerBeenEmailed == false)
+                    .Where(sip => sip.StoreItem.DonationItem != null && sip.StoreItem.DonationItem.UseDigitalCertificateForWinner && sip.HasWinnerBeenEmailed == false)
                     .ToList();
 
-                foreach (var donationItem in sipToSend.Select(sip => sip.StoreItem.DonationItem))
+                foreach (var sip in sipToSend)
                 {
-                    emailHelper.SendDonationItemCertificate(invoice, donationItem);
+                    var donationItem = sip.StoreItem.DonationItem;
+                    emailHelper.SendDonationItemCertificate(invoice, donationItem, sip.StoreItemPurchaseId);
 
-                    donationItem.HasWinnerBeenEmailed = true;
+                    sip.HasWinnerBeenEmailed = true;
                     db.SaveChanges();
                 }
             }

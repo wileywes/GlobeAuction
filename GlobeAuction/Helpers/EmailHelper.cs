@@ -118,26 +118,26 @@ namespace GlobeAuction.Helpers
             SendEmail(invoice.Email, "Order Confirmation", body);
         }
 
-        public void SendDonationItemCertificate(Bidder bidder, DonationItem item)
+        public void SendDonationItemCertificate(Bidder bidder, DonationItem item, int receiptId)
         {
             var body = GetDonationItemCertificateEmail(
                 bidder.FirstName + " " + bidder.LastName,
                 item.Title, item.Description,
                 item.Donor.BusinessName, item.Donor.ContactName, item.Donor.Email, item.Donor.Phone,
                 item.ExpirationDate.HasValue ? "Expires: " + item.ExpirationDate.Value.ToString("d") : string.Empty,
-                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty);
+                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId);
 
             SendEmail(bidder.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
 
-        public void SendDonationItemCertificate(Invoice invoice, DonationItem item)
+        public void SendDonationItemCertificate(Invoice invoice, DonationItem item, int receiptId)
         {
             var body = GetDonationItemCertificateEmail(
                 invoice.FirstName + " " + invoice.LastName,
                 item.Title, item.Description,
                 item.Donor.BusinessName, item.Donor.ContactName, item.Donor.Email, item.Donor.Phone,
                 item.ExpirationDate.HasValue ? "Expires: " + item.ExpirationDate.Value.ToString("d") : string.Empty,
-                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty);
+                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId);
 
             SendEmail(invoice.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
@@ -351,7 +351,7 @@ namespace GlobeAuction.Helpers
         }
 
         private string GetDonationItemCertificateEmail(string winnerName, string itemTitle, string itemDescription, string donorBusiness,
-            string donorName, string donorEmail,string donorPhone, string itemDetails1, string itemDetails2)
+            string donorName, string donorEmail,string donorPhone, string itemDetails1, string itemDetails2, int receiptId)
         {
             var body = GetEmailBody("donationItemCertificate");
 
@@ -364,6 +364,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("DonorPhone", donorPhone, body);
             body = ReplaceToken("ItemDetails1", itemDetails1, body);
             body = ReplaceToken("ItemDetails2", itemDetails2, body);
+            body = ReplaceToken("ReceiptId", receiptId.ToString(), body);            
 
             body = ReplaceToken("SiteUrl", _siteUrl, body);
             body = ReplaceToken("SiteEmail", _gmailUsername, body);

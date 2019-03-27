@@ -90,7 +90,6 @@ namespace GlobeAuction.Models
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
         public bool IsDeleted { get; set; }
-        public bool HasWinnerBeenEmailed { get; set; }
         public bool UseDigitalCertificateForWinner { get; set; }
 
         public virtual Solicitor Solicitor { get; set; }
@@ -176,6 +175,7 @@ namespace GlobeAuction.Models
 
         [Required]
         public bool IsWinning { get; set; }
+        public bool HasWinnerBeenEmailed { get; set; }
 
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }

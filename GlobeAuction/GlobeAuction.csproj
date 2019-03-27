@@ -490,6 +490,10 @@
     <Compile Include="Migrations\201903222014360_CategoryAvailableForMobileBidding.Designer.cs">
       <DependentUpon>201903222014360_CategoryAvailableForMobileBidding.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903270008080_MoveDigitalEmailFlagToBid.cs" />
+    <Compile Include="Migrations\201903270008080_MoveDigitalEmailFlagToBid.Designer.cs">
+      <DependentUpon>201903270008080_MoveDigitalEmailFlagToBid.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -1004,6 +1008,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903222014360_CategoryAvailableForMobileBidding.resx">
       <DependentUpon>201903222014360_CategoryAvailableForMobileBidding.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903270008080_MoveDigitalEmailFlagToBid.resx">
+      <DependentUpon>201903270008080_MoveDigitalEmailFlagToBid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
