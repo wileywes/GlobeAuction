@@ -77,10 +77,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CountOfItems)
             </td>
-            <td>
+            <td class="text-nowrap">
                 @Html.DisplayFor(modelItem => item.CreateDate)
             </td>
-            <td>
+            <td class="text-nowrap">
                 @Html.ActionLink("Details", "Details", new { id = item.InvoiceId }) |
                 @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) || //admins can delete paid invoices too
                     (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && item.IsPaid == false))
@@ -89,7 +89,7 @@
                 } |
                 @if (item.IsPaid == false)
                 {
-                    @Html.ActionLink("PayPal", "RedirectToPayPal", new { iid = item.InvoiceId, email = item.Bidder.Email })
+                    @Html.ActionLink("PayPal", "RedirectToPayPal", new { iid = item.InvoiceId, email = item.Email })
                 }
             </td>
         </tr>
