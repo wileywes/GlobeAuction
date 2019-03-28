@@ -86,6 +86,10 @@
                     (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners) && item.IsPaid == false))
                 {
                     @Html.ActionLink("Delete", "Delete", new { id = item.InvoiceId })
+                } |
+                @if (item.IsPaid == false)
+                {
+                    @Html.ActionLink("PayPal", "RedirectToPayPal", new { iid = item.InvoiceId, email = item.Bidder.Email })
                 }
             </td>
         </tr>

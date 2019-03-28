@@ -178,6 +178,10 @@ namespace GlobeAuction.Models
         public int QuantityAvailable { get; set; }
         public bool HasUnlimitedQuantity { get; set; }
         public decimal? DonationItemValue { get; set; }
+        public string Restrictions { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? ExpirationDate { get; set; }
 
         //input from user
         public int? QuantityPurchased { get; set; }
@@ -199,6 +203,8 @@ namespace GlobeAuction.Models
             QuantityAvailable = si.Quantity;
             HasUnlimitedQuantity = si.HasUnlimitedQuantity;
             DonationItemValue = si?.DonationItem?.DollarValue;
+            Restrictions = si?.DonationItem?.Restrictions;
+            ExpirationDate = si?.DonationItem?.ExpirationDate;
         }
 
         public bool IsFundAProject()
