@@ -49,3 +49,14 @@ select i.FirstName, i.LastName, i.Email, ai.Title, ai.WinningBid as PricePaid, 1
 from AuctionItems ai
 inner join Invoices i on ai.Invoice_InvoiceId = i.InvoiceId
 where ai.Category='Fund-a-Project'
+
+--Teacher Treasure winners
+select ai.UniqueItemNumber, ai.Title, d.email as DonorEmail, i.biddernumber, i.firstname, i.lastname, i.email as BidderEmail, b.bidamount, b.amountpaid
+from Bids b
+inner join AuctionItems ai on ai.auctionitemid = b.auctionitem_auctionitemid
+inner join AuctionCategories ac on ac.auctioncategoryid = ai.category_auctioncategoryid
+inner join Bidders i on i.bidderid = b.bidder_bidderid
+inner join DonationItems di on di.auctionitem_auctionitemid = ai.auctionitemid
+inner join Donors d on di.donor_donorid = d.donorid
+where b.iswinning = 1
+  and ac.Name='Teacher Treasure'
