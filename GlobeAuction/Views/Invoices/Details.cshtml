@@ -131,6 +131,13 @@
 
     </dl>
 
+    <div class="btn-toolbar">
+        @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers) && !Model.IsPaid)
+        {
+            @Html.ActionLink("Mark as Paid (Cash)", "MarkInvoicePaidManually", "Invoices", new { invoiceId = Model.InvoiceId }, htmlAttributes: new { @class = "btn btn-default" })
+        }
+    </div>
+
     <h4>Auction Item(s)</h4>
     <hr />
     <dl class="dl-horizontal">

@@ -279,7 +279,24 @@ namespace GlobeAuction.Controllers
             new InvoiceRepository(db).ApplyPaymentToInvoice(ppTrans, invoice);
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice  " + invoice.InvoiceId + " manually via MarkInvoicerPaid");
 
-            return RedirectToAction("Index", "LogFiles");
+            return RedirectToAction("Index", "Invoices");
+        }
+
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult MarkInvoicePaidManually(int invoiceId)
+        {
+            var invoice = db.Invoices.Find(invoiceId);
+            if (invoice == null || invoice.IsPaid) return HttpNotFound();
+
+            var invoiceRepos = new InvoiceRepository(db);
+            invoiceRepos.ApplyPotentialManualPayment(invoice, PaymentMethod.Cash, User.Identity.GetUserName());
+            db.SaveChanges();
+
+            new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
+
+            NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice " + invoiceId + " manually via MarkBidderPaidManually");
+            
+            return RedirectToAction("Index", "Invoices");
         }
 
         public ActionResult RedirectToPayPal(int iid, string email)
