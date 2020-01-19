@@ -33,7 +33,7 @@ textarea {
 @media (min-width: 767px) {
     .navbar-logo {
         min-height: 170px;
-        background: url("/Content/Images/Logo.gif") center 0px no-repeat;
+        background: url("/Content/Images/Logo.jpg") center 0px no-repeat;
         background-size: 170px 170px;
         /*text-align: center;*/
     }

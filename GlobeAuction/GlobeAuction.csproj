@@ -561,11 +561,8 @@
     <Content Include="Content\Images\controls.png" />
     <Content Include="Content\Images\h_Donate.gif" />
     <Content Include="Content\Images\h_Home.gif" />
-    <Content Include="Content\Images\Logo.gif" />
-    <Content Include="Content\Images\Logo_150x150.gif" />
+    <Content Include="Content\Images\logo.jpg" />
     <Content Include="Content\Images\logo_gold and blue_2019.gif" />
-    <Content Include="Content\Images\logo_gold_2019.gif" />
-    <Content Include="Content\Images\logo_gold_2019.png" />
     <Content Include="Content\Images\h_Register.gif" />
     <Content Include="Content\Images\h_Sponsors.gif" />
     <Content Include="Content\Images\h_store.gif" />
