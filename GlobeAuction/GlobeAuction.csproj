@@ -561,6 +561,7 @@
     <Content Include="Content\Images\controls.png" />
     <Content Include="Content\Images\h_Donate.gif" />
     <Content Include="Content\Images\h_Home.gif" />
+    <Content Include="Content\Images\h_raffle.gif" />
     <Content Include="Content\Images\logo.jpg" />
     <Content Include="Content\Images\logo_gold and blue_2019.gif" />
     <Content Include="Content\Images\h_Register.gif" />
