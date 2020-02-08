@@ -69,7 +69,7 @@ namespace GlobeAuction.Models
             {
                 var total = 0m;
                 if (Bids != null && Bids.Any()) total = Bids.Sum(a => a.BidAmount);
-                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.Price);
+                if (StoreItemPurchases != null && StoreItemPurchases.Any()) total += StoreItemPurchases.Sum(sip => sip.Price * sip.Quantity);
                 if (TicketPurchases != null && TicketPurchases.Any()) total += TicketPurchases.Sum(t => t.TicketPrice);
                 return total;
             }

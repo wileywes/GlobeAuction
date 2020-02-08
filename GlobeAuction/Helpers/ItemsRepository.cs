@@ -390,8 +390,8 @@ namespace GlobeAuction.Helpers
 
             foreach (var sip in purchasesToReturn)
             {
-                //if item isn't a raffle ticket with unlimited quantity then decrement the available quantity on the store item
-                if (sip.StoreItem.IsRaffleTicket == false)
+                //if item isn't a raffle ticket or a store item with unlimited quantity then decrement the available quantity on the store item
+                if (sip.StoreItem.IsRaffleTicket == false && !sip.StoreItem.HasUnlimitedQuantity)
                 {
                     sip.StoreItem.Quantity -= sip.Quantity;
                 }
