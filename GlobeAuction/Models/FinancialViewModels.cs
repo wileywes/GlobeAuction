@@ -64,6 +64,9 @@ namespace GlobeAuction.Models
         [Display(Name = "Paid")]
         public bool IsPaid { get; set; }
 
+        [Display(Name = "Pay Reminder Sent")]
+        public bool IsPaymentReminderSent { get; set; }
+
         [Display(Name = "Paid Marked Manually")]
         public bool WasMarkedPaidManually { get; set; }
 
@@ -111,6 +114,7 @@ namespace GlobeAuction.Models
             Email = invoice.Email;
             InvoiceId = invoice.InvoiceId;
             IsPaid = invoice.IsPaid;
+            IsPaymentReminderSent = invoice.IsPaymentReminderSent;
             PaymentMethod = invoice.PaymentMethod;
             InvoiceType = invoice.InvoiceType;
             WasMarkedPaidManually = invoice.WasMarkedPaidManually;

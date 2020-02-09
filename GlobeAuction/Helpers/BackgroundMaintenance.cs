@@ -34,6 +34,7 @@ namespace GlobeAuction.Helpers
                     _lastMaintenance = DateTime.Now;
 
                     SendBidderPaymentReminders(emailHelper);
+                    SendInvoicePaymentReminders(emailHelper);
                     SendDonationItemCertificates(emailHelper);
                     RecalculateRevenueTotals();
                 }
@@ -65,6 +66,29 @@ namespace GlobeAuction.Helpers
                 db.SaveChanges();
 
                 _logger.Info("Sent payment reminder to {0}, bidder ID {1}", bidder.Email, bidder.BidderId);
+            }
+        }
+
+        private void SendInvoicePaymentReminders(EmailHelper emailHelper)
+        {
+            var oneDayAgo = Utilities.GetEasternTimeNow().AddDays(-1);
+
+            //email about invoices that are standalone store purchases not linked to a bidder registration or winning bids
+            var invoicesNotPaid = db.Invoices
+                .Where(i => i.InvoiceType == InvoiceType.AuctionCheckout
+                        && i.IsPaid == false
+                        && i.IsPaymentReminderSent == false
+                        && i.CreateDate < oneDayAgo
+                        && i.Bids.Count == 0)
+                .ToList();
+
+            foreach (var invoice in invoicesNotPaid)
+            {
+                emailHelper.SendInvoicePaymentReminder(invoice);
+                invoice.IsPaymentReminderSent = true; //just send this once per bidder
+                db.SaveChanges();
+
+                _logger.Info("Sent payment reminder to {0} for invoice ID {1}", invoice.Email, invoice.InvoiceId);
             }
         }
 

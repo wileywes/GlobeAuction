@@ -21,7 +21,7 @@ namespace GlobeAuction.Steps.Steps
         [Given(@"I create these auction items")]
         public void GivenICreateTheseAuctionItems(Table table)
         {
-            var aiController = new GlobeAuction.Controllers.AuctionItemsController;
+            var aiController = new GlobeAuction.Controllers.AuctionItemsController();
         }
     }
 }

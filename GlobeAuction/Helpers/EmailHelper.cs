@@ -376,7 +376,7 @@ namespace GlobeAuction.Helpers
         public void SendBidderPaymentReminder(Bidder bidder)
         {
             var url = GetBidderPayLink(bidder.BidderId);
-            var body = GetPaymentReminderEmail(url);
+            var body = GetPaymentReminderEmail("bidderNotPaid", url);
 
             SendEmail(bidder.Email, "Ticket Payment Reminder", body);
         }
@@ -386,9 +386,22 @@ namespace GlobeAuction.Helpers
             return string.Format("{0}/Bidders/RedirectToPayPal/{1}", _siteUrl, bidderId);
         }
 
-        private string GetPaymentReminderEmail(string paymentUrl)
+        public void SendInvoicePaymentReminder(Invoice invoice)
         {
-            var body = GetEmailBody("bidderNotPaid");
+            var url = GetInvoicePayLink(invoice.InvoiceId, invoice.Email);
+            var body = GetPaymentReminderEmail("invoiceNotPaid", url);
+
+            SendEmail(invoice.Email, "GLOBE Auction Payment Reminder", body);
+        }
+
+        private static string GetInvoicePayLink(int invoiceId, string email)
+        {
+            return string.Format("{0}/Invoices/RedirectToPayPal?iid={1}&email={2}", _siteUrl, invoiceId, HttpUtility.UrlEncode(email));
+        }
+
+        private string GetPaymentReminderEmail(string templateName, string paymentUrl)
+        {
+            var body = GetEmailBody(templateName);
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);

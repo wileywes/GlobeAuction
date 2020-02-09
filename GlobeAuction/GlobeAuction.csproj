@@ -494,6 +494,10 @@
     <Compile Include="Migrations\201903270008080_MoveDigitalEmailFlagToBid.Designer.cs">
       <DependentUpon>201903270008080_MoveDigitalEmailFlagToBid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002082032582_InvoicePaymentReminderFlag.cs" />
+    <Compile Include="Migrations\202002082032582_InvoicePaymentReminderFlag.Designer.cs">
+      <DependentUpon>202002082032582_InvoicePaymentReminderFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -530,6 +534,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudge.html" />
     <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudgeAfterEvent.html" />
+    <Content Include="Content\EmailTemplates\inlined\invoiceNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\bidderNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\catalogLaunchNudgeForUnpaidBidder.html" />
     <Content Include="Content\EmailTemplates\inlined\donorReceiptLine.html" />
@@ -988,6 +993,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903270008080_MoveDigitalEmailFlagToBid.resx">
       <DependentUpon>201903270008080_MoveDigitalEmailFlagToBid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002082032582_InvoicePaymentReminderFlag.resx">
+      <DependentUpon>202002082032582_InvoicePaymentReminderFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

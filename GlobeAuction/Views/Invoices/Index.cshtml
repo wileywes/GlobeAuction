@@ -25,6 +25,9 @@
                 @Html.DisplayNameFor(model => model.IsPaid)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.IsPaymentReminderSent)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.WasMarkedPaidManually)
             </th>
             <th>
@@ -61,6 +64,9 @@
             </td>
             <td>
                 @(item.IsPaid ? "Yes (" + item.PaymentMethod + ")" : "No")
+            </td>
+            <td>
+                @(item.IsPaymentReminderSent ? "Yes" : "No")
             </td>
             <td>
                 @(item.WasMarkedPaidManually ? "Yes" : "No")

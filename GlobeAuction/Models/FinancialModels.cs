@@ -77,6 +77,9 @@ namespace GlobeAuction.Models
 
         [Display(Name = "Total Paid")]
         public decimal TotalPaid { get; set; }
+
+        [Display(Name = "Payment Reminder Sent")]
+        public bool IsPaymentReminderSent { get; set; }
     }
 
     public enum PaymentMethod
