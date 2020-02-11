@@ -573,6 +573,9 @@
     <Content Include="Content\Images\h_Sponsors.gif" />
     <Content Include="Content\Images\h_store.gif" />
     <Content Include="Content\Images\sponsors\01_Silver\Duo.jpg" />
+    <Content Include="Content\Images\sponsors\04_FoodandBev\Dilworth_s BBQ.jpg" />
+    <Content Include="Content\Images\sponsors\04_FoodandBev\Grub jpeg.jpg" />
+    <Content Include="Content\Images\sponsors\04_FoodandBev\oak-grove-market.jpg" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney and bge mix.jpg" />
     <Content Include="Content\Images\StoreItems\disney logo.jpg" />
@@ -1002,7 +1005,6 @@
     <Folder Include="Content\Images\BidSheets\" />
     <Folder Include="Content\Images\sponsors\02_Bronze\" />
     <Folder Include="Content\Images\sponsors\03_Bar\" />
-    <Folder Include="Content\Images\sponsors\04_FoodandBev\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -143,7 +143,7 @@ namespace GlobeAuction.Helpers
                 .Where(i => i.IsPaid)
                 .ToList();
 
-            var totalRevenue = paidInvoices.Sum(i => i.TotalPaid);
+            var totalRevenueFromPaidInvoices = paidInvoices.Sum(i => i.TotalPaid);
             
             var unpaidAuctionItems = db.Bids
                 .Where(b => b.IsWinning && (b.Invoice == null || b.Invoice.IsPaid == false))
@@ -151,8 +151,9 @@ namespace GlobeAuction.Helpers
                 .DefaultIfEmpty(0)
                 .Sum();
 
-            totalRevenue += unpaidAuctionItems;
+            var totalRevenue = totalRevenueFromPaidInvoices + unpaidAuctionItems;
 
+            _logger.Info($"Recalc Revenue:{totalRevenue:C} PaidInvoicesCnt={paidInvoices.Count} PaidInvoicesRev={totalRevenue:C} UnpaidBids:{unpaidAuctionItems:C}");
             RevenueHelper.SetTotalRevenue(totalRevenue);
         }
     }
