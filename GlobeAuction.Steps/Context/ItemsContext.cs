@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobeAuction.Steps.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,11 @@ namespace GlobeAuction.Steps.Context
 {
     public class ItemsContext
     {
-        public List<int> AuctionItemsCreated { get; set; }
+        public List<DonationItemSpecflowModel> DonationItemsCreated { get; set; }
+
+        public ItemsContext()
+        {
+            DonationItemsCreated = new List<DonationItemSpecflowModel>();
+        }
     }
 }
