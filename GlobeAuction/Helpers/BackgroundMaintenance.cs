@@ -23,23 +23,34 @@ namespace GlobeAuction.Helpers
 
         public void DoMaintenance(CancellationToken cancelToken)
         {
-            var emailHelper = new EmailHelper(_baseFilePath);
-
-            while (true)
+            try
             {
-                if (cancelToken.IsCancellationRequested) return;
+                var emailHelper = new EmailHelper(_baseFilePath);
 
-                if (DateTime.Now.Subtract(_lastMaintenance) > TimeBetweenMaintenance)
+                while (true)
                 {
-                    _lastMaintenance = DateTime.Now;
+                    if (cancelToken.IsCancellationRequested) return;
 
-                    SendBidderPaymentReminders(emailHelper);
-                    SendInvoicePaymentReminders(emailHelper);
-                    SendDonationItemCertificates(emailHelper);
-                    RecalculateRevenueTotals();
+                    if (DateTime.Now.Subtract(_lastMaintenance) > TimeBetweenMaintenance)
+                    {
+                        _lastMaintenance = DateTime.Now;
+
+                        SendBidderPaymentReminders(emailHelper);
+                        SendInvoicePaymentReminders(emailHelper);
+                        SendDonationItemCertificates(emailHelper);
+                        RecalculateRevenueTotals();
+                    }
+
+                    Thread.Sleep(TimeSpan.FromMinutes(60));
                 }
+            }
+            catch (Exception exc)
+            {
+                _logger.Error(exc, "Background thread is crashing");
 
-                Thread.Sleep(TimeSpan.FromMinutes(60));
+                var body = "Background thread is crashing" + Environment.NewLine + exc;
+
+                new EmailHelper().SendEmail("williams.wes@gmail.com", null, "Auction Site Error", body, false, null, null);
             }
         }        
 
@@ -153,7 +164,7 @@ namespace GlobeAuction.Helpers
 
             var totalRevenue = totalRevenueFromPaidInvoices + unpaidAuctionItems;
 
-            _logger.Info($"Recalc Revenue:{totalRevenue:C} PaidInvoicesCnt={paidInvoices.Count} PaidInvoicesRev={totalRevenue:C} UnpaidBids:{unpaidAuctionItems:C}");
+            //_logger.Info($"Recalc Revenue:{totalRevenue:C} PaidInvoicesCnt={paidInvoices.Count} PaidInvoicesRev={totalRevenue:C} UnpaidBids:{unpaidAuctionItems:C}");
             RevenueHelper.SetTotalRevenue(totalRevenue);
         }
     }
