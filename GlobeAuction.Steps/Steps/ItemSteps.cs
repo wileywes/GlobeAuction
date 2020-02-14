@@ -14,6 +14,7 @@ using GlobeAuction.Models;
 
 namespace GlobeAuction.Steps.Steps
 {
+    [Binding]
     public class ItemSteps
     {
         private ItemsContext _itemsContext;

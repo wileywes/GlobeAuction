@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace GlobeAuction.Features
+namespace GlobeAuction.Features.Features
 {
     using TechTalk.SpecFlow;
     using System;
@@ -75,10 +75,13 @@ namespace GlobeAuction.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Adding a new bid to an item should recalculate the winners")]
+        [NUnit.Framework.CategoryAttribute("hook_purgeall")]
         public virtual void AddingANewBidToAnItemShouldRecalculateTheWinners()
         {
-            string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Adding a new bid to an item should recalculate the winners", null, ((string[])(null)));
+            string[] tagsOfScenario = new string[] {
+                    "hook_purgeall"};
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Adding a new bid to an item should recalculate the winners", null, new string[] {
+                        "hook_purgeall"});
 #line 5
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -100,20 +103,49 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Title",
-                            "Description",
-                            "Qty",
-                            "CategoryName"});
+                            "Name",
+                            "ItemNumberStart",
+                            "ItemNumberEnd",
+                            "BidOpenDateLtz",
+                            "BidCloseDateLtz",
+                            "IsFundAProject",
+                            "IsAvailableForMobileBidding",
+                            "IsOnlyAvailableToAuctionItems"});
+                table1.AddRow(new string[] {
+                            "SpecflowTestCategory",
+                            "90000",
+                            "99999",
+                            "1/1/2000",
+                            "1/1/2200",
+                            "false",
+                            "false",
+                            "false"});
 #line 6
- testRunner.Given("I create these donation items", ((string)(null)), table1, "Given ");
+ testRunner.Given("I create these auction categories", ((string)(null)), table1, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                             "Title",
                             "Description",
-                            "Qty",
+                            "CopiesToCreate",
                             "CategoryName"});
-#line 8
- testRunner.Then("the donation items are", ((string)(null)), table2, "Then ");
+                table2.AddRow(new string[] {
+                            "Test",
+                            "Test Description",
+                            "1",
+                            "SpecflowTestCategory"});
+#line 9
+ testRunner.Given("I create these donation items", ((string)(null)), table2, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Title",
+                            "Description",
+                            "Quantity"});
+                table3.AddRow(new string[] {
+                            "Test",
+                            "Test Description",
+                            "1"});
+#line 12
+ testRunner.Then("the donation items in the category \'SpecflowTestCategory\' are", ((string)(null)), table3, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
