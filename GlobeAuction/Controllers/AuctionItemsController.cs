@@ -159,6 +159,12 @@ namespace GlobeAuction.Controllers
             auctionItem.DonationItems.Remove(donationItem);
             auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
             auctionItem.UpdateBy = User.Identity.GetUserName();
+            
+            //recalc starting and increment with new items list
+            int startingBid, bidIncrement;
+            ItemsRepository.CalculateStartBidAndIncrement(auctionItem.DonationItems, out startingBid, out bidIncrement);
+            auctionItem.StartingBid = startingBid;
+            auctionItem.BidIncrement = bidIncrement;
 
             db.Entry(auctionItem).State = EntityState.Modified;
             db.SaveChanges();
@@ -250,6 +256,12 @@ namespace GlobeAuction.Controllers
                     }
                     existingAuctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     existingAuctionItem.UpdateBy = username;
+
+                    int startingBid, bidIncrement;
+                    ItemsRepository.CalculateStartBidAndIncrement(existingAuctionItem.DonationItems, out startingBid, out bidIncrement);
+                    existingAuctionItem.StartingBid = startingBid;
+                    existingAuctionItem.BidIncrement = bidIncrement;
+
                     db.SaveChanges();
                     return RedirectToAction("Edit", new { id = existingAuctionItem.AuctionItemId });
                 case "DuplicateDonationItems":
@@ -726,6 +738,11 @@ namespace GlobeAuction.Controllers
                     .Where(i => i.Title.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
                                 i.Description.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     .ToList();
+            }
+
+            if (model.FilterToItemsNoBids)
+            {
+                model.AuctionItems = model.AuctionItems.Where(i => i.BidCount == 0).ToList();
             }
 
             BidderCookieInfo bidderInfo;

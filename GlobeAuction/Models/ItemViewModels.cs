@@ -49,6 +49,7 @@ namespace GlobeAuction.Models
     {
         public string SelectedCategory { get; set; }
         public string SearchString { get; set; }
+        public bool FilterToItemsNoBids { get; set; }
         public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
         public List<CatalogCategoryViewModel> Categories { get; set; }
         public bool IsBidderLoggedIn { get; set; }
@@ -274,6 +275,7 @@ namespace GlobeAuction.Models
         public AuctionCategory Category { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int HighestBid { get; set; }
+        public int BidCount { get; set; }
 
         public CatalogAuctionItemViewModel()
         {
@@ -290,6 +292,7 @@ namespace GlobeAuction.Models
             this.ImageUrl = i.ImageUrl;
             this.Category = i.Category;
             this.HighestBid = i.AllBids.Select(b => (int)b.BidAmount).DefaultIfEmpty(i.StartingBid).Max();
+            this.BidCount = i.AllBids.Count;
         }
     }
 

@@ -29,16 +29,8 @@ namespace GlobeAuction.Helpers
         {
             if (!items.Any()) throw new ApplicationException("You must select at least one donation item");
 
-            //calculate the starting bid
-            var totalDollarValue = items.Sum(i => i.DollarValue.GetValueOrDefault(0)); //value of all donation items in basket
-            var startBid = Math.Floor(totalDollarValue * 0.4); // start at 40% of value
-            startBid = Math.Round(startBid / 5.0) * 5; //round to nearest $5 increment
-
-            //calculate the bid increment based on ranges of the starting bid
-            int bidIncrement;
-            if (startBid < 50) bidIncrement = 5;
-            else if (startBid <= 100) bidIncrement = 10;
-            else bidIncrement = 20;
+            int startingBid, bidIncrement;
+            CalculateStartBidAndIncrement(items, out startingBid, out bidIncrement);
 
             //generate the basket description based on the items in it
             var description = items.Count == 1 ? items.First().Description :
@@ -60,7 +52,7 @@ namespace GlobeAuction.Helpers
                 CreateDate = Utilities.GetEasternTimeNow(),
                 UpdateDate = Utilities.GetEasternTimeNow(),
                 UpdateBy = username,
-                StartingBid = (int)startBid,
+                StartingBid = startingBid,
                 BidIncrement = bidIncrement,
                 Category = mostCommonCategory,
                 Description = description,
@@ -68,6 +60,21 @@ namespace GlobeAuction.Helpers
                 DonationItems = items,
                 Quantity = items.Count == 1 ? items.First().Quantity : 1
             };
+        }
+        
+        public static void CalculateStartBidAndIncrement(List<DonationItem> items, out int startingBid, out int bidIncrement)
+        {
+            //calculate the starting bid
+            var totalDollarValue = items.Sum(i => i.DollarValue.GetValueOrDefault(0)); //value of all donation items in basket
+            var startBid = Math.Floor(totalDollarValue * 0.4); // start at 40% of value
+            startBid = Math.Round(startBid / 5.0) * 5; //round to nearest $5 increment
+
+            startingBid = (int)startBid;
+
+            //calculate the bid increment based on ranges of the starting bid
+            if (startBid < 50) bidIncrement = 5;
+            else if (startBid <= 100) bidIncrement = 10;
+            else bidIncrement = 20;
         }
 
         private int CalculateNextAuctionItemNumber(AuctionCategory mostCommonCategory)
@@ -147,7 +154,7 @@ namespace GlobeAuction.Helpers
                 .ToList() //run the DB query
                 .ToDictionary(si => si.DonationItem.DonationItemId, si => si.StoreItemId);
 
-            foreach(var donation in items)
+            foreach (var donation in items)
             {
                 if (donationItemIdsThatAlreadyHaveStoreItems.ContainsKey(donation.DonationItemId))
                 {
@@ -186,7 +193,7 @@ namespace GlobeAuction.Helpers
         public void MoveStoreItemsBackToDonations(List<StoreItem> items, string username)
         {
             if (!items.Any()) throw new ApplicationException("You must select at least one store item");
-            
+
             foreach (var storeItem in items)
             {
                 if (storeItem.DonationItem != null)
@@ -303,7 +310,7 @@ namespace GlobeAuction.Helpers
                 .Include("Bids.Invoice")
                 .Where(b => b.Bids.Any(bid => bid.IsWinning))
                 .ToList();
-            
+
             var results = new List<WinningsByBidder>();
             foreach (var b in biddersWithWinnings)
             {
@@ -369,7 +376,7 @@ namespace GlobeAuction.Helpers
                     {
                         if (storeItem.BundleComponents != null && storeItem.BundleComponents.Any())
                         {
-                            foreach(var component in storeItem.BundleComponents)
+                            foreach (var component in storeItem.BundleComponents)
                             {
                                 var componentStoreItem = db.StoreItems.Find(component.StoreItemId);
                                 var totalQtyForThisTicket = component.Quantity * itemPurchase.QuantityPurchased.Value;
@@ -381,7 +388,7 @@ namespace GlobeAuction.Helpers
                                     {
                                         StoreItem = componentStoreItem,
                                         Quantity = 1,
-                                        Price = component.ComponentUnitPrice                                        
+                                        Price = component.ComponentUnitPrice
                                     };
 
                                     purchasesToReturn.Add(lineItem);
@@ -453,7 +460,7 @@ namespace GlobeAuction.Helpers
 
             //categories without items
             var allCategories = db.AuctionCategories.ToList();
-            foreach(var cat in allCategories)
+            foreach (var cat in allCategories)
             {
                 if (catData.Categories.FirstOrDefault(c => c.AuctionCategoryId == cat.AuctionCategoryId) == null)
                 {
@@ -501,11 +508,11 @@ namespace GlobeAuction.Helpers
 
     public class OutOfStockException : ApplicationException
     {
-        public StoreItem StoreItem { get; private set;}
+        public StoreItem StoreItem { get; private set; }
         public BuyItemViewModel BuyItemViewModel { get; private set; }
 
         public OutOfStockException(string message, StoreItem storeitem, BuyItemViewModel itemViewModel)
-            :base(message)
+            : base(message)
         {
             StoreItem = storeitem;
             BuyItemViewModel = itemViewModel;
