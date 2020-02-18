@@ -90,6 +90,7 @@ namespace GlobeAuction.Models
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsInStore { get; set; }
         public bool UseDigitalCertificateForWinner { get; set; }
 
         public virtual Solicitor Solicitor { get; set; }

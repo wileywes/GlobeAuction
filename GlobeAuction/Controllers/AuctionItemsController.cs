@@ -31,15 +31,19 @@ namespace GlobeAuction.Controllers
 
             var donationItemsNotInAuctionItem = db.DonationItems
                 .Include(a => a.Category)
-                .Where(di => !di.IsDeleted && !donationItemIdsInAuctionItem.Contains(di.DonationItemId))
+                .Where(di => !donationItemIdsInAuctionItem.Contains(di.DonationItemId))
                 .ToList();
+
+            var donationItemsOnStore = donationItemsNotInAuctionItem.Where(i => i.IsInStore).ToList();
+            var donationItemsFreeForAuctionItems = donationItemsNotInAuctionItem.Where(i => !i.IsDeleted).ToList();
 
             var bidderIdToNumber = db.Bidders.ToDictionary(b => b.BidderId, b => b.BidderNumber);
 
             var model = new ItemsViewModel
             {
                 AuctionItems = auctionItems.Select(i => new AuctionItemViewModel(i)).ToList(),
-                DonationsNotInAuctionItem = donationItemsNotInAuctionItem.Select(d => new DonationItemViewModel(d)).ToList()
+                DonationsNotInAuctionItem = donationItemsFreeForAuctionItems.Select(d => new DonationItemViewModel(d)).ToList(),
+                DonationsInStore = donationItemsOnStore.Select(d => new DonationItemViewModel(d)).ToList()
             };
             return View(model);
         }

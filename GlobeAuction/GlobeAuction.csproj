@@ -240,6 +240,7 @@
     <Compile Include="Helpers\BackgroundMaintenance.cs" />
     <Compile Include="Helpers\BidderRepository.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\MutexByKey.cs" />
     <Compile Include="Helpers\RevenueHelper.cs" />
     <Compile Include="Helpers\SmsHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
@@ -497,6 +498,10 @@
     <Compile Include="Migrations\202002082032582_InvoicePaymentReminderFlag.cs" />
     <Compile Include="Migrations\202002082032582_InvoicePaymentReminderFlag.Designer.cs">
       <DependentUpon>202002082032582_InvoicePaymentReminderFlag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002182156452_DonationItemInStoreFlag.cs" />
+    <Compile Include="Migrations\202002182156452_DonationItemInStoreFlag.Designer.cs">
+      <DependentUpon>202002182156452_DonationItemInStoreFlag.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -1002,6 +1007,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002082032582_InvoicePaymentReminderFlag.resx">
       <DependentUpon>202002082032582_InvoicePaymentReminderFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002182156452_DonationItemInStoreFlag.resx">
+      <DependentUpon>202002182156452_DonationItemInStoreFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

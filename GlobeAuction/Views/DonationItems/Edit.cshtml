@@ -13,6 +13,8 @@
 
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.DonationItemId)
+    @Html.HiddenFor(model => model.IsDeleted)
+    @Html.HiddenFor(model => model.IsInStore)
 
     <div class="form-horizontal">
         <h4>Solicitor Information</h4>

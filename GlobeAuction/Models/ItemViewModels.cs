@@ -11,6 +11,7 @@ namespace GlobeAuction.Models
     {
         public List<AuctionItemViewModel> AuctionItems { get; set; }
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
+        public List<DonationItemViewModel> DonationsInStore { get; set; }
     }
     
     public class CatalogData

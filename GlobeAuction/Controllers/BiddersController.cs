@@ -705,21 +705,32 @@ namespace GlobeAuction.Controllers
                 }
                 else
                 {
-                    //enter the bid and return success on the Bids list page
-                    List<Bidder> biddersThatLost;
-                    new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmountValue, out biddersThatLost);
-
-                    //after saving DB changes, now go text those bidders
-                    var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
-                    var body = string.Format("You have been outbid on item # {0} ({1}).  Click here to rebid: {2}", itemNo, item.Title, bidLink);
-
-                    var txtHelper = new SmsHelper();
-                    foreach (var lostBidder in biddersThatLost)
+                    var lockKey = "BidLock:" + itemNo;
+                    using (var lockForBidding = MutexByKey.TryGetLock(lockKey))
                     {
-                        txtHelper.SendSms(lostBidder.Phone, body);
-                    }
+                        if (lockForBidding.WasAcquired)
+                        {
+                            //enter the bid and return success on the Bids list page
+                            List<Bidder> biddersThatLost;
+                            new ItemsRepository(db).EnterNewBidAndRecalcWinners(item, bidder, bidAmountValue, out biddersThatLost);
 
-                    return RedirectToAction("Bids", "Bidders");
+                            //after saving DB changes, now go text those bidders
+                            var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
+                            var body = string.Format("You have been outbid on item # {0} ({1}).  Click here to rebid: {2}", itemNo, item.Title, bidLink);
+
+                            var txtHelper = new SmsHelper();
+                            foreach (var lostBidder in biddersThatLost)
+                            {
+                                txtHelper.SendSms(lostBidder.Phone, body);
+                            }
+
+                            return RedirectToAction("Bids", "Bidders");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Someone else is entering a bid at this exact time - please try again.");
+                        }
+                    }
                 }
 
                 var model = GetBidEnterModel(item, bidAmountValue);

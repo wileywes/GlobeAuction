@@ -15,6 +15,7 @@
             <td>@Html.ActionLink("Enter a New Donation", "Create", "DonationItems") &nbsp; &nbsp;</td>
             <td>@Html.ActionLink("Store Items List", "Index", "StoreItems") &nbsp; &nbsp;</td>
             <td><a href="#donationItemsAnchor">Donation Items List</a></td>
+            <td><a href="#storeItemsAnchor">Store Items List</a></td>
         </tr>
     </table>
 </p>
@@ -135,7 +136,7 @@
     </table>
 }
 
-<br /><br />
+<br />
 
 <a name="donationItemsAnchor"></a>
 
@@ -191,6 +192,53 @@
         </tbody>
     </table>
 }
+
+
+<br />
+<a name="storeItemsAnchor"></a>
+
+<h2>Donation Items in the Store</h2>
+<p>If you want to use these in the auction, go to Store items page and use the "Move to Auction" button.</p>
+
+<table class="table table-striped table-bordered" id="donationItemsTable">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Category
+            </th>
+            <th>Quantity</th>
+            <th>
+                Restrictions
+            </th>
+            <th>
+                Expiration
+            </th>
+            <th>
+                Value
+            </th>
+            <th>
+                Has Display
+            </th>
+            <th>Received</th>
+            <th>
+                Use Digital Certificate For Winner
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @Html.EditorFor(model => model.DonationsInStore)
+    </tbody>
+</table>
 
 <script type="text/javascript">
 

@@ -186,6 +186,7 @@ namespace GlobeAuction.Helpers
                 }
 
                 donation.IsDeleted = true;
+                donation.IsInStore = true;
             }
             db.SaveChanges();
         }
@@ -200,6 +201,7 @@ namespace GlobeAuction.Helpers
                 {
                     storeItem.IsDeleted = true;
                     storeItem.DonationItem.IsDeleted = false;
+                    storeItem.DonationItem.IsInStore = false;
                 }
             }
             db.SaveChanges();
