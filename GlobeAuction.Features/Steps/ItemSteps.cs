@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using GlobeAuction;
 using TechTalk.SpecFlow.Assist;
-using GlobeAuction.Steps.Models;
 using GlobeAuction.Controllers;
 using GlobeAuction.Models;
 using System.Web.Mvc;
@@ -38,16 +37,37 @@ namespace GlobeAuction.Steps.Steps
             }
         }
 
-        [Given(@"I create these donation items")]
-        public void GivenICreateTheseDonationItems(Table table)
+        [Given(@"I create these donation items in category '(.*)'")]
+        public void GivenICreateTheseDonationItems(string categoryName, Table table)
         {
-            var itemsToCreate = table.CreateSet<DonationItemSpecflowModel>();
+            var itemsToCreate = table.CreateSet<DonationItem>();
             var diController = new DonationItemsController();
-            foreach(var item in itemsToCreate)
-            {
-                var categoryId = new ItemsRepository(_db).GetCatalogData().Categories.First(c => c.Name.Equals(item.CategoryName)).AuctionCategoryId;
 
-                diController.Create(item, item.CopiesToCreate.ToString(), categoryId.ToString());
+            var categoryId = new ItemsRepository(_db).GetCatalogData().Categories.First(c => c.Name.Equals(categoryName)).AuctionCategoryId;
+
+            foreach (var item in itemsToCreate)
+            {
+                //fake the rest of the items
+                item.Solicitor = new Solicitor
+                {
+                    Email = "specflowtest@gmail.com",
+                    FirstName = "Specflow",
+                    LastName = "Test",
+                    Phone = "123-123-1234"
+                };
+                item.Donor = new Donor
+                {
+                    Email = "specflowdonor@gmail.com",
+                    Address1 = "123 Test Dr",
+                    City = "Atlanta",
+                    State = "GA",
+                    Zip = "30319",
+                    BusinessName = "Donor Business",
+                    ContactName = "Specflow Contact",
+                    Phone = "234-234-2345"
+                };
+
+                diController.Create(item, "1", categoryId.ToString());
                 _itemsContext.DonationItemsCreated.Add(item);
             }
         }

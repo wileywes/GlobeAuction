@@ -9,6 +9,7 @@ using TechTalk.SpecFlow;
 
 namespace GlobeAuction.Steps
 {
+    [Binding]
     public class CommonSteps
     {
         private ItemsContext _itemsContext;

@@ -126,15 +126,13 @@ this.ScenarioInitialize(scenarioInfo);
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                             "Title",
                             "Description",
-                            "CopiesToCreate",
-                            "CategoryName"});
+                            "Quantity"});
                 table2.AddRow(new string[] {
                             "Test",
                             "Test Description",
-                            "1",
-                            "SpecflowTestCategory"});
+                            "1"});
 #line 9
- testRunner.Given("I create these donation items", ((string)(null)), table2, "Given ");
+ testRunner.Given("I create these donation items in category \'SpecflowTestCategory\'", ((string)(null)), table2, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Title",

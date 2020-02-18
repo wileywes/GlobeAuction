@@ -144,7 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\ItemsContext.cs" />
-    <Compile Include="Models\DonationItemSpecflowModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\BidSteps.cs" />
     <Compile Include="Steps\CommonSteps.cs" />
@@ -160,6 +159,9 @@
       <Project>{474bd74e-a70c-4cfc-9ce8-231350718bbe}</Project>
       <Name>GlobeAuction</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
