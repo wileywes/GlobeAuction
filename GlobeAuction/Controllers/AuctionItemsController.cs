@@ -753,7 +753,14 @@ namespace GlobeAuction.Controllers
             }
 
             //sort by category then item no
-            model.AuctionItems = model.AuctionItems.OrderBy(a => a.Category.Name).ThenBy(a => a.UniqueItemNumber).ToList();
+            if (model.SortByPrice)
+            {
+                model.AuctionItems = model.AuctionItems.OrderBy(a => a.HighestBid).ToList();
+            }
+            else
+            {
+                model.AuctionItems = model.AuctionItems.OrderBy(a => a.Category.Name).ThenBy(a => a.UniqueItemNumber).ToList();
+            }
 
             return View(model);
         }

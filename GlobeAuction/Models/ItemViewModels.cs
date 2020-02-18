@@ -50,6 +50,7 @@ namespace GlobeAuction.Models
         public string SelectedCategory { get; set; }
         public string SearchString { get; set; }
         public bool FilterToItemsNoBids { get; set; }
+        public bool SortByPrice { get; set; }
         public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
         public List<CatalogCategoryViewModel> Categories { get; set; }
         public bool IsBidderLoggedIn { get; set; }

@@ -26,13 +26,17 @@
             <div class="panel-body">
                 <div class="form-group">
                     <div class="input-group">
-                        @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder = "search here" })
-
-                        @Html.CheckBoxFor(m => m.FilterToItemsNoBids, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control", placeholder = "search here" }) &nbsp;&nbsp;
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
+                        @Html.CheckBoxFor(m => m.FilterToItemsNoBids, new { @class = "checkbox" }) Only Items with No Bids &nbsp;&nbsp;
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.CheckBoxFor(m => m.SortByPrice, new { @class = "checkbox" }) Sort by Price &nbsp;&nbsp;
                     </div>
                 </div>
 
