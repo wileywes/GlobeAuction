@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Web;
 
 namespace GlobeAuction.Helpers
 {
@@ -197,6 +198,17 @@ namespace GlobeAuction.Helpers
             db.SaveChanges();
         }
 
+        public void EndRafflePurchasing()
+        {
+            foreach (var storeItem in db.StoreItems.Where(si => si.IsRaffleTicket))
+            {
+                storeItem.CanPurchaseInAuctionCheckout =
+                    storeItem.CanPurchaseInBidderRegistration =
+                    storeItem.CanPurchaseInStore = false;
+            }
+            db.SaveChanges();
+        }
+
         public AuctionItem GetItemWithAllBidInfo(int itemNo)
         {
             return db.AuctionItems
@@ -204,6 +216,14 @@ namespace GlobeAuction.Helpers
                 .Include(a => a.DonationItems)
                 .Include("AllBids.Bidder")
                 .FirstOrDefault(a => a.UniqueItemNumber == itemNo);
+        }
+
+        public void DeleteBidAndRecalcWinners(AuctionItem item, Bid bidToRemove)
+        {
+            db.Bids.Remove(bidToRemove);
+
+            List<Bidder> biddersThatLost;
+            RecalculateWinnersAndSave(item, null, HttpContext.Current.User.Identity.Name, out biddersThatLost);
         }
 
         public void EnterNewBidAndRecalcWinners(AuctionItem item, Bidder bidder, decimal amount, out List<Bidder> biddersThatLost)
@@ -220,21 +240,27 @@ namespace GlobeAuction.Helpers
             };
             item.AllBids.Add(newBid);
 
+            RecalculateWinnersAndSave(item, bidder.BidderId, bidder.Email, out biddersThatLost);
+        }
+
+        private void RecalculateWinnersAndSave(AuctionItem item, int? bidderIdEnteringBid, string updatedByEmail, out List<Bidder> biddersThatLost)
+        {
+            var time = Utilities.GetEasternTimeNow();
             biddersThatLost = new List<Bidder>();
 
             //recalculate winners
             var index = 0;
-            foreach(var bid in item.AllBids.OrderByDescending(b => b.BidAmount))
+            foreach (var bid in item.AllBids.OrderByDescending(b => b.BidAmount))
             {
                 var nowWinning = index < item.Quantity;
                 if (bid.IsWinning != nowWinning)
                 {
                     //changing
-                    bid.UpdateBy = bidder.Email;
+                    bid.UpdateBy = updatedByEmail;
                     bid.UpdateDate = time;
                 }
                 //lost win
-                if (bid.IsWinning && !nowWinning && bid.Bidder.BidderId != bidder.BidderId)
+                if (bid.IsWinning && !nowWinning && bidderIdEnteringBid.HasValue && bid.Bidder.BidderId != bidderIdEnteringBid.Value)
                 {
                     //send text to this bidder as long as it's not the bidder that just entered the new bid
                     biddersThatLost.Add(bid.Bidder);
@@ -245,8 +271,15 @@ namespace GlobeAuction.Helpers
             }
             db.SaveChanges();
 
-            var highestBid = item.AllBids.Select(b => b.BidAmount).Max();
-            UpdateHighestBidForCachedItem(item.AuctionItemId, (int)highestBid);
+            if (item.AllBids.Any())
+            {
+                var highestBid = item.AllBids.Select(b => b.BidAmount).Max();
+                UpdateHighestBidForCachedItem(item.AuctionItemId, (int)highestBid);
+            }
+            else
+            {
+                UpdateHighestBidForCachedItem(item.AuctionItemId, item.StartingBid);
+            }
         }
 
         public static string GetItemNameForPayPalCart(AuctionItem item)

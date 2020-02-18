@@ -227,6 +227,13 @@
                             $('#submitSelectedStoreItemsForm').submit();
                         }
                     }
+                },
+                {
+                    text: 'End Raffle Purchasing',
+                    action: function (e, dt, node, config) {
+                        $("#storeItemsAction").val("EndRafflePurchasing");
+                        $('#submitSelectedStoreItemsForm').submit();
+                    }
                 }
             ],
             select: {

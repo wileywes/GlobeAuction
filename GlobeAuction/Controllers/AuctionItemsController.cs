@@ -764,14 +764,16 @@ namespace GlobeAuction.Controllers
             var auctionItem = db.AuctionItems.Find(aid);
             if (auctionItem == null) return HttpNotFound();
 
-            var bid = auctionItem.AllBids.FirstOrDefault(b => b.BidId == bidId);
+            var item = new ItemsRepository(db).GetItemWithAllBidInfo(auctionItem.UniqueItemNumber);
+
+            var bid = item.AllBids.FirstOrDefault(b => b.BidId == bidId);
             if (bid == null)
             {
                 return HttpNotFound();
             }
 
             db.Bids.Remove(bid);
-            db.SaveChanges();
+            new ItemsRepository(db).DeleteBidAndRecalcWinners(item, bid);
 
             return RedirectToAction("Details", new { id = aid });
         }

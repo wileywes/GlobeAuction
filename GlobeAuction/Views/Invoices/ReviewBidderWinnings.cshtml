@@ -85,6 +85,7 @@
                                         @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItem.Category)
                                     </td>
                                     <td>
+                                        @(Model.AuctionItemsNotInInvoice[i].AuctionItem.DonationItems.First().UseDigitalCertificateForWinner ? "* " : "")
                                         @Html.DisplayFor(m => Model.AuctionItemsNotInInvoice[i].AuctionItem.Title)
                                     </td>
                                     <td>
@@ -105,6 +106,13 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    @if (Model.AuctionItemsNotInInvoice.Any(ai => ai.AuctionItem.DonationItems.First().UseDigitalCertificateForWinner))
+                    {
+                        <p>
+                            * Certificate for this item will be emailed to you
+                        </p>
+                    }
                 </dd>
             </dl>
 
@@ -277,6 +285,7 @@
                                         @Html.DisplayFor(m => item.Category.Name)
                                     </td>
                                     <td>
+                                        @(item.DonationItems.First().UseDigitalCertificateForWinner ? "* " : "")
                                         @Html.DisplayFor(m => item.Title)
                                     </td>
                                     <td>1</td>
@@ -334,6 +343,13 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    @if (invoice.Bids.Any(b => b.AuctionItem.DonationItems.First().UseDigitalCertificateForWinner))
+                    {
+                        <p>
+                            * Certificate for this item will be emailed to you
+                        </p>
+                    }
                 </dd>
             </dl>
             <br />

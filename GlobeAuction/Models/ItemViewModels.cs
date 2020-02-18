@@ -21,20 +21,26 @@ namespace GlobeAuction.Models
         private Dictionary<int, CatalogAuctionItemViewModel> _itemsByAuctionId;
         public CatalogAuctionItemViewModel GetItemByAuctionId(int auctionId)
         {
-            if (_itemsByAuctionId == null)
-            {
-                _itemsByAuctionId = AuctionItems.ToDictionary(i => i.AuctionItemId, i => i);
-            }
-
+            InitializeCache();
             return _itemsByAuctionId[auctionId];
         }
 
         public void UpdateHighestBidForAuctionId(int auctionId, int newHighestBid)
         {
+            InitializeCache();
+
             CatalogAuctionItemViewModel item;
             if (_itemsByAuctionId.TryGetValue(auctionId, out item))
             {
                 item.HighestBid = newHighestBid;
+            }
+        }
+
+        private void InitializeCache()
+        {
+            if (_itemsByAuctionId == null)
+            {
+                _itemsByAuctionId = AuctionItems.ToDictionary(i => i.AuctionItemId, i => i);
             }
         }
     }

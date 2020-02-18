@@ -377,6 +377,9 @@ namespace GlobeAuction.Controllers
                     selectedStoreItems.ForEach(si => si.CanPurchaseInStore = true);
                     db.SaveChanges();
                     break;
+                case "EndRafflePurchasing":
+                    new ItemsRepository(db).EndRafflePurchasing();
+                    break;
                 case "UploadImage":
                     //image upload
                     const string pathBase = "~/Content/images/StoreItems";
