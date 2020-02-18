@@ -17,7 +17,7 @@ namespace GlobeAuction.Helpers
             db = context;
         }
 
-        private const string BidderIdCookieName = "GlobeBidder";
+        public const string BidderIdCookieName = "GlobeBidder";
 
         public static int? GetBidderIdFromTransaction(PayPalTransaction ppTrans)
         {

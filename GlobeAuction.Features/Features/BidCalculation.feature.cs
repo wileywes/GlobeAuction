@@ -126,24 +126,117 @@ this.ScenarioInitialize(scenarioInfo);
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                             "Title",
                             "Description",
-                            "Quantity"});
+                            "Quantity",
+                            "DollarValue"});
                 table2.AddRow(new string[] {
                             "Test",
                             "Test Description",
-                            "1"});
+                            "1",
+                            "100"});
 #line 9
  testRunner.Given("I create these donation items in category \'SpecflowTestCategory\'", ((string)(null)), table2, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Title",
                             "Description",
-                            "Quantity"});
+                            "Quantity",
+                            "DollarValue"});
                 table3.AddRow(new string[] {
                             "Test",
                             "Test Description",
-                            "1"});
+                            "1",
+                            "100"});
 #line 12
  testRunner.Then("the donation items in the category \'SpecflowTestCategory\' are", ((string)(null)), table3, "Then ");
+#line hidden
+#line 15
+ testRunner.When("I convert the created donation items to single auction items", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "UniqueItemNumber",
+                            "Title",
+                            "Description",
+                            "StartingBid",
+                            "BidIncrement",
+                            "Quantity"});
+                table4.AddRow(new string[] {
+                            "90000",
+                            "Test",
+                            "Test Description",
+                            "40",
+                            "5",
+                            "1"});
+#line 16
+ testRunner.Then("the auction items in the category \'SpecflowTestCategory\' are", ((string)(null)), table4, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                            "FirstName",
+                            "LastName",
+                            "Phone",
+                            "Email",
+                            "ZipCode"});
+                table5.AddRow(new string[] {
+                            "John",
+                            "Smith",
+                            "123-123-1234",
+                            "john@gmail.com",
+                            "30001"});
+                table5.AddRow(new string[] {
+                            "Sally",
+                            "Fields",
+                            "456-456-4567",
+                            "sally@gmail.com",
+                            "30002"});
+#line 19
+ testRunner.When("I create the following bidders using the \'Register and Mark Paid (Cash)\' button", ((string)(null)), table5, "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                            "BidderNumber",
+                            "FirstName",
+                            "LastName",
+                            "Phone",
+                            "Email",
+                            "ZipCode",
+                            "GuestCount",
+                            "TicketsPaid",
+                            "ItemsCount",
+                            "ItemsPaid",
+                            "TotalPaid",
+                            "PaymentMethod"});
+                table6.AddRow(new string[] {
+                            "1",
+                            "John",
+                            "Smith",
+                            "123-123-1234",
+                            "john@gmail.com",
+                            "30001",
+                            "1",
+                            "1",
+                            "0",
+                            "0",
+                            "1.00",
+                            "Cash"});
+                table6.AddRow(new string[] {
+                            "2",
+                            "Sally",
+                            "Fields",
+                            "456-456-4567",
+                            "sally@gmail.com",
+                            "30002",
+                            "1",
+                            "1",
+                            "0",
+                            "0",
+                            "1.00",
+                            "Cash"});
+#line 23
+ testRunner.Then("the bidders in the system are", ((string)(null)), table6, "Then ");
+#line hidden
+#line 27
+ testRunner.When("I log in as bidder number \'1\' with last name \'Smith\' and email \'john@gmail.com\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 28
+ testRunner.Then("I enter a bid of \'1.00\' for item number \'90000\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

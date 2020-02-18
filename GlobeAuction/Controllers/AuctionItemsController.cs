@@ -405,7 +405,7 @@ namespace GlobeAuction.Controllers
 
         private void DoEmailWinners(List<WinningsByBidder> winnersToEmail, NotifyResultViewModel model, bool isAfterEvent)
         {
-            var emailHelper = new EmailHelper();
+            var emailHelper = EmailHelperFactory.Instance();
             foreach (var winner in winnersToEmail) //only email people with outstanding unpaid winnings
             {
                 //for (int i = 0; i < 200; i++)

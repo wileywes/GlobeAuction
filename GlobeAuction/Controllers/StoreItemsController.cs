@@ -92,7 +92,7 @@ namespace GlobeAuction.Controllers
 
                     if (manualPayMethod.HasValue)
                     {
-                        new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
+                        EmailHelperFactory.Instance().SendInvoicePaymentConfirmation(invoice, true);
 
                         return RedirectToAction("Buy", "StoreItems", new { iid = invoice.InvoiceId, ie = invoice.Email });
                     }

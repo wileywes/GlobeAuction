@@ -1,5 +1,5 @@
 ﻿using GlobeAuction.Controllers;
-using GlobeAuction.Steps.Context;
+using GlobeAuction.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,32 +7,59 @@ using System.Text;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
-namespace GlobeAuction.Steps
+namespace GlobeAuction.Specflow
 {
     [Binding]
-    public class CommonSteps
+    public class CommonSteps : BaseSteps
     {
-        private ItemsContext _itemsContext;
-
         public CommonSteps(ItemsContext itemsContext)
+            : base(itemsContext)
         {
-            _itemsContext = itemsContext;
+        }
+
+        [BeforeScenario]
+        public void BeforeScenario()
+        {
+            AutoMapperConfig.RegisterMappings();
+            EmailHelperFactory.UseNoOpEmailHelper();
         }
 
         [AfterScenario("hook_purgeall")]
         public void AfterScenarioPurgeAll()
         {
-            //delete all donation items
-            foreach(var di in _itemsContext.DonationItemsCreated)
+            //delete all auction items
+            foreach(var itemId in _db.AuctionItems.Select(ai => ai.AuctionItemId))
             {
-                new DonationItemsController().DeleteConfirmed(di.DonationItemId);
+                AuctionItemsController.DeleteConfirmed(itemId);
             }
 
-            //delete auction categories
-            foreach(var cat in _itemsContext.AuctionCategoriesCreated)
+            foreach (var itemId in _db.DonationItems.Select(ai => ai.DonationItemId))
             {
-                new AuctionCategoriesController().DeleteConfirmed(cat.AuctionCategoryId);
+                DonationItemsController.DeleteConfirmed(itemId);
             }
+
+            //now hard delete donation items
+            _db.DonationItems.RemoveRange(_db.DonationItems);
+            _db.SaveChanges();
+
+            //delete auction categories
+            foreach (var cat in ItemsContext.AuctionCategoriesCreated)
+            {
+                AuctionCategoriesController.DeleteConfirmed(cat.AuctionCategoryId);
+            }
+
+            //delete bidders
+            foreach(var bidderId in _db.Bidders.Select(b => b.BidderId))
+            {
+                //soft delete
+                BiddersController.DeleteConfirmed(bidderId);
+            }
+
+            //now hard delete bidders
+            _db.Students.RemoveRange(_db.Students);
+            _db.AuctionGuests.RemoveRange(_db.AuctionGuests);
+            _db.Bidders.RemoveRange(_db.Bidders);
+            _db.SaveChanges();
         }
     }
 }

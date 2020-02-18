@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlobeAuction.Steps.Context
+namespace GlobeAuction.Specflow
 {
     public class ItemsContext
     {

@@ -30,7 +30,7 @@ namespace GlobeAuction.Helpers
 
             if (manualPayMethod.HasValue)
             {
-                new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
+                EmailHelperFactory.Instance().SendInvoicePaymentConfirmation(invoice, true);
             }
 
             return invoice;
@@ -62,7 +62,7 @@ namespace GlobeAuction.Helpers
 
             if (manualPayMethod.HasValue)
             {
-                new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
+                EmailHelperFactory.Instance().SendInvoicePaymentConfirmation(invoice, true);
             }
 
             return invoice;
@@ -222,11 +222,11 @@ namespace GlobeAuction.Helpers
 
                 if (invoice.InvoiceType == InvoiceType.BidderRegistration)
                 {
-                    new EmailHelper().SendBidderPaymentConfirmation(invoice);
+                    EmailHelperFactory.Instance().SendBidderPaymentConfirmation(invoice);
                 }
                 else
                 {
-                    new EmailHelper().SendInvoicePaymentConfirmation(invoice, false);
+                    EmailHelperFactory.Instance().SendInvoicePaymentConfirmation(invoice, false);
                 }
             }
         }

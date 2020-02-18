@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobeAuction", "GlobeAuction\GlobeAuction.csproj", "{474BD74E-A70C-4CFC-9CE8-231350718BBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobeAuction.Features", "GlobeAuction.Features\GlobeAuction.Features.csproj", "{687DBA4E-068C-4AF3-AC91-9FD8F8A073EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobeAuction.Specflow", "GlobeAuction.Features\GlobeAuction.Specflow.csproj", "{687DBA4E-068C-4AF3-AC91-9FD8F8A073EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{4D770BF8-CC95-42CD-8453-7A8C07B30749}"
 EndProject

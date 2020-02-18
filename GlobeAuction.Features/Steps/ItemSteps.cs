@@ -1,5 +1,4 @@
-﻿using GlobeAuction.Steps.Context;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,17 +11,14 @@ using GlobeAuction.Models;
 using System.Web.Mvc;
 using GlobeAuction.Helpers;
 
-namespace GlobeAuction.Steps.Steps
+namespace GlobeAuction.Specflow
 {
     [Binding]
-    public class ItemSteps
+    public class ItemSteps : BaseSteps
     {
-        private ItemsContext _itemsContext;
-        private ApplicationDbContext _db = new ApplicationDbContext();
-
         public ItemSteps(ItemsContext itemsContext)
+            : base(itemsContext)
         {
-            _itemsContext = itemsContext;
         }
 
         [Given(@"I create these auction categories")]
@@ -33,7 +29,7 @@ namespace GlobeAuction.Steps.Steps
             foreach(var cat in catsToCreate)
             {
                 catController.Create(cat);
-                _itemsContext.AuctionCategoriesCreated.Add(cat);
+                ItemsContext.AuctionCategoriesCreated.Add(cat);
             }
         }
 
@@ -68,15 +64,30 @@ namespace GlobeAuction.Steps.Steps
                 };
 
                 diController.Create(item, "1", categoryId.ToString());
-                _itemsContext.DonationItemsCreated.Add(item);
+                ItemsContext.DonationItemsCreated.Add(item);
             }
         }
 
         [Then(@"the donation items in the category '(.*)' are")]
         public void ThenTheDonationItemsInTheCategoryAre(string categoryName, Table expected)
         {
-            var actuals = ((IEnumerable<DonationItem>)(new DonationItemsController().Index() as ViewResult).Model).ToList();
+            var actuals = ((IEnumerable<DonationItem>)(DonationItemsController.Index() as ViewResult).Model).ToList();
             var itemsInRequestedCategory = actuals.Where(i => i.Category.Name.Equals(categoryName)).ToList();
+            expected.CompareToSet(itemsInRequestedCategory);
+        }
+
+        [When(@"I convert the created donation items to single auction items")]
+        public void WhenIConvertTheCreatedDonationItemsToSingleAuctionItems()
+        {
+            var donationItemIds = string.Join(",", ItemsContext.DonationItemsCreated.Select(d => d.DonationItemId));
+            AuctionItemsController.SubmitSelectedDonationItems("MakeSingle", donationItemIds, null, null);
+        }
+
+        [Then(@"the auction items in the category '(.*)' are")]
+        public void ThenTheAuctionItemsInTheCategoryAre(string categoryName, Table expected)
+        {
+            var model = (ItemsViewModel)(AuctionItemsController.Index() as ViewResult).Model;
+            var itemsInRequestedCategory = model.AuctionItems.Where(i => i.Category.Equals(categoryName)).ToList();
             expected.CompareToSet(itemsInRequestedCategory);
         }
     }

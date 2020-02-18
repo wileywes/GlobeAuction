@@ -301,7 +301,7 @@ namespace GlobeAuction.Controllers
 
             if (!isPaidAlready)
             {
-                new EmailHelper().SendInvoicePaymentConfirmation(regInvoice, true);
+                EmailHelperFactory.Instance().SendInvoicePaymentConfirmation(regInvoice, true);
             }
 
             return RedirectToAction("Index", "Bidders");
@@ -458,7 +458,7 @@ namespace GlobeAuction.Controllers
                     var selectedBidders = db.Bidders.Where(ai => bidderNumbers.Contains(ai.BidderNumber)).ToList();
                     if (!selectedBidders.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-                    var emailHelper = new EmailHelper();
+                    var emailHelper = EmailHelperFactory.Instance();
                     var bidRepos = new BidderRepository(db);
                     foreach(var bidder in selectedBidders)
                     {

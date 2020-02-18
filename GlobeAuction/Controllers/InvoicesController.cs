@@ -224,7 +224,7 @@ namespace GlobeAuction.Controllers
                     $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />" +
                     $"<b>Invoice Type:</b> {invoice.InvoiceType}<br />";
 
-                new EmailHelper().SendEmail("auction@theglobeacademy.net", "Paid Item Removed from Invoice - Refund Needed", body);
+                EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Paid Item Removed from Invoice - Refund Needed", body);
             }
 
             return RedirectToAction("ReviewBidderWinnings", new { bid = bidderId, email = bidderEmail });
@@ -292,7 +292,7 @@ namespace GlobeAuction.Controllers
             invoiceRepos.ApplyPotentialManualPayment(invoice, PaymentMethod.Cash, User.Identity.GetUserName());
             db.SaveChanges();
 
-            new EmailHelper().SendInvoicePaymentConfirmation(invoice, true);
+            EmailHelperFactory.Instance().SendInvoicePaymentConfirmation(invoice, true);
 
             NLog.LogManager.GetCurrentClassLogger().Info("Updated payment for invoice " + invoiceId + " manually via MarkBidderPaidManually");
             

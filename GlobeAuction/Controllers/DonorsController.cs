@@ -74,7 +74,7 @@ namespace GlobeAuction.Controllers
             var donorsToEmail = db.Donors.Where(d => !d.HasTaxReceiptBeenEmailed).Include(d => d.DonationItems).ToList();
 
             var model = new NotifyResultViewModel();
-            var emailHelper = new EmailHelper();
+            var emailHelper = EmailHelperFactory.Instance();
             foreach (var donor in donorsToEmail)
             {
                 try

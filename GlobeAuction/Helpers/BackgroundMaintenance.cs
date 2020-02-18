@@ -50,7 +50,7 @@ namespace GlobeAuction.Helpers
 
                 var body = "Background thread is crashing" + Environment.NewLine + exc;
 
-                new EmailHelper().SendEmail("williams.wes@gmail.com", null, "Auction Site Error", body, false, null, null);
+                EmailHelperFactory.Instance().SendEmail("williams.wes@gmail.com", null, "Auction Site Error", body, false, null, null);
             }
         }        
 

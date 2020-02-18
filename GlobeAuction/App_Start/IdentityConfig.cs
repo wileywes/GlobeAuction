@@ -34,7 +34,7 @@ namespace GlobeAuction
     {
         public Task SendAsync(IdentityMessage message)
         {
-            new EmailHelper().SendEmail(message.Destination, message.Subject, message.Body);
+            EmailHelperFactory.Instance().SendEmail(message.Destination, message.Subject, message.Body);
             return Task.FromResult(0);
         }
     }

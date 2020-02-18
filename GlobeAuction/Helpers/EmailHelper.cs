@@ -11,10 +11,41 @@ using System.Web;
 
 namespace GlobeAuction.Helpers
 {
+    public class EmailHelperFactory
+    {
+        private static IEmailHelper _instance;
+
+        public static IEmailHelper Instance()
+        {
+            return _instance ?? (_instance = new EmailHelper());
+        }
+
+        public static void UseNoOpEmailHelper()
+        {
+            _instance = new NoOpEmailHelper();
+        }
+    }
+
+    public interface IEmailHelper
+    {
+        void SendAuctionWinningsPaymentNudge(Bidder bidder, List<Bid> winnings, string payLink, bool isAfterEvent);
+        void SendBidderCatalogNudge(Bidder bidder, bool hasBidderPaid);
+        void SendBidderPaymentConfirmation(Invoice invoice);
+        void SendBidderPaymentReminder(Bidder bidder);
+        void SendDonationItemCertificate(Bidder bidder, DonationItem item, int receiptId);
+        void SendDonationItemCertificate(Invoice invoice, DonationItem item, int receiptId);
+        void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude);
+        void SendEmail(string to, string subject, string body);
+        void SendEmail(string to, string additionalTo, string subject, string body);
+        void SendEmail(string to, string additionalTo, string subject, string body, bool includeAllEmailBcc, string additionalBccList, Dictionary<string, string> imagesToEmbedByTag);
+        void SendInvoicePaymentConfirmation(Invoice invoice, bool paidManually);
+        void SendInvoicePaymentReminder(Invoice invoice);
+    }
+
     /// <summary>
     /// NOTE: GMail has a limit of 100 emails per day through SMTP
     /// </summary>
-    public class EmailHelper
+    public class EmailHelper : IEmailHelper
     {
         private static readonly string _gmailUsername = ConfigurationManager.AppSettings["GmailAccountUsername"];
         private static readonly string _gmailPassword = ConfigurationManager.AppSettings["GmailAccountPassword"];
@@ -106,7 +137,7 @@ namespace GlobeAuction.Helpers
 
                 footerNotes += "All gift card purchases can be picked up at the front office of your child's campus beginning Friday, March 15.  More details to come.";
             }
-            
+
             var body = GetInvoiceEmail(
                 paidManually ? invoice.Total : invoice.PaymentTransaction.PaymentGross,
                 invoice.FirstName + " " + invoice.LastName,
@@ -168,8 +199,8 @@ namespace GlobeAuction.Helpers
 
                 body = GetAuctionWinningsNudgeEmailForAfterEvent(
                     winnings.Count, paidItems.Count, unpaidItems.Count,
-                    totalPaid, totalUnpaid, 
-                    payLink, 
+                    totalPaid, totalUnpaid,
+                    payLink,
                     bidder.FirstName + " " + bidder.LastName, //address1
                     "Bidder # " + bidder.BidderNumber, //address 2
                     paidFooter, unpaidFooter,
@@ -200,7 +231,7 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Auction Checkout", body);
         }
 
-        private static List<Tuple<string,decimal>> GetLinesForAuctionItems(List<Bid> winnings)
+        private static List<Tuple<string, decimal>> GetLinesForAuctionItems(List<Bid> winnings)
         {
             return winnings
                 .Select(g => new Tuple<string, decimal>(
@@ -243,7 +274,7 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetAuctionWinningsNudgeEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2, 
+        private string GetAuctionWinningsNudgeEmail(int itemCount, decimal totalOwed, string payLink, string address1, string address2,
             string checkoutNotes, string footerNotes, List<Tuple<string, decimal>> lines)
         {
             var body = GetEmailBody("auctionWinningsNudge");
@@ -273,9 +304,9 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        private string GetAuctionWinningsNudgeEmailForAfterEvent(int itemCount, int paidItemCount, int unpaidItemCount, 
+        private string GetAuctionWinningsNudgeEmailForAfterEvent(int itemCount, int paidItemCount, int unpaidItemCount,
             decimal paidTotal, decimal unpaidTotal,
-            string payLink, string address1, string address2, 
+            string payLink, string address1, string address2,
             string paidFooterNotes, string unpaidFooterNotes,
             List<Tuple<string, decimal>> paidLines,
             List<Tuple<string, decimal>> unpaidLines)
@@ -312,7 +343,7 @@ namespace GlobeAuction.Helpers
 
             if (paidItemCount > 0)
             {
-                body = ReplaceToken("PaidSectionDisplay", string.Empty, body);                
+                body = ReplaceToken("PaidSectionDisplay", string.Empty, body);
             }
             else
             {
@@ -336,7 +367,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("Address1", address1, body);
             body = ReplaceToken("Address2", address2, body);
             body = ReplaceToken("Address3", address3, body);
-            body = ReplaceToken("FooterNotes", footerNotes, body);            
+            body = ReplaceToken("FooterNotes", footerNotes, body);
 
             var linesHtml = string.Empty;
             foreach (var line in lines)
@@ -351,7 +382,7 @@ namespace GlobeAuction.Helpers
         }
 
         private string GetDonationItemCertificateEmail(string winnerName, string itemTitle, string itemDescription, string donorBusiness,
-            string donorName, string donorEmail,string donorPhone, string itemDetails1, string itemDetails2, int receiptId)
+            string donorName, string donorEmail, string donorPhone, string itemDetails1, string itemDetails2, int receiptId)
         {
             var body = GetEmailBody("donationItemCertificate");
 
@@ -364,7 +395,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("DonorPhone", donorPhone, body);
             body = ReplaceToken("ItemDetails1", itemDetails1, body);
             body = ReplaceToken("ItemDetails2", itemDetails2, body);
-            body = ReplaceToken("ReceiptId", receiptId.ToString(), body);            
+            body = ReplaceToken("ReceiptId", receiptId.ToString(), body);
 
             body = ReplaceToken("SiteUrl", _siteUrl, body);
             body = ReplaceToken("SiteEmail", _gmailUsername, body);
@@ -518,6 +549,57 @@ namespace GlobeAuction.Helpers
             alternateView.LinkedResources.Add(inline);
 
             msg.AlternateViews.Add(alternateView);
+        }
+    }
+
+    public class NoOpEmailHelper : IEmailHelper
+    {
+        public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<Bid> winnings, string payLink, bool isAfterEvent)
+        {
+        }
+
+        public void SendBidderCatalogNudge(Bidder bidder, bool hasBidderPaid)
+        {
+        }
+
+        public void SendBidderPaymentConfirmation(Invoice invoice)
+        {
+        }
+
+        public void SendBidderPaymentReminder(Bidder bidder)
+        {
+        }
+
+        public void SendDonationItemCertificate(Bidder bidder, DonationItem item, int receiptId)
+        {
+        }
+
+        public void SendDonationItemCertificate(Invoice invoice, DonationItem item, int receiptId)
+        {
+        }
+
+        public void SendDonorTaxReceipt(Donor donor, List<DonationItem> itemsToInclude)
+        {
+        }
+
+        public void SendEmail(string to, string subject, string body)
+        {
+        }
+
+        public void SendEmail(string to, string additionalTo, string subject, string body)
+        {
+        }
+
+        public void SendEmail(string to, string additionalTo, string subject, string body, bool includeAllEmailBcc, string additionalBccList, Dictionary<string, string> imagesToEmbedByTag)
+        {
+        }
+
+        public void SendInvoicePaymentConfirmation(Invoice invoice, bool paidManually)
+        {
+        }
+
+        public void SendInvoicePaymentReminder(Invoice invoice)
+        {
         }
     }
 }
