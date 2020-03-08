@@ -73,6 +73,7 @@ namespace GlobeAuction.Models
             "Shuai - 3",
             "West - 3",
             "Bingham - 3",
+            "McHargue - 3",
             "Marin - 4",
             "Hardnett - 4",
             "Eckmann - 4",
