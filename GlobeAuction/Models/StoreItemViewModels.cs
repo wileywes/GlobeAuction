@@ -209,7 +209,8 @@ namespace GlobeAuction.Models
 
         public bool IsFundAProject()
         {
-            return Title.ToLowerInvariant().Replace("-", "").Contains("fundaproject");
+            return Title.ToLowerInvariant().Replace("-", "").Contains("fundaproject") ||
+                Description.ToLowerInvariant().Replace("-", "").Contains("fundaproject");
         }
     }
 }
