@@ -570,6 +570,7 @@
     <Content Include="Content\Images\h_catalog.gif" />
     <Content Include="Content\Images\controls.png" />
     <Content Include="Content\Images\h_Donate.gif" />
+    <Content Include="Content\Images\h_faq.gif" />
     <Content Include="Content\Images\h_Home.gif" />
     <Content Include="Content\Images\h_raffle.gif" />
     <Content Include="Content\Images\logo.jpg" />
@@ -818,6 +819,7 @@
     <Content Include="Views\AuctionItems\EnterWinners.cshtml" />
     <Content Include="Views\AuctionItems\CatalogItem.cshtml" />
     <Content Include="Views\StoreItems\RafflePurchases.cshtml" />
+    <Content Include="Views\Home\faqs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

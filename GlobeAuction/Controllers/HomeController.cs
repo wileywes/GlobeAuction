@@ -19,5 +19,11 @@ namespace GlobeAuction.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        public ActionResult Faqs()
+        {
+            return View();
+        }
     }
 }
