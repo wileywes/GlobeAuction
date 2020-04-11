@@ -83,7 +83,14 @@
             <div class="col-md-8">
                 @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                 {
-                    @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
+                    if (Model.AuctionItem.IsFixedPrice)
+                    {
+                        @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control", @readonly="readonly" } })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
+                    }
                 }
                 else
                 {
