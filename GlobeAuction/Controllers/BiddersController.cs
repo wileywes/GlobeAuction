@@ -651,7 +651,7 @@ namespace GlobeAuction.Controllers
                 {
                     return RedirectToAction("Bids", new { error = BidErrorType.InvalidItemNumber });
                 }
-                var nextBidIncrement = item.AllBids.Any() ?
+                var nextBidIncrement = item.IsFixedPrice == false && item.AllBids.Any() ?
                     item.AllBids.Max(b => b.BidAmount) + item.BidIncrement :
                     item.StartingBid;
 
@@ -690,6 +690,10 @@ namespace GlobeAuction.Controllers
                 else if (item.StartingBid > bidAmountValue)
                 {
                     ModelState.AddModelError("", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").  Please increase your bid and try again.");
+                }
+                else if (item.IsFixedPrice && item.StartingBid != bidAmountValue)
+                {
+                    ModelState.AddModelError("", "Your bid must be equal to the fixed price (" + item.StartingBid.ToString("c") + ").  Please correct your bid and try again.");
                 }
                 else if ((bidAmountValue - item.StartingBid) % item.BidIncrement != 0)
                 {

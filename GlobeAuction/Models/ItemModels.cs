@@ -34,6 +34,8 @@ namespace GlobeAuction.Models
         [Required]
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
+        [Required]
+        public bool IsFixedPrice { get; set; }
 
         [Required]
         public int Quantity { get; set; }

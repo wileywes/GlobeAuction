@@ -130,6 +130,7 @@ namespace GlobeAuction.Controllers
                     auctionItem.Category = category;
                     auctionItem.StartingBid = auctionItemModel.StartingBid;
                     auctionItem.BidIncrement = auctionItemModel.BidIncrement;
+                    auctionItem.IsFixedPrice = auctionItemModel.IsFixedPrice;
                     auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     auctionItem.UpdateBy = User.Identity.GetUserName();
                     auctionItem.Quantity = auctionItemModel.Quantity;

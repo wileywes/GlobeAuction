@@ -54,6 +54,7 @@ namespace GlobeAuction.Helpers
                 UpdateBy = username,
                 StartingBid = startingBid,
                 BidIncrement = bidIncrement,
+                IsFixedPrice = false,
                 Category = mostCommonCategory,
                 Description = description,
                 Title = title,

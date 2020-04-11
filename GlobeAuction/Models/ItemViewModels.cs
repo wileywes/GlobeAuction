@@ -224,6 +224,7 @@ namespace GlobeAuction.Models
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int BidIncrement { get; set; }
+        public bool IsFixedPrice { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? HighestBid { get; set; }
         public int BidCount { get; set; }
@@ -252,6 +253,7 @@ namespace GlobeAuction.Models
             this.IsBiddingForCategoryOpen = i.Category.IsBiddingOpen;
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
+            this.IsFixedPrice = i.IsFixedPrice;
             this.Quantity = i.Quantity;
             this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;

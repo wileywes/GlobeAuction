@@ -503,6 +503,10 @@
     <Compile Include="Migrations\202002182156452_DonationItemInStoreFlag.Designer.cs">
       <DependentUpon>202002182156452_DonationItemInStoreFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004102331264_ActionItemFixedPrice.cs" />
+    <Compile Include="Migrations\202004102331264_ActionItemFixedPrice.Designer.cs">
+      <DependentUpon>202004102331264_ActionItemFixedPrice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -1017,6 +1021,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002182156452_DonationItemInStoreFlag.resx">
       <DependentUpon>202002182156452_DonationItemInStoreFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004102331264_ActionItemFixedPrice.resx">
+      <DependentUpon>202004102331264_ActionItemFixedPrice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
