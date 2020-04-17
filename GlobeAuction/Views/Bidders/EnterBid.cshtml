@@ -79,31 +79,45 @@
         </div>
 
         <div class="row top10">
-            @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-4 text-right" })
-            <div class="col-md-8">
-                @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
+            @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
+            {
+                if (Model.AuctionItem.IsFixedPrice == false || Model.AuctionItem.Quantity > Model.AllBids.Count())
                 {
-                    if (Model.AuctionItem.IsFixedPrice)
-                    {
-                        @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control", @readonly="readonly" } })
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.BidAmount, new { htmlAttributes = new { @class = "form-control" } })
-                    }
+                    @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-4 text-right" })
+                    <div class="col-md-8">
+                        @if (Model.AuctionItem.IsFixedPrice)
+                        {
+                            @Html.TextBoxFor(model => model.BidAmount, new { @class = "form-control", @readonly = "readonly" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.BidAmount, new { @class = "form-control" })
+                        }
+                    </div>
                 }
                 else
                 {
-                    <span>Mobile bidding is not available for this item.</span>
+                    <div class="col-md-offset-4 col-md-8">
+                        <span><b>This item is Sold Out</b></span>
+                    </div>
                 }
-            </div>
+            }
+            else
+            {
+                <div class="col-md-offset-4 col-md-8">
+                    <span>Mobile bidding is not available for this item.</span>
+                </div>
+            }
         </div>
 
         <div class="row top10">
             <div class="col-md-offset-4 col-md-8 btn-toolbar">
                 @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                 {
-                    <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+                    if (Model.AuctionItem.IsFixedPrice == false || Model.AuctionItem.Quantity > Model.AllBids.Count())
+                    {
+                        <input type="submit" class="btn btn-primary" value="Enter new Bid" />
+                    }
                 }
 
                 @Html.ActionLink("Return to Bids", "Bids", "Bidders", null, htmlAttributes: new { @class = "btn btn-default" })

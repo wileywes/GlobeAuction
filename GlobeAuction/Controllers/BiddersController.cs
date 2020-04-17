@@ -699,9 +699,13 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").  Please adjust your bid and try again.");
                 }
-                else if (bidAmountValue <= highestExistingBid)
+                else if (bidAmountValue <= highestExistingBid && !item.IsFixedPrice)
                 {
                     ModelState.AddModelError("", "Your bid must be higher than the last bid of " + highestExistingBid.ToString("c") + ".  You need to increase your bid and place it again.");
+                }
+                else if (item.IsFixedPrice && item.AllBids.Count >= item.Quantity)
+                {
+                    ModelState.AddModelError("", $"All {item.Quantity} quantity available are already purchased for this item.");
                 }
                 else if (!canBid)
                 {
