@@ -69,13 +69,29 @@ namespace GlobeAuction.Models
         public string Name { get; private set; }
         public int ItemCount { get; private set; }
         public bool IsOnlyForAuctionItems { get; private set; }
+        public bool IsAvailableForMobileBidding { get; set; }
+        public DateTime BidOpenDateLtz { get; set; }
+        public DateTime BidCloseDateLtz { get; set; }
 
-        public CatalogCategoryViewModel(int auctionCategoryId, string name, int itemCount, bool isOnlyForAuctionItems)
+        public bool IsBiddingOpen
         {
-            AuctionCategoryId = auctionCategoryId;
-            Name = name;
+            get
+            {
+                var localTime = Utilities.GetEasternTimeNow();
+                return IsAvailableForMobileBidding && localTime > BidOpenDateLtz && localTime < BidCloseDateLtz;
+            }
+        }
+
+        public CatalogCategoryViewModel(AuctionCategory cat, int itemCount)
+        {
+            AuctionCategoryId = cat.AuctionCategoryId;
+            Name = cat.Name;
+            IsOnlyForAuctionItems = cat.IsOnlyAvailableToAuctionItems;
+            IsAvailableForMobileBidding = cat.IsAvailableForMobileBidding;
+            BidOpenDateLtz = cat.BidOpenDateLtz;
+            BidCloseDateLtz = cat.BidCloseDateLtz;
+
             ItemCount = itemCount;
-            IsOnlyForAuctionItems = isOnlyForAuctionItems;
         }
     }
 
@@ -303,6 +319,7 @@ namespace GlobeAuction.Models
     public class ActiveBidsViewModel
     {
         public bool IsReadyForCheckout { get; set; }
+        public bool IsBiddingOpen { get; set; }
         public List<BidViewModel> Bids { get; set; }
         public List<CatalogAuctionItemViewModel> CatalogFavorites { get; set; }
         public List<int> AuctionIdsWinningMultiples { get; set; }

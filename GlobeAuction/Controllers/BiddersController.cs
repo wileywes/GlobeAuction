@@ -567,6 +567,9 @@ namespace GlobeAuction.Controllers
                 var models = bidsToShow.Select(b => new BidViewModel(b, b.AuctionItem)).ToList();
                 var itemFavs = new BidderRepository(db).GetBidderCatalogFavorites(info.BidderId, info.BidderNumber);
 
+                var closeDate = new ItemsRepository(db).GetBiddingEndDateIfCategoriesAreOpen();
+                ViewBag.BiddingEndDate = (closeDate ?? DateTime.MinValue).ToString("o");
+                ViewBag.IsBiddingOpen = closeDate.HasValue;
                 ViewBag.BidderInfo = info;
 
                 if (error.HasValue)

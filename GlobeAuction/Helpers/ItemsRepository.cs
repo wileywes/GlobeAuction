@@ -459,7 +459,7 @@ namespace GlobeAuction.Helpers
 
             //categories with items
             var categories = db.AuctionItems.GroupBy(i => i.Category).Select(g => new { Category = g.Key, Count = g.Count() }).ToList();
-            catData.Categories = categories.Select(c => new CatalogCategoryViewModel(c.Category.AuctionCategoryId, c.Category.Name, c.Count, c.Category.IsOnlyAvailableToAuctionItems)).ToList();
+            catData.Categories = categories.Select(c => new CatalogCategoryViewModel(c.Category, c.Count)).ToList();
 
             //categories without items
             var allCategories = db.AuctionCategories.ToList();
@@ -467,7 +467,7 @@ namespace GlobeAuction.Helpers
             {
                 if (catData.Categories.FirstOrDefault(c => c.AuctionCategoryId == cat.AuctionCategoryId) == null)
                 {
-                    catData.Categories.Add(new CatalogCategoryViewModel(cat.AuctionCategoryId, cat.Name, 0, cat.IsOnlyAvailableToAuctionItems));
+                    catData.Categories.Add(new CatalogCategoryViewModel(cat, 0));
                 }
             }
 
@@ -491,6 +491,17 @@ namespace GlobeAuction.Helpers
         public void ClearCatalogDataCache()
         {
             _catalogCache = null;
+        }
+
+        public DateTime? GetBiddingEndDateIfCategoriesAreOpen()
+        {
+            var openCategories = GetCatalogData().Categories.Where(c => c.IsAvailableForMobileBidding && c.IsBiddingOpen).ToList();
+            if (openCategories.Any())
+            {
+                return openCategories.Select(c => c.BidCloseDateLtz).OrderByDescending(c => c).First();
+            }
+
+            return null;
         }
     }
 
