@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using CaptchaMvc.HtmlHelpers;
 using GlobeAuction.Models;
 using Microsoft.AspNet.Identity;
 using GlobeAuction.Helpers;
@@ -108,75 +109,82 @@ namespace GlobeAuction.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                if (this.IsCaptchaValid(""))
                 {
-                    var bidder = Mapper.Map<Bidder>(bidderViewModel);
-                    var updatedBy = User.Identity.GetUserName();
-                    if (string.IsNullOrEmpty(updatedBy)) updatedBy = bidder.Email;
-
-                    var biddersIdsOverZero = db.Bidders.Where(b => b.BidderNumber > 0).Select(b => b.BidderNumber).ToList();
-
-                    //default to next one up
-                    var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
-
-                    //fill in gaps
-                    var lowestExistingBidderOverZero = biddersIdsOverZero.DefaultIfEmpty(1).Min();
-                    for (int i= lowestExistingBidderOverZero; i < 1000; i++)
+                    try
                     {
-                        if (biddersIdsOverZero.Contains(i) == false)
+                        var bidder = Mapper.Map<Bidder>(bidderViewModel);
+                        var updatedBy = User.Identity.GetUserName();
+                        if (string.IsNullOrEmpty(updatedBy)) updatedBy = bidder.Email;
+
+                        var biddersIdsOverZero = db.Bidders.Where(b => b.BidderNumber > 0).Select(b => b.BidderNumber).ToList();
+
+                        //default to next one up
+                        var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
+
+                        //fill in gaps
+                        var lowestExistingBidderOverZero = biddersIdsOverZero.DefaultIfEmpty(1).Min();
+                        for (int i = lowestExistingBidderOverZero; i < 1000; i++)
                         {
-                            nextBidderNumber = i;
-                            break;
-                        }
-                    }
-
-                    bidder.BidderNumber = nextBidderNumber;
-                    bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
-                    bidder.UpdateBy = updatedBy;
-
-                    //strip out dependents that weren't filled in
-                    bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
-                    bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
-
-                    if (bidder.AuctionGuests.Any())
-                    {
-                        foreach (var guest in bidder.AuctionGuests)
-                        {
-                            var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
-                            guest.TicketType = ticketType.Name;
-                            guest.TicketPrice = ticketType.Price;
+                            if (biddersIdsOverZero.Contains(i) == false)
+                            {
+                                nextBidderNumber = i;
+                                break;
+                            }
                         }
 
-                        db.Bidders.Add(bidder);
-                        db.SaveChanges();
+                        bidder.BidderNumber = nextBidderNumber;
+                        bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
+                        bidder.UpdateBy = updatedBy;
 
-                        PaymentMethod? manualPayMethod = null;
-                        if (submitButton.StartsWith("Register and Mark Paid"))
+                        //strip out dependents that weren't filled in
+                        bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
+                        bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
+
+                        if (bidder.AuctionGuests.Any())
                         {
-                            if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
-                            if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
-                            if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
-                        }
+                            foreach (var guest in bidder.AuctionGuests)
+                            {
+                                var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
+                                guest.TicketType = ticketType.Name;
+                                guest.TicketPrice = ticketType.Price;
+                            }
 
-                        var invoice = new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
+                            db.Bidders.Add(bidder);
+                            db.SaveChanges();
 
-                        if (manualPayMethod.HasValue || invoice.IsPaid)
-                        {
-                            return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
+                            PaymentMethod? manualPayMethod = null;
+                            if (submitButton.StartsWith("Register and Mark Paid"))
+                            {
+                                if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
+                                if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
+                                if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
+                            }
+
+                            var invoice = new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
+
+                            if (manualPayMethod.HasValue || invoice.IsPaid)
+                            {
+                                return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
+                            }
+                            else
+                            {
+                                return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                            }
                         }
                         else
                         {
-                            return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
+                            ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact auction@theglobeacademy.net.");
                         }
                     }
-                    else
+                    catch (OutOfStockException oosExc)
                     {
-                        ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact auction@theglobeacademy.net.");
+                        ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your registration again (you have not been charged yet).");
                     }
                 }
-                catch (OutOfStockException oosExc)
+                else
                 {
-                    ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your registration again (you have not been charged yet).");
+                    ModelState.AddModelError("", $"You must enter the correct Captcha string in the Input Symbols field below.");
                 }
             }
 
