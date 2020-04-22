@@ -114,7 +114,7 @@
                     @Html.DisplayFor(modelItem => item.StartingBid)
                 </td>
                 <td>
-                    @(item.IsFixedPrice ? string.Empty : item.BidIncrement.ToString("{0:C}"))
+                    @(item.IsFixedPrice ? string.Empty : item.BidIncrement.ToString("C2"))
                 </td>
                 <td>
                     @(item.IsFixedPrice ? "Yes" : "No")
