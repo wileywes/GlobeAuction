@@ -228,6 +228,7 @@ namespace GlobeAuction.Helpers
                 .FirstOrDefault(a => a.UniqueItemNumber == itemNo);
         }
 
+        /*
         public void DeleteBidAndRecalcWinners(AuctionItem item, Bid bidToRemove)
         {
             db.Bids.Remove(bidToRemove);
@@ -235,6 +236,7 @@ namespace GlobeAuction.Helpers
             List<Bidder> biddersThatLost;
             RecalculateWinnersAndSave(item, null, HttpContext.Current.User.Identity.Name, out biddersThatLost);
         }
+        */
 
         public void EnterNewBidAndRecalcWinners(AuctionItem item, Bidder bidder, decimal amount, out List<Bidder> biddersThatLost)
         {
@@ -281,6 +283,11 @@ namespace GlobeAuction.Helpers
             }
             db.SaveChanges();
 
+            UpdateHighestBidForCachedItem(item);
+        }
+
+        public void UpdateHighestBidForCachedItem(AuctionItem item)
+        {
             if (item.AllBids.Any())
             {
                 var highestBid = item.AllBids.Select(b => b.BidAmount).Max();

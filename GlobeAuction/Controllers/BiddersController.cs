@@ -139,7 +139,29 @@ namespace GlobeAuction.Controllers
 
                         //strip out dependents that weren't filled in
                         bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
-                        bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
+
+                        if (bidderViewModel.AuctionGuests == null)
+                        {
+                            //in 2020 we removed auction guests since there was just one free ticket, so backfill the data manually here
+                            var ticketTypes = GetTicketTypesForRegistration(promoCode);
+                            var ticketToUse = ticketTypes.FirstOrDefault(t => t.Name.StartsWith("2020 Auction Registration")) ?? ticketTypes.FirstOrDefault();
+
+                            if (ticketToUse == null) throw new ApplicationException("Unable to find ticket type to use");
+
+                            bidder.AuctionGuests = new List<AuctionGuest>
+                            {
+                                new AuctionGuest
+                                {
+                                    FirstName = bidderViewModel.FirstName,
+                                    LastName = bidderViewModel.LastName,
+                                    TicketType = ticketToUse.TicketTypeId.ToString()
+                                }
+                            };
+                        }
+                        else
+                        {
+                            bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
+                        }
 
                         if (bidder.AuctionGuests.Any())
                         {
@@ -784,6 +806,18 @@ namespace GlobeAuction.Controllers
         private void AddBidderControlInfo(string promoCode)
         {
             //TICKETS
+            ViewBag.TicketTypes = GetTicketTypesForRegistration(promoCode)
+                .OrderByDescending(t => t.Price)
+                .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
+
+
+            //TEACHER NAMES
+            ViewBag.TeacherNames = AuctionConstants.TeacherNames
+                .Select(t => new SelectListItem { Text = t, Value = t });
+        }
+
+        private List<TicketType> GetTicketTypesForRegistration(string promoCode)
+        {
             var ticketTypes = db.TicketTypes.ToList();
 
             var userIsAdmin = Request.IsAuthenticated && User.IsInRole(AuctionRoles.CanAdminUsers);
@@ -794,14 +828,7 @@ namespace GlobeAuction.Controllers
             //remove promo code tickets unless they have entered the promo code
             ticketTypes = ticketTypes.Where(t => userIsAdmin || string.IsNullOrEmpty(t.PromoCode) || t.PromoCode.Equals(promoCode, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            ViewBag.TicketTypes = ticketTypes
-                .OrderByDescending(t => t.Price)
-                .Select(t => new SelectListItem { Text = string.Format("{0} - {1:C}", t.Name, t.Price), Value = t.TicketTypeId.ToString() }).ToList();
-
-
-            //TEACHER NAMES
-            ViewBag.TeacherNames = AuctionConstants.TeacherNames
-                .Select(t => new SelectListItem { Text = t, Value = t });
+            return ticketTypes;
         }
 
         private BidderViewModel GetBidderViewModel(Bidder bidder)

@@ -296,6 +296,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int HighestBid { get; set; }
         public int BidCount { get; set; }
+        public bool IsFixedPriceSoldOut { get; set; }
 
         public CatalogAuctionItemViewModel()
         {
@@ -313,6 +314,7 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.HighestBid = i.AllBids.Select(b => (int)b.BidAmount).DefaultIfEmpty(i.StartingBid).Max();
             this.BidCount = i.AllBids.Count;
+            this.IsFixedPriceSoldOut = i.IsFixedPrice && i.AllBids.Count >= i.Quantity;
         }
     }
 

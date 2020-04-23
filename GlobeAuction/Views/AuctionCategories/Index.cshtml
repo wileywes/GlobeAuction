@@ -47,6 +47,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.IsOnlyAvailableToAuctionItems)
                 </th>
+                <th>Item Count</th>
                 <th></th>
             </tr>
         </thead>
@@ -81,6 +82,9 @@
                     </td>
                     <td>
                         @(item.IsOnlyAvailableToAuctionItems ? "Yes" : "No")
+                    </td>
+                    <td>
+                        @ViewBag.ItemCountByCategoryId[item.AuctionCategoryId]
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.AuctionCategoryId }) |

@@ -41,12 +41,13 @@ else
                 </p><br />
             }
 
-            You can continue to entering more registrations below.
+            You can continue to entering more registrations below.  Please take note of your bid number if you
+            are registering right before or during the auction.
         </div>
     }
     <p>
-        You will receive one bid paddle number for each registration you submit here.
-        If you are bringing guests that want their own bid paddle number then please submit a separate registration for them.
+        You will receive one bid paddle number for each registration you submit here and you will use the paddle number to bid on and purchase items.
+        If you are inviting friends or other family that want their own bid paddle number then please submit a separate registration for them.
     </p>
     <br />
 
@@ -118,13 +119,13 @@ else
         </div>
     </div>
 
-    <div class="form-group">        
+    <div class="form-group">
         <div class="col-md-10 col-md-offset-2">
             @Html.Captcha(6)
         </div>
     </div>
 
-    
+
     <br />
 
     <h4>Student(s) Information</h4>
@@ -145,6 +146,7 @@ else
     }
     <br />
 
+    <!--
     <h4>Auction Guest(s) Information</h4>
     <hr />
     <div class="row form-group">
@@ -173,6 +175,7 @@ else
         </div>
     }
     <br />
+    -->
 
     @if (Model.ItemPurchases != null && Model.ItemPurchases.Any())
     {
@@ -260,4 +263,6 @@ else
     $("#LastName").blur(function () {
         $guestLastName.val(this.value);
     });
+
+    $("#AuctionGuests_0__TicketType").prop('selectedIndex', 0);
 </script>

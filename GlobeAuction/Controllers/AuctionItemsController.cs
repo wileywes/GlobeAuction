@@ -801,8 +801,26 @@ namespace GlobeAuction.Controllers
                 return HttpNotFound();
             }
 
+            var isWinning = bid.IsWinning;
+            var bidder = bid.Bidder;
+
             db.Bids.Remove(bid);
-            new ItemsRepository(db).DeleteBidAndRecalcWinners(item, bid);
+            db.SaveChanges();
+            new ItemsRepository(db).UpdateHighestBidForCachedItem(item);
+
+            if (isWinning)
+            {
+                //email the team so we can track the need to find the next bidder
+                var body = "The following winning bid was removed from an auction item.  Another winner could be sought out but Wes will need to manually mark the other as winning:<br/><br/>" +
+                    $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
+                    $"<b>Item Title:</b> {item.Title}<br />" +
+                    $"<b>Bidder Name:</b> {bidder.FirstName} {bidder.LastName}<br />" +
+                    $"<b>Bidder Email:</b> {bidder.Email}<br />" +
+                    $"<b>Bid Amount:</b> {bid.BidAmount:C}<br /><br />" +
+                    $"You can view the other bids on the item here: {Url.Action("Details", "AuctionItems", new { id = item.AuctionItemId }, Request.Url.Scheme)}";
+
+                EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Winning Bid Deleted - Another Winner Possible", body);
+            }
 
             return RedirectToAction("Details", new { id = aid });
         }

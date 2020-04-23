@@ -74,6 +74,12 @@
                                             </td>
                                         </tr>
                                     }
+                                    @if (Model.AuctionItems[i].IsFixedPriceSoldOut)
+                                    {
+                                        <tr>
+                                            <td colspan="2" class="text-danger"><b>Sold Out</b></td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td></td>
                                         <td class="btn-toolbar">
@@ -128,7 +134,7 @@
         else {
             $.getJSON('@Url.Action("UpdateCatalogFavorite", "Bidders")', { auctionItemId: auctionItemId }, function (response) {
                 if (response.success) {
-                    if (button.className == "btn btn-default") {
+                    if (button.className == "btn btn-default btn-space") {
                         button.className = "btn btn-info btn-space";
                         button.innerHTML = "My Favorite";
                     }

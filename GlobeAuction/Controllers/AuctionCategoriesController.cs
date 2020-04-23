@@ -19,6 +19,7 @@ namespace GlobeAuction.Controllers
         // GET: AuctionCategories
         public ActionResult Index()
         {
+            ViewBag.ItemCountByCategoryId = new ItemsRepository(db).GetCatalogData().Categories.ToDictionary(c => c.AuctionCategoryId, c => c.ItemCount);
             return View(db.AuctionCategories.ToList());
         }
 
