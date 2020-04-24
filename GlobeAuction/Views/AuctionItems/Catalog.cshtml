@@ -65,7 +65,7 @@
                                 @Html.DisplayFor(m => Model.AuctionItems[i].DescriptionTruncated)
                                 <br />
                                 <table cellspacing="5">
-                                    @if (Model.AuctionItems[i].Category.IsBiddingOpen)
+                                    @if (Model.AuctionItems[i].Category.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                                     {
                                         <tr>
                                             <td><b>Price:</b></td>
@@ -85,7 +85,7 @@
                                         <td class="btn-toolbar">
                                             @if (Model.IsBidderLoggedIn)
                                             {
-                                                if (Model.AuctionItems[i].Category.IsBiddingOpen)
+                                                if (Model.AuctionItems[i].Category.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                                                 {
                                                     @Html.ActionLink("Bid", "EnterBid", "Bidders", new { itemNo = Model.AuctionItems[i].UniqueItemNumber }, htmlAttributes: new { @class = "btn btn-default btn-space" })
                                                 }
