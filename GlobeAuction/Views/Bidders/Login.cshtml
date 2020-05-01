@@ -1,4 +1,4 @@
-﻿@model GlobeAuction.Models.BidderLookupModel
+﻿@model GlobeAuction.Models.BidderLoginModel
 
 @{
     ViewBag.Title = "Login";
@@ -26,6 +26,7 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.BidderNumber, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.BidderNumber, "", new { @class = "text-danger" })
+                Leave blank if you have forgotten and we will email it to you.
             </div>
         </div>
 
@@ -47,7 +48,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-lg btn-default" />
+                <input type="submit" value="Login" class="btn btn-lg btn-primary" />
+                <input type="submit" value="Forgot Bidder #" class="btn btn-lg btn-default" />
             </div>
         </div>
     </div>

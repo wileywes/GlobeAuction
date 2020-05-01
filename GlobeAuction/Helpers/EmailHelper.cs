@@ -29,7 +29,7 @@ namespace GlobeAuction.Helpers
     public interface IEmailHelper
     {
         void SendAuctionWinningsPaymentNudge(Bidder bidder, List<Bid> winnings, string payLink, bool isAfterEvent);
-        void SendBidderCatalogNudge(Bidder bidder, bool hasBidderPaid);
+        void SendBidderRegistrationConfirmationOrNudge(Bidder bidder, bool hasBidderPaid);
         void SendBidderPaymentConfirmation(Invoice invoice);
         void SendBidderPaymentReminder(Bidder bidder);
         void SendDonationItemCertificate(Bidder bidder, DonationItem item, int receiptId);
@@ -442,17 +442,17 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        public void SendBidderCatalogNudge(Bidder bidder, bool hasBidderPaid)
+        public void SendBidderRegistrationConfirmationOrNudge(Bidder bidder, bool hasBidderPaid)
         {
             var url = GetBidderPayLink(bidder.BidderId);
-            var body = GetBidderCatalogNudgeEmail(bidder.BidderNumber, hasBidderPaid, url);
+            var body = GetBidderRegistrationConfirmationOrNudgeEmail(bidder.BidderNumber, hasBidderPaid, url);
 
             SendEmail(bidder.Email, "Your Bid Number for The GLOBE Auction", body);
         }
 
-        private string GetBidderCatalogNudgeEmail(int bidderNumber, bool hasBidderPaid, string paymentUrl)
+        private string GetBidderRegistrationConfirmationOrNudgeEmail(int bidderNumber, bool hasBidderPaid, string paymentUrl)
         {
-            var body = GetEmailBody(hasBidderPaid ? "catalogLaunchNudge" : "catalogLaunchNudgeForUnpaidBidder");
+            var body = GetEmailBody(hasBidderPaid ? "bidderRegistrationConfirmation" : "bidderRegistrationNudgeForUnpaidBidder");
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
@@ -558,7 +558,7 @@ namespace GlobeAuction.Helpers
         {
         }
 
-        public void SendBidderCatalogNudge(Bidder bidder, bool hasBidderPaid)
+        public void SendBidderRegistrationConfirmationOrNudge(Bidder bidder, bool hasBidderPaid)
         {
         }
 

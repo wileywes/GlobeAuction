@@ -187,6 +187,8 @@ namespace GlobeAuction.Controllers
 
                             if (manualPayMethod.HasValue || invoice.IsPaid)
                             {
+                                EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrNudge(bidder, true);
+
                                 return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
                             }
                             else
@@ -482,7 +484,7 @@ namespace GlobeAuction.Controllers
                     }
                     db.SaveChanges();
                     return RedirectToAction("Index");
-                case "SendCatalogNudgeEmail":
+                case "SendBidderRegistrationConfirmationsAndNudges":
                     if (!bidderNumbers.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
                     var selectedBidders = db.Bidders.Where(ai => bidderNumbers.Contains(ai.BidderNumber)).ToList();
@@ -493,7 +495,7 @@ namespace GlobeAuction.Controllers
                     foreach(var bidder in selectedBidders)
                     {
                         var hasPaid = bidRepos.HasBidderPaidForRegistration(bidder);
-                        emailHelper.SendBidderCatalogNudge(bidder, hasPaid);
+                        emailHelper.SendBidderRegistrationConfirmationOrNudge(bidder, hasPaid);
                         bidder.IsCatalogNudgeEmailSent = true;
                     }
                     db.SaveChanges();
@@ -526,41 +528,62 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnURl)
         {
-            return View(new BidderLookupModel { RedirectUrl = returnURl });
+            return View(new BidderLoginModel { RedirectUrl = returnURl });
         }
 
         // POST: AuctionItems/Delete/5
         [HttpPost, ActionName("Login")]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult LoginConfirmed(BidderLookupModel bidderLookup)
+        public ActionResult LoginConfirmed(BidderLoginModel bidderLookup)
         {
             if (ModelState.IsValid)
             {
-                var bidder = db.Bidders.FirstOrDefault(b =>
-                    b.IsDeleted == false &&
-                    b.BidderNumber == bidderLookup.BidderNumber &&
-                    b.LastName.Equals(bidderLookup.LastName, StringComparison.OrdinalIgnoreCase) &&
-                    b.Email.Equals(bidderLookup.Email, StringComparison.OrdinalIgnoreCase));
+                if (!bidderLookup.BidderNumber.HasValue)
+                {
+                    var bidder = db.Bidders.FirstOrDefault(b =>
+                        b.IsDeleted == false &&
+                        b.LastName.Equals(bidderLookup.LastName, StringComparison.OrdinalIgnoreCase) &&
+                        b.Email.Equals(bidderLookup.Email, StringComparison.OrdinalIgnoreCase));
 
-                if (bidder == null)
-                {
-                    ModelState.AddModelError("", "No bidder was found matching this information.");
-                }
-                else if (!new BidderRepository(db).IsBidderAllowedToBid(bidder))
-                {
-                    ModelState.AddModelError("", "You must have a paid ticket in order to proceed to the mobile bidding site.");
+                    if (bidder == null)
+                    {
+                        ModelState.AddModelError("", "No bidder was found matching this information.");
+                    }
+                    else
+                    {
+                        var hasPaid = new BidderRepository(db).HasBidderPaidForRegistration(bidder);
+                        EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrNudge(bidder, hasPaid);
+                        ModelState.AddModelError("", "Your bidder number has been emailed to you.  Please wait for the email then try again with your bidder number.");
+                    }
                 }
                 else
                 {
-                    BidderRepository.SetBidderCookie(bidder);
+                    var bidder = db.Bidders.FirstOrDefault(b =>
+                        b.IsDeleted == false &&
+                        b.BidderNumber == bidderLookup.BidderNumber.Value &&
+                        b.LastName.Equals(bidderLookup.LastName, StringComparison.OrdinalIgnoreCase) &&
+                        b.Email.Equals(bidderLookup.Email, StringComparison.OrdinalIgnoreCase));
 
-                    if (!string.IsNullOrEmpty(bidderLookup.RedirectUrl))
+                    if (bidder == null)
                     {
-                        return Redirect(bidderLookup.RedirectUrl);
+                        ModelState.AddModelError("", "No bidder was found matching this information.");
                     }
+                    else if (!new BidderRepository(db).IsBidderAllowedToBid(bidder))
+                    {
+                        ModelState.AddModelError("", "You must have a paid ticket in order to proceed to the mobile bidding site.");
+                    }
+                    else
+                    {
+                        BidderRepository.SetBidderCookie(bidder);
 
-                    return RedirectToAction("Bids");
+                        if (!string.IsNullOrEmpty(bidderLookup.RedirectUrl))
+                        {
+                            return Redirect(bidderLookup.RedirectUrl);
+                        }
+
+                        return RedirectToAction("Bids");
+                    }
                 }
             }
 

@@ -50,7 +50,7 @@ namespace GlobeAuction.Specflow
         [When(@"I log in as bidder number '(.*)' with last name '(.*)' and email '(.*)'")]
         public void WhenILogInAsBidderNumberWithLastNameAndEmail(int bidderNumber, string lastName, string email)
         {
-            var bidderLogin = new BidderLookupModel
+            var bidderLogin = new BidderLoginModel
             {
                 BidderNumber = bidderNumber,
                 LastName = lastName,

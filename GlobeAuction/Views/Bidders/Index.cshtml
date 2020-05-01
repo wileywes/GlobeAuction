@@ -168,7 +168,7 @@
                     }
                 },
                 {
-                    text: 'Send Catalog Nudge Email',
+                    text: 'Send Registration Confirmation/Nudge Emails',
                     action: function (e, dt, node, config) {
                         var data = dt.rows({ selected: true }).data();
                         if (data.length == 0) {
@@ -178,7 +178,7 @@
                             $("#selectedBidderNumbers").val(getSelectedRows(data));
 
                             if (confirm("Are you sure?  This will email all the bidders you have selected their paddle number and mobile bidding instructions.")) {
-                                $("#biddersAction").val("SendCatalogNudgeEmail");
+                                $("#biddersAction").val("SendBidderRegistrationConfirmationsAndNudges");
                                 $('#submitBiddersActionForm').submit();
                             }
                         }

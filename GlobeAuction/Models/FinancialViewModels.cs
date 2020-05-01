@@ -6,6 +6,19 @@ using System.Linq;
 
 namespace GlobeAuction.Models
 {
+    public class BidderLoginModel
+    {
+        [Display(Name = "Bidder #")]
+        public int? BidderNumber { get; set; }
+        [Required]
+        public string LastName { get; set; }
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        public string RedirectUrl { get; set; }
+    }
+
     public class BidderLookupModel
     {
         [Required]
@@ -16,8 +29,6 @@ namespace GlobeAuction.Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-
-        public string RedirectUrl { get; set; }
     }
 
     public class ReviewBidderWinningsViewModel
