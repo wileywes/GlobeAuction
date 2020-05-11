@@ -546,6 +546,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudge.html" />
     <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudgeAfterEvent.html" />
+    <Content Include="Content\EmailTemplates\inlined\bidderRegistrationNudgeForPaidBidder.html" />
     <Content Include="Content\EmailTemplates\inlined\invoiceNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\bidderNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\bidderRegistrationNudgeForUnpaidBidder.html" />

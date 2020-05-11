@@ -168,7 +168,7 @@
                     }
                 },
                 {
-                    text: 'Send Registration Confirmation/Nudge Emails',
+                    text: 'Send Bidder Nudge Emails for Auction Launch',
                     action: function (e, dt, node, config) {
                         var data = dt.rows({ selected: true }).data();
                         if (data.length == 0) {
@@ -178,7 +178,7 @@
                             $("#selectedBidderNumbers").val(getSelectedRows(data));
 
                             if (confirm("Are you sure?  This will email all the bidders you have selected their paddle number and mobile bidding instructions.")) {
-                                $("#biddersAction").val("SendBidderRegistrationConfirmationsAndNudges");
+                                $("#biddersAction").val("SendBidderRegistrationNudge");
                                 $('#submitBiddersActionForm').submit();
                             }
                         }

@@ -29,7 +29,8 @@ namespace GlobeAuction.Helpers
     public interface IEmailHelper
     {
         void SendAuctionWinningsPaymentNudge(Bidder bidder, List<Bid> winnings, string payLink, bool isAfterEvent);
-        void SendBidderRegistrationConfirmationOrNudge(Bidder bidder, bool hasBidderPaid);
+        void SendBidderRegistrationConfirmationOrPaddleReminder(Bidder bidder);
+        void SendBidderRegistrationNudge(Bidder bidder, bool hasBidderPaid);
         void SendBidderPaymentConfirmation(Invoice invoice);
         void SendBidderPaymentReminder(Bidder bidder);
         void SendDonationItemCertificate(Bidder bidder, DonationItem item, int receiptId);
@@ -442,17 +443,26 @@ namespace GlobeAuction.Helpers
             return body;
         }
 
-        public void SendBidderRegistrationConfirmationOrNudge(Bidder bidder, bool hasBidderPaid)
+        public void SendBidderRegistrationConfirmationOrPaddleReminder(Bidder bidder)
         {
             var url = GetBidderPayLink(bidder.BidderId);
-            var body = GetBidderRegistrationConfirmationOrNudgeEmail(bidder.BidderNumber, hasBidderPaid, url);
+            var body = GetBidderRegistrationConfirmationOrNudgeEmail("bidderRegistrationConfirmation", bidder.BidderNumber, url);
 
             SendEmail(bidder.Email, "Your Bid Number for The GLOBE Auction", body);
         }
 
-        private string GetBidderRegistrationConfirmationOrNudgeEmail(int bidderNumber, bool hasBidderPaid, string paymentUrl)
+        public void SendBidderRegistrationNudge(Bidder bidder, bool hasBidderPaid)
         {
-            var body = GetEmailBody(hasBidderPaid ? "bidderRegistrationConfirmation" : "bidderRegistrationNudgeForUnpaidBidder");
+            var url = GetBidderPayLink(bidder.BidderId);
+            var templateName = hasBidderPaid ? "bidderRegistrationNudgeForPaidBidder" : "bidderRegistrationNudgeForUnpaidBidder";
+            var body = GetBidderRegistrationConfirmationOrNudgeEmail(templateName, bidder.BidderNumber, url);
+
+            SendEmail(bidder.Email, "Your Bid Number for The GLOBE Auction", body);
+        }
+
+        private string GetBidderRegistrationConfirmationOrNudgeEmail(string templateName, int bidderNumber, string paymentUrl)
+        {
+            var body = GetEmailBody(templateName);
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
@@ -558,7 +568,11 @@ namespace GlobeAuction.Helpers
         {
         }
 
-        public void SendBidderRegistrationConfirmationOrNudge(Bidder bidder, bool hasBidderPaid)
+        public void SendBidderRegistrationConfirmationOrPaddleReminder(Bidder bidder)
+        {
+        }
+
+        public void SendBidderRegistrationNudge(Bidder bidder, bool hasBidderPaid)
         {
         }
 

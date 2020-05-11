@@ -1,4 +1,20 @@
 ﻿
+--items with no image
+select * from AuctionItems where imageUrl = '' or imageurl is null
+
+--items with expiration date earlier than
+select *
+from AuctionItems ai
+inner join DonationItems di on di.auctionitem_auctionitemid=ai.auctionitemid
+where di.expirationdate < '2020-05-18'
+
+--items not in hand
+select *
+from AuctionItems ai
+inner join DonationItems di on di.auctionitem_auctionitemid=ai.auctionitemid
+where di.isreceived=0
+
+
 
 --bidders with guests
 select b.BidderId, b.BidderNumber, b.FirstName, b.LastName, b.phone, b.Email, b.ZipCode, g.FirstName as GuestFirst, g.LastName as GuestLast, g.TicketType, g.TicketPricePaid

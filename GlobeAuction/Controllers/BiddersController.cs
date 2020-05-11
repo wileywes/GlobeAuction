@@ -187,7 +187,7 @@ namespace GlobeAuction.Controllers
 
                             if (manualPayMethod.HasValue || invoice.IsPaid)
                             {
-                                EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrNudge(bidder, true);
+                                EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrPaddleReminder(bidder);
 
                                 return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
                             }
@@ -484,7 +484,7 @@ namespace GlobeAuction.Controllers
                     }
                     db.SaveChanges();
                     return RedirectToAction("Index");
-                case "SendBidderRegistrationConfirmationsAndNudges":
+                case "SendBidderRegistrationNudge":
                     if (!bidderNumbers.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
                     var selectedBidders = db.Bidders.Where(ai => bidderNumbers.Contains(ai.BidderNumber)).ToList();
@@ -495,7 +495,7 @@ namespace GlobeAuction.Controllers
                     foreach(var bidder in selectedBidders)
                     {
                         var hasPaid = bidRepos.HasBidderPaidForRegistration(bidder);
-                        emailHelper.SendBidderRegistrationConfirmationOrNudge(bidder, hasPaid);
+                        emailHelper.SendBidderRegistrationNudge(bidder, hasPaid);
                         bidder.IsCatalogNudgeEmailSent = true;
                     }
                     db.SaveChanges();
@@ -552,8 +552,7 @@ namespace GlobeAuction.Controllers
                     }
                     else
                     {
-                        var hasPaid = new BidderRepository(db).HasBidderPaidForRegistration(bidder);
-                        EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrNudge(bidder, hasPaid);
+                        EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrPaddleReminder(bidder);
                         ModelState.AddModelError("", "Your bidder number has been emailed to you.  Please wait for the email then try again with your bidder number.");
                     }
                 }
