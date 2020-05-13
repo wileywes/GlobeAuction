@@ -58,7 +58,7 @@
                     {
                         <br />
                         <strong>Dollar Value:</strong>
-                        @(Model.AuctionItem.DonationItems.Select(d => d.DollarValue.GetValueOrDefault(0)).Max())
+                        @(Model.AuctionItem.DonationItems.Select(d => d.DollarValue.GetValueOrDefault(0)).Max().ToString("C0"))
                     }
 
                     @if (Model.AuctionItem.DonationItems.Any(d => d.ExpirationDate.HasValue))

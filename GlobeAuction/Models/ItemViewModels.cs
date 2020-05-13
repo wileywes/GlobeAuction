@@ -237,8 +237,10 @@ namespace GlobeAuction.Models
         public string Category { get; set; }
         public bool IsBiddingForCategoryOpen { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Starting Bid")]
         public int StartingBid { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Bid Increment")]
         public int BidIncrement { get; set; }
         public bool IsFixedPrice { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]

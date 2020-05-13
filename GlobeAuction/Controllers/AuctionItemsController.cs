@@ -741,7 +741,8 @@ namespace GlobeAuction.Controllers
             {
                 model.AuctionItems = model.AuctionItems
                     .Where(i => i.Title.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                                i.Description.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                                i.Description.IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                                i.UniqueItemNumber.ToString().IndexOf(model.SearchString, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     .ToList();
             }
 
