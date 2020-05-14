@@ -69,7 +69,7 @@
 
     <div class="row top10">
         <div class="col-md-offset-4 col-md-8 btn-toolbar">
-            @Html.ActionLink("Back", null, null, null, new { href = Request.UrlReferrer, @class = "btn btn-primary" })
+            @Html.ActionLink("Back", null, null, null, new { href = "##", onclick="history.go(-1); return false;", @class = "btn btn-primary" })
         </div>
     </div>
 
