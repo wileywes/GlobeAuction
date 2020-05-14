@@ -18,6 +18,12 @@
             Time Left to Bid: <span id="countdownTimer">0d 00h 00m 00s</span>
         </span>
     }
+    @if (ViewBag.ShowOpeningCountDown)
+    {
+        <span class="pull-right">
+            Auction Begins In: <span id="countdownTimer">0d 00h 00m 00s</span>
+        </span>
+    }
 </h3>
 
 <p>
@@ -208,11 +214,11 @@
 </script>
 
 
-@if (ViewBag.IsBiddingOpen)
+@if (ViewBag.IsBiddingOpen || ViewBag.ShowOpeningCountDown)
 {
     <script type="text/javascript">
     // Set the date we're counting down to
-    var countDownDate = new Date("@ViewBag.BiddingEndDate").getTime();
+    var countDownDate = new Date("@(ViewBag.ShowOpeningCountDown ? ViewBag.BiddingStartDate : ViewBag.BiddingEndDate)").getTime();
 
     // Update the count down every 1 second
     var x = setInterval(function() {
@@ -237,7 +243,8 @@
         if (distance < 0)
         {
             clearInterval(x);
-            document.getElementById("countdownTimer").innerHTML = "Auction is now Closed";
+
+            document.getElementById("countdownTimer").innerHTML = "@(ViewBag.ShowOpeningCountDown ? "Auction is now Open" : "Auction is now Closed")";
         }
     }, 1000);
     </script>

@@ -614,6 +614,11 @@ namespace GlobeAuction.Controllers
                 var closeDate = new ItemsRepository(db).GetBiddingEndDateIfCategoriesAreOpen();
                 ViewBag.BiddingEndDate = (closeDate ?? DateTime.MinValue).ToString("o");
                 ViewBag.IsBiddingOpen = closeDate.HasValue;
+
+                var openDate = new ItemsRepository(db).GetBiddingStartDateIfCategoriesAreClosed();
+                ViewBag.BiddingStartDate = (openDate ?? DateTime.MinValue).ToString("o");
+                ViewBag.ShowOpeningCountDown = closeDate.HasValue == false && openDate.HasValue;
+
                 ViewBag.BidderInfo = info;
 
                 if (error.HasValue)

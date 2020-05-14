@@ -500,6 +500,17 @@ namespace GlobeAuction.Helpers
             _catalogCache = null;
         }
 
+        public DateTime? GetBiddingStartDateIfCategoriesAreClosed()
+        {
+            var cats = GetCatalogData().Categories.Where(c => c.IsAvailableForMobileBidding).ToList();
+            if (cats.Any())
+            {
+                return cats.Select(c => c.BidOpenDateLtz).OrderByDescending(c => c).First();
+            }
+
+            return null;
+        }
+
         public DateTime? GetBiddingEndDateIfCategoriesAreOpen()
         {
             var openCategories = GetCatalogData().Categories.Where(c => c.IsAvailableForMobileBidding && c.IsBiddingOpen).ToList();
