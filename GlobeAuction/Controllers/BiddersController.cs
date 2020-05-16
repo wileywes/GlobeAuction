@@ -762,7 +762,7 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("", "Your bid must be equal to the fixed price (" + item.StartingBid.ToString("c") + ").  Please correct your bid and try again.");
                 }
-                else if ((bidAmountValue - item.StartingBid) % item.BidIncrement != 0)
+                else if (!item.IsFixedPrice && (bidAmountValue - item.StartingBid) % item.BidIncrement != 0)
                 {
                     ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").  Please adjust your bid and try again.");
                 }
