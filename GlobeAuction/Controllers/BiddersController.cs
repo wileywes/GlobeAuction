@@ -612,12 +612,19 @@ namespace GlobeAuction.Controllers
                 var itemFavs = new BidderRepository(db).GetBidderCatalogFavorites(info.BidderId, info.BidderNumber);
 
                 var closeDate = new ItemsRepository(db).GetBiddingEndDateIfCategoriesAreOpen();
-                ViewBag.BiddingEndDate = (closeDate ?? DateTime.MinValue).ToString("o");
                 ViewBag.IsBiddingOpen = closeDate.HasValue;
+                if (closeDate.HasValue)
+                {
+                    ViewBag.BiddingEndDate = closeDate.Value.Subtract(Utilities.GetEasternTimeNow()).ToString("hh'h 'mm'm'");
+                }
 
                 var openDate = new ItemsRepository(db).GetBiddingStartDateIfCategoriesAreClosed();
-                ViewBag.BiddingStartDate = (openDate ?? DateTime.MinValue).ToString("o");
-                ViewBag.ShowOpeningCountDown = closeDate.HasValue == false && openDate.HasValue;
+                var showOpenDate = closeDate.HasValue == false && openDate.HasValue;
+                ViewBag.ShowOpeningCountDown = showOpenDate;
+                if (showOpenDate)
+                {
+                    ViewBag.BiddingStartDate = openDate.Value.Subtract(Utilities.GetEasternTimeNow()).ToString("dd'd 'hh'h 'mm'm'");
+                }
 
                 ViewBag.BidderInfo = info;
 
