@@ -98,6 +98,7 @@ namespace GlobeAuction.Models
         public FundaProjectRevenueReportModel FundaProjectRevenueReport { get; set; }
         public RaffleTicketPurchasesReportModel RaffleTicketPurchasesReport { get; set; }
         public PurchasesByPaymentMethodReportModel PurchasesByPaymentMethodReport { get; set; }
+        public List<RevenueByAuctionCategory> RevenueByAuctionCategoryReport { get; set; }
     }
 
     public class RaffleTicketPurchaseGroup
@@ -116,5 +117,11 @@ namespace GlobeAuction.Models
 
         [DisplayFormat(DataFormatString = "{0:n2}")]
         public decimal TotalSales { get; set; }
+    }
+
+    public class RevenueByAuctionCategory
+    {
+        public string CategoryName { get; set; }
+        public decimal TotalWinningBids { get; set; }
     }
 }

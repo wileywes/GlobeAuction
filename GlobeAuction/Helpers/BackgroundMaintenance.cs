@@ -13,7 +13,7 @@ namespace GlobeAuction.Helpers
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private ApplicationDbContext db = new ApplicationDbContext();
         private DateTime _lastMaintenance = DateTime.MinValue;
-        private static readonly TimeSpan TimeBetweenMaintenance = TimeSpan.FromMinutes(60);
+        private static readonly TimeSpan TimeBetweenMaintenance = TimeSpan.FromMinutes(10);
         private readonly string _baseFilePath;
 
         public BackgroundMaintenance(string baseFilePath)

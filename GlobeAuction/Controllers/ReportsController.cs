@@ -25,21 +25,26 @@ namespace GlobeAuction.Controllers
             var paidRegistrationInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.BidderRegistration).ToList();
 
             var unpaidBids = db.Bids
+                .Include(b => b.AuctionItem.Category)
                 .Where(b => b.IsWinning && (b.Invoice == null || b.Invoice.IsPaid == false))
-                .Select(b => b.BidAmount)
-                .DefaultIfEmpty(0)
-                .Sum();
-            
+                .ToList();
+
+            var unpaidBidsAmount = unpaidBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Sum();
+
             var paidBids = db.Bids
+                .Include(b => b.AuctionItem.Category)
                 .Where(b => b.IsWinning && b.AmountPaid.HasValue)
+                .ToList();
+
+            var paidBidsAmount = paidBids
                 .Select(b => b.AmountPaid.Value)
                 .DefaultIfEmpty(0)
                 .Sum();
 
             var byType = new AllRevenueByTypeReportModel
             {
-                AuctionItemsPaid = paidBids,
-                AuctionItemsUnpaid = unpaidBids,
+                AuctionItemsPaid = paidBidsAmount,
+                AuctionItemsUnpaid = unpaidBidsAmount,
                 BidderTickets = paidRegistrationInvoices.Sum(i => i.TicketPurchases.Sum(t => t.TicketPricePaid.GetValueOrDefault(0))),
                 RaffleTicketsViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
                 StoreSalesViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
@@ -96,12 +101,24 @@ namespace GlobeAuction.Controllers
                 PurchasesByPaymentMethod = paidPurchases
             };
 
+            //auctionitem revenue by category
+            var allWinningBids = unpaidBids.Union(paidBids).ToList();
+            var revByCat = allWinningBids
+                .GroupBy(b => b.AuctionItem.Category)
+                .Select(g => new RevenueByAuctionCategory
+                {
+                    CategoryName = g.Key.Name,
+                    TotalWinningBids = g.Sum(b => b.BidAmount)
+                })
+                .ToList();
+
             var model = new AllRevenueReportsModel
             {
                 AllRevenueByTypeReport = byType,
                 FundaProjectRevenueReport = fundAProject,
                 RaffleTicketPurchasesReport = raffleTicketPurchases,
-                PurchasesByPaymentMethodReport = byPayMethodReport
+                PurchasesByPaymentMethodReport = byPayMethodReport,
+                RevenueByAuctionCategoryReport = revByCat
             };
             return View(model);
         }
