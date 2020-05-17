@@ -807,6 +807,13 @@ namespace GlobeAuction.Controllers
 
             db.Bids.Remove(bid);
             db.SaveChanges();
+
+            //unpaid winning bids are counted as revenue so back it out if it was a winning bid
+            if (isWinning)
+            {
+                RevenueHelper.IncrementTotalRevenue(-1 * bid.BidAmount);
+            }
+
             new ItemsRepository(db).UpdateHighestBidForCachedItem(item);
 
             if (isWinning)

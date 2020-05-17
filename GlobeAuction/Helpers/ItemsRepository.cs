@@ -262,6 +262,8 @@ namespace GlobeAuction.Helpers
 
             //recalculate winners
             var index = 0;
+            var oldWinAmounts = item.AllBids.Where(b => b.IsWinning).Select(b => b.BidAmount).DefaultIfEmpty(0).Sum();
+
             foreach (var bid in item.AllBids.OrderByDescending(b => b.BidAmount))
             {
                 var nowWinning = index < item.Quantity;
@@ -282,6 +284,11 @@ namespace GlobeAuction.Helpers
                 index++;
             }
             db.SaveChanges();
+
+            //unpaid auction bids are included in revenue
+            var newWinAmounts = item.AllBids.Where(b => b.IsWinning).Select(b => b.BidAmount).DefaultIfEmpty(0).Sum();
+            var increaseInRevenue = newWinAmounts - oldWinAmounts;
+            RevenueHelper.IncrementTotalRevenue(increaseInRevenue);
 
             UpdateHighestBidForCachedItem(item);
         }

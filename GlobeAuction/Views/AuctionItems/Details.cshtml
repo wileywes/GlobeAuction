@@ -135,11 +135,12 @@
                             <th>Bidder No.</th>
                             <th>Bidder Name</th>
                             <th>Bid Amount</th>
+                            <th>Winning?</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var bid in Model.AllBids.OrderBy(b => b.BidAmount))
+                        @foreach (var bid in Model.AllBids.OrderByDescending(b => b.BidAmount))
                         {
                             <tr>
                                 <td>
@@ -152,6 +153,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(m => bid.BidAmount)
+                                </td>
+                                <td>
+                                    @(bid.IsWinning ? "This bid is winning" : string.Empty)
                                 </td>
                                 <td class="text-nowrap">
                                     @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners))
