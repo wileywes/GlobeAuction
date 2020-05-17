@@ -481,8 +481,7 @@ namespace GlobeAuction.Helpers
             catData.Categories = catData.Categories.OrderBy(c => c.Name).ToList();
 
             _catalogCache = catData;
-            var log = LogManager.GetCurrentClassLogger();
-            log.Info("Loaded catalog data from DB on " + Environment.MachineName);
+            //LogManager.GetCurrentClassLogger().Info("Loaded catalog data from DB on " + Environment.MachineName);
 
             return catData;
         }
