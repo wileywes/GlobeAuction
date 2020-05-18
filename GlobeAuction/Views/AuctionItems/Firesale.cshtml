@@ -10,7 +10,7 @@
 <h2>Auction Items with Remaining Quantity</h2>
 
 
-@using (Html.BeginForm("SubmitSelectedAuctionItems", "AuctionItems", FormMethod.Post, new { id = "submitSelectedAuctionItemsForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("SubmitSelectedFiresaleItems", "AuctionItems", FormMethod.Post, new { id = "submitSelectedFiresaleItemsForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -32,16 +32,14 @@
                 <th>
                     Category
                 </th>
+                <th>In Firesale?</th>
                 <th>Quantity</th>
                 <th>
                     Bid Count
                 </th>
-                <th>Bids @Html.Raw("@") Starting Price</th>
+                <th>Bids @Html.Raw("@") Starting Bid</th>
                 <th>
                     Starting Bid
-                </th>
-                <th>
-                    Is Fixed Price
                 </th>
                 <th>
                     Highest Bid
@@ -52,50 +50,46 @@
         <tbody>
             @foreach (var item in Model.AuctionItems)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UniqueItemNumber)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
-                    }
-                    else
-                    {
-                        <input type="file" name="files" id="file@(item.AuctionItemId)" onchange="javascript:uploadImage(@(item.AuctionItemId));" />
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BidCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.QuantitySoldAtStartingBid)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartingBid)
-                </td>
-                <td>
-                    @(item.IsFixedPrice ? "Yes" : "No")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HighestBid)
-                </td>
-                <td class="text-nowrap">
-                    @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @(item.IsInFiresale ? "Yes" : "No")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.QuantitySoldAtStartingBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartingBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HighestBid)
+                    </td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -113,12 +107,6 @@
             ids += data[i][0] + ',';
         }
         return ids.trimRight(',');
-    }
-
-    function uploadImage(auctionItemId) {
-        $("#auctionItemIdForUpload").val(auctionItemId);
-        $("#auctionItemsAction").val("UploadImage");
-        $('#submitSelectedAuctionItemsForm').submit();
     }
 
     $(document).ready(function () {
@@ -139,12 +127,9 @@
                             alert('You must select rows to convert to firesale.');
                         }
                         else {
-                            var ids = '';
-                            for (var i = 0; i < data.length; i++) {
-                                ids += data[i][0] + ',';
-                            }
-                            ids = ids.trimRight(',');
-                            window.open('/AuctionItems/PrintBidSheets?auctionItemIds=' + ids, '_blank');
+                            $("#selectedAuctionItemIds").val(getSelectedRows(data));
+                            $("#auctionItemsAction").val("PutItemsInFiresale");
+                            $('#submitSelectedFiresaleItemsForm').submit();
                         }
                     }
                 }

@@ -379,6 +379,38 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost, ActionName("SubmitSelectedFiresaleItems")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult SubmitSelectedFiresaleItems(string auctionItemsAction, string selectedAuctionItemIds)
+        {
+            var selectedAuctionIds = selectedAuctionItemIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToList();
+
+            new ItemsRepository(db).ClearCatalogDataCache();
+            var username = User.Identity.GetUserName();
+            switch (auctionItemsAction)
+            {
+                case "PutItemsInFiresale":
+                    if (!selectedAuctionIds.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var selectedAuctionItems = db.AuctionItems.Where(ai => selectedAuctionIds.Contains(ai.UniqueItemNumber)).ToList();
+                    if (!selectedAuctionItems.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    foreach (var auctionItem in selectedAuctionItems.OrderBy(a => a.UniqueItemNumber))
+                    {
+                        auctionItem.IsInFiresale = true;
+                        auctionItem.UpdateBy = username;
+                        auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
+                    }
+                    db.SaveChanges();
+                    break;
+            }
+
+            return RedirectToAction("Firesale");
+        }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners + "," + AuctionRoles.CanCheckoutWinners)]
         public ActionResult Winners()
@@ -748,10 +780,18 @@ namespace GlobeAuction.Controllers
             var catData = new ItemsRepository(db).GetCatalogData();
             model.AuctionItems = catData.AuctionItems;
             model.Categories = catData.Categories;
+            model.TotalFiresaleCount = model.AuctionItems.Where(i => i.IsInFiresale).Count();
 
             if (!string.IsNullOrEmpty(model.SelectedCategory))
             {
-                model.AuctionItems = model.AuctionItems.Where(i => i.Category.Name == model.SelectedCategory).ToList();
+                if (model.SelectedCategory.Equals("#firesale#"))
+                {
+                    model.AuctionItems = model.AuctionItems.Where(i => i.IsInFiresale).ToList();
+                }
+                else
+                {
+                    model.AuctionItems = model.AuctionItems.Where(i => i.Category.Name == model.SelectedCategory).ToList();
+                }
             }
 
             if (!string.IsNullOrEmpty(model.SearchString))

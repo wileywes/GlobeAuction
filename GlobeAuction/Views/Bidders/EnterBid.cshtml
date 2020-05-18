@@ -79,13 +79,13 @@
         </div>
 
         <div class="row top10">
-            @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
+            @if (Model.IsBiddingOpen || Model.AuctionItem.IsInFiresale || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
             {
                 if (Model.AuctionItem.IsFixedPrice == false || Model.AuctionItem.Quantity > Model.AllBids.Count())
                 {
                     @Html.Label("New Bid to Enter", htmlAttributes: new { @class = "control-label col-md-4 text-right" })
                     <div class="col-md-8">
-                        @if (Model.AuctionItem.IsFixedPrice)
+                        @if (Model.AuctionItem.IsFixedPrice || Model.AuctionItem.IsInFiresale)
                         {
                             @Html.TextBoxFor(model => model.BidAmount, new { @class = "form-control", @readonly = "readonly" })
                         }
@@ -112,7 +112,7 @@
 
         <div class="row top10">
             <div class="col-md-offset-4 col-md-8 btn-toolbar">
-                @if (Model.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
+                @if (Model.IsBiddingOpen || Model.AuctionItem.IsInFiresale || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers)))
                 {
                     if (Model.AuctionItem.IsFixedPrice == false || Model.AuctionItem.Quantity > Model.AllBids.Count())
                     {

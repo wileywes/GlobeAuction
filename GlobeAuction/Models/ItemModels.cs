@@ -36,6 +36,8 @@ namespace GlobeAuction.Models
         public int BidIncrement { get; set; }
         [Required]
         public bool IsFixedPrice { get; set; }
+        [Required]
+        public bool IsInFiresale { get; set; }
 
         [Required]
         public int Quantity { get; set; }

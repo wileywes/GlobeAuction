@@ -13,9 +13,9 @@
     <table>
         <tr>
             <td>@Html.ActionLink("Enter a New Donation", "Create", "DonationItems") &nbsp; &nbsp;</td>
-            <td>@Html.ActionLink("Store Items List", "Index", "StoreItems") &nbsp; &nbsp;</td>
-            <td><a href="#donationItemsAnchor">Donation Items List</a> &nbsp; &nbsp;</td>
-            <td><a href="#storeItemsAnchor">Store Items List</a></td>
+            <td><a href="#donationItemsAnchor">Donation Items</a> &nbsp; &nbsp;</td>
+            <td><a href="#storeItemsAnchor">Items in Store</a> &nbsp; &nbsp;</td>
+            <td>@Html.ActionLink("Firesale", "Firesale", "AuctionItems")</td>
         </tr>
     </table>
 </p>
@@ -64,6 +64,7 @@
                 <th>
                     Is Fixed Price
                 </th>
+                <th>In Firesale</th>
                 <th>Has Digital Item(s)</th>
                 <th>Restrictions</th>
                 <th>
@@ -118,6 +119,9 @@
                 </td>
                 <td>
                     @(item.IsFixedPrice ? "Yes" : "No")
+                </td>
+                <td>
+                    @(item.IsInFiresale ? "Yes" : "No")
                 </td>
                 <td>
                     @(item.DonationItems.Any(i => i.UseDigitalCertificateForWinner) ? "Yes" : "No")

@@ -61,6 +61,7 @@ namespace GlobeAuction.Models
         public List<CatalogCategoryViewModel> Categories { get; set; }
         public bool IsBidderLoggedIn { get; set; }
         public List<int> BidderCatalogFavoriteAuctionItemIds { get; set; }
+        public int TotalFiresaleCount { get; set; }
 
         public int TotalItemCount
         {
@@ -248,6 +249,7 @@ namespace GlobeAuction.Models
         [Display(Name = "Bid Increment")]
         public int BidIncrement { get; set; }
         public bool IsFixedPrice { get; set; }
+        public bool IsInFiresale { get; set; }
         [DisplayFormat(DataFormatString = "{0:C}")]
         public decimal? HighestBid { get; set; }
         public int BidCount { get; set; }
@@ -277,6 +279,7 @@ namespace GlobeAuction.Models
             this.StartingBid = i.StartingBid;
             this.BidIncrement = i.BidIncrement;
             this.IsFixedPrice = i.IsFixedPrice;
+            this.IsInFiresale = i.IsInFiresale;
             this.Quantity = i.Quantity;
             this.DonationItems = i.DonationItems;
             this.DonationItemsCount = i.DonationItems.Count;
@@ -316,6 +319,7 @@ namespace GlobeAuction.Models
         public int Quantity { get; set; }
         [Required]
         public int QuantitySoldAtStartingBid { get; set; }
+        public bool IsInFiresale { get; set; }
 
 
         public FiresaleItemViewModel()
@@ -336,6 +340,7 @@ namespace GlobeAuction.Models
             this.BidIncrement = i.BidIncrement;
             this.IsFixedPrice = i.IsFixedPrice;
             this.Quantity = i.Quantity;
+            this.IsInFiresale = i.IsInFiresale;
 
             if (i.AllBids.Any())
             {
@@ -359,7 +364,10 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int HighestBid { get; set; }
         public int BidCount { get; set; }
+        public bool IsFixedPrice { get; set; }
+        public bool IsInFiresale { get; set; }
         public bool IsFixedPriceSoldOut { get; set; }
+        public int FiresalePrice { get; set; }
 
         public CatalogAuctionItemViewModel()
         {
@@ -377,7 +385,10 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.HighestBid = i.AllBids.Select(b => (int)b.BidAmount).DefaultIfEmpty(i.StartingBid).Max();
             this.BidCount = i.AllBids.Count;
+            this.IsFixedPrice = i.IsFixedPrice;
             this.IsFixedPriceSoldOut = i.IsFixedPrice && i.AllBids.Count >= i.Quantity;
+            this.IsInFiresale = i.IsInFiresale;
+            this.FiresalePrice = i.StartingBid;
         }
     }
 

@@ -510,6 +510,10 @@
     <Compile Include="Migrations\202004102331264_ActionItemFixedPrice.Designer.cs">
       <DependentUpon>202004102331264_ActionItemFixedPrice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005180143422_AuctionItemInFiresale.cs" />
+    <Compile Include="Migrations\202005180143422_AuctionItemInFiresale.Designer.cs">
+      <DependentUpon>202005180143422_AuctionItemInFiresale.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -1036,6 +1040,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004102331264_ActionItemFixedPrice.resx">
       <DependentUpon>202004102331264_ActionItemFixedPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005180143422_AuctionItemInFiresale.resx">
+      <DependentUpon>202005180143422_AuctionItemInFiresale.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

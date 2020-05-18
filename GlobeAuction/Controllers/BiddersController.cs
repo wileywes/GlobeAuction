@@ -749,7 +749,7 @@ namespace GlobeAuction.Controllers
                     return HttpNotFound();
                 }
 
-                var canBid = item.Category.IsBiddingOpen || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers));
+                var canBid = item.Category.IsBiddingOpen || item.IsInFiresale || (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers));
                 var highestExistingBid = item.AllBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Max();
                 var bidAmountValue = bidAmount.GetValueOrDefault(99999);
 
@@ -761,7 +761,7 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("", "Your bid must be equal to or higher than the starting bid (" + item.StartingBid.ToString("c") + ").  Please increase your bid and try again.");
                 }
-                else if (item.IsFixedPrice && item.StartingBid != bidAmountValue)
+                else if ((item.IsFixedPrice || item.IsInFiresale) && item.StartingBid != bidAmountValue)
                 {
                     ModelState.AddModelError("", "Your bid must be equal to the fixed price (" + item.StartingBid.ToString("c") + ").  Please correct your bid and try again.");
                 }
@@ -769,11 +769,11 @@ namespace GlobeAuction.Controllers
                 {
                     ModelState.AddModelError("", "Your bid must be an increment of the Bid Increment (" + item.BidIncrement.ToString("c") + ").  Please adjust your bid and try again.");
                 }
-                else if (bidAmountValue <= highestExistingBid && !item.IsFixedPrice)
+                else if (bidAmountValue <= highestExistingBid && !item.IsFixedPrice && !item.IsInFiresale)
                 {
                     ModelState.AddModelError("", "Your bid must be higher than the last bid of " + highestExistingBid.ToString("c") + ".  You need to increase your bid and place it again.");
                 }
-                else if (item.IsFixedPrice && item.AllBids.Count >= item.Quantity)
+                else if ((item.IsFixedPrice || item.IsInFiresale) && item.AllBids.Count >= item.Quantity)
                 {
                     ModelState.AddModelError("", $"All {item.Quantity} quantity available are already purchased for this item.");
                 }
