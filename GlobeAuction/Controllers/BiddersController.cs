@@ -619,7 +619,10 @@ namespace GlobeAuction.Controllers
                 }
 
                 var openDate = new ItemsRepository(db).GetBiddingStartDateIfCategoriesAreClosed();
-                var showOpenDate = closeDate.HasValue == false && openDate.HasValue && openDate.Value > Utilities.GetEasternTimeNow();
+                var showOpenDate = closeDate.HasValue == false && 
+                    openDate.HasValue && 
+                    openDate.Value > Utilities.GetEasternTimeNow() &&
+                    openDate.Value.Subtract(Utilities.GetEasternTimeNow()).TotalDays < 30;
                 ViewBag.ShowOpeningCountDown = showOpenDate;
                 if (showOpenDate)
                 {
