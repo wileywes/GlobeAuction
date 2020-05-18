@@ -13,7 +13,12 @@ namespace GlobeAuction.Models
         public List<DonationItemViewModel> DonationsNotInAuctionItem { get; set; }
         public List<DonationItemViewModel> DonationsInStore { get; set; }
     }
-    
+
+    public class FiresaleItemsViewModel
+    {
+        public List<FiresaleItemViewModel> AuctionItems { get; set; }
+    }
+
     public class CatalogData
     {
         public List<CatalogAuctionItemViewModel> AuctionItems { get; set; }
@@ -281,6 +286,62 @@ namespace GlobeAuction.Models
             {
                 this.HighestBid = i.AllBids.Max(b => b.BidAmount);
                 this.BidCount = i.AllBids.Count();
+            }
+        }
+    }
+
+
+    public class FiresaleItemViewModel
+    {
+        public int AuctionItemId { get; set; }
+        [Display(Name = "Item No.")]
+        public int UniqueItemNumber { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
+        public string Category { get; set; }
+        public bool IsBiddingForCategoryOpen { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Starting Bid")]
+        public int StartingBid { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Bid Increment")]
+        public int BidIncrement { get; set; }
+        public bool IsFixedPrice { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal? HighestBid { get; set; }
+        [Required]
+        public int BidCount { get; set; }
+        [Required]
+        public int Quantity { get; set; }
+        [Required]
+        public int QuantitySoldAtStartingBid { get; set; }
+
+
+        public FiresaleItemViewModel()
+        {
+            //empty for model binding
+        }
+
+        public FiresaleItemViewModel(AuctionItem i)
+        {
+            this.AuctionItemId = i.AuctionItemId;
+            this.UniqueItemNumber = i.UniqueItemNumber;
+            this.Title = i.Title;
+            this.Description = i.Description; //.TruncateTo(50);
+            this.ImageUrl = i.ImageUrl;
+            this.Category = i.Category.Name;
+            this.IsBiddingForCategoryOpen = i.Category.IsBiddingOpen;
+            this.StartingBid = i.StartingBid;
+            this.BidIncrement = i.BidIncrement;
+            this.IsFixedPrice = i.IsFixedPrice;
+            this.Quantity = i.Quantity;
+
+            if (i.AllBids.Any())
+            {
+                this.HighestBid = i.AllBids.Max(b => b.BidAmount);
+                this.BidCount = i.AllBids.Count();
+                QuantitySoldAtStartingBid = i.AllBids.Where(b => b.BidAmount == i.StartingBid).Count();
             }
         }
     }

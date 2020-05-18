@@ -48,6 +48,23 @@ namespace GlobeAuction.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult Firesale()
+        {
+            var auctionItems = db.AuctionItems
+                .Include(a => a.DonationItems)
+                .Include(a => a.AllBids)
+                .Include(a => a.Category)
+                .Where(ai => ai.Quantity > ai.AllBids.Count)
+                .ToList();
+                        
+            var model = new FiresaleItemsViewModel
+            {
+                AuctionItems = auctionItems.Select(i => new FiresaleItemViewModel(i)).ToList()
+            };
+            return View(model);
+        }
+
         // GET: AuctionItems/Details/5
         [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Details(int? id)
