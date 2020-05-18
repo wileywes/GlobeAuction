@@ -367,6 +367,7 @@ namespace GlobeAuction.Models
         public bool IsFixedPrice { get; set; }
         public bool IsInFiresale { get; set; }
         public bool IsFixedPriceSoldOut { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public int FiresalePrice { get; set; }
 
         public CatalogAuctionItemViewModel()
