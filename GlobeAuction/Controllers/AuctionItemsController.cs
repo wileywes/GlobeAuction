@@ -331,7 +331,7 @@ namespace GlobeAuction.Controllers
         [HttpPost, ActionName("SubmitSelectedAuctionItems")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedAuctionItems(string auctionItemsAction, string selectedAuctionItemIds, int? startingAuctionItemNumber, int? auctionItemIdForUpload, IEnumerable<HttpPostedFileBase> files)
+        public ActionResult SubmitSelectedAuctionItems(string auctionItemsAction, string selectedAuctionItemIds, int? startingAuctionItemNumber, int? startingPriceForAuctionItem, int? auctionItemIdForUpload, IEnumerable<HttpPostedFileBase> files)
         {
             var selectedAuctionIds = selectedAuctionItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
@@ -359,6 +359,21 @@ namespace GlobeAuction.Controllers
                         auctionItem.UpdateBy = username;
                         auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                         nextItemNum++;
+                    }
+                    db.SaveChanges();
+                    break;
+                case "SetStartingBidPrice":
+                    if (!selectedAuctionIds.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var selectedAuctionItemsForPrice = db.AuctionItems.Where(ai => selectedAuctionIds.Contains(ai.UniqueItemNumber)).ToList();
+                    if (!selectedAuctionItemsForPrice.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    if (!startingPriceForAuctionItem.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    foreach (var auctionItem in selectedAuctionItemsForPrice)
+                    {
+                        auctionItem.StartingBid = startingPriceForAuctionItem.Value;
+                        auctionItem.UpdateBy = username;
+                        auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     }
                     db.SaveChanges();
                     break;
@@ -819,13 +834,14 @@ namespace GlobeAuction.Controllers
             var catData = new ItemsRepository(db).GetCatalogData();
             model.AuctionItems = catData.AuctionItems;
             model.Categories = catData.Categories;
-            model.TotalFiresaleCount = model.AuctionItems.Where(i => i.IsInFiresale).Count();
+            var inFiresalePeriod = model.AuctionItems.Any(i => i.IsInFiresale);
 
             //temp hack - if any items in firesale only show those
-            if (model.TotalFiresaleCount > 0)
+            if (inFiresalePeriod)
             {
-                model.AuctionItems = model.AuctionItems.Where(i => i.IsInFiresale).ToList();
+                model.AuctionItems = model.AuctionItems.Where(i => i.IsInFiresale && i.Quantity > i.BidCount).ToList();
                 model.Categories = new List<CatalogCategoryViewModel>();
+                model.TotalFiresaleCount = model.AuctionItems.Count;
             }
 
             if (!string.IsNullOrEmpty(model.SelectedCategory))

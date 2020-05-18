@@ -721,7 +721,7 @@ namespace GlobeAuction.Controllers
                 {
                     return RedirectToAction("Bids", new { error = BidErrorType.InvalidItemNumber });
                 }
-                var nextBidIncrement = item.IsFixedPrice == false && item.AllBids.Any() ?
+                var nextBidIncrement = !item.IsFixedPrice && !item.IsInFiresale && item.AllBids.Any() ?
                     item.AllBids.Max(b => b.BidAmount) + item.BidIncrement :
                     item.StartingBid;
 

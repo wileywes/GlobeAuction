@@ -32,7 +32,7 @@ namespace GlobeAuction.Models
             return _itemsByAuctionId[auctionId];
         }
 
-        public void UpdateHighestBidForAuctionId(int auctionId, int newHighestBid)
+        public void UpdateBidInfoForAuctionId(int auctionId, int newHighestBid, int bidCount)
         {
             InitializeCache();
 
@@ -40,6 +40,7 @@ namespace GlobeAuction.Models
             if (_itemsByAuctionId.TryGetValue(auctionId, out item))
             {
                 item.HighestBid = newHighestBid;
+                item.BidCount = bidCount;
             }
         }
 
@@ -365,6 +366,7 @@ namespace GlobeAuction.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public int HighestBid { get; set; }
         public int BidCount { get; set; }
+        public int Quantity { get; set; }
         public bool IsFixedPrice { get; set; }
         public bool IsInFiresale { get; set; }
         public bool IsFixedPriceSoldOut { get; set; }
@@ -387,6 +389,7 @@ namespace GlobeAuction.Models
             this.Category = i.Category;
             this.HighestBid = i.AllBids.Select(b => (int)b.BidAmount).DefaultIfEmpty(i.StartingBid).Max();
             this.BidCount = i.AllBids.Count;
+            this.Quantity = i.Quantity;
             this.IsFixedPrice = i.IsFixedPrice;
             this.IsFixedPriceSoldOut = i.IsFixedPrice && i.AllBids.Count >= i.Quantity;
             this.IsInFiresale = i.IsInFiresale;

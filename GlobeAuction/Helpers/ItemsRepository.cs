@@ -295,14 +295,15 @@ namespace GlobeAuction.Helpers
 
         public void UpdateHighestBidForCachedItem(AuctionItem item)
         {
-            if (item.AllBids.Any())
+            var bids = item.AllBids.ToList();
+            if (bids.Any())
             {
-                var highestBid = item.AllBids.Select(b => b.BidAmount).Max();
-                UpdateHighestBidForCachedItem(item.AuctionItemId, (int)highestBid);
+                var highestBid = bids.Select(b => b.BidAmount).Max();
+                UpdateHighestBidForCachedItem(item.AuctionItemId, (int)highestBid, bids.Count);
             }
             else
             {
-                UpdateHighestBidForCachedItem(item.AuctionItemId, item.StartingBid);
+                UpdateHighestBidForCachedItem(item.AuctionItemId, item.StartingBid, 0);
             }
         }
 
@@ -493,11 +494,11 @@ namespace GlobeAuction.Helpers
             return catData;
         }
 
-        public void UpdateHighestBidForCachedItem(int auctionId, int newHighestBid)
+        public void UpdateHighestBidForCachedItem(int auctionId, int newHighestBid, int newBidCount)
         {
             if (_catalogCache != null)
             {
-                _catalogCache.UpdateHighestBidForAuctionId(auctionId, newHighestBid);
+                _catalogCache.UpdateBidInfoForAuctionId(auctionId, newHighestBid, newBidCount);
             }
         }
 
