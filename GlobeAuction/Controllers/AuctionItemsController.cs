@@ -51,16 +51,22 @@ namespace GlobeAuction.Controllers
         [Authorize(Roles = AuctionRoles.CanEditItems)]
         public ActionResult Firesale()
         {
-            var auctionItems = db.AuctionItems
-                .Include(a => a.DonationItems)
+            var auctionItemsWithAvailable = db.AuctionItems
                 .Include(a => a.AllBids)
                 .Include(a => a.Category)
                 .Where(ai => ai.Quantity > ai.AllBids.Count)
                 .ToList();
-                        
+
+            var auctionItemsInFiresale = db.AuctionItems
+                .Include(a => a.AllBids)
+                .Include(a => a.Category)
+                .Where(ai => ai.IsInFiresale)
+                .ToList();
+
             var model = new FiresaleItemsViewModel
             {
-                AuctionItems = auctionItems.Select(i => new FiresaleItemViewModel(i)).ToList()
+                AvailableForFiresale = auctionItemsWithAvailable.Select(i => new FiresaleItemViewModel(i)).ToList(),
+                InFiresale = auctionItemsInFiresale.Select(i => new FiresaleItemViewModel(i)).ToList()
             };
             return View(model);
         }
@@ -379,12 +385,12 @@ namespace GlobeAuction.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost, ActionName("SubmitSelectedFiresaleItems")]
+        [HttpPost, ActionName("SubmitSelectedFiresaleCandidates")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AuctionRoles.CanEditItems)]
-        public ActionResult SubmitSelectedFiresaleItems(string auctionItemsAction, string selectedAuctionItemIds)
+        public ActionResult SubmitSelectedFiresaleCandidates(string auctionItemsAction, string selectedCandidateAuctionItemIds)
         {
-            var selectedAuctionIds = selectedAuctionItemIds
+            var selectedAuctionIds = selectedCandidateAuctionItemIds
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToList();
@@ -402,6 +408,39 @@ namespace GlobeAuction.Controllers
                     foreach (var auctionItem in selectedAuctionItems.OrderBy(a => a.UniqueItemNumber))
                     {
                         auctionItem.IsInFiresale = true;
+                        auctionItem.UpdateBy = username;
+                        auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
+                    }
+                    db.SaveChanges();
+                    break;
+            }
+
+            return RedirectToAction("Firesale");
+        }
+
+        [HttpPost, ActionName("SubmitSelectedFiresaleItems")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanEditItems)]
+        public ActionResult SubmitSelectedFiresaleItems(string firesaleItemsAction, string selectedFiresaleAuctionItemIds)
+        {
+            var selectedAuctionIds = selectedFiresaleAuctionItemIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToList();
+
+            new ItemsRepository(db).ClearCatalogDataCache();
+            var username = User.Identity.GetUserName();
+            switch (firesaleItemsAction)
+            {
+                case "RemoveFromFiresale":
+                    if (!selectedAuctionIds.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var selectedAuctionItems = db.AuctionItems.Where(ai => selectedAuctionIds.Contains(ai.UniqueItemNumber)).ToList();
+                    if (!selectedAuctionItems.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    foreach (var auctionItem in selectedAuctionItems.OrderBy(a => a.UniqueItemNumber))
+                    {
+                        auctionItem.IsInFiresale = false;
                         auctionItem.UpdateBy = username;
                         auctionItem.UpdateDate = Utilities.GetEasternTimeNow();
                     }
@@ -781,6 +820,13 @@ namespace GlobeAuction.Controllers
             model.AuctionItems = catData.AuctionItems;
             model.Categories = catData.Categories;
             model.TotalFiresaleCount = model.AuctionItems.Where(i => i.IsInFiresale).Count();
+
+            //temp hack - if any items in firesale only show those
+            if (model.TotalFiresaleCount > 0)
+            {
+                model.AuctionItems = model.AuctionItems.Where(i => i.IsInFiresale).ToList();
+                model.Categories = new List<CatalogCategoryViewModel>();
+            }
 
             if (!string.IsNullOrEmpty(model.SelectedCategory))
             {

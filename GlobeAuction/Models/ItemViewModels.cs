@@ -16,7 +16,8 @@ namespace GlobeAuction.Models
 
     public class FiresaleItemsViewModel
     {
-        public List<FiresaleItemViewModel> AuctionItems { get; set; }
+        public List<FiresaleItemViewModel> AvailableForFiresale { get; set; }
+        public List<FiresaleItemViewModel> InFiresale { get; set; }
     }
 
     public class CatalogData

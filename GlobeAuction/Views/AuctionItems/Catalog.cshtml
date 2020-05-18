@@ -5,11 +5,13 @@
 }
 
 <div class="sidenav">
-    @Html.ActionLink("All (" + Model.TotalItemCount + ")", "Catalog", new { SelectedCategory = "" })
-
     @if (Model.TotalFiresaleCount > 0)
     {
         @Html.ActionLink("Firesale (" + Model.TotalFiresaleCount + ")", "Catalog", new { SelectedCategory = "#firesale#" })
+    }
+    else
+    {
+        @Html.ActionLink("All (" + Model.TotalItemCount + ")", "Catalog", new { SelectedCategory = "" })
     }
 
     @foreach (var cat in Model.Categories.Where(c => c.ItemCount > 0))

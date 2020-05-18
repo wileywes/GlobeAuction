@@ -10,12 +10,12 @@
 <h2>Auction Items with Remaining Quantity</h2>
 
 
-@using (Html.BeginForm("SubmitSelectedFiresaleItems", "AuctionItems", FormMethod.Post, new { id = "submitSelectedFiresaleItemsForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("SubmitSelectedFiresaleCandidates", "AuctionItems", FormMethod.Post, new { id = "submitSelectedFiresaleCandidatesForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
     @Html.Hidden("auctionItemsAction");
-    @Html.Hidden("selectedAuctionItemIds");
+    @Html.Hidden("selectedCandidateAuctionItemIds");
 
     <table class="table table-striped table-bordered" id="auctionItemsTable">
         <thead>
@@ -48,7 +48,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.AuctionItems)
+            @foreach (var item in Model.AvailableForFiresale)
             {
                 <tr>
                     <td>
@@ -85,9 +85,94 @@
                         @Html.DisplayFor(modelItem => item.HighestBid)
                     </td>
                     <td class="text-nowrap">
-                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
+                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+<h2>Items In Firesale</h2>
+
+
+@using (Html.BeginForm("SubmitSelectedFiresaleItems", "AuctionItems", FormMethod.Post, new { id = "submitSelectedFiresaleItemsForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Hidden("firesaleItemsAction");
+    @Html.Hidden("selectedFiresaleAuctionItemIds");
+
+    <table class="table table-striped table-bordered" id="firesaleItemsTable">
+        <thead>
+            <tr>
+                <th>
+                    Item No.
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>In Firesale?</th>
+                <th>Quantity</th>
+                <th>
+                    Bid Count
+                </th>
+                <th>Bids @Html.Raw("@") Starting Bid</th>
+                <th>
+                    Starting Bid
+                </th>
+                <th>
+                    Highest Bid
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.InFiresale)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @(item.IsInFiresale ? "Yes" : "No")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.QuantitySoldAtStartingBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartingBid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HighestBid)
+                    </td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId })
                     </td>
                 </tr>
             }
@@ -127,8 +212,37 @@
                             alert('You must select rows to convert to firesale.');
                         }
                         else {
-                            $("#selectedAuctionItemIds").val(getSelectedRows(data));
+                            $("#selectedCandidateAuctionItemIds").val(getSelectedRows(data));
                             $("#auctionItemsAction").val("PutItemsInFiresale");
+                            $('#submitSelectedFiresaleCandidatesForm').submit();
+                        }
+                    }
+                }
+            ],
+            select: {
+                style: 'os'
+            }
+        });
+        
+        var firesaleItemsDataTable = $('#firesaleItemsTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                },
+                {
+                    text: 'Remove From Firesale',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length == 0) {
+                            alert('You must select rows to convert to firesale.');
+                        }
+                        else {
+                            $("#selectedFiresaleAuctionItemIds").val(getSelectedRows(data));
+                            $("#firesaleItemsAction").val("RemoveFromFiresale");
                             $('#submitSelectedFiresaleItemsForm').submit();
                         }
                     }
