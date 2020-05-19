@@ -143,7 +143,7 @@
                                             @Html.DisplayFor(m => Model.ItemPurchases[i].Price)
                                         </td>
                                         <td>
-                                            @Html.EditorFor(m => Model.ItemPurchases[i].QuantityPurchased, new { htmlAttributes = new { @class = "form-control", @oninput = "recalcTotal();" } })
+                                            @Html.EditorFor(m => Model.ItemPurchases[i].QuantityPurchased, new { htmlAttributes = new { @class = "form-control", @style = "width:100px", @oninput = "recalcTotal();" } })
                                             @Html.ValidationMessageFor(model => Model.ItemPurchases[i].QuantityPurchased, "", new { @class = "text-danger" })
                                         </td>
                                     </tr>
