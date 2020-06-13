@@ -54,17 +54,40 @@ where bu.IsDeleted = 0
 
 
 --Fund-a-Project donations
-select i.FirstName, i.LastName, i.Email, si.Title, sip.PricePaid, sip.Quantity
+select i.FirstName, i.LastName, i.Email, si.Title, sip.PricePaid, sip.Quantity, 'Store' as PurchaseType
 from StoreItemPurchases sip
 inner join StoreItems si on sip.StoreItem_StoreItemID = si.StoreItemID
 inner join Invoices i on sip.invoice_invoiceid=i.invoiceid
 where i.ispaid=1
-  and si.Title like '%fund-%'
+  and si.description like 'Fund-A-Project%'
 UNION ALL
-select i.FirstName, i.LastName, i.Email, ai.Title, ai.WinningBid as PricePaid, 1 as Quantity
+select i.FirstName, i.LastName, i.Email, ai.Title, b.AmountPaid, 1 as Quantity, 'Auction' as PurchaseType
 from AuctionItems ai
-inner join Invoices i on ai.Invoice_InvoiceId = i.InvoiceId
-where ai.Category='Fund-a-Project'
+inner join Bids b on b.AuctionItem_AuctionItemId=ai.AuctionItemId
+inner join Invoices i on b.Invoice_InvoiceId = i.InvoiceId
+where ai.Title like '%Fund-a-Project%'
+ and b.IsWinning=1
+ and i.IsPaid=1
+ 
+--Fund-a-Project donations duplicated by homeroom teacher of bidder
+select i.FirstName, i.LastName, i.Email, si.Title, sip.PricePaid, sip.Quantity, 'Store' as PurchaseType, s.HomeroomTeacher
+from StoreItemPurchases sip
+inner join StoreItems si on sip.StoreItem_StoreItemID = si.StoreItemID
+inner join Invoices i on sip.invoice_invoiceid=i.invoiceid
+left join Students s on s.Bidder_BidderId = i.Bidder_BidderId
+where i.ispaid=1
+  and si.description like 'Fund-A-Project%'
+UNION ALL
+select i.FirstName, i.LastName, i.Email, ai.Title, b.AmountPaid, 1 as Quantity, 'Auction' as PurchaseType, s.HomeroomTeacher
+from AuctionItems ai
+inner join Bids b on b.AuctionItem_AuctionItemId=ai.AuctionItemId
+inner join Invoices i on b.Invoice_InvoiceId = i.InvoiceId
+left join Students s on s.Bidder_BidderId = i.Bidder_BidderId
+where ai.Title like '%Fund-a-Project%'
+ and b.IsWinning=1
+ and i.IsPaid=1
+
+
 
 --Teacher Treasure winners
 select ai.UniqueItemNumber, ai.Title, d.email as DonorEmail, i.biddernumber, i.firstname, i.lastname, i.email as BidderEmail, b.bidamount, b.amountpaid
