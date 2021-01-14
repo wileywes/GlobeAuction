@@ -1,4 +1,10 @@
-﻿
+﻿--bidders with a firesale purchase
+select d.BidderNumber, d.Email, d.FirstName, d.LastName, count(*) as FireSaleCount
+from bids b
+inner join bidders d on d.BidderId = b.Bidder_BidderId
+where b.createdate > '2020-05-18'
+group by d.BidderNumber, d.Email, d.FirstName, d.LastName
+
 --items with no image
 select * from AuctionItems where imageUrl = '' or imageurl is null
 
