@@ -105,3 +105,10 @@ inner join DonationItems di on di.auctionitem_auctionitemid = ai.auctionitemid
 inner join Donors d on di.donor_donorid = d.donorid
 where b.iswinning = 1
   and ac.Name='Teacher Treasure'
+
+  
+select ai.UniqueItemNumber, ai.Title, b.bidamount, b.amountpaid, di.Title, di.Description, di.DollarValue, di.UseDigitalCertificateForWinner, d.*
+from DonationItems di
+inner join Donors d on di.donor_donorid = d.donorid
+inner join AuctionItems ai on ai.AuctionItemId = di.AuctionItem_AuctionItemId
+inner join Bids b on b.AuctionItem_AuctionItemId = ai.AuctionItemId and b.IsWinning=1
