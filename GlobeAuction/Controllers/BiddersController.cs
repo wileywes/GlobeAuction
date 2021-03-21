@@ -144,7 +144,7 @@ namespace GlobeAuction.Controllers
                         {
                             //in 2020 we removed auction guests since there was just one free ticket, so backfill the data manually here
                             var ticketTypes = GetTicketTypesForRegistration(promoCode);
-                            var ticketToUse = ticketTypes.FirstOrDefault(t => t.Name.StartsWith("2020 Auction Registration")) ?? ticketTypes.FirstOrDefault();
+                            var ticketToUse = ticketTypes.FirstOrDefault(t => t.Name.StartsWith("2021 Auction Registration")) ?? ticketTypes.FirstOrDefault();
 
                             if (ticketToUse == null) throw new ApplicationException("Unable to find ticket type to use");
 
