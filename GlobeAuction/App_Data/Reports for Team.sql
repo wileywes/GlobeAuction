@@ -105,8 +105,39 @@ inner join DonationItems di on di.auctionitem_auctionitemid = ai.auctionitemid
 inner join Donors d on di.donor_donorid = d.donorid
 where b.iswinning = 1
   and ac.Name='Teacher Treasure'
-
   
+--GLOBE Perks winners last year
+select ai.UniqueItemNumber, ai.Title, d.email as DonorEmail, i.biddernumber, i.firstname, i.lastname, i.email as BidderEmail, b.bidamount, b.amountpaid
+from [2020_Bids] b
+inner join [2020_AuctionItems] ai on ai.auctionitemid = b.auctionitem_auctionitemid
+inner join [2020_AuctionCategories] ac on ac.auctioncategoryid = ai.category_auctioncategoryid
+inner join [2020_Bidders] i on i.bidderid = b.bidder_bidderid
+inner join [2020_DonationItems] di on di.auctionitem_auctionitemid = ai.auctionitemid
+inner join [2020_Donors] d on di.donor_donorid = d.donorid
+where b.iswinning = 1
+  and ac.Name='GLOBE Perks'
+  
+--GLOBE Perks that didn't sell last year
+select ai.UniqueItemNumber, ai.Title, d.email as DonorEmail
+from [2020_AuctionItems] ai
+inner join [2020_AuctionCategories] ac on ac.auctioncategoryid = ai.category_auctioncategoryid
+inner join [2020_DonationItems] di on di.auctionitem_auctionitemid = ai.auctionitemid
+inner join [2020_Donors] d on di.donor_donorid = d.donorid
+left join [2020_Bids] b on ai.auctionitemid = b.auctionitem_auctionitemid and b.IsWinning=0
+where ac.Name='GLOBE Perks'
+ and b.BidId is null
+
+--all winners from a year
+select ac.Name as CategoryName, ai.UniqueItemNumber, ai.Title, d.email as DonorEmail, i.biddernumber, i.firstname, i.lastname, i.email as BidderEmail, b.bidamount, b.amountpaid
+from [2019_Bids] b
+inner join [2019_AuctionItems] ai on ai.auctionitemid = b.auctionitem_auctionitemid
+inner join [2019_AuctionCategories] ac on ac.auctioncategoryid = ai.category_auctioncategoryid
+inner join [2019_Bidders] i on i.bidderid = b.bidder_bidderid
+inner join [2019_DonationItems] di on di.auctionitem_auctionitemid = ai.auctionitemid
+inner join [2019_Donors] d on di.donor_donorid = d.donorid
+where b.iswinning = 1
+  and ac.Name='Live'
+
 select ai.UniqueItemNumber, ai.Title, b.bidamount, b.amountpaid, di.Title, di.Description, di.DollarValue, di.UseDigitalCertificateForWinner, d.*
 from DonationItems di
 inner join Donors d on di.donor_donorid = d.donorid
