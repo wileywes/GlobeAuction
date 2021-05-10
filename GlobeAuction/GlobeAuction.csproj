@@ -590,7 +590,7 @@
     <Content Include="Content\Images\h_Register.gif" />
     <Content Include="Content\Images\h_Sponsors.gif" />
     <Content Include="Content\Images\h_store.gif" />
-    <Content Include="Content\Images\sponsors\00_Platinum\clinebell.png" />
+    <Content Include="Content\Images\sponsors\00_Platinum\Clinebell Ortho w_bkgd.jpg" />
     <Content Include="Content\Images\sponsors\00_Platinum\Green Ortho w_bkgd.jpg" />
     <Content Include="Content\Images\sponsors\00_Platinum\luxe.jpg" />
     <Content Include="Content\Images\sponsors\01_Gold\Elite Island Resorts w_bkgd.jpg" />
@@ -598,6 +598,7 @@
     <Content Include="Content\Images\sponsors\02_Silver\henderson mill dental.jpg" />
     <Content Include="Content\Images\sponsors\02_Silver\leslie beach.png" />
     <Content Include="Content\Images\sponsors\02_Silver\overlook.jpg" />
+    <Content Include="Content\Images\sponsors\02_Silver\RDG w_bkgd.jpg" />
     <Content Include="Content\Images\sponsors\02_Silver\total wine.png" />
     <Content Include="Content\Images\StoreItems\BGE logo.jpg" />
     <Content Include="Content\Images\StoreItems\disney and bge mix.jpg" />
