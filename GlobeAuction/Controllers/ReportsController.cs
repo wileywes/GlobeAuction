@@ -1,7 +1,9 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using GlobeAuction.Helpers;
 using GlobeAuction.Models;
 
 namespace GlobeAuction.Controllers
@@ -13,44 +15,9 @@ namespace GlobeAuction.Controllers
 
         public ActionResult AllRevenueReports()
         {
-            var allInvoices = db.Invoices
-                .Include(i => i.StoreItemPurchases)
-                .Include(i => i.TicketPurchases)
-                .Include("StoreItemPurchases.StoreItem")
-                .ToList();
-            
-            var paidInvoices = allInvoices.Where(i => i.IsPaid).ToList();
-
-            var paidCheckoutInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.AuctionCheckout).ToList();
-            var paidRegistrationInvoices = paidInvoices.Where(i => i.InvoiceType == InvoiceType.BidderRegistration).ToList();
-
-            var unpaidBids = db.Bids
-                .Include(b => b.AuctionItem.Category)
-                .Where(b => b.IsWinning && (b.Invoice == null || b.Invoice.IsPaid == false))
-                .ToList();
-
-            var unpaidBidsAmount = unpaidBids.Select(b => b.BidAmount).DefaultIfEmpty(0).Sum();
-
-            var paidBids = db.Bids
-                .Include(b => b.AuctionItem.Category)
-                .Where(b => b.IsWinning && b.AmountPaid.HasValue)
-                .ToList();
-
-            var paidBidsAmount = paidBids
-                .Select(b => b.AmountPaid.Value)
-                .DefaultIfEmpty(0)
-                .Sum();
-
-            var byType = new AllRevenueByTypeReportModel
-            {
-                AuctionItemsPaid = paidBidsAmount,
-                AuctionItemsUnpaid = unpaidBidsAmount,
-                BidderTickets = paidRegistrationInvoices.Sum(i => i.TicketPurchases.Sum(t => t.TicketPricePaid.GetValueOrDefault(0))),
-                RaffleTicketsViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-                StoreSalesViaRegistration = paidRegistrationInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-                RaffleTicketsViaStore = paidCheckoutInvoices.Sum(i => i.StoreItemPurchases.Where(sip => sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-                StoreSalesViaStore = paidCheckoutInvoices.Sum(b => b.StoreItemPurchases.Where(sip => !sip.StoreItem.IsRaffleTicket).Sum(sip => sip.PricePaid.GetValueOrDefault(0))),
-            };
+            List<Invoice> allInvoices, paidInvoices;
+            List<Bid> unpaidBids, paidBids;
+            var byType = new RevenueHelper(db).GetAllRevenueByType(out allInvoices, out paidInvoices, out unpaidBids, out paidBids);
 
             //fund-a-project
             var fundProjectBids = db.Bids

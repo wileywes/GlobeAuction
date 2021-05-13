@@ -147,24 +147,7 @@ namespace GlobeAuction.Helpers
 
         private void RecalculateRevenueTotals()
         {
-            var paidInvoices = db.Invoices
-                .Include(i => i.Bids)
-                .Include(i => i.StoreItemPurchases)
-                .Include(i => i.TicketPurchases)
-                .Where(i => i.IsPaid)
-                .ToList();
-
-            var totalRevenueFromPaidInvoices = paidInvoices.Sum(i => i.TotalPaid);
-            
-            var unpaidAuctionItems = db.Bids
-                .Where(b => b.IsWinning && (b.Invoice == null || b.Invoice.IsPaid == false))
-                .Select(b => b.BidAmount)
-                .DefaultIfEmpty(0)
-                .Sum();
-
-            var totalRevenue = totalRevenueFromPaidInvoices + unpaidAuctionItems;
-
-            //_logger.Info($"Recalc Revenue:{totalRevenue:C} PaidInvoicesCnt={paidInvoices.Count} PaidInvoicesRev={totalRevenue:C} UnpaidBids:{unpaidAuctionItems:C}");
+            var totalRevenue = new RevenueHelper(db).GetAllRevenueByType().Total;
             RevenueHelper.SetTotalRevenue(totalRevenue);
         }
     }
