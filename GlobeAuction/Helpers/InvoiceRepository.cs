@@ -146,6 +146,8 @@ namespace GlobeAuction.Helpers
         {
             if (manualPayMethod.HasValue)
             {
+                var amountNotAlreadyInRevenue = 0m;
+
                 invoice.IsPaid = true;
                 invoice.WasMarkedPaidManually = true;
                 invoice.PaymentMethod = manualPayMethod.Value;
@@ -153,7 +155,9 @@ namespace GlobeAuction.Helpers
 
                 foreach (var sip in invoice.StoreItemPurchases)
                 {
-                    sip.PricePaid = sip.Price * sip.Quantity;
+                    var pricePaid = sip.Price * sip.Quantity;
+                    sip.PricePaid = pricePaid;
+                    amountNotAlreadyInRevenue += pricePaid;
                 }
 
                 if (invoice.TicketPurchases != null)
@@ -161,6 +165,7 @@ namespace GlobeAuction.Helpers
                     foreach(var ticket in invoice.TicketPurchases)
                     {
                         ticket.TicketPricePaid = ticket.AuctionGuest.TicketPrice;
+                        amountNotAlreadyInRevenue += ticket.AuctionGuest.TicketPrice;
                     }
                 }
 
@@ -179,7 +184,7 @@ namespace GlobeAuction.Helpers
                 //mark all as paid when it's manual
                 invoice.TotalPaid = invoice.Total;
 
-                RevenueHelper.IncrementTotalRevenue(invoice.TotalPaid);
+                RevenueHelper.IncrementTotalRevenue(amountNotAlreadyInRevenue);
             }
         }
 
@@ -187,6 +192,8 @@ namespace GlobeAuction.Helpers
         {
             if (ppTrans.WasPaymentSuccessful && invoice.IsPaid == false)
             {
+                var amountNotAlreadyInRevenue = 0m;
+
                 invoice.PaymentTransaction = ppTrans;
                 invoice.IsPaid = true;
                 invoice.TotalPaid = ppTrans.PaymentGross;
@@ -200,11 +207,15 @@ namespace GlobeAuction.Helpers
                     var lineExtendedPrice = storeItem.Price * storeItem.Quantity;
                     storeItem.PricePaid = lineExtendedPrice;
                     storeItem.PurchaseTransaction = ppTrans;
+
+                    amountNotAlreadyInRevenue += lineExtendedPrice;
                 }
 
                 foreach(var ticket in invoice.TicketPurchases)
                 {
                     ticket.TicketPricePaid = ticket.AuctionGuest.TicketPrice;
+
+                    amountNotAlreadyInRevenue += ticket.AuctionGuest.TicketPrice;
                 }
 
                 foreach(var bid in invoice.Bids)
@@ -218,7 +229,7 @@ namespace GlobeAuction.Helpers
 
                 db.SaveChanges();
 
-                RevenueHelper.IncrementTotalRevenue(invoice.TotalPaid);
+                RevenueHelper.IncrementTotalRevenue(amountNotAlreadyInRevenue);
 
                 if (invoice.InvoiceType == InvoiceType.BidderRegistration)
                 {

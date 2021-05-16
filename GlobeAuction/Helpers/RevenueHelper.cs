@@ -73,7 +73,7 @@ namespace GlobeAuction.Helpers
                 .ToList();
 
             var paidBidsAmount = paidBids
-                .Select(b => b.AmountPaid.Value)
+                .Select(b => b.AmountPaid.GetValueOrDefault())
                 .DefaultIfEmpty(0)
                 .Sum();
 
