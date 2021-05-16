@@ -136,7 +136,7 @@ namespace GlobeAuction.Helpers
                     .Where(s => s.IsPaid)
                     .Select(GetStoreItemPurchaseLineString));
 
-                footerNotes += "All gift card purchases can be picked up at the front office of your child's campus beginning Friday, March 15.  More details to come.";
+                //footerNotes += "All gift card purchases can be picked up at the front office of your child's campus beginning Friday, March 15.  More details to come.";
             }
 
             var body = GetInvoiceEmail(
