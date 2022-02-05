@@ -46,7 +46,7 @@ namespace GlobeAuction.Helpers
             }
             catch (Exception exc)
             {
-                _logger.Error(exc, "Background thread is crashing");
+                _logger.Error(exc, "Background thread is crashing: " + exc.Message);
 
                 var body = "Background thread is crashing" + Environment.NewLine + exc;
 
