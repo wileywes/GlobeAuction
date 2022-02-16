@@ -190,6 +190,12 @@ namespace GlobeAuction.Models
         public int MessagesFailed { get; set; }
     }
 
+    public class DonorsViewModel
+    {
+        public List<Donor> Donors { get; set; }
+        public NotifyResultViewModel EmailTaxReceiptsResult { get; set; }
+    }
+
     public class DonationItemViewModel
     {
         public int DonationItemId { get; set; }

@@ -56,7 +56,6 @@ namespace GlobeAuction.Helpers
         private static readonly string _donorReceiptEmailBcc = ConfigurationManager.AppSettings["DonorReceiptEmailBcc"];
         private static readonly string _sendGridApiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
         private static readonly string _sendGridUsername = ConfigurationManager.AppSettings["SendGridUsername"];
-        private static readonly string _sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
         private readonly string _baseFilePath;
         private readonly bool _isLocalHost;
 
@@ -542,7 +541,7 @@ namespace GlobeAuction.Helpers
 
             var smtp = new SmtpClient("smtp.sendgrid.net", 587)
             {
-                Credentials = new NetworkCredential(_sendGridUsername, _sendGridPassword)
+                Credentials = new NetworkCredential(_sendGridUsername, _sendGridApiKey)
             };
 
             Utilities.RetryIt(attemptNum => smtp.Send(msg), "SendEmail", 3);

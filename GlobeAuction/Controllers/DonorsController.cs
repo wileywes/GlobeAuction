@@ -17,9 +17,18 @@ namespace GlobeAuction.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Donors
-        public ActionResult Index()
+        public ActionResult Index(int? receiptSuccess, int? receiptFailed)
         {
-            return View(db.Donors.Include(d => d.DonationItems).ToList());
+            var viewModel = new DonorsViewModel
+            {
+                Donors = db.Donors.Include(d => d.DonationItems).ToList(),
+                EmailTaxReceiptsResult = new NotifyResultViewModel
+                {
+                    MessagesSent = receiptSuccess.GetValueOrDefault(),
+                    MessagesFailed = receiptFailed.GetValueOrDefault()
+                }
+            };
+            return View(viewModel);
         }
 
         // GET: Donors/Details/5
@@ -67,40 +76,85 @@ namespace GlobeAuction.Controllers
             }
             return View(donor);
         }
-        
+
         [Authorize(Roles = AuctionRoles.CanAdminUsers)]
         public ActionResult EmailTaxReceipts()
         {
+            NLog.LogManager.GetCurrentClassLogger().Info($"Starting to email donor tax receipts.");
+
             var donorsToEmail = db.Donors.Where(d => !d.HasTaxReceiptBeenEmailed).Include(d => d.DonationItems).ToList();
+
+            NLog.LogManager.GetCurrentClassLogger().Info($"Found {donorsToEmail.Count} donors to check for tax receipts.");
 
             var model = new NotifyResultViewModel();
             var emailHelper = EmailHelperFactory.Instance();
             foreach (var donor in donorsToEmail)
             {
-                try
-                {
-                    //only include items that have value
-                    var itemsToInclude = donor.DonationItems.Where(d => d.DollarValue.HasValue && !d.IsDeleted).ToList();
-
-                    //skip this guy if no items had a dollar value
-                    if (!itemsToInclude.Any()) continue;
-
-                    emailHelper.SendDonorTaxReceipt(donor, itemsToInclude);
-                    model.MessagesSent++;
-                    
-                    donor.HasTaxReceiptBeenEmailed = true;
-                    db.SaveChanges();
-                }
-                catch (Exception exc)
-                {
-                    model.MessagesFailed++;
-                    model.ErrorMessage = exc.Message;
-                }
+                EmailTaxReceiptToDonor(donor, model, emailHelper);
             }
 
             return View(model);
         }
-        
+
+        [HttpPost, ActionName("SubmitSelectedDonors")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = AuctionRoles.CanAdminUsers)]
+        public ActionResult SubmitSelectedDonors(string donorsAction, string selectedDonorIds)
+        {
+            var donorIds = selectedDonorIds
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToList();
+
+            var resultsModel = new NotifyResultViewModel();
+            switch (donorsAction)
+            {
+                case "EmailTaxReceipt":
+                    if (!donorIds.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var donorsToEmail = db.Donors
+                        .Where(d => donorIds.Contains(d.DonorId) && !d.HasTaxReceiptBeenEmailed)
+                        .Include(d => d.DonationItems)
+                        .ToList();
+
+                    var emailHelper = EmailHelperFactory.Instance();
+                    foreach (var donor in donorsToEmail)
+                    {
+                        EmailTaxReceiptToDonor(donor, resultsModel, emailHelper);
+                    }
+                    break;
+            }
+
+            return RedirectToAction("Index", new { receiptSuccess = resultsModel.MessagesSent, receiptFailed = resultsModel.MessagesFailed });
+        }
+
+        private void EmailTaxReceiptToDonor(Donor donor, NotifyResultViewModel model, IEmailHelper emailHelper)
+        {
+            try
+            {
+                //only include items that have value
+                var itemsToInclude = donor.DonationItems.Where(d => d.DollarValue.HasValue && !d.IsDeleted).ToList();
+
+                //skip this guy if no items had a dollar value
+                if (!itemsToInclude.Any())
+                {
+                    NLog.LogManager.GetCurrentClassLogger().Info($"Skipping tax receipt for donor {donor.BusinessName} since no items with dollar value.");
+                }
+
+                emailHelper.SendDonorTaxReceipt(donor, itemsToInclude);
+                model.MessagesSent++;
+
+                donor.HasTaxReceiptBeenEmailed = true;
+                db.SaveChanges();
+
+                NLog.LogManager.GetCurrentClassLogger().Info($"Sent tax receipt for donor {donor.BusinessName} to {donor.Email}.");
+            }
+            catch (Exception exc)
+            {
+                model.MessagesFailed++;
+                model.ErrorMessage = exc.Message;
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {
