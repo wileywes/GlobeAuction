@@ -2,7 +2,7 @@
 
 select t.name,
   (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) as FksReferencingTable,
-  'select * into [2020_' + name + '] from ' + name as BackupScript,
+  'select * into [2021_' + name + '] from ' + name as BackupScript,
   'ALTER TABLE [' + name + '] NOCHECK CONSTRAINT all' as DisableConstraint,
   'DELETE from ' + name as DeleteScript,
   'ALTER TABLE [' + name + '] WITH CHECK CHECK CONSTRAINT all' as EnableConstraint,
@@ -19,22 +19,22 @@ order by (select count(*) from sys.foreign_keys where referenced_object_id=t.obj
 
 
 --1) run the SELECT INTO statements
-select * into [2020_TicketPurchases] from TicketPurchases
-select * into [2020_Bids] from Bids
-select * into [2020_CatalogFavorites] from CatalogFavorites
-select * into [2020_StoreItemPurchases] from StoreItemPurchases
-select * into [2020_BundleComponents] from BundleComponents
-select * into [2020_Students] from Students
-select * into [2020_AuctionGuests] from AuctionGuests
-select * into [2020_Solicitors] from Solicitors
-select * into [2020_DonationItems] from DonationItems
-select * into [2020_Donors] from Donors
-select * into [2020_AuctionCategories] from AuctionCategories
-select * into [2020_PayPalTransactions] from PayPalTransactions
-select * into [2020_AuctionItems] from AuctionItems
-select * into [2020_Invoices] from Invoices
-select * into [2020_StoreItems] from StoreItems
-select * into [2020_Bidders] from Bidders
+select * into [2021_TicketPurchases] from TicketPurchases
+select * into [2021_Bids] from Bids
+select * into [2021_CatalogFavorites] from CatalogFavorites
+select * into [2021_StoreItemPurchases] from StoreItemPurchases
+select * into [2021_BundleComponents] from BundleComponents
+select * into [2021_Students] from Students
+select * into [2021_AuctionGuests] from AuctionGuests
+select * into [2021_Solicitors] from Solicitors
+select * into [2021_DonationItems] from DonationItems
+select * into [2021_Donors] from Donors
+select * into [2021_AuctionCategories] from AuctionCategories
+select * into [2021_PayPalTransactions] from PayPalTransactions
+select * into [2021_AuctionItems] from AuctionItems
+select * into [2021_Invoices] from Invoices
+select * into [2021_StoreItems] from StoreItems
+select * into [2021_Bidders] from Bidders
 
 --2) disable check constraints
 ALTER TABLE [TicketPurchases] NOCHECK CONSTRAINT all

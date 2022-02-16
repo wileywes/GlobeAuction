@@ -525,6 +525,7 @@
     <Compile Include="Models\ReportsModels.cs" />
     <Compile Include="Models\StoreItemModels.cs" />
     <Compile Include="Models\StoreItemViewModels.cs" />
+    <Compile Include="Models\FaqModels.cs" />
     <Compile Include="Models\TicketModels.cs" />
     <Compile Include="Models\ItemViewModels.cs" />
     <Compile Include="Models\BidderModels.cs" />
@@ -539,6 +540,7 @@
     <Content Include="App_Data\aspnet-GlobeAuction-20161005062405_log.ldf">
       <DependentUpon>aspnet-GlobeAuction-20161005062405.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\Restore last year data.sql" />
     <Content Include="App_Data\Backup and Create new tables for new year.sql" />
     <Content Include="App_Data\Category Updates Feb 24.sql" />
     <Content Include="App_Data\Identity queries.sql" />
