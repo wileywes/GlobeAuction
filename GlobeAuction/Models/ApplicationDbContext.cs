@@ -52,5 +52,11 @@ namespace GlobeAuction.Models
         public DbSet<Donor> Donors { get; set; }
 
         public System.Data.Entity.DbSet<GlobeAuction.Models.AuctionCategory> AuctionCategories { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.Faq> Faqs { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.FaqCategory> FaqCategories { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.ConfigProperty> ConfigProperties { get; set; }
     }
 }

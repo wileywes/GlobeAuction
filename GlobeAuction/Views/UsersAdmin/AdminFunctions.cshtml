@@ -12,6 +12,8 @@
     @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanAdminUsers))
     {
         <li>@Html.ActionLink("Auction Item Categories", "Index", "AuctionCategories")</li>
+        <li>@Html.ActionLink("FAQs", "List", "Faqs")</li>
+        <li>@Html.ActionLink("Configurations", "Index", "ConfigProperties")</li>
         <li>@Html.ActionLink("Donors", "Index", "Donors")</li>
         <li>@Html.ActionLink("Users", "Index", "UsersAdmin")</li>
         <li>@Html.ActionLink("Logs", "Index", "LogFiles")</li>

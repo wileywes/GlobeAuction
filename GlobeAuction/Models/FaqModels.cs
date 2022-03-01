@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace GlobeAuction.Models
 {
@@ -9,8 +11,10 @@ namespace GlobeAuction.Models
         public int FaqId { get; set; }
 
         [Required]
+        [AllowHtml]
         public string Question { get; set; }
 
+        [AllowHtml]
         public string Answer { get; set; }
 
         [Required]
@@ -34,5 +38,16 @@ namespace GlobeAuction.Models
         
         [Required]
         public int DisplayOrder { get; set; }
+    }
+
+    public class FaqsViewModel
+    {
+        public List<FaqCategoryViewModel> CategoriesWithFAQs { get; set; }
+    }
+
+    public class FaqCategoryViewModel
+    {
+        public FaqCategory Category { get; set; }
+        public List<Faq> FAQs { get; set; }
     }
 }

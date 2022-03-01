@@ -1,0 +1,66 @@
+﻿@model IEnumerable<GlobeAuction.Models.FaqCategory>
+
+@{
+    ViewBag.Title = "FAQ Categories";
+}
+
+<h2>FAQ Categories</h2>
+
+<p>
+    <table>
+        <tr>
+            <td>@Html.ActionLink("Create New FAQ Category", "Create") &nbsp; &nbsp;</td>
+            <td>@Html.ActionLink("FAQs", "List", "Faqs")</td>
+        </tr>
+    </table>
+</p>
+
+<table class="table table-striped table-bordered" id="faqsTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DisplayOrder)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.OrderBy(c => c.DisplayOrder))
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DisplayOrder)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.FaqCategoryId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.FaqCategoryId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.FaqCategoryId })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#faqsTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
+                }
+            ],
+            select: {
+                style: 'os'
+            }
+        });
+    });
+</script>

@@ -849,7 +849,7 @@ namespace GlobeAuction.Controllers
 
 
             //TEACHER NAMES
-            ViewBag.TeacherNames = AuctionConstants.TeacherNames
+            ViewBag.TeacherNames = new ConfigHelper(db).GetTeacherNames()
                 .Select(t => new SelectListItem { Text = t, Value = t });
         }
 
