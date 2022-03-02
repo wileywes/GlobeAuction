@@ -48,5 +48,10 @@ namespace GlobeAuction.Helpers
 
             return null;
         }
+
+        public static void ResetCache()
+        {
+            _propertiesByName = null;
+        }
     }
 }

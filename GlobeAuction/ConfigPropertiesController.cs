@@ -57,6 +57,9 @@ namespace GlobeAuction
 
                 db.ConfigProperties.Add(configProperty);
                 db.SaveChanges();
+
+                ConfigHelper.ResetCache();
+
                 return RedirectToAction("Index");
             }
 
@@ -92,6 +95,9 @@ namespace GlobeAuction
 
                 db.Entry(configProperty).State = EntityState.Modified;
                 db.SaveChanges();
+
+                ConfigHelper.ResetCache();
+
                 return RedirectToAction("Index");
             }
             return View(configProperty);
@@ -120,6 +126,9 @@ namespace GlobeAuction
             ConfigProperty configProperty = db.ConfigProperties.Find(id);
             db.ConfigProperties.Remove(configProperty);
             db.SaveChanges();
+
+            ConfigHelper.ResetCache();
+
             return RedirectToAction("Index");
         }
 
