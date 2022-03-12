@@ -58,5 +58,7 @@ namespace GlobeAuction.Models
         public System.Data.Entity.DbSet<GlobeAuction.Models.FaqCategory> FaqCategories { get; set; }
 
         public System.Data.Entity.DbSet<GlobeAuction.Models.ConfigProperty> ConfigProperties { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.Sponsor> Sponsors { get; set; }
     }
 }

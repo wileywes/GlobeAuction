@@ -7,39 +7,62 @@ namespace GlobeAuction.Helpers
 {
     public enum ConfigNames
     {
-        TeacherNames
+        TeacherNames,
+        HomePage_ShowRegisterIcon,
+        HomePage_ShowDonateIcon,
+        HomePage_ShowCatalogIcon,
+        HomePage_ShowBidIcon,
+        HomePage_ShowFaqIcon,
+        HomePage_ShowStoreIcon,
+        HomePage_ShowSponsorsIcon,
+        SponsorLevelsOrdered
     }
 
-    public class ConfigHelper
+    public static class ConfigHelper
     {
         private static Dictionary<string, ConfigProperty> _propertiesByName;
-        private ApplicationDbContext db;
+        private static Lazy<ApplicationDbContext> db => new Lazy<ApplicationDbContext>();
 
-        public ConfigHelper(ApplicationDbContext context)
+        public static List<string> GetTeacherNames()
         {
-            db = context;
+            return GetLineSeparatedConfig(ConfigNames.TeacherNames);
         }
 
-        public List<string> GetTeacherNames()
+        public static List<string> GetLineSeparatedConfig(ConfigNames config)
         {
-            var propValue = GetConfigValue(ConfigNames.TeacherNames);
+            var propValue = GetConfigValue(config);
 
             if (string.IsNullOrEmpty(propValue)) return new List<string>();
 
-            return propValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return propValue
+                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
         }
 
-        public string GetConfigValue(ConfigNames configName)
+        public static string GetConfigValue(ConfigNames configName)
         {
             return GetConfigValue(configName.ToString());
         }
 
-        public string GetConfigValue(string configName)
+        public static T GetConfigValue<T>(ConfigNames configName, T defaultValue)
         {
-            if (_propertiesByName == null)
+            var configValue = GetConfigValue(configName);
+
+            if (configValue == null) return defaultValue;
+
+            try
             {
-                _propertiesByName = db.ConfigProperties.ToDictionary(c => c.PropertyName, c => c);
+                return (T)Convert.ChangeType(configValue, typeof(T));
             }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        public static string GetConfigValue(string configName)
+        {
+            EnsureConfigLoaded();
 
             if (_propertiesByName.TryGetValue(configName, out var prop))
             {
@@ -49,9 +72,28 @@ namespace GlobeAuction.Helpers
             return null;
         }
 
+        private static void EnsureConfigLoaded()
+        {
+            if (_propertiesByName == null)
+            {
+                _propertiesByName = db.Value.ConfigProperties.ToDictionary(c => c.PropertyName, c => c);
+            }
+        }
+
         public static void ResetCache()
         {
             _propertiesByName = null;
+        }
+
+        public static List<string> GetUnusedConfigName()
+        {
+            var allNames = Enum.GetNames(typeof(ConfigNames)).ToList(); ;
+
+            EnsureConfigLoaded();
+
+            var usedNamed = _propertiesByName.Keys.ToList();
+
+            return allNames.Except(usedNamed).ToList();
         }
     }
 }

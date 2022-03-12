@@ -222,7 +222,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="ConfigPropertiesController.cs" />
+    <Compile Include="Controllers\ConfigPropertiesController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuctionCategoriesController.cs" />
     <Compile Include="Controllers\AuctionItemsController.cs" />
@@ -262,6 +262,7 @@
     <Compile Include="Helpers\RequiredIfValidator.cs" />
     <Compile Include="Helpers\TinyUrlHelper.cs" />
     <Compile Include="Helpers\Utilities.cs" />
+    <Compile Include="Helpers\ViewContentHelper.cs" />
     <Compile Include="Migrations\201610161158102_Initial.cs" />
     <Compile Include="Migrations\201610161158102_Initial.Designer.cs">
       <DependentUpon>201610161158102_Initial.cs</DependentUpon>
@@ -526,6 +527,10 @@
     <Compile Include="Migrations\202203011804434_ConfigProperties.Designer.cs">
       <DependentUpon>202203011804434_ConfigProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203121348171_sponsors.cs" />
+    <Compile Include="Migrations\202203121348171_sponsors.Designer.cs">
+      <DependentUpon>202203121348171_sponsors.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -545,7 +550,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Models\ViewContentModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controllers\SponsorsController.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -862,6 +869,9 @@
     <Content Include="Views\ConfigProperties\Details.cshtml" />
     <Content Include="Views\ConfigProperties\Edit.cshtml" />
     <Content Include="Views\ConfigProperties\Index.cshtml" />
+    <Content Include="Views\Sponsors\Create.cshtml" />
+    <Content Include="Views\Sponsors\Delete.cshtml" />
+    <Content Include="Views\Sponsors\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -1071,6 +1081,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203011804434_ConfigProperties.resx">
       <DependentUpon>202203011804434_ConfigProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203121348171_sponsors.resx">
+      <DependentUpon>202203121348171_sponsors.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

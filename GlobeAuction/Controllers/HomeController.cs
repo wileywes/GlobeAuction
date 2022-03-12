@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GlobeAuction.Helpers;
 using GlobeAuction.Models;
 
 namespace GlobeAuction.Controllers
@@ -20,7 +21,23 @@ namespace GlobeAuction.Controllers
         [AllowAnonymous]
         public ActionResult Sponsors()
         {
-            return View();
+            var levels = ConfigHelper.GetLineSeparatedConfig(ConfigNames.SponsorLevelsOrdered);
+            var allSponsors = db.Sponsors.ToList();
+            var viewModel = new SponsorsViewModel
+            {
+                SponsorsByLevel = new Dictionary<string, List<Sponsor>>()
+            };
+
+            foreach(var level in levels)
+            {
+                var sponsorsAtLevel = allSponsors.Where(s => s.Level == level).ToList();
+                if (sponsorsAtLevel.Any())
+                {
+                    viewModel.SponsorsByLevel.Add(level, sponsorsAtLevel);
+                }
+            }
+            
+            return View(viewModel);
         }
 
         [AllowAnonymous]

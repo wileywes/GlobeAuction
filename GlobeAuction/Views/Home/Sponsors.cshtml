@@ -1,64 +1,27 @@
-﻿
+﻿@model GlobeAuction.Models.SponsorsViewModel
+
 @{
     ViewBag.Title = "Sponsors";
 }
 
-    <div class="container">
-
-        <h1>Platinum</h1>
+<div class="container">
+    @foreach (var level in Model.SponsorsByLevel)
+    {
+        <h1>@level.Key</h1>
         <hr />
-        <div class="row">
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/00_Platinum/Green Ortho w_bkgd.jpg" width="300" class="img-responsive" />
+        for (int i = 0; i < level.Value.Count; i = i + 2)
+        {
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="@Url.Content(level.Value[i].ImageUrl)" width="300" class="img-responsive" />
+                </div>
+                <div class="col-md-6">
+                    @if (level.Value.Count > (i + 1))
+                    {
+                        <img src="@Url.Content(level.Value[i+1].ImageUrl)" width="300" class="img-responsive" />
+                    }
+                </div>
             </div>
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/00_Platinum/Clinebell Ortho w_bkgd.jpg" width="300" class="img-responsive" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <img src="~/Content/Images/sponsors/00_Platinum/luxe.jpg" width="300" class="img-responsive" />
-            </div>
-            <div class="col-md-6">
-            </div>
-        </div>
-
-        <h1>Gold</h1>
-        <hr />
-        <div class="row">
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/01_Gold/Elite Island Resorts w_bkgd.jpg" width="300" class="img-responsive" />
-            </div>
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/01_Gold/Holland Portraits.jpeg" width="300" class="img-responsive" />
-            </div>
-        </div>
-
-        <h1>Silver</h1>
-        <hr />
-        <div class="row">
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/02_Silver/henderson mill dental.jpg" width="300" class="img-responsive" />
-            </div>
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/02_Silver/leslie beach.png" width="300" class="img-responsive" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/02_Silver/overlook.jpg" width="300" class="img-responsive" />
-            </div>
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/02_Silver/total wine.png" width="300" class="img-responsive" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-            </div>
-            <div class="col-md-6">
-                <img src="~/Content/Images/sponsors/02_Silver/RDG w_bkgd.jpg" width="300" class="img-responsive" />
-            </div>
-        </div>
-
-
-    </div>
+        }
+    }
+</div>

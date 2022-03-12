@@ -61,7 +61,7 @@
 
 <h3>Available Config Names</h3>
 <ul>
-    @foreach (var config in Enum.GetNames(typeof(ConfigNames)))
+    @foreach (var config in ConfigHelper.GetUnusedConfigName())
     {
         <li>@config</li>
     }

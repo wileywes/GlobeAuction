@@ -193,6 +193,16 @@ else
         for (var i = 0; i < Model.ItemPurchases.Count; i++)
         {
             @Html.HiddenFor(m => Model.ItemPurchases[i].StoreItemId)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].DonationItemValue)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].Description)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].ExpirationDate)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].HasUnlimitedQuantity)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].ImageUrl)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].Price)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].QuantityAvailable)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].QuantityPurchased)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].Restrictions)
+            @Html.HiddenFor(m => Model.ItemPurchases[i].Title)
 
             <div class="row form-group">
                 <div class="col-md-2">

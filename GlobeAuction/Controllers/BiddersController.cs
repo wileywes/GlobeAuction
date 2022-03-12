@@ -107,48 +107,65 @@ namespace GlobeAuction.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register([Bind(Exclude = "BidderId")] BidderRegistrationViewModel bidderViewModel, string submitButton, string promoCode)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (this.IsCaptchaValid(""))
+                AddBidderControlInfo(promoCode);
+                return View(bidderViewModel);
+            }
+            if (!this.IsCaptchaValid(""))
+            {
+                ModelState.AddModelError("", $"You must enter the correct Captcha string in the Input Symbols field below.");
+                AddBidderControlInfo(promoCode);
+                return View(bidderViewModel);
+            }
+
+            var matchingBidder = db.Bidders.FirstOrDefault(b => b.BidderNumber > 0 && b.Email == bidderViewModel.Email);
+            if (matchingBidder != null)
+            {
+                ModelState.AddModelError("", $"This email has already registered and is used for bidder number {matchingBidder.BidderNumber}.  Only one registration is allowed per email.");
+                AddBidderControlInfo(promoCode);
+                return View(bidderViewModel);
+            }
+
+            try
+            {
+                //no lock is taken for bidder creation since the BidderNumber has a unique constraint in the DB
+                var bidder = Mapper.Map<Bidder>(bidderViewModel);
+                var updatedBy = User.Identity.GetUserName();
+                if (string.IsNullOrEmpty(updatedBy)) updatedBy = bidder.Email;
+
+                var biddersIdsOverZero = db.Bidders.Where(b => b.BidderNumber > 0).Select(b => b.BidderNumber).ToList();
+
+                //default to next one up
+                var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
+
+                //fill in gaps
+                var lowestExistingBidderOverZero = biddersIdsOverZero.DefaultIfEmpty(1).Min();
+                for (int i = lowestExistingBidderOverZero; i < 1000; i++)
                 {
-                    try
+                    if (biddersIdsOverZero.Contains(i) == false)
                     {
-                        var bidder = Mapper.Map<Bidder>(bidderViewModel);
-                        var updatedBy = User.Identity.GetUserName();
-                        if (string.IsNullOrEmpty(updatedBy)) updatedBy = bidder.Email;
+                        nextBidderNumber = i;
+                        break;
+                    }
+                }
 
-                        var biddersIdsOverZero = db.Bidders.Where(b => b.BidderNumber > 0).Select(b => b.BidderNumber).ToList();
+                bidder.BidderNumber = nextBidderNumber;
+                bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
+                bidder.UpdateBy = updatedBy;
 
-                        //default to next one up
-                        var nextBidderNumber = db.Bidders.Select(b => b.BidderNumber).DefaultIfEmpty(Constants.StartingBidderNumber - 1).Max() + 1;
+                //strip out dependents that weren't filled in
+                bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
 
-                        //fill in gaps
-                        var lowestExistingBidderOverZero = biddersIdsOverZero.DefaultIfEmpty(1).Min();
-                        for (int i = lowestExistingBidderOverZero; i < 1000; i++)
-                        {
-                            if (biddersIdsOverZero.Contains(i) == false)
-                            {
-                                nextBidderNumber = i;
-                                break;
-                            }
-                        }
+                if (bidderViewModel.AuctionGuests == null)
+                {
+                    //in 2020 we removed auction guests since there was just one free ticket, so backfill the data manually here
+                    var ticketTypes = GetTicketTypesForRegistration(promoCode);
+                    var ticketToUse = ticketTypes.FirstOrDefault(t => t.Name.StartsWith("2021 Auction Registration")) ?? ticketTypes.FirstOrDefault();
 
-                        bidder.BidderNumber = nextBidderNumber;
-                        bidder.CreateDate = bidder.UpdateDate = Utilities.GetEasternTimeNow();
-                        bidder.UpdateBy = updatedBy;
+                    if (ticketToUse == null) throw new ApplicationException("Unable to find ticket type to use");
 
-                        //strip out dependents that weren't filled in
-                        bidder.Students = bidderViewModel.Students.Where(s => !string.IsNullOrEmpty(s.HomeroomTeacher)).Select(s => Mapper.Map<Student>(s)).ToList();
-
-                        if (bidderViewModel.AuctionGuests == null)
-                        {
-                            //in 2020 we removed auction guests since there was just one free ticket, so backfill the data manually here
-                            var ticketTypes = GetTicketTypesForRegistration(promoCode);
-                            var ticketToUse = ticketTypes.FirstOrDefault(t => t.Name.StartsWith("2021 Auction Registration")) ?? ticketTypes.FirstOrDefault();
-
-                            if (ticketToUse == null) throw new ApplicationException("Unable to find ticket type to use");
-
-                            bidder.AuctionGuests = new List<AuctionGuest>
+                    bidder.AuctionGuests = new List<AuctionGuest>
                             {
                                 new AuctionGuest
                                 {
@@ -157,59 +174,53 @@ namespace GlobeAuction.Controllers
                                     TicketType = ticketToUse.TicketTypeId.ToString()
                                 }
                             };
-                        }
-                        else
-                        {
-                            bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
-                        }
+                }
+                else
+                {
+                    bidder.AuctionGuests = bidderViewModel.AuctionGuests.Where(g => !string.IsNullOrEmpty(g.FirstName)).Select(s => Mapper.Map<AuctionGuest>(s)).ToList();
+                }
 
-                        if (bidder.AuctionGuests.Any())
-                        {
-                            foreach (var guest in bidder.AuctionGuests)
-                            {
-                                var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
-                                guest.TicketType = ticketType.Name;
-                                guest.TicketPrice = ticketType.Price;
-                            }
-
-                            db.Bidders.Add(bidder);
-                            db.SaveChanges();
-
-                            PaymentMethod? manualPayMethod = null;
-                            if (submitButton.StartsWith("Register and Mark Paid"))
-                            {
-                                if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
-                                if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
-                                if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
-                            }
-
-                            var invoice = new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
-
-                            if (manualPayMethod.HasValue || invoice.IsPaid)
-                            {
-                                EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrPaddleReminder(bidder);
-
-                                return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
-                            }
-                            else
-                            {
-                                return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
-                            }
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact auction@theglobeacademy.net.");
-                        }
-                    }
-                    catch (OutOfStockException oosExc)
+                if (bidder.AuctionGuests.Any())
+                {
+                    foreach (var guest in bidder.AuctionGuests)
                     {
-                        ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your registration again (you have not been charged yet).");
+                        var ticketType = db.TicketTypes.Find(int.Parse(guest.TicketType));
+                        guest.TicketType = ticketType.Name;
+                        guest.TicketPrice = ticketType.Price;
+                    }
+
+                    db.Bidders.Add(bidder);
+                    db.SaveChanges();
+
+                    PaymentMethod? manualPayMethod = null;
+                    if (submitButton.StartsWith("Register and Mark Paid"))
+                    {
+                        if (submitButton.EndsWith("(Cash)")) manualPayMethod = PaymentMethod.Cash;
+                        if (submitButton.EndsWith("(Check)")) manualPayMethod = PaymentMethod.Check;
+                        if (submitButton.EndsWith("(PayPal)")) manualPayMethod = PaymentMethod.PayPalHere;
+                    }
+
+                    var invoice = new InvoiceRepository(db).CreateInvoiceForBidderRegistration(bidder, bidderViewModel, manualPayMethod, updatedBy);
+
+                    if (manualPayMethod.HasValue || invoice.IsPaid)
+                    {
+                        EmailHelperFactory.Instance().SendBidderRegistrationConfirmationOrPaddleReminder(bidder);
+
+                        return RedirectToAction("Register", new { bid = bidder.BidderId, bem = bidder.Email });
+                    }
+                    else
+                    {
+                        return RedirectToAction("RedirectToPayPal", new { id = bidder.BidderId });
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"You must enter the correct Captcha string in the Input Symbols field below.");
+                    ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact auction@theglobeacademy.net.");
                 }
+            }
+            catch (OutOfStockException oosExc)
+            {
+                ModelState.AddModelError("", $"Item \"{oosExc.StoreItem.Title}\" is no longer available.  Please refresh this page and try your registration again (you have not been charged yet).");
             }
 
             AddBidderControlInfo(promoCode);
@@ -492,7 +503,7 @@ namespace GlobeAuction.Controllers
 
                     var emailHelper = EmailHelperFactory.Instance();
                     var bidRepos = new BidderRepository(db);
-                    foreach(var bidder in selectedBidders)
+                    foreach (var bidder in selectedBidders)
                     {
                         var hasPaid = bidRepos.HasBidderPaidForRegistration(bidder);
                         emailHelper.SendBidderRegistrationNudge(bidder, hasPaid);
@@ -619,8 +630,8 @@ namespace GlobeAuction.Controllers
                 }
 
                 var openDate = new ItemsRepository(db).GetBiddingStartDateIfCategoriesAreClosed();
-                var showOpenDate = closeDate.HasValue == false && 
-                    openDate.HasValue && 
+                var showOpenDate = closeDate.HasValue == false &&
+                    openDate.HasValue &&
                     openDate.Value > Utilities.GetEasternTimeNow() &&
                     openDate.Value.Subtract(Utilities.GetEasternTimeNow()).TotalDays < 30;
                 ViewBag.ShowOpeningCountDown = showOpenDate;
@@ -755,7 +766,7 @@ namespace GlobeAuction.Controllers
 
                 if (!bidAmount.HasValue)
                 {
-                    ModelState.AddModelError("","You must enter a bid amount.");
+                    ModelState.AddModelError("", "You must enter a bid amount.");
                 }
                 else if (item.StartingBid > bidAmountValue)
                 {
@@ -849,7 +860,7 @@ namespace GlobeAuction.Controllers
 
 
             //TEACHER NAMES
-            ViewBag.TeacherNames = new ConfigHelper(db).GetTeacherNames()
+            ViewBag.TeacherNames = ConfigHelper.GetTeacherNames()
                 .Select(t => new SelectListItem { Text = t, Value = t });
         }
 
