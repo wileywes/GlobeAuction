@@ -15,7 +15,8 @@ namespace GlobeAuction.Helpers
         HomePage_ShowFaqIcon,
         HomePage_ShowStoreIcon,
         HomePage_ShowSponsorsIcon,
-        SponsorLevelsOrdered
+        SponsorLevelsOrdered,
+        DonatePage_HeaderNote
     }
 
     public static class ConfigHelper
