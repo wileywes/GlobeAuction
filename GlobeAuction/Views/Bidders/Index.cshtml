@@ -16,7 +16,6 @@
 @using (Html.BeginForm("SubmitBiddersAction", "Bidders", FormMethod.Post, new { id = "submitBiddersActionForm" }))
 {
     @Html.AntiForgeryToken()
-
     @Html.Hidden("biddersAction");
     @Html.Hidden("startingPaddleNumber");
     @Html.Hidden("selectedBidderNumbers");
