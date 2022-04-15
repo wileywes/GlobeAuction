@@ -28,7 +28,6 @@ namespace GlobeAuction.Controllers
             return View(items);
         }
 
-        // GET: DonationItems/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
