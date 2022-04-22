@@ -84,6 +84,7 @@ namespace GlobeAuction.Models
             CreateDate = b.CreateDate;
 
             AttendedEvent = b.AttendedEvent;
+            PaidTicketTypes = new List<string>(); //default to avoid null issue
 
             if (i != null)
             {
