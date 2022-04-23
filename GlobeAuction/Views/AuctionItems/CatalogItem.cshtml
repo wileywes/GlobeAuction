@@ -35,7 +35,12 @@
                 <strong>@Html.DisplayNameFor(m => m.Quantity):</strong>
                 @Html.DisplayFor(m => m.Quantity)
                 <br />
-
+                @if (Model.DonationItemsTotalValue > 0)
+                {
+                    <strong>@Html.DisplayNameFor(m => m.DonationItemsTotalValue):</strong>
+                    @Html.DisplayFor(m => m.DonationItemsTotalValue)
+                    <br />
+                }
                 @if (Model.IsFixedPrice)
                 {
                     <strong>Fixed Price:</strong>
@@ -69,7 +74,7 @@
 
     <div class="row top10">
         <div class="col-md-offset-4 col-md-8 btn-toolbar">
-            @Html.ActionLink("Back", null, null, null, new { href = "##", onclick="history.go(-1); return false;", @class = "btn btn-primary" })
+            @Html.ActionLink("Back", null, null, null, new { href = "##", onclick = "history.go(-1); return false;", @class = "btn btn-primary" })
         </div>
     </div>
 

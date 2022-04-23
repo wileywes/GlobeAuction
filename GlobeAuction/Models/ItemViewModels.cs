@@ -268,6 +268,7 @@ namespace GlobeAuction.Models
         public int DonationItemsCount { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:C}")]
+        [Display(Name = "Retail Value")]
         public int DonationItemsTotalValue { get; set; }
         
         public AuctionItemViewModel()
