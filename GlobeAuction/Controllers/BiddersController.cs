@@ -119,7 +119,7 @@ namespace GlobeAuction.Controllers
                 return View(bidderViewModel);
             }
 
-            var matchingBidder = db.Bidders.FirstOrDefault(b => b.BidderNumber > 0 && b.Email == bidderViewModel.Email);
+            var matchingBidder = db.Bidders.FirstOrDefault(b => b.BidderNumber > 0 && b.Email == bidderViewModel.Email && b.IsDeleted == false);
             if (matchingBidder != null)
             {
                 ModelState.AddModelError("", $"This email has already registered and is used for bidder number {matchingBidder.BidderNumber}.  Only one registration is allowed per email.");
