@@ -19,6 +19,9 @@ namespace GlobeAuction.Controllers
             List<Bid> unpaidBids, paidBids;
             var byType = new RevenueHelper(db).GetAllRevenueByType(out allInvoices, out paidInvoices, out unpaidBids, out paidBids);
 
+            //update the cache
+            RevenueHelper.SetTotalRevenue(byType.Total);
+
             //fund-a-project
             var fundProjectBids = db.Bids
                 .Include(i => i.Invoice)
