@@ -30,16 +30,38 @@ namespace GlobeAuction.Controllers
                 .Where(i => i.InvoiceType == InvoiceType.BidderRegistration)
                 .ToList();
 
-            var models = new List<BidderForList>();
+            var viewModel = new BidderListViewModel
+            {
+                Bidders = new List<BidderForList>()
+            };
 
+            //bidders list
             foreach (var bidder in bidders)
             {
                 var invoice = invoicesForBidders.FirstOrDefault(i => i.Bidder.BidderId == bidder.BidderId);
                 var bidderForList = new BidderForList(bidder, invoice);
-                models.Add(bidderForList);
+                viewModel.Bidders.Add(bidderForList);
             }
 
-            return View(models);
+            //ticket sales
+            viewModel.TicketSales = invoicesForBidders //use materialized list already pulled
+                .SelectMany(i => i.TicketPurchases)
+                .GroupBy(t => t.TicketType)
+                .Select(t =>
+                {
+                    var sales = t.ToList();
+                    return new TicketSalesRollup
+                    {
+                        TicketType = t.Key,
+                        NumberPaid= sales.Count(s => s.IsTicketPaid),
+                        NumberUnPaid = sales.Count(s => s.IsTicketPaid == false),
+                        TotalPaid = sales.Sum(s => s.TicketPricePaid.GetValueOrDefault()),
+                        TotalUnpaid  = sales.Where(s => s.IsTicketPaid == false).Sum(s => s.TicketPrice)
+                    };
+                })
+                .ToList();
+
+            return View(viewModel);
         }
 
         // GET: Bidders/Details/5

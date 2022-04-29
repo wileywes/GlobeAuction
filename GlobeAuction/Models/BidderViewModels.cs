@@ -102,6 +102,23 @@ namespace GlobeAuction.Models
         }
     }
 
+    public class TicketSalesRollup
+    {
+        public string TicketType { get; set; }
+        public int NumberPaid { get; set; }
+        public int NumberUnPaid { get; set; }
+        public decimal TotalPaid { get; set; }
+        public decimal TotalUnpaid { get; set; }
+    }
+
+    public class BidderListViewModel
+    {
+        public BidderForList ModelRender { get; set; }
+
+        public List<BidderForList> Bidders { get; set; }
+        public List<TicketSalesRollup> TicketSales { get; set; }
+    }
+
     public class BidderForPayPal
     {
         public int BidderId { get; set; }
