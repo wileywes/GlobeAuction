@@ -60,7 +60,7 @@ namespace GlobeAuction.Models
         [Display(Name = "Pay Reminder Sent")]
         public bool IsPaymentReminderSent { get; set; }
 
-        [Display(Name = "Bid Email Sent")]
+        [Display(Name = "Launch Email Sent")]
         public bool IsCatalogNudgeEmailSent { get; set; }
 
         [Display(Name = "Registration Date")]
@@ -211,7 +211,7 @@ namespace GlobeAuction.Models
         [Display(Name = "Attended")]
         public bool AttendedEvent { get; set; }
 
-        [Display(Name = "Catalog Email Sent")]
+        [Display(Name = "Launch Email Sent")]
         public bool IsCatalogNudgeEmailSent { get; set; }
     }
 

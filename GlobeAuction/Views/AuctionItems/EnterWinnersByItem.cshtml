@@ -1,0 +1,188 @@
+﻿@model GlobeAuction.Models.EnterWinnersViewModel
+
+@{
+    ViewBag.Title = "Enter Winners";
+}
+
+<div class="container">
+    <h3>To Begin entering Winners, select a category and item:</h3>
+
+    <div id="divWinnerUpdateSuccess" style="display:none" class="alert-success alert">
+        Winning Bid information was successfully updated for Item No. <span id="itemNoUpdated"></span>.  You can now update another item below.
+    </div>
+    <div id="divWinnerUpdateFailure" style="display:none" class="alert-danger alert">
+        Winning Bid information could not be updated for Item No. <span id="itemNoNotUpdated"></span>.  The error was: <div id="itemUpdateFailureReason"></div>
+    </div>
+    <div id="divNoRemainingItems" style="display:none" class="alert-info alert">
+        Select an Item to proceed.  If no items are left in this category, select another category to enter more.
+    </div>
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.SelectedCategory, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SelectedCategory, (IEnumerable<SelectListItem>)ViewBag.AuctionItemCategories,
+                        "Select a Category", new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.MyLabelFor(model => model.SelectedItem, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SelectedItem, Enumerable.Empty<SelectListItem>(),
+                        "Select an Item", new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        @Html.Hidden("currentAuctionItemId", "-1")
+        @Html.Hidden("currentUniqueItemNumber", "-1")
+
+        <div id="itemInformation" style="display:none">
+            <div class="form-group">
+                @Html.Label("Item No", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" id="uniqueItemNumber"></div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" id="title"></div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" id="description"></div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Winning Bidder #", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("winningBidderId")
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Winning Bid Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBox("winningBidAmount")
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" class="btn btn-primary" value="Save Winner" id="btnSave" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#SelectedCategory').change(function () {
+        $('#currentUniqueItemNumber').val(-1);
+        $('#currentAuctionItemId').val(-1);
+        updateListOfItemsWithNoWinner();
+    });
+    $('#SelectedItem').change(function () {
+        $('#currentUniqueItemNumber').val(-1);
+        $('#currentAuctionItemId').val(-1);
+        updateItemDetails();
+    });
+
+    $('#btnSave').click(function () {
+        saveAuctionItemWinner();
+        updateListOfItemsWithNoWinner();
+    });
+
+    function updateListOfItemsWithNoWinner() {
+        var selectedCategory = $('#SelectedCategory').val();
+
+        //figure out which action to call
+        var actionToCall = '@Url.Action("GetAuctionItemsInCategoryWithNoWinner")';
+
+        if (selectedCategory == null || selectedCategory == '') {
+            alert('You must select a category first.')
+        }
+        else {
+            $('#winningBidderId').val('');
+            $('#winningBidAmount').val('');
+            
+            $('#SelectedItem').find('option').remove()
+            $('#SelectedItem').append('<option value="-1">Select an Item</option>');
+
+            $.getJSON(actionToCall, { selectedCategory: selectedCategory }, function (nextItemData) {
+                if (nextItemData.hasResult) {
+                    var data = nextItemData.items;
+                    for (var index = 0; index <= data.length; index++) {
+                        $('#SelectedItem').append('<option value="' + data[index].value + '">' + data[index].display + '</option>');
+                    }
+                }
+            });
+
+            $('#SelectedItem option:eq(1)').prop('selected', true);
+            $('#currentAuctionItemId').val(-1);
+            $('#currentUniqueItemNumber').val(-1);
+            $('#uniqueItemNumber').text('');
+            $('#title').text('');
+            $('#description').text('');
+            $('#itemInformation').hide();
+        }
+    }
+
+    function updateItemDetails() {
+        var selectedAuctionItemId = $('#SelectedItem').val();
+        
+        var actionToCall = '@Url.Action("GetAuctionItemInfo")';
+
+        if (selectedAuctionItemId == null || selectedAuctionItemId == '') {
+            alert('You must select an item first.')
+        }
+        else {
+            $('#winningBidderId').val('');
+            $('#winningBidAmount').val('');
+
+            $.getJSON(actionToCall, { auctionItemId: selectedAuctionItemId }, function (nextItemData) {
+                if (nextItemData.hasResult) {
+                    $('#currentAuctionItemId').val(nextItemData.auctionItemId);
+                    $('#currentUniqueItemNumber').val(nextItemData.uniqueItemNumber);
+                    $('#uniqueItemNumber').text('# ' + nextItemData.uniqueItemNumber);
+                    $('#title').text(nextItemData.title);
+                    $('#description').text(nextItemData.description);
+                    $('#divNoRemainingItems').hide();
+                    $('#itemInformation').show();
+                    $('#winningBidderId').focus();
+                }
+                else {
+                    $('#currentAuctionItemId').val(-1);
+                    $('#currentUniqueItemNumber').val(-1);
+                    $('#uniqueItemNumber').text('');
+                    $('#title').text('');
+                    $('#description').text('');
+                    $('#divNoRemainingItems').show();
+                    $('#itemInformation').hide();
+                }
+            });
+        }
+    }
+
+    function saveAuctionItemWinner() {
+        var currentAuctionItemId = $('#currentAuctionItemId').val();
+        var currentUniqueItemNumber = $('#currentUniqueItemNumber').val();
+        var winningBidderId = $('#winningBidderId').val();
+        var winningBidAmount = $('#winningBidAmount').val();
+
+        if (currentAuctionItemId == null || currentAuctionItemId == '') {
+            alert('Not valid until an item is loaded.')
+        }
+        else {
+            $.getJSON('@Url.Action("SaveAuctionItemWinner")', { auctionItemId: currentAuctionItemId, uniqueItemNumber: currentUniqueItemNumber, winningBidderId: winningBidderId, winningAmount: winningBidAmount }, function (response) {
+                if (response.wasSuccessful) {
+                    $('#itemNoUpdated').text(currentUniqueItemNumber);
+                    $('#divWinnerUpdateSuccess').show();
+                    $('#divWinnerUpdateFailure').hide();
+                }
+                else {
+                    $('#itemNoNotUpdated').text(currentUniqueItemNumber);
+                    $('#itemUpdateFailureReason').text(response.errorMsg);
+                    $('#divWinnerUpdateSuccess').hide();
+                    $('#divWinnerUpdateFailure').show();
+                }
+            });
+        }
+    }
+</script>

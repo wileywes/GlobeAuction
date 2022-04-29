@@ -167,7 +167,7 @@ namespace GlobeAuction.Models
     public class EnterWinnersViewModel
     {
         public string SelectedCategory { get; set; }
-        public AuctionItemViewModel NextAuctionItemWithNoWinner { get; set; }
+        public string SelectedItem { get; set; }
     }
 
     public class EnterWinnersInBulkViewModel

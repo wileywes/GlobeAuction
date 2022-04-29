@@ -593,6 +593,15 @@ namespace GlobeAuction.Controllers
             return View(new EnterWinnersViewModel());
         }
 
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult EnterWinnersByItem()
+        {
+            AddAuctionItemCategoryControlInfo(null);
+
+            return View(new EnterWinnersViewModel());
+        }
+        
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult GetNextAuctionItemWithNoWinner(string selectedCategory, int currentUniqueItemNumber)
         {
@@ -669,6 +678,34 @@ namespace GlobeAuction.Controllers
                 JsonRequestBehavior.AllowGet
             );
         }
+        
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult GetAuctionItemsInCategoryWithNoWinner(string selectedCategory)
+        {
+            var itemsToReturn = db.AuctionItems.Where(ai =>
+                    ai.AllBids.Count < ai.Quantity &&        //still qty left to buy
+                    ai.Category.Name == selectedCategory)
+                .OrderBy(ai => ai.UniqueItemNumber)
+                .ToList()
+                .Select(i => new
+                {
+                    display = "#" + i.UniqueItemNumber + " - " + i.Title,
+                    value = i.AuctionItemId
+                }).ToList();
+
+            if (!itemsToReturn.Any())
+            {
+                return Json(new { hasResult = false }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(
+                new
+                {
+                    hasResult = true,
+                    items = itemsToReturn
+                },
+                JsonRequestBehavior.AllowGet
+            ); ;
+        }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners)]
         public ActionResult SaveAuctionItemWinner(int auctionItemId, int uniqueItemNumber, string winningBidderId, string winningAmount)
@@ -693,15 +730,11 @@ namespace GlobeAuction.Controllers
             {
                 return Json(new { wasSuccessful = false, errorMsg = "Unable to find auction item." }, JsonRequestBehavior.AllowGet);
             }
-            if (auctionItem.AllBids.Count > 0)
+            if (auctionItem.AllBids.Count >= auctionItem.Quantity)
             {
-                return Json(new { wasSuccessful = false, errorMsg = "Auction Item already has a winning bid on it.  You must use the Auction Item edit screen to delete that bid if that is not correct." }, JsonRequestBehavior.AllowGet);
+                return Json(new { wasSuccessful = false, errorMsg = "Auction Item already has all items won.  You must use the Auction Item edit screen to delete a bid if that is not correct." }, JsonRequestBehavior.AllowGet);
             }
-            if (auctionItem.Quantity > 1)
-            {
-                return Json(new { wasSuccessful = false, errorMsg = "Cannot assign a winner to an auction item that allows multiple winners.  Use the bulk winner entry screen instead." }, JsonRequestBehavior.AllowGet);
-            }
-
+            
             var bidder = db.Bidders.FirstOrDefault(b => b.IsDeleted == false && b.BidderNumber == winningBidderIdInt);
 
             if (bidder == null)
