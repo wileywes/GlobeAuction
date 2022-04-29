@@ -45,9 +45,6 @@
                     @Html.DisplayNameFor(model => model.TicketsPaid)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PaidTicketTypes)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.ItemsCount)
                 </th>
                 <th>
@@ -95,9 +92,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TicketsPaid)
-                </td>
-                <td>
-                    @Html.Raw(string.Join("<br/><br/>", item.PaidTicketTypes))
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ItemsCount)

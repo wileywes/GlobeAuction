@@ -41,9 +41,6 @@ namespace GlobeAuction.Models
         [Display(Name = "Tickets Paid For")]
         public int TicketsPaid { get; set; }
 
-        [Display(Name = "Paid Tix")]
-        public List<string> PaidTicketTypes { get; set; }
-
         [Display(Name = "Items")]
         public int ItemsCount { get; set; }
 
@@ -84,7 +81,6 @@ namespace GlobeAuction.Models
             CreateDate = b.CreateDate;
 
             AttendedEvent = b.AttendedEvent;
-            PaidTicketTypes = new List<string>(); //default to avoid null issue
 
             if (i != null)
             {
@@ -95,7 +91,6 @@ namespace GlobeAuction.Models
                 {
                     GuestCount = i.TicketPurchases.Count;
                     TicketsPaid = i.TicketPurchases.Count(g => g.IsTicketPaid);
-                    PaidTicketTypes = i.TicketPurchases.Select(t => t.TicketType).OrderBy(tt => tt).ToList();
                 }
 
                 if (i.StoreItemPurchases.Any())

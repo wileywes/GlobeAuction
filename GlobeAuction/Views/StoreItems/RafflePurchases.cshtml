@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GlobeAuction.Models.StoreItemPurchaseViewModel>
+﻿@model GlobeAuction.Models.RafflePurchasesListViewModel
 
 <link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
 <script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
@@ -7,13 +7,13 @@
     ViewBag.Title = "Raffle Ticket Paid Purchases";
 }
 
-<h2>Raffle Ticket Paid Purchases</h2>
-
 <p>
     <ul class="list-inline">
         <li><a href="/store" target="_blank">Buy Raffles</a></li>
     </ul>
 </p>
+
+<h2>Raffle Ticket Paid Purchases</h2>
 
 @using (Html.BeginForm("SubmitRafflePurchaseItems", "StoreItems", FormMethod.Post, new { id = "submitRafflePurchaseItemsForm" }))
 {
@@ -28,16 +28,16 @@
                 <th></th>
                 <th>Name</th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Email)
+                    Email
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.StoreItem.Title)
+                    Title
                 </th>
                 <th>
-                    @Html.DisplayNameFor(m => m.PurchaseDate)
+                    Purchase Date
                 </th>
                 <th>
-                    @Html.DisplayNameFor(m => m.PurchaseType)
+                    Purchase Type
                 </th>
                 <th>
                     Raffle #
@@ -54,11 +54,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Where(sip => sip.StoreItem.IsRaffleTicket && sip.IsPaid))
+            @foreach (var item in Model.RafflesFromPurchases)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(m => item.StoreItemPurchaseId)
+                        @Html.DisplayFor(m => item.PurchaseId)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FullName)
@@ -67,7 +67,7 @@
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.StoreItem.Title)
+                        @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PurchaseDate)
@@ -76,22 +76,92 @@
                         @Html.DisplayFor(modelItem => item.PurchaseType)
                     </td>
                     <td>
-                        @(item.StoreItem.IsRaffleTicket && item.IsPaid ? item.StoreItemPurchaseId.ToString("D8") : string.Empty)
+                        @Html.DisplayFor(modelItem => item.RaffleTicketNumber)
                     </td>
                     <td>
-                        @(item.IsRafflePrinted ? "Yes" : "No")
+                        @(item.IsPrinted ? "Yes" : "No")
                     </td>
                     <td>
-                        @(item.Bidder != null ? item.Bidder.BidderNumber.ToString() : "")
+                        @Html.DisplayFor(modelItem => item.BidderNumber)
                     </td>
                     <td>
-                        @(item.Invoice != null ? item.Invoice.InvoiceId.ToString() : "")
+                        @Html.DisplayFor(modelItem => item.InvoiceId)
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
+    <h2>VIP Tickets including Raffle Ticket</h2>
+    <table class="table table-striped table-bordered" id="vipTicketsTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Purchase Date
+                </th>
+                <th>
+                    Purchase Type
+                </th>
+                <th>
+                    Raffle #
+                </th>
+                <th>
+                    Printed
+                </th>
+                <th>
+                    Bidder #
+                </th>
+                <th>
+                    Invoice #
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RafflesFromTickets)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => item.PurchaseId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PurchaseDate)
+                    </td>
+                    <td>
+                        VIP Ticket
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RaffleTicketNumber)
+                    </td>
+                    <td>
+                        N/A
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BidderNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InvoiceId)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 <script type="text/javascript">
@@ -105,7 +175,7 @@
     }
 
     $(document).ready(function () {
-        var rafflePurchasesTable = $('#rafflePurchasesTable').dataTable({
+        $('#rafflePurchasesTable').dataTable({
             "iDisplayLength": 100,
             dom: 'Bfrtip',
             stateSave: true,
@@ -127,6 +197,21 @@
                             $('#submitRafflePurchaseItemsForm').submit();
                         }
                     }
+                }
+            ],
+            select: {
+                style: 'os'
+            }
+        });
+        
+        $('#vipTicketsTable').dataTable({
+            "iDisplayLength": 100,
+            dom: 'Bfrtip',
+            stateSave: true,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Export'
                 }
             ],
             select: {

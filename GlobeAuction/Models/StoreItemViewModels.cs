@@ -72,6 +72,25 @@ namespace GlobeAuction.Models
         public int PaidPurchaseCount { get; set; }
     }
 
+    public class RaffleTicketPurchase
+    {
+        public int PurchaseId { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string Title { get; set; }
+        public DateTime PurchaseDate { get; set; }
+        public string PurchaseType { get; set; }
+        public string RaffleTicketNumber { get; set; }
+        public bool IsPrinted { get; set; }
+        public string BidderNumber { get; set; }
+        public string InvoiceId { get; set; }
+    }
+
+    public class RafflePurchasesListViewModel
+    {
+        public List<RaffleTicketPurchase> RafflesFromPurchases { get; set; }
+        public List<RaffleTicketPurchase> RafflesFromTickets { get; set; }
+    }
 
     public class StoreItemPurchaseViewModel
     {

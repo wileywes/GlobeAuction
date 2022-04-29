@@ -179,7 +179,7 @@ namespace GlobeAuction.Controllers
         [Authorize]
         public ActionResult RafflePurchases()
         {
-            var models = db.StoreItemPurchases
+            var paidRaffleTickets = db.StoreItemPurchases
                 .Include(p => p.StoreItem)
                 .Include(p => p.Invoice)
                 .Include(p => p.Invoice.Bidder)
@@ -193,8 +193,49 @@ namespace GlobeAuction.Controllers
                     viewModel.StoreItem = Mapper.Map<StoreItemViewModel>(i.StoreItem);
                     return viewModel;
                 })
+                .Select(p => new RaffleTicketPurchase
+                {
+                    PurchaseId = p.StoreItemPurchaseId,
+                    FullName = p.FullName,
+                    Email = p.Email,
+                    Title = p.StoreItem.Title,
+                    PurchaseDate = p.PurchaseDate,
+                    PurchaseType = p.PurchaseType,
+                    RaffleTicketNumber = "R" + p.StoreItemPurchaseId.ToString("D8"),
+                    IsPrinted = p.IsRafflePrinted,
+                    BidderNumber = p.Bidder != null ? p.Bidder.BidderNumber.ToString() : "",
+                    InvoiceId = p.Invoice != null ? p.Invoice.InvoiceId.ToString() : ""
+                })
                 .ToList();
-            return View(models);
+
+            //include paid registration tickets that include raffle items
+            var vipTicketsWithRaffles = db.Invoices
+                .Include(i => i.TicketPurchases)
+                .Where(i => i.InvoiceType == InvoiceType.BidderRegistration && i.IsPaid)
+                .ToList()
+                .SelectMany(i => i.TicketPurchases)
+                .Where(t => t.TicketType.Contains("raffle ticket"))
+                .Select(p => new RaffleTicketPurchase
+                {
+                    PurchaseId = p.TicketPurchaseId,
+                    FullName = p.Invoice.FirstName + " " + p.Invoice.LastName,
+                    Email = p.Invoice.Email,
+                    Title = p.TicketType,
+                    PurchaseDate = p.Invoice.CreateDate,
+                    PurchaseType = p.TicketType,
+                    RaffleTicketNumber = "T" + p.TicketPurchaseId.ToString("D8"),
+                    IsPrinted = false,
+                    BidderNumber = p.Invoice.Bidder != null ? p.Invoice.Bidder.BidderNumber.ToString() : "",
+                    InvoiceId = p.Invoice.InvoiceId.ToString()
+                })
+                .ToList();
+
+            var model = new RafflePurchasesListViewModel
+            {
+                RafflesFromPurchases = paidRaffleTickets,
+                RafflesFromTickets = vipTicketsWithRaffles
+            };
+            return View(model);
         }
 
         // GET: StoreItems/Details/5
