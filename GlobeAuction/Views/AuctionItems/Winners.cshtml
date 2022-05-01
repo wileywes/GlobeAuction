@@ -105,7 +105,11 @@
                                     }
                                 </td>
                                 <td>@Html.DisplayFor(m => item.AuctionItem.Title)</td>
-                                <td>@Html.DisplayFor(m => item.BidAmount)</td>
+                                <td>
+                                    @(item.IsBasket ? "Basket" : "")
+                                    <br />
+                                    @(item.IsDigital ? "DigitalOnly" : "")
+                                </td>
                             </tr>
                         }
                     </table>

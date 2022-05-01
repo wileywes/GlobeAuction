@@ -449,6 +449,9 @@ namespace GlobeAuction.Models
         [Display(Name ="Winning?")]
         public bool IsWinning { get; set; }
 
+        public bool IsBasket { get; set; }
+        public bool IsDigital { get; set; }
+
         /// <summary>
         /// empty for model binding
         /// </summary>
@@ -464,6 +467,9 @@ namespace GlobeAuction.Models
             BidAmount = bid.BidAmount;
             AmountPaid = bid.AmountPaid;
             IsWinning = bid.IsWinning;
+
+            IsBasket = item.DonationItems.Count > 1;
+            IsDigital = item.DonationItems.All(i => i.UseDigitalCertificateForWinner);
         }
     }
 
