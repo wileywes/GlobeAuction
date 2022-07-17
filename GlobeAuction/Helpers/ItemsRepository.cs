@@ -326,6 +326,7 @@ namespace GlobeAuction.Helpers
                 .Include(a => a.Bids)
                 .Include("Bids.AuctionItem")
                 .Include("Bids.Invoice")
+                .Include("Bids.AuctionItem.DonationItems")
                 .Where(b => b.Bids.Any(bid => bid.IsWinning))
                 .ToList();
 

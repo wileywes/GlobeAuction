@@ -135,9 +135,9 @@ namespace GlobeAuction.Controllers
 
                 var category = db.AuctionCategories.FirstOrDefault(c => c.Name == auctionItemModel.Category);
 
-                if (auctionItem.AllBids.Any(b => b.IsPaid))
+                if (auctionItem.AllBids.Any(b => b.IsPaid) && auctionItem.IsInFiresale == false)
                 {
-                    ModelState.AddModelError("uniqueItemNumber", "Cannot change the item once it's on an invoice.  If this is just testing you can delete the invoice to free up the item again.");
+                    ModelState.AddModelError("uniqueItemNumber", "Cannot change the item once it's on an invoice if the item isn't in the firesale.  If this is just testing you can delete the invoice to free up the item again.");
                 }
                 else if (category == null)
                 {
