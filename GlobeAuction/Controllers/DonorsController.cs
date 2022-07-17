@@ -139,6 +139,7 @@ namespace GlobeAuction.Controllers
                 if (!itemsToInclude.Any())
                 {
                     NLog.LogManager.GetCurrentClassLogger().Info($"Skipping tax receipt for donor {donor.BusinessName} since no items with dollar value.");
+                    return;
                 }
 
                 emailHelper.SendDonorTaxReceipt(donor, itemsToInclude);
