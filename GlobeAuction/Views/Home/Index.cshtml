@@ -42,7 +42,7 @@
     </div>
 
     <div class="row top20">
-        @ConfigHelper.GetConfigValue(ConfigNames.HomePage_FooterHtml)
+        @Html.Raw(ConfigHelper.GetConfigValue(ConfigNames.HomePage_FooterHtml))
     </div>
 </div>
 
