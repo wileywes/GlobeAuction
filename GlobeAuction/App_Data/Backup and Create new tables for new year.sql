@@ -2,19 +2,20 @@
 
 select t.name,
   (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) as FksReferencingTable,
-  'select * into [2021_' + name + '] from ' + name as BackupScript,
+  'select * into [2022_' + name + '] from ' + name as BackupScript,
   'ALTER TABLE [' + name + '] NOCHECK CONSTRAINT all' as DisableConstraint,
   'DELETE from ' + name as DeleteScript,
   'ALTER TABLE [' + name + '] WITH CHECK CHECK CONSTRAINT all' as EnableConstraint,
   'select * FROM ' + name as CheckResults
 from sys.tables t
-where [name] not in ('TicketTypes','__MigrationHistory')
+where [name] not in ('TicketTypes','__MigrationHistory','Faqs','FaqCategories','ConfigProperties')
  and name not like 'AspNet%'
  and name not like '2017_%'
  and name not like '2018_%'
  and name not like '2019_%'
  and name not like '2020_%'
  and name not like '2021_%'
+ and name not like '2022_%'
 order by (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) asc
 
 

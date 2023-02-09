@@ -1,11 +1,15 @@
 ﻿using GlobeAuction.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 
 namespace GlobeAuction.Helpers
 {
     public static class ViewContentHelper
     {
+        private static List<string> _carouselFileNames;
+
         public static MenuLayout GetMenuLayout()
         {
             var allEnabledButtons = new List<MenuLayoutButton>();
@@ -100,6 +104,18 @@ namespace GlobeAuction.Helpers
                 LeftButtons = allEnabledButtons.Take(threshold).ToList(),
                 RightButtons = allEnabledButtons.Skip(threshold).ToList()
             };
+        }
+
+        public static List<string> GetCarouselFileNames()
+        {
+            if (_carouselFileNames == null)
+            {
+                _carouselFileNames = Directory.GetFiles(HttpContext.Current.Server.MapPath("~/Content/Images/Carousel/"))
+                    .Select(path => new FileInfo(path).Name)
+                    .ToList();
+            }
+
+            return _carouselFileNames;
         }
     }
 }

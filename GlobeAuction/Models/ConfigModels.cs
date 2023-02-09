@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace GlobeAuction.Models
 {
@@ -12,6 +13,7 @@ namespace GlobeAuction.Models
         [Required]
         public string PropertyName { get; set; }
 
+        [AllowHtml]
         public string PropertyValue { get; set; }
 
         public DateTime CreateDate { get; set; }
