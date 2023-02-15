@@ -15,10 +15,7 @@
     }
 }
 
-
-<p>
-    <a href="@Url.Content("~/Content/Files/2021 GLOBE Donation Request.pdf")">Download the GLOBE Solicitation Letter</a>
-</p>
+@Html.Raw(ConfigHelper.GetConfigValue(ConfigNames.DonatePage_SubHeaderNote))
 
 <br />
 
