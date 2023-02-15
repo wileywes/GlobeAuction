@@ -9,19 +9,12 @@
 </div>
 
 <ul id="lightSlider" class="cs-hidden">
-    <li><img src="~/Content/Images/Carousel/IMG_1291 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1300 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1302 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1311 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1332 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1337 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1340 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1354 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1376 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1380 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1406 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1412 LR.jpg" height="300" /></li>
-    <li><img src="~/Content/Images/Carousel/IMG_1418 LR.jpg" height="300" /></li>
+    @{
+        foreach (var fileName in ViewContentHelper.GetCarouselFileNames())
+        {
+            <li><img src="~/Content/Images/Carousel/@fileName" height="300" /></li>
+        }
+    }
 </ul>
 
 <div style="background-color: #86754d; height:20px; padding: 0px 0px 0px 0px"></div>
@@ -30,28 +23,26 @@
     <div class="row">
         <div class="col-lg-4 auction-logistic-col">
             <img src="~/Content/Images/who_box.jpg" class=".auction-logistic-img" />
-            <p class="auction-logistic-text">Parents, Teachers, Grandparents and anyone who wants to support a great school!</p>
+            <p class="auction-logistic-text">
+                @Html.Raw(ConfigHelper.GetConfigValue(ConfigNames.HomePage_WhoHtml))
+            </p>
         </div>
         <div class="col-lg-4 auction-logistic-col">
             <img src="~/Content/Images/when_box.jpg" class=".auction-logistic-img" />
             <p class="auction-logistic-text">
-                <b>Silent Mobile Auction</b>: Friday, April 29 at 8:00 pm to Saturday, April 30 at 8:00 pm
-                <br />
-                <b>Live In-Person Auction</b>: Saturday, April 30 from 7:00 – 10:00 pm at Wild Heaven Brewing
+                @Html.Raw(ConfigHelper.GetConfigValue(ConfigNames.HomePage_WhenHtml))
             </p>
         </div>
         <div class="col-lg-4 auction-logistic-col">
             <img src="~/Content/Images/where_box.jpg" class=".auction-logistic-img" />
             <p class="auction-logistic-text">
-                Silent Auction online for 24 hours and Live Auction at Wild Heaven Brewing in Avondale Estate
+                @Html.Raw(ConfigHelper.GetConfigValue(ConfigNames.HomePage_WhereHtml))
             </p>
         </div>
     </div>
 
     <div class="row top20">
-        <b>
-            Auction purchases are final and not eligible for returns or exchanges for any reason, including cancellations or closures due to COVID-19.
-        </b>
+        @Html.Raw(ConfigHelper.GetConfigValue(ConfigNames.HomePage_FooterHtml))
     </div>
 </div>
 

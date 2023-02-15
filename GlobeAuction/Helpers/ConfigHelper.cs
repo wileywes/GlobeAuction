@@ -15,6 +15,10 @@ namespace GlobeAuction.Helpers
         HomePage_ShowFaqIcon,
         HomePage_ShowStoreIcon,
         HomePage_ShowSponsorsIcon,
+        HomePage_WhoHtml,
+        HomePage_WhenHtml,
+        HomePage_WhereHtml,
+        HomePage_FooterHtml,
         SponsorLevelsOrdered,
         DonatePage_HeaderNote,
         DonatePage_SubHeaderNote
