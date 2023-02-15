@@ -473,6 +473,18 @@ namespace GlobeAuction.Controllers
             var models = winningsByBidder.Select(wbb => new WinnerViewModel(wbb.Bidder, wbb.Winnings)).ToList();
             return View(models);
         }
+        
+        [Authorize(Roles = AuctionRoles.CanEditWinners + "," + AuctionRoles.CanCheckoutWinners)]
+        public ActionResult SingleWinner(int? bidderNumber)
+        {
+            WinnerViewModel model = null;
+            if (bidderNumber.HasValue)
+            {
+                var winningsByBidder = new ItemsRepository(db).GetWinningsForBidder(bidderNumber.Value);
+                model = new WinnerViewModel(winningsByBidder.Bidder, winningsByBidder.Winnings);
+            }
+            return View(model);
+        }
 
         [Authorize(Roles = AuctionRoles.CanEditWinners + "," + AuctionRoles.CanCheckoutWinners)]
         public ActionResult PrintAllPackSlips(bool? useMockData, bool? onlyPhysicalItems)

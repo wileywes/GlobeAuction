@@ -330,6 +330,24 @@ namespace GlobeAuction.Helpers
                 .Where(b => b.Bids.Any(bid => bid.IsWinning))
                 .ToList();
 
+            return GetWinningsByBidders(biddersWithWinnings);
+        }
+
+        public WinningsByBidder GetWinningsForBidder(int bidderNumber)
+        {
+            var biddersWithWinnings = db.Bidders
+                .Include(a => a.Bids)
+                .Include("Bids.AuctionItem")
+                .Include("Bids.Invoice")
+                .Include("Bids.AuctionItem.DonationItems")
+                .Where(b => b.BidderNumber == bidderNumber && b.Bids.Any(bid => bid.IsWinning))
+                .ToList();
+
+            return GetWinningsByBidders(biddersWithWinnings).FirstOrDefault();
+        }
+
+        private List<WinningsByBidder> GetWinningsByBidders(List<Bidder> biddersWithWinnings)
+        {
             var results = new List<WinningsByBidder>();
             foreach (var b in biddersWithWinnings)
             {
@@ -344,6 +362,7 @@ namespace GlobeAuction.Helpers
             }
             return results;
         }
+
 
         public List<WinningsByBidder> Mock_GetWinningsByBidder()
         {
