@@ -874,6 +874,7 @@
     <Content Include="Views\Sponsors\Delete.cshtml" />
     <Content Include="Views\Sponsors\Index.cshtml" />
     <Content Include="Views\AuctionItems\EnterWinnersByItem.cshtml" />
+    <Content Include="Views\AuctionItems\SingleWinner.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

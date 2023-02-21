@@ -474,7 +474,7 @@ namespace GlobeAuction.Controllers
             return View(models);
         }
         
-        [Authorize(Roles = AuctionRoles.CanEditWinners + "," + AuctionRoles.CanCheckoutWinners)]
+        [Authorize(Roles = AuctionRoles.CanCheckoutWinners)]
         public ActionResult SingleWinner(int? bidderNumber)
         {
             WinnerViewModel model = null;

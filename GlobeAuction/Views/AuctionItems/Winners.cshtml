@@ -20,9 +20,11 @@
 
 @if (User.IsInRole(GlobeAuction.Models.AuctionRoles.CanCheckoutWinners))
 {
-    <h4>
-        @Html.ActionLink("Click here to Checkout Winners", "Checkout", "Invoices")
-    </h4>
+<h4>
+    @Html.ActionLink("Click here to View Bidder Winnings", "SingleWinner")
+    <br/>
+    @Html.ActionLink("Click here to Checkout Winners", "Checkout", "Invoices")
+</h4>
     <br />
 }
 
