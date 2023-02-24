@@ -15,6 +15,7 @@ namespace GlobeAuction.Helpers
         HomePage_ShowFaqIcon,
         HomePage_ShowStoreIcon,
         HomePage_ShowSponsorsIcon,
+        HomePage_ShowShoutOutsIcon,
         HomePage_WhoHtml,
         HomePage_WhenHtml,
         HomePage_WhereHtml,

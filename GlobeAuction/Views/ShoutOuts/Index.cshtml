@@ -1,0 +1,61 @@
+﻿@model IEnumerable<GlobeAuction.Models.ShoutOut>
+
+@{
+    ViewBag.Title = "Shout Outs";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New Shout Out", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BodyText)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdateDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdateBy)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Title)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.BodyText)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ImageUrl)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.CreateDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.UpdateDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.UpdateBy)
+    </td>
+    <td>
+        @Html.ActionLink("Delete", "Delete", new { id = item.ShoutOutId })
+    </td>
+</tr>
+}
+
+</table>

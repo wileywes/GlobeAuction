@@ -77,6 +77,15 @@ namespace GlobeAuction.Helpers
                     Name = "SPONSORS"
                 });
             }
+            if (ConfigHelper.GetConfigValue<bool>(ConfigNames.HomePage_ShowShoutOutsIcon, false))
+            {
+                allEnabledButtons.Add(new MenuLayoutButton
+                {
+                    Href = "/home/shoutouts",
+                    ImageUrl = "~/Content/Images/h_shoutouts.gif",
+                    Name = "SHOUT OUTS"
+                });
+            }
 
             allEnabledButtons.Add(new MenuLayoutButton
             {

@@ -41,6 +41,14 @@ namespace GlobeAuction.Controllers
         }
 
         [AllowAnonymous]
+        public ActionResult ShoutOuts()
+        {
+            var allShoutOuts = db.ShoutOuts.OrderByDescending(d => d.UpdateDate).ToList();
+
+            return View(allShoutOuts);
+        }
+
+        [AllowAnonymous]
         public ActionResult Faqs()
         {
             var model = new FaqsViewModel

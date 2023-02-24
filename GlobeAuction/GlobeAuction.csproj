@@ -531,6 +531,10 @@
     <Compile Include="Migrations\202203121348171_sponsors.Designer.cs">
       <DependentUpon>202203121348171_sponsors.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302230304080_ShoutOutsTable.cs" />
+    <Compile Include="Migrations\202302230304080_ShoutOutsTable.Designer.cs">
+      <DependentUpon>202302230304080_ShoutOutsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -553,6 +557,7 @@
     <Compile Include="Models\ViewContentModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\SponsorsController.cs" />
+    <Compile Include="Controllers\ShoutOutsController.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -609,6 +614,7 @@
     <Content Include="Content\Images\h_Home.gif" />
     <Content Include="Content\Images\h_raffle.gif" />
     <Content Include="Content\Images\h_register2.gif" />
+    <Content Include="Content\Images\h_ShoutOuts.gif" />
     <Content Include="Content\Images\logo.jpg" />
     <Content Include="Content\Images\h_Register.gif" />
     <Content Include="Content\Images\h_Sponsors.gif" />
@@ -875,6 +881,10 @@
     <Content Include="Views\Sponsors\Index.cshtml" />
     <Content Include="Views\AuctionItems\EnterWinnersByItem.cshtml" />
     <Content Include="Views\AuctionItems\SingleWinner.cshtml" />
+    <Content Include="Views\ShoutOuts\Create.cshtml" />
+    <Content Include="Views\ShoutOuts\Delete.cshtml" />
+    <Content Include="Views\ShoutOuts\Index.cshtml" />
+    <Content Include="Views\Home\ShoutOuts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -1088,9 +1098,13 @@
     <EmbeddedResource Include="Migrations\202203121348171_sponsors.resx">
       <DependentUpon>202203121348171_sponsors.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302230304080_ShoutOutsTable.resx">
+      <DependentUpon>202302230304080_ShoutOutsTable.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Images\BidSheets\" />
+    <Folder Include="Content\Images\shoutouts\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

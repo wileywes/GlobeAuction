@@ -40,4 +40,23 @@ namespace GlobeAuction.Models
     {
         public Dictionary<string, List<Sponsor>> SponsorsByLevel { get; set; }
     }
+
+
+    public class ShoutOut
+    {
+        public int ShoutOutId { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public string BodyText { get; set; }
+
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
+
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public string UpdateBy { get; set; }
+    }
 }

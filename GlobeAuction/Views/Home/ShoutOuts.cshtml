@@ -1,0 +1,26 @@
+﻿@model IEnumerable<GlobeAuction.Models.ShoutOut>
+
+@{
+    ViewBag.Title = "Shout Outs";
+}
+
+    <div class="container">
+        @foreach (var shoutOut in Model)
+        {
+            <h1>@shoutOut.Title</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="@Url.Content(shoutOut.ImageUrl)" width="300" class="img-responsive" />
+                    </div>
+                    <div class="col-md-6">
+                        <p class="lead">
+                            @shoutOut.Title
+                            </p>
+                        <p>
+                            @shoutOut.BodyText
+                        </p>
+                    </div>
+                </div>
+            <hr />
+        }
+    </div>
