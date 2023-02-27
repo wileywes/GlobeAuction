@@ -78,6 +78,7 @@
                     <th>
                         Item #
                     </th>
+                    <th>Image</th>
                     <th>
                         Title
                     </th>
@@ -99,6 +100,12 @@
                             else
                             {
                                 @Html.DisplayFor(m => item.AuctionItem.UniqueItemNumber)
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.AuctionItem.ImageUrl))
+                            {
+                                <img src="@Url.Content(item.AuctionItem.ImageUrl)" width="100" class="img-responsive" />
                             }
                         </td>
                         <td>@Html.DisplayFor(m => item.AuctionItem.Title)</td>

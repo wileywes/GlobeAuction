@@ -517,6 +517,19 @@ namespace GlobeAuction.Controllers
                     }
                     db.SaveChanges();
                     return RedirectToAction("Index");
+                case "RenumberSinglePaddle":
+                    var paddleNumberInt = int.Parse(startingPaddleNumber); //passed via the same param as the renumber all
+                    var existingBiddersUsingNumber = db.Bidders.Count(b => b.BidderNumber == paddleNumberInt);
+
+                    if (existingBiddersUsingNumber > 0) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);                    
+                    if (bidderNumbers.Count != 1) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+                    var bidderNum = bidderNumbers.Single();
+                    var bidderToUpdate = db.Bidders.Single(ai => ai.BidderNumber == bidderNum);
+                    bidderToUpdate.BidderNumber = paddleNumberInt;
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index");
                 case "SendBidderRegistrationNudge":
                     if (!bidderNumbers.Any()) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 

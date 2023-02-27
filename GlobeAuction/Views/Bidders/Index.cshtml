@@ -57,9 +57,6 @@
                     @Html.DisplayNameFor(model => model.ModelRender.TotalPaid)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ModelRender.PaymentMethod)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.ModelRender.IsPaymentReminderSent)
                 </th>
                 <th>
@@ -104,9 +101,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.TotalPaid)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaymentMethod)
                     </td>
                     <td>
                         @(item.IsPaymentReminderSent ? "Yes" : "No")
@@ -208,13 +202,31 @@
                     title: 'Export'
                 },
                 {
-                    text: 'Re-Number Paddles',
+                    text: 'Re-Number All Paddles',
                     action: function (e, dt, node, config) {
                         var startingPaddleNumber = prompt("Are you sure you want to do this?  This will re-number bidders sorted by LastName, FirstName.  You SHOULD NOT DO THIS ONCE THE AUCTION HAS STARTED!  To proceed, enter the Bidder Number to start with...");
                         if (startingPaddleNumber != null) {
                             $("#startingPaddleNumber").val(startingPaddleNumber);
                             $("#biddersAction").val("RenumberBidderPaddles");
                             $('#submitBiddersActionForm').submit();
+                        }
+                    }
+                },
+                {
+                    text: 'Re-Number Single Paddle',
+                    action: function (e, dt, node, config) {
+                        var data = dt.rows({ selected: true }).data();
+                        if (data.length != 1) {
+                            alert('You must select a single bidder you want change the paddle for.');
+                        }
+                        else {
+                            var paddleNumber = prompt("Are you sure you want to change this paddle number?  To proceed, enter the Bidder Number to change to...");
+                            if (paddleNumber != null) {
+                                $("#selectedBidderNumbers").val(getSelectedRows(data));
+                                $("#startingPaddleNumber").val(paddleNumber);
+                                $("#biddersAction").val("RenumberSinglePaddle");
+                                $('#submitBiddersActionForm').submit();
+                            }
                         }
                     }
                 },
