@@ -5,9 +5,9 @@
 }
 
     <div class="container">
+        <p></p>
         @foreach (var shoutOut in Model)
         {
-            <h1>@shoutOut.Title</h1>
                 <div class="row">
                     <div class="col-md-6">
                         <img src="@Url.Content(shoutOut.ImageUrl)" width="300" class="img-responsive" />
