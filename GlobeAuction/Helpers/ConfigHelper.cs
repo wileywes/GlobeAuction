@@ -22,7 +22,9 @@ namespace GlobeAuction.Helpers
         HomePage_FooterHtml,
         SponsorLevelsOrdered,
         DonatePage_HeaderNote,
-        DonatePage_SubHeaderNote
+        DonatePage_SubHeaderNote,
+        RegisterPage_StoreItemsSectionHeader,
+        RegisterPage_StoreItemsSectionDescription
     }
 
     public static class ConfigHelper
