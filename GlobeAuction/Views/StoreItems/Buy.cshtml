@@ -4,7 +4,7 @@
     ViewBag.Title = "Buy";
 }
 
-@if (!Request.IsAuthenticated && !Constants.IsTicketPurchaseEnabled)
+@if (!Request.IsAuthenticated && !ConfigHelper.GetConfigValue<bool>(ConfigNames.RegisterPage_IsTicketPurchaseEnabled, true))
 {
     <div class="alert alert-info">
         Raffle ticket purchase is no longer available.  Please purchase your tickets at the auction event.
@@ -69,7 +69,7 @@ else
                         <div class="col-md-4">
                             <div class="card">
                                 @if (!string.IsNullOrEmpty(Model.RaffleItems[i].ImageUrl))
-                            {
+                                {
                                     <img src="@Url.Content(Model.RaffleItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                                 }
                                 <div class="card-container">
@@ -128,7 +128,7 @@ else
                         <div class="col-md-4">
                             <div class="card">
                                 @if (!string.IsNullOrEmpty(Model.FundAProjectItems[i].ImageUrl))
-                            {
+                                {
                                     <img src="@Url.Content(Model.FundAProjectItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                                 }
                                 <div class="card-container">
@@ -193,7 +193,7 @@ else
                         <div class="col-md-4">
                             <div class="card">
                                 @if (!string.IsNullOrEmpty(Model.GeneralStoreItems[i].ImageUrl))
-                            {
+                                {
                                     <img src="@Url.Content(Model.GeneralStoreItems[i].ImageUrl)" style="max-height:150px;max-width:200px;height:auto;width:auto;" class="center-block" />
                                 }
                                 <div class="card-container">
