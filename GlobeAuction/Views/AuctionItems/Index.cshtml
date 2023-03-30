@@ -68,6 +68,7 @@
                 <th>In Firesale</th>
                 <th>Has Digital Item(s)</th>
                 <th>Restrictions</th>
+                <th>Expirations</th>
                 <th>
                     Highest Bid
                 </th>
@@ -80,68 +81,71 @@
         <tbody>
             @foreach (var item in Model.AuctionItems)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UniqueItemNumber)
-                    </td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
-                        }
-                        else
-                        {
-                            <input type="file" name="files" id="file@(item.AuctionItemId)" onchange="javascript:uploadImage(@(item.AuctionItemId));" />
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Category)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Quantity)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DonationItemsCount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartingBid)
-                    </td>
-                    <td>
-                        @(item.IsFixedPrice ? string.Empty : item.BidIncrement.ToString("C2"))
-                    </td>
-                    <td>
-                        @(item.IsFixedPrice ? "Yes" : "No")
-                    </td>
-                    <td>
-                        @(item.IsInFiresale ? "Yes" : "No")
-                    </td>
-                    <td>
-                        @(item.DonationItems.Any(i => i.UseDigitalCertificateForWinner) ? "Yes" : "No")
-                    </td>
-                    <td>
-                        @(string.Join(" ", item.DonationItems.Select(d => d.Restrictions)))
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HighestBid)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BidCount)
-                    </td>
-                    <td class="text-nowrap">
-                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UniqueItemNumber)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@Url.Content(item.ImageUrl)" alt="Image" width="100" />
+                    }
+                    else
+                    {
+                        <input type="file" name="files" id="file@(item.AuctionItemId)" onchange="javascript:uploadImage(@(item.AuctionItemId));" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DonationItemsCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DonationItemsTotalValue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartingBid)
+                </td>
+                <td>
+                    @(item.IsFixedPrice ? string.Empty : item.BidIncrement.ToString("C2"))
+                </td>
+                <td>
+                    @(item.IsFixedPrice ? "Yes" : "No")
+                </td>
+                <td>
+                    @(item.IsInFiresale ? "Yes" : "No")
+                </td>
+                <td>
+                    @(item.DonationItems.Any(i => i.UseDigitalCertificateForWinner) ? "Yes" : "No")
+                </td>
+                <td>
+                    @(string.Join(" ", item.DonationItems.Select(d => d.Restrictions)))
+                </td>
+                <td>
+                    @(string.Join(" ", item.DonationItems.Where(d => d.ExpirationDate.HasValue).Select(d => d.ExpirationDate.Value.ToString("yyyy-MM-dd"))))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HighestBid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BidCount)
+                </td>
+                <td class="text-nowrap">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.AuctionItemId })
+                </td>
+            </tr>
             }
         </tbody>
     </table>

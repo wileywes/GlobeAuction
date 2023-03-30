@@ -146,6 +146,13 @@ namespace GlobeAuction.Controllers
             {
                 ModelState.AddModelError("", $"This email has already registered and is used for bidder number {matchingBidder.BidderNumber}.  Only one registration is allowed per email.");
                 AddBidderControlInfo(promoCode);
+                bidderViewModel.ShowPreviousRegistrationFoundMessage = true;
+                bidderViewModel.FullNameAlreadyRegistered = matchingBidder.FirstName + " " + matchingBidder.LastName;
+                bidderViewModel.BidderNumberAlreadyRegistered = matchingBidder.BidderNumber;
+                bidderViewModel.BidderIdAltreadyRegistered = matchingBidder.BidderId;
+
+                var invoiceForBidder = db.Invoices.FirstOrDefault(i => i.InvoiceType == InvoiceType.BidderRegistration && i.Bidder.BidderId == matchingBidder.BidderId);
+                bidderViewModel.TicketsAlreadyPaidFor = invoiceForBidder?.TicketPurchases.Count(t => t.IsTicketPaid) ?? 0;
                 return View(bidderViewModel);
             }
 
