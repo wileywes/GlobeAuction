@@ -246,6 +246,13 @@ namespace GlobeAuction.Models
         public string FullNameJustRegistered { get; set; }
         public int? BidderNumberJustRegistered { get; set; }
         public List<string> RaffleTicketNumbersCreated { get; set; }
+
+        //shown if bidder is attempting to register again
+        public bool ShowPreviousRegistrationFoundMessage { get; set; }
+        public string FullNameAlreadyRegistered { get; set; }
+        public int? BidderNumberAlreadyRegistered { get; set; }
+        public int? BidderIdAltreadyRegistered { get; set; }
+        public int? TicketsAlreadyPaidFor { get; set; }
     }
 
     public class AuctionGuestViewModel
