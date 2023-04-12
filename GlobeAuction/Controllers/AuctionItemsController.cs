@@ -481,7 +481,21 @@ namespace GlobeAuction.Controllers
             if (bidderNumber.HasValue)
             {
                 var winningsByBidder = new ItemsRepository(db).GetWinningsForBidder(bidderNumber.Value);
-                model = new WinnerViewModel(winningsByBidder.Bidder, winningsByBidder.Winnings);
+                Bidder bidder;
+                List<Bid> winnings;
+
+                if (winningsByBidder != null)
+                {
+                    bidder = winningsByBidder.Bidder;
+                    winnings = winningsByBidder.Winnings;
+                }
+                else
+                {
+                    bidder = db.Bidders.FirstOrDefault(b => b.BidderNumber == bidderNumber.Value);
+                    winnings = new List<Bid>();
+                }
+
+                model = new WinnerViewModel(bidder, winnings);
             }
             return View(model);
         }

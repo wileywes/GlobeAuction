@@ -158,11 +158,21 @@
                 </dt>
 
                 <dd>
-                    @string.Format("{0} {1} - {2} (paid {3:C})",
-                                            Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.FirstName,
-                                            Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.LastName,
-                                            Model.RegistrationInvoice.TicketPurchases[i].TicketType,
-                                            Model.RegistrationInvoice.TicketPurchases[i].TicketPricePaid.GetValueOrDefault(0))
+                    @if (Model.RegistrationInvoice.TicketPurchases[i].IsTicketPaid)
+                    {
+                        @string.Format("{0} {1} - {2} (paid {3:C})",
+                                                     Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.FirstName,
+                                                     Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.LastName,
+                                                     Model.RegistrationInvoice.TicketPurchases[i].TicketType,
+                                                     Model.RegistrationInvoice.TicketPurchases[i].TicketPricePaid.GetValueOrDefault(0))
+                    }
+                    else
+                    {
+                        @string.Format("{0} {1} - {2} (NOT paid)",
+                                                     Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.FirstName,
+                                                     Model.RegistrationInvoice.TicketPurchases[i].AuctionGuest.LastName,
+                                                     Model.RegistrationInvoice.TicketPurchases[i].TicketType)
+                    }
                 </dd>
             }
         }
