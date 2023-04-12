@@ -8,7 +8,7 @@
 <h2>Register for the Auction</h2>
 <br />
 
-@if (!Request.IsAuthenticated && !Constants.IsTicketPurchaseEnabled)
+@if (!Request.IsAuthenticated && !ConfigHelper.GetConfigValue<bool>(ConfigNames.RegisterPage_IsTicketPurchaseEnabled, true))
 {
     <div class="alert alert-info">
         Registration is not currently open.
@@ -296,5 +296,5 @@ else
         $guestLastName.val(this.value);
     });
 
-    $("#AuctionGuests_0__TicketType").prop('selectedIndex', 0);
+    $("#AuctionGuests_0__TicketType").prop('selectedIndex', 0);    
 </script>
