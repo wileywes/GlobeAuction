@@ -169,6 +169,11 @@
                                     {
                                         @Html.ActionLink("Delete", "DeleteBidFromItem", new { bidId = bid.BidId, aid = Model.AuctionItemId }, null)
                                     }
+                                    |
+                                    @if (Request.IsAuthenticated && User.IsInRole(GlobeAuction.Models.AuctionRoles.CanEditWinners) && !bid.IsWinning)
+                                    {
+                                        @Html.ActionLink("Mark Winning", "MarkBidAsWinning", new { bidId = bid.BidId, aid = Model.AuctionItemId }, null)
+                                    }
                                 </td>
                             </tr>
                         }

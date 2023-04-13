@@ -997,7 +997,7 @@ namespace GlobeAuction.Controllers
             if (isWinning)
             {
                 //email the team so we can track the need to find the next bidder
-                var body = "The following winning bid was removed from an auction item.  Another winner could be sought out but Wes will need to manually mark the other as winning:<br/><br/>" +
+                var body = "The following winning bid was removed from an auction item.  Another winner could be sought out and manually marked as winning at the below link:<br/><br/>" +
                     $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
                     $"<b>Item Title:</b> {item.Title}<br />" +
                     $"<b>Bidder Name:</b> {bidder.FirstName} {bidder.LastName}<br />" +
@@ -1007,6 +1007,50 @@ namespace GlobeAuction.Controllers
 
                 EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Winning Bid Deleted - Another Winner Possible", body);
             }
+
+            return RedirectToAction("Details", new { id = aid });
+        }
+
+        [Authorize(Roles = AuctionRoles.CanEditWinners)]
+        public ActionResult MarkBidAsWinning(int aid, int bidId)
+        {
+            var auctionItem = db.AuctionItems.Find(aid);
+            if (auctionItem == null) return HttpNotFound();
+
+            var item = new ItemsRepository(db).GetItemWithAllBidInfo(auctionItem.UniqueItemNumber);
+
+            var bid = item.AllBids.FirstOrDefault(b => b.BidId == bidId);
+            if (bid == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (bid.IsWinning)
+            {
+                //can't make it winning if it already is
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            bid.IsWinning = true;
+            var bidder = bid.Bidder;
+
+            db.SaveChanges();
+
+            //add bid amount to revenue
+            RevenueHelper.IncrementTotalRevenue(bid.BidAmount);
+
+            new ItemsRepository(db).UpdateHighestBidForCachedItem(item);
+
+            //email the team so we can track the need to find the next bidder
+            var body = "The following winning bid was manually marked as winning:<br/><br/>" +
+                $"<b>Item #:</b> {item.UniqueItemNumber}<br />" +
+                $"<b>Item Title:</b> {item.Title}<br />" +
+                $"<b>Bidder Name:</b> {bidder.FirstName} {bidder.LastName}<br />" +
+                $"<b>Bidder Email:</b> {bidder.Email}<br />" +
+                $"<b>Bid Amount:</b> {bid.BidAmount:C}<br /><br />" +
+                $"You can view the bids on the item here: {Url.Action("Details", "AuctionItems", new { id = item.AuctionItemId }, Request.Url.Scheme)}";
+
+            EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Bid Manually Marked as Winning", body);
 
             return RedirectToAction("Details", new { id = aid });
         }
