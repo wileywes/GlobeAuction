@@ -62,5 +62,7 @@ namespace GlobeAuction.Models
         public System.Data.Entity.DbSet<GlobeAuction.Models.Sponsor> Sponsors { get; set; }
 
         public System.Data.Entity.DbSet<GlobeAuction.Models.ShoutOut> ShoutOuts { get; set; }
+
+        public System.Data.Entity.DbSet<GlobeAuction.Models.EmailTemplate> EmailTemplates { get; set; }
     }
 }

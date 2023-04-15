@@ -59,4 +59,31 @@ namespace GlobeAuction.Models
         public DateTime UpdateDate { get; set; }
         public string UpdateBy { get; set; }
     }
+
+    public class EmailTemplate
+    {
+        [Key]
+        public int EmailTemplateId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public string Subject { get; set; }
+
+        /// <summary>
+        /// comma-separated list of camel cased placeholder strings
+        /// </summary>
+        public string SupportedTokensCsvList { get; set; }
+
+        [AllowHtml]
+        public string HtmlBody { get; set; }
+
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public string UpdateBy { get; set; }
+    }
 }

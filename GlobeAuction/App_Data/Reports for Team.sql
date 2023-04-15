@@ -1,4 +1,12 @@
-﻿--bidders with a firesale purchase
+﻿--store purchases that are unpaid but holding quantity (WIP - need to check invoice)
+select *
+from StoreItemPurchases sip
+inner join StoreItems si on si.StoreItemId = sip.StoreItem_StoreItemId
+where si.IsRaffleTicket=0
+  and si.HasUnlimitedQuantity=0
+
+
+--bidders with a firesale purchase
 select d.BidderNumber, d.Email, d.FirstName, d.LastName, count(*) as FireSaleCount
 from bids b
 inner join bidders d on d.BidderId = b.Bidder_BidderId

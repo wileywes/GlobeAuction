@@ -49,7 +49,6 @@ namespace GlobeAuction.Helpers
     public class EmailHelper : IEmailHelper
     {
         private static readonly string _gmailUsername = ConfigurationManager.AppSettings["GmailAccountUsername"];
-        private static readonly string _gmailPassword = ConfigurationManager.AppSettings["GmailAccountPassword"];
         private static readonly string _siteName = ConfigurationManager.AppSettings["SiteName"];
         private static readonly string _siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
         private static readonly string _allEmailBcc = ConfigurationManager.AppSettings["AllEmailBcc"];
