@@ -57,7 +57,10 @@ namespace GlobeAuction.Migrations
                 ('invoiceNotPaid', 'Sends payment nudge for standalone store purchases that are not paid after 24 hours.', 'GLOBE Auction Payment Reminder', 'SiteName,SiteUrl,SiteEmail,CompletePaymentUrl', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
 
             Sql(@"INSERT INTO [dbo].[EmailTemplates] (Name, Description, Subject, SupportedTokensCsvList, HtmlBody, CreateDate, UpdateDate, UpdateBy) VALUES 
-                ('invoicePaid', 'description', 'Ticket Confirmation', 'SiteName,TotalPaid,Address1,Address2,Address3,FooterNotes,InvoiceLines,SiteUrl,SiteEmail', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
+                ('invoicePaid', 'Sent when checkout is complete and items are paid for.', 'Ticket Confirmation', 'SiteName,TotalPaid,Address1,Address2,Address3,FooterNotes,InvoiceLines,SiteUrl,SiteEmail', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
+
+            Sql(@"INSERT INTO [dbo].[EmailTemplates] (Name, Description, Subject, SupportedTokensCsvList, HtmlBody, CreateDate, UpdateDate, UpdateBy) VALUES 
+                ('bidderRegistrationPaid', 'Sent when registration is completed and tickets are paid for.', 'Ticket Confirmation', 'SiteName,TotalPaid,Address1,Address2,Address3,FooterNotes,InvoiceLines,SiteUrl,SiteEmail', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
         }
 
         public override void Down()
