@@ -32,33 +32,7 @@ namespace GlobeAuction.Controllers
             }
             return View(emailTemplate);
         }
-
-        // GET: EmailTemplates/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: EmailTemplates/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Description,Subject,SupportedTokensCsvList,HtmlBody")] EmailTemplate emailTemplate)
-        {
-            if (ModelState.IsValid)
-            {
-                emailTemplate.CreateDate = emailTemplate.UpdateDate = Utilities.GetEasternTimeNow();
-                emailTemplate.UpdateBy = User.Identity.GetUserName();
-
-                db.EmailTemplates.Add(emailTemplate);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(emailTemplate);
-        }
-
+        
         // GET: EmailTemplates/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -79,18 +53,16 @@ namespace GlobeAuction.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EmailTemplateId,Name,Description,Subject,SupportedTokensCsvList,HtmlBody,CreateDate,UpdateDate,UpdateBy")] EmailTemplate emailTemplate)
+        public ActionResult Edit([Bind(Include = "EmailTemplateId,Subject,HtmlBody")]EmailTemplate viewModel)
         {
-            if (ModelState.IsValid)
-            {
-                emailTemplate.UpdateDate = Utilities.GetEasternTimeNow();
-                emailTemplate.UpdateBy = User.Identity.GetUserName();
+            var emailTemplate = db.EmailTemplates.Find(viewModel.EmailTemplateId);
+            emailTemplate.Subject = viewModel.Subject;
+            emailTemplate.HtmlBody = viewModel.HtmlBody;
+            emailTemplate.UpdateDate = Utilities.GetEasternTimeNow();
+            emailTemplate.UpdateBy = User.Identity.GetUserName();
+            db.SaveChanges();
 
-                db.Entry(emailTemplate).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(emailTemplate);
+            return RedirectToAction("Index");
         }
 
         // GET: EmailTemplates/Delete/5
