@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<GlobeAuction.Models.EmailTemplate>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Email Templates";
 }
 
-<h2>Index</h2>
+<h2>Email Templates</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    Note that email templates must be implemented in the website before they will show up here.  Contact Wes for more info.
 </p>
+
 <table class="table">
     <tr>
         <th>
@@ -19,12 +20,6 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Subject)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SupportedTokensCsvList)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreateDate)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.UpdateDate)
@@ -45,12 +40,6 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Subject)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SupportedTokensCsvList)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreateDate)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.UpdateDate)

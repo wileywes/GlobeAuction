@@ -1002,7 +1002,6 @@
     <Content Include="Views\ShoutOuts\Index.cshtml" />
     <Content Include="Views\Home\ShoutOuts.cshtml" />
     <Content Include="Scripts\tinymce\langs\README.md" />
-    <Content Include="Views\EmailTemplates\Create.cshtml" />
     <Content Include="Views\EmailTemplates\Delete.cshtml" />
     <Content Include="Views\EmailTemplates\Details.cshtml" />
     <Content Include="Views\EmailTemplates\Edit.cshtml" />
