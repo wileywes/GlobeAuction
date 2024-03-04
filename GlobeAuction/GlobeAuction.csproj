@@ -572,6 +572,7 @@
     <Content Include="App_Data\aspnet-GlobeAuction-20161005062405_log.ldf">
       <DependentUpon>aspnet-GlobeAuction-20161005062405.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\Purge bogus users.sql" />
     <Content Include="App_Data\Restore last year data.sql" />
     <Content Include="App_Data\Backup and Create new tables for new year.sql" />
     <Content Include="App_Data\Category Updates Feb 24.sql" />

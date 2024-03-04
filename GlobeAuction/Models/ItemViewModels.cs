@@ -226,7 +226,7 @@ namespace GlobeAuction.Models
 
         public DonationItemViewModel(DonationItem item)
         {
-            this.Category = item.Category.Name;
+            this.Category = item.Category?.Name;
             this.Title = item.Title;
             this.Description = item.Description; //.TruncateTo(50);
             this.DollarValue = item.DollarValue;

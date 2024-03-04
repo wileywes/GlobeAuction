@@ -8,7 +8,7 @@ select t.name,
   'ALTER TABLE [' + name + '] WITH CHECK CHECK CONSTRAINT all' as EnableConstraint,
   'select * FROM ' + name as CheckResults
 from sys.tables t
-where [name] not in ('TicketTypes','__MigrationHistory','Faqs','FaqCategories','ConfigProperties')
+where [name] not in ('TicketTypes','__MigrationHistory','Faqs','FaqCategories','ConfigProperties','AuctionCategories')
  and name not like 'AspNet%'
  and name not like '2017_%'
  and name not like '2018_%'
@@ -17,6 +17,13 @@ where [name] not in ('TicketTypes','__MigrationHistory','Faqs','FaqCategories','
  and name not like '2021_%'
  and name not like '2022_%'
 order by (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) asc
+
+select * into [AuctionCategories] from 2023_AuctionCategories
+
+--RESTORE auction categories
+insert into [AuctionCategories] (Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems, ItemNumberStart, ItemNumberEnd, IsAvailableForMobileBidding)
+select Name, BidOpenDateLtz, BidCloseDateLtz, IsFundAProject, IsOnlyAvailableToAuctionItems, ItemNumberStart, ItemNumberEnd, IsAvailableForMobileBidding
+from [2023_AuctionCategories]
 
 
 --1) run the SELECT INTO statements
