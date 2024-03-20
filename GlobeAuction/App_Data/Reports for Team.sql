@@ -28,6 +28,12 @@ from AuctionItems ai
 inner join DonationItems di on di.auctionitem_auctionitemid=ai.auctionitemid
 where di.isreceived=0
 
+--items with a display
+select *
+from AuctionItems ai
+inner join DonationItems di on di.auctionitem_auctionitemid=ai.auctionitemid
+where di.hasdisplay=1
+
 --solicitors collecting lots of donations
 select s.Email, s.Phone, s.FirstName, s.LastName, sum(di.dollarvalue) as TotalDollarValue, count(*) as CountOfDonations
 from Solicitors s
