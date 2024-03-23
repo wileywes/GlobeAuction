@@ -41,6 +41,7 @@ namespace GlobeAuction.Models
             {
                 item.HighestBid = newHighestBid;
                 item.BidCount = bidCount;
+                item.IsFixedPriceSoldOut = item.IsFixedPrice && bidCount >= item.Quantity;
             }
         }
 
