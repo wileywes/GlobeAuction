@@ -449,6 +449,13 @@ namespace GlobeAuction.Helpers
             SendEmail(bidder.Email, "Your Bid Number for The GLOBE Auction", body);
         }
 
+        public void SendBidderOutbidEmail(Bidder bidder, int itemNumber, string itemTitle, string rebidUrl)
+        {
+            var body = GetBidderOutbidEmail(itemNumber, itemTitle, rebidUrl);
+
+            SendEmail(bidder.Email, "Your Have Been Outbid", body);
+        }
+
         public void SendBidderRegistrationNudge(Bidder bidder, bool hasBidderPaid)
         {
             var url = GetBidderPayLink(bidder.BidderId);
@@ -467,6 +474,20 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("SiteEmail", _gmailUsername, body);
             body = ReplaceToken("BidderNumber", bidderNumber.ToString(), body);
             body = ReplaceToken("CompletePaymentUrl", paymentUrl, body);
+
+            return body;
+        }
+
+        private string GetBidderOutbidEmail(int itemNumber, string itemTitle, string rebidUrl)
+        {
+            var body = GetEmailBody("bidderOutbid");
+
+            body = ReplaceToken("SiteName", _siteName, body);
+            body = ReplaceToken("SiteUrl", _siteUrl, body);
+            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("ItemNumber", itemNumber.ToString(), body);
+            body = ReplaceToken("ItemTitle", itemTitle, body);
+            body = ReplaceToken("RebidUrl", rebidUrl, body);            
 
             return body;
         }

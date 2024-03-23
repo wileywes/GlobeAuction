@@ -585,6 +585,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudge.html" />
     <Content Include="Content\EmailTemplates\inlined\auctionWinningsNudgeAfterEvent.html" />
+    <Content Include="Content\EmailTemplates\inlined\bidderOutbid.html" />
     <Content Include="Content\EmailTemplates\inlined\bidderRegistrationNudgeForPaidBidder.html" />
     <Content Include="Content\EmailTemplates\inlined\invoiceNotPaid.html" />
     <Content Include="Content\EmailTemplates\inlined\bidderNotPaid.html" />
@@ -741,7 +742,10 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\GlobeAuction - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\GlobeAuction - ReadOnly - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\GlobeAuction - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\GlobeAuction - Web Deploy1.pubxml" />
     <None Include="Properties\PublishProfiles\GlobeAuction.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
