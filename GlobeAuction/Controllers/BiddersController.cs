@@ -927,5 +927,13 @@ namespace GlobeAuction.Controllers
             viewModel.RegistrationInvoice = db.Invoices.FirstOrDefault(i => i.InvoiceType == InvoiceType.BidderRegistration && i.Bidder.BidderId == bidder.BidderId);
             return viewModel;
         }
+
+        [HttpGet]
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult SendSms(string phone, string msg)
+        {
+            new SmsHelper().SendSms(phone, msg);
+            return RedirectToAction("Index");
+        }
     }
 }
