@@ -172,6 +172,7 @@
                         @Html.DisplayFor(modelItem => item.HighestBid)
                     </td>
                     <td class="text-nowrap">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.AuctionItemId }) |
                         @Html.ActionLink("Details", "Details", new { id = item.AuctionItemId })
                     </td>
                 </tr>
