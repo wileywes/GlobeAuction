@@ -33,8 +33,8 @@ textarea {
 @media (min-width: 767px) {
     .navbar-logo {
         min-height: 130px;
-        background: url("/Content/Images/Logo.jpg") center 0px no-repeat;
-        background-size: 130px 130px;
+        background: url("/Content/Images/auction-logo.png") center 0px no-repeat;
+        background-size: 180px 130px;
         /*text-align: center;*/
     }
 

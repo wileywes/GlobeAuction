@@ -19,7 +19,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/register",
-                    ImageUrl = "~/Content/Images/h_Register2.gif",
+                    ImageUrl = "~/Content/Images/icon_register.png",
                     Name = "REGISTER"
                 });
             }
@@ -28,7 +28,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/donate",
-                    ImageUrl = "~/Content/Images/h_Donate.gif",
+                    ImageUrl = "~/Content/Images/icon_Donate.png",
                     Name = "DONATE"
                 });
             }
@@ -37,7 +37,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/catalog",
-                    ImageUrl = "~/Content/Images/h_catalog.gif",
+                    ImageUrl = "~/Content/Images/icon_catalog.png",
                     Name = "CATALOG"
                 });
             }
@@ -46,7 +46,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/bidders/bids",
-                    ImageUrl = "~/Content/Images/h_bid.gif",
+                    ImageUrl = "~/Content/Images/icon_bid.png",
                     Name = "BIDS"
                 });
             }
@@ -55,7 +55,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/faqs",
-                    ImageUrl = "~/Content/Images/h_faq.gif",
+                    ImageUrl = "~/Content/Images/icon_faqs.png",
                     Name = "FAQs"
                 });
             }
@@ -64,7 +64,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/store",
-                    ImageUrl = "~/Content/Images/h_store.gif",
+                    ImageUrl = "~/Content/Images/icon_store.png",
                     Name = "STORE"
                 });
             }
@@ -73,7 +73,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/home/sponsors",
-                    ImageUrl = "~/Content/Images/h_sponsors.gif",
+                    ImageUrl = "~/Content/Images/icon_sponsors.png",
                     Name = "SPONSORS"
                 });
             }
@@ -82,7 +82,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Add(new MenuLayoutButton
                 {
                     Href = "/home/shoutouts",
-                    ImageUrl = "~/Content/Images/h_shoutouts.gif",
+                    ImageUrl = "~/Content/Images/icon_shoutout.png",
                     Name = "SHOUT OUTS"
                 });
             }
@@ -90,7 +90,7 @@ namespace GlobeAuction.Helpers
             allEnabledButtons.Add(new MenuLayoutButton
             {
                 Href = "/account/login",
-                ImageUrl = "~/Content/Images/h_Volunteer.gif",
+                ImageUrl = "~/Content/Images/icon_Volunteers.png",
                 Name = "VOLUNTEERS",
                 Id = "loginLink"
             }); ;
@@ -101,7 +101,7 @@ namespace GlobeAuction.Helpers
                 allEnabledButtons.Insert(0, new MenuLayoutButton
                 {
                     Href = "/Home",
-                    ImageUrl = "~/Content/Images/h_Home.gif",
+                    ImageUrl = "~/Content/Images/icon_Home.png",
                     Name = "HOME"
                 });
             }
