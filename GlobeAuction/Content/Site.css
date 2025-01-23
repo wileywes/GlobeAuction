@@ -34,7 +34,7 @@ textarea {
     .navbar-logo {
         min-height: 130px;
         background: url("/Content/Images/auction-logo.png") center 0px no-repeat;
-        background-size: 180px 130px;
+        background-size: 180px 120px;
         /*text-align: center;*/
     }
 
