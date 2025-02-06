@@ -49,6 +49,7 @@ namespace GlobeAuction.Helpers
     public class EmailHelper : IEmailHelper
     {
         private static readonly string _gmailUsername = ConfigurationManager.AppSettings["GmailAccountUsername"];
+        private static readonly string _siteEmailReplyTo = ConfigurationManager.AppSettings["SiteEmailReplyTo"];        
         private static readonly string _siteName = ConfigurationManager.AppSettings["SiteName"];
         private static readonly string _siteUrl = ConfigurationManager.AppSettings["SiteUrl"];
         private static readonly string _allEmailBcc = ConfigurationManager.AppSettings["AllEmailBcc"];
@@ -298,7 +299,7 @@ namespace GlobeAuction.Helpers
 
             body = ReplaceToken("InvoiceLines", linesHtml, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
 
             return body;
         }
@@ -351,7 +352,7 @@ namespace GlobeAuction.Helpers
             }
 
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
 
             return body;
         }
@@ -375,7 +376,7 @@ namespace GlobeAuction.Helpers
             }
             body = ReplaceToken("InvoiceLines", linesHtml, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
 
             return body;
         }
@@ -397,7 +398,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("ReceiptId", receiptId.ToString(), body);
 
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
             body = ReplaceToken("SiteName", _siteName, body);
 
             return body;
@@ -435,7 +436,7 @@ namespace GlobeAuction.Helpers
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
             body = ReplaceToken("CompletePaymentUrl", paymentUrl, body);
 
             return body;
@@ -471,7 +472,7 @@ namespace GlobeAuction.Helpers
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
             body = ReplaceToken("BidderNumber", bidderNumber.ToString(), body);
             body = ReplaceToken("CompletePaymentUrl", paymentUrl, body);
 
@@ -484,7 +485,7 @@ namespace GlobeAuction.Helpers
 
             body = ReplaceToken("SiteName", _siteName, body);
             body = ReplaceToken("SiteUrl", _siteUrl, body);
-            body = ReplaceToken("SiteEmail", _gmailUsername, body);
+            body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
             body = ReplaceToken("ItemNumber", itemNumber.ToString(), body);
             body = ReplaceToken("ItemTitle", itemTitle, body);
             body = ReplaceToken("RebidUrl", rebidUrl, body);            
@@ -520,7 +521,7 @@ namespace GlobeAuction.Helpers
                 subject = "TEST: " + subject;
             }
 
-            var msg = new MailMessage(new MailAddress(_gmailUsername, _siteName), new MailAddress(to))
+            var msg = new MailMessage(new MailAddress(_siteEmailReplyTo, _siteName), new MailAddress(to))
             {
                 Body = body,
                 IsBodyHtml = true,

@@ -244,7 +244,7 @@ namespace GlobeAuction.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact auction@theglobeacademy.net.");
+                    ModelState.AddModelError("", $"You must register a least one guest.  If you have any questions please contact ptccglobeauction@gmail.com.");
                 }
             }
             catch (OutOfStockException oosExc)

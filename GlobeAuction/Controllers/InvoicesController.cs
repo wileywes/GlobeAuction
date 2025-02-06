@@ -224,7 +224,7 @@ namespace GlobeAuction.Controllers
                     $"<b>Payment Method:</b> {invoice.PaymentMethod}<br />" +
                     $"<b>Invoice Type:</b> {invoice.InvoiceType}<br />";
 
-                EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Paid Item Removed from Invoice - Refund Needed", body);
+                EmailHelperFactory.Instance().SendEmail("ptccglobeauction@gmail.com", "Paid Item Removed from Invoice - Refund Needed", body);
             }
 
             return RedirectToAction("ReviewBidderWinnings", new { bid = bidderId, email = bidderEmail });

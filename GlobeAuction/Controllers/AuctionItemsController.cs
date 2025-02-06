@@ -1005,7 +1005,7 @@ namespace GlobeAuction.Controllers
                     $"<b>Bid Amount:</b> {bid.BidAmount:C}<br /><br />" +
                     $"You can view the other bids on the item here: {Url.Action("Details", "AuctionItems", new { id = item.AuctionItemId }, Request.Url.Scheme)}";
 
-                EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Winning Bid Deleted - Another Winner Possible", body);
+                EmailHelperFactory.Instance().SendEmail("ptccglobeauction@gmail.com", "Winning Bid Deleted - Another Winner Possible", body);
             }
 
             return RedirectToAction("Details", new { id = aid });
@@ -1050,7 +1050,7 @@ namespace GlobeAuction.Controllers
                 $"<b>Bid Amount:</b> {bid.BidAmount:C}<br /><br />" +
                 $"You can view the bids on the item here: {Url.Action("Details", "AuctionItems", new { id = item.AuctionItemId }, Request.Url.Scheme)}";
 
-            EmailHelperFactory.Instance().SendEmail("auction@theglobeacademy.net", "Bid Manually Marked as Winning", body);
+            EmailHelperFactory.Instance().SendEmail("ptccglobeauction@gmail.com", "Bid Manually Marked as Winning", body);
 
             return RedirectToAction("Details", new { id = aid });
         }
