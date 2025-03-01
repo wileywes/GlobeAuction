@@ -220,6 +220,7 @@ namespace GlobeAuction.Models
         public int Quantity { get; set; }
         public bool HasWinnerBeenEmailed { get; set; }
         public string UseDigitalCertificateForWinner { get; set; }
+        public string DigitalCertificateUrl { get; set; }
 
         public DonationItemViewModel()
         {
@@ -237,6 +238,7 @@ namespace GlobeAuction.Models
             this.HasDisplay = item.HasDisplay ? "Yes" : "No";
             this.IsReceived = item.IsReceived ? "Yes" : "No";
             this.UseDigitalCertificateForWinner = item.UseDigitalCertificateForWinner ? "Yes" : "No";
+            this.DigitalCertificateUrl = item.DigitalCertificateUrl;
             this.Quantity = item.Quantity;
         }
     }

@@ -23,10 +23,10 @@ namespace GlobeAuction.Helpers
 
         public void DoMaintenance(CancellationToken cancelToken)
         {
+            var emailHelper = new EmailHelper(_baseFilePath);
+
             try
             {
-                var emailHelper = new EmailHelper(_baseFilePath);
-
                 while (true)
                 {
                     if (cancelToken.IsCancellationRequested) return;
@@ -50,7 +50,7 @@ namespace GlobeAuction.Helpers
 
                 var body = "Background thread is crashing" + Environment.NewLine + exc;
 
-                EmailHelperFactory.Instance().SendEmail("williams.wes@gmail.com", null, "Auction Site Error", body, false, null, null);
+                emailHelper.SendEmail("williams.wes@gmail.com", null, "Auction Site Error", body, false, null, null);
             }
         }        
 

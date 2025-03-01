@@ -96,6 +96,7 @@ namespace GlobeAuction.Models
         public bool IsDeleted { get; set; }
         public bool IsInStore { get; set; }
         public bool UseDigitalCertificateForWinner { get; set; }
+        public string DigitalCertificateUrl { get; set; }
 
         public virtual Solicitor Solicitor { get; set; }
         public virtual Donor Donor { get; set; }

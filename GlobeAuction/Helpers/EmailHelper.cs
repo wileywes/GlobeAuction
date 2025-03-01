@@ -67,7 +67,7 @@ namespace GlobeAuction.Helpers
         public EmailHelper(string baseFilePath)
         {
             _baseFilePath = baseFilePath;
-            _isLocalHost = Environment.MachineName.Equals("desktop-xps", StringComparison.OrdinalIgnoreCase);
+            _isLocalHost = Environment.MachineName.StartsWith("desktop", StringComparison.OrdinalIgnoreCase);
         }
 
         private string GetEmailBody(string inlinedTemplateName)
@@ -156,7 +156,8 @@ namespace GlobeAuction.Helpers
                 item.Title, item.Description,
                 item.Donor.BusinessName, item.Donor.ContactName, item.Donor.Email, item.Donor.Phone,
                 item.ExpirationDate.HasValue ? "Expires: " + item.ExpirationDate.Value.ToString("d") : string.Empty,
-                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId);
+                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId,
+                item.DigitalCertificateUrl);
 
             SendEmail(bidder.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
@@ -168,7 +169,8 @@ namespace GlobeAuction.Helpers
                 item.Title, item.Description,
                 item.Donor.BusinessName, item.Donor.ContactName, item.Donor.Email, item.Donor.Phone,
                 item.ExpirationDate.HasValue ? "Expires: " + item.ExpirationDate.Value.ToString("d") : string.Empty,
-                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId);
+                !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId,
+                item.DigitalCertificateUrl);
 
             SendEmail(invoice.Email, item.Donor.Email, "Certificate of Auction Won", body);
         }
@@ -382,9 +384,11 @@ namespace GlobeAuction.Helpers
         }
 
         private string GetDonationItemCertificateEmail(string winnerName, string itemTitle, string itemDescription, string donorBusiness,
-            string donorName, string donorEmail, string donorPhone, string itemDetails1, string itemDetails2, int receiptId)
+            string donorName, string donorEmail, string donorPhone, string itemDetails1, string itemDetails2, int receiptId,
+            string digitalCertificateUrl)
         {
-            var body = GetEmailBody("donationItemCertificate");
+            var templateName = string.IsNullOrEmpty(digitalCertificateUrl) ? "donationItemCertificate" : "donationItemCertificateWithUrl";
+            var body = GetEmailBody(templateName);
 
             body = ReplaceToken("WinnerName", winnerName, body);
             body = ReplaceToken("Title", itemTitle, body);
@@ -396,6 +400,7 @@ namespace GlobeAuction.Helpers
             body = ReplaceToken("ItemDetails1", itemDetails1, body);
             body = ReplaceToken("ItemDetails2", itemDetails2, body);
             body = ReplaceToken("ReceiptId", receiptId.ToString(), body);
+            body = ReplaceToken("DigitalCertificateUrl", digitalCertificateUrl, body);
 
             body = ReplaceToken("SiteUrl", _siteUrl, body);
             body = ReplaceToken("SiteEmail", _siteEmailReplyTo, body);
