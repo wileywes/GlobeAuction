@@ -159,7 +159,10 @@ namespace GlobeAuction.Helpers
                 !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId,
                 item.DigitalCertificateUrl);
 
-            SendEmail(bidder.Email, item.Donor.Email, "Certificate of Auction Won", body);
+            //only include the donor on the email if we have no certificate
+            var donorEmail = string.IsNullOrEmpty(item.DigitalCertificateUrl) ? item.Donor.Email : string.Empty;
+
+            SendEmail(bidder.Email, donorEmail, "Certificate of Auction Won", body);
         }
 
         public void SendDonationItemCertificate(Invoice invoice, DonationItem item, int receiptId)
@@ -172,7 +175,10 @@ namespace GlobeAuction.Helpers
                 !string.IsNullOrEmpty(item.Restrictions) ? "Restrictions: " + item.Restrictions : string.Empty, receiptId,
                 item.DigitalCertificateUrl);
 
-            SendEmail(invoice.Email, item.Donor.Email, "Certificate of Auction Won", body);
+            //only include the donor on the email if we have no certificate
+            var donorEmail = string.IsNullOrEmpty(item.DigitalCertificateUrl) ? item.Donor.Email : string.Empty;
+
+            SendEmail(invoice.Email, donorEmail, "Certificate of Auction Won", body);
         }
 
         public void SendAuctionWinningsPaymentNudge(Bidder bidder, List<Bid> winnings, string payLink, bool isAfterEvent)
