@@ -45,7 +45,7 @@ namespace GlobeAuction.Migrations
                 ('donationItemCertificate', 'Sends certificates for digital items when they are paid for via auction checkout or a store purchase.', 'Certificate of Auction Won', 'WinnerName,Title,Description,DonorBusiness,DonorName,DonorEmail,DonorPhone,ItemDetails1,ItemDetails2,ReceiptId,SiteName,SiteUrl,SiteEmail', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
 
             Sql(@"INSERT INTO [dbo].[EmailTemplates] (Name, Description, Subject, SupportedTokensCsvList, HtmlBody, CreateDate, UpdateDate, UpdateBy) VALUES 
-                ('donorReceipt', 'Sends donor receipts for all donation items with a dollar value.', 'Thanks for your contribution to ""An Evening Around the GLOBE""', 'DonationTotal,DonorName,CurrentDate,DonationLines', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
+                ('donorReceipt', 'Sends donor receipts for all donation items with a dollar value.', 'Thanks for your contribution to ""The PTCC GLOBE Auction""', 'DonationTotal,DonorName,CurrentDate,DonationLines', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");
 
             Sql(@"INSERT INTO [dbo].[EmailTemplates] (Name, Description, Subject, SupportedTokensCsvList, HtmlBody, CreateDate, UpdateDate, UpdateBy) VALUES 
                 ('donorReceiptLine', 'Template inside of donor receipts for each line item', 'subject not used', 'LineName,LinePrice', 'HtmlBody', '2023-04-14', '2023-04-14', 'wes')");

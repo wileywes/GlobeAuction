@@ -257,7 +257,7 @@ namespace GlobeAuction.Helpers
 
             var imagesToEmbed = new Dictionary<string, string> { { "<!--%HeaderImage-->", headerPath } };
 
-            SendEmail(donor.Email, null, "Thanks for your contribution to \"An Evening Around the GLOBE\"", body,
+            SendEmail(donor.Email, null, "Thanks for your contribution to \"The PTCC GLOBE Auction\"", body,
                 false, _donorReceiptEmailBcc, imagesToEmbed);
         }
 
