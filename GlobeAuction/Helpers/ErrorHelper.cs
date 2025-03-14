@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace GlobeAuction.Helpers
 {
@@ -19,6 +20,8 @@ namespace GlobeAuction.Helpers
             if (request.Url.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase)) return;
             if (lastException.Message.Contains("was not found or does not implement IController.")) return;
             if (lastException.Message.Contains("The requested resource can only be accessed via SSL")) return;
+            if (lastException.Message.Contains("A potentially dangerous Request.Path value was detected from the client")) return;
+            if (lastException is HttpAntiForgeryException) return;
 
             NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
