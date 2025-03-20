@@ -66,6 +66,19 @@ inner join donors d on di.donor_donorid = d.donorid
 left join auctionitems ai on ai.AuctionItemId = di.AuctionItem_AuctionItemId
 where di.UseDigitalCertificateForWinner=1
   and IsDeleted=0
+  
+--all donated items
+select ac.Name as CategoryName, ai.UniqueItemNumber as AuctionItemNumber,
+  ai.Title as AuctionItemTitle,
+  di.Title as DonationItemTitle,
+  di.HasDisplay,
+  di.IsReceived,
+  di.UseDigitalCertificateForWinner,
+  di.DigitalCertificateUrl
+from donationitems di
+left join auctionitems ai on ai.AuctionItemId = di.AuctionItem_AuctionItemId
+left join AuctionCategories ac on ac.AuctionCategoryId = ai.Category_AuctionCategoryId
+where IsDeleted=0
 
 
 --duplicate unpaid bidders to clean up

@@ -847,14 +847,22 @@ namespace GlobeAuction.Controllers
 
                             //after saving DB changes, now go text those bidders
                             var bidLink = Url.Action("EnterBid", "Bidders", new { itemNo = item.UniqueItemNumber }, Request.Url.Scheme);
-                            //var body = string.Format("You have been outbid on item # {0} ({1}).  Click here to rebid: {2}", itemNo, item.Title, bidLink);
+                            var body = string.Format("You have been outbid on item # {0} ({1}).  Click here to rebid: {2}", itemNo, item.Title, bidLink);
 
-                            //var txtHelper = new SmsHelper();
+                            var txtHelper = new SmsHelper();
                             var emailHelper = new EmailHelper();
                             foreach (var lostBidder in biddersThatLost)
                             {
-                                //txtHelper.SendSms(lostBidder.Phone, body);
-                                emailHelper.SendBidderOutbidEmail(lostBidder, item.UniqueItemNumber, item.Title, bidLink);
+                                try
+                                {
+                                    txtHelper.SendSms(lostBidder.Phone, body);
+                                }
+                                catch (Exception exc)
+                                {
+                                    NLog.LogManager.GetCurrentClassLogger().WarnException("Failed to send SMS for oubid.  Sending email instead.", exc);
+
+                                    emailHelper.SendBidderOutbidEmail(lostBidder, item.UniqueItemNumber, item.Title, bidLink);
+                                }
                             }
 
                             return RedirectToAction("Bids", "Bidders");
