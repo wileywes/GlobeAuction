@@ -25,7 +25,8 @@ namespace GlobeAuction.Helpers
         DonatePage_SubHeaderNote,
         RegisterPage_StoreItemsSectionHeader,
         RegisterPage_StoreItemsSectionDescription,
-        RegisterPage_IsTicketPurchaseEnabled
+        RegisterPage_IsTicketPurchaseEnabled,
+        HomePage_VolunteerLink
     }
 
     public static class ConfigHelper
