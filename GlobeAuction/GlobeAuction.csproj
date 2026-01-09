@@ -908,6 +908,7 @@
     <Content Include="Views\EmailTemplates\Details.cshtml" />
     <Content Include="Views\EmailTemplates\Edit.cshtml" />
     <Content Include="Views\EmailTemplates\Index.cshtml" />
+    <Content Include="Views\CarouselPictures\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

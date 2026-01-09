@@ -945,5 +945,13 @@ namespace GlobeAuction.Controllers
             new SmsHelper().SendSms(phone, msg);
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        [Authorize(Roles = AuctionRoles.CanEditBidders)]
+        public ActionResult SendTestEmail()
+        {
+            new EmailHelper().SendEmail("williams.wes@gmail.com", "Test email from GlobeAuction", "Test body of email");
+            return RedirectToAction("Index");
+        }
     }
 }
