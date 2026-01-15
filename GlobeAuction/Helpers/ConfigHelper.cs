@@ -20,6 +20,7 @@ namespace GlobeAuction.Helpers
         HomePage_WhenHtml,
         HomePage_WhereHtml,
         HomePage_FooterHtml,
+        HomePage_VolunteerLink,
         SponsorLevelsOrdered,
         DonatePage_HeaderNote,
         DonatePage_SubHeaderNote,
