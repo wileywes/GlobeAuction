@@ -117,7 +117,14 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year</p>
+            <p>
+                &copy; @DateTime.Now.Year
+                @if (string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Home", StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "Index", StringComparison.OrdinalIgnoreCase))
+                {
+                    @: | <a href="/account/login">Admin</a>
+                }
+            </p>
         </footer>
     </div>
 

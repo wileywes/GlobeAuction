@@ -87,13 +87,17 @@ namespace GlobeAuction.Helpers
                 });
             }
 
-            allEnabledButtons.Add(new MenuLayoutButton
+            var volunteerLink = ConfigHelper.GetConfigValue(ConfigNames.HomePage_VolunteerLink);
+            if (!string.IsNullOrEmpty(volunteerLink))
             {
-                Href = "/account/login",
-                ImageUrl = "~/Content/Images/icon_Volunteers.png",
-                Name = "VOLUNTEERS",
-                Id = "loginLink"
-            }); ;
+                allEnabledButtons.Add(new MenuLayoutButton
+                {
+                    Href = volunteerLink,
+                    ImageUrl = "~/Content/Images/icon_Volunteers.png",
+                    Name = "VOLUNTEERS",
+                    Id = "loginLink"
+                });
+            }
 
             //add in the Home button if we have an odd number right now
             if (allEnabledButtons.Count % 2 == 1)
