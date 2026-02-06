@@ -98,11 +98,7 @@ namespace GlobeAuction.Controllers
 
                         if (itemImage != null && itemImage.ContentLength > 0)
                         {
-                            var fileName = Path.GetFileName(itemImage.FileName);
-                            var path = Path.Combine(Server.MapPath(Constants.ItemImagePathBase), fileName);
-                            itemImage.SaveAs(path);
-
-                            donationItem.ImageUrl = Constants.ItemImagePathBase + "/" + fileName;
+                            donationItem.ImageUrl = new ImageHelper(Server).SaveItemImageAndGetUrl(itemImage);
                         }
 
                         db.DonationItems.Add(donationItem);

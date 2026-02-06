@@ -387,11 +387,7 @@ namespace GlobeAuction.Controllers
                     var file = files.FirstOrDefault(f => f != null && f.ContentLength > 0);
                     if (file == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-                    var fileName = Path.GetFileName(file.FileName);
-                    var path = Path.Combine(Server.MapPath(Constants.ItemImagePathBase), fileName);
-                    file.SaveAs(path);
-
-                    auctionItemForImage.ImageUrl = Constants.ItemImagePathBase + "/" + fileName;
+                    auctionItemForImage.ImageUrl = new ImageHelper(Server).SaveItemImageAndGetUrl(file);
                     db.SaveChanges();
                     break;
             }

@@ -252,6 +252,7 @@
     <Compile Include="Helpers\BidderRepository.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\MutexByKey.cs" />
     <Compile Include="Helpers\RevenueHelper.cs" />
     <Compile Include="Helpers\SmsHelper.cs" />
