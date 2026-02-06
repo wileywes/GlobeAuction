@@ -6,11 +6,20 @@
 
 <h2>Delete Auction Item</h2>
 
-<p>Are you sure you want to delete this auction item?  
-    Any donation items attached to this auction item will be returned to the pool and will NOT be deleted.
-    Only this auction item "container" will be removed and the donation items can be moved to another basket or single auction item.
-</p>
-
+@if (Model.AllBids.Any())
+{
+    <p>
+        This auction item cannot be deleted as there are active bids on the item.  To delete the item
+        you must first go to the Details page and remove bids from there.
+    </p>
+}
+else
+{
+    <p>Are you sure you want to delete this auction item?  
+        Any donation items attached to this auction item will be returned to the pool and will NOT be deleted.
+        Only this auction item "container" will be removed and the donation items can be moved to another basket or single auction item.
+    </p>
+}
 
 <div>
     <hr />
@@ -103,11 +112,19 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+
+            @if (!Model.AllBids.Any())
+            {
+                <span>
+                    <input type="submit" value="Delete" class="btn btn-default" /> |
+                </span>
+            }
+    
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

@@ -2,7 +2,7 @@
 
 select t.name,
   (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) as FksReferencingTable,
-  'select * into [2024_' + name + '] from ' + name as BackupScript,
+  'select * into [2025_' + name + '] from ' + name as BackupScript,
   'ALTER TABLE [' + name + '] NOCHECK CONSTRAINT all' as DisableConstraint,
   'DELETE from ' + name as DeleteScript,
   'ALTER TABLE [' + name + '] WITH CHECK CHECK CONSTRAINT all' as EnableConstraint,
@@ -18,6 +18,7 @@ where [name] not in ('TicketTypes','__MigrationHistory','Faqs','FaqCategories','
  and name not like '2022_%'
  and name not like '2023_%'
  and name not like '2024_%'
+ and name not like '2025_%'
 order by (select count(*) from sys.foreign_keys where referenced_object_id=t.object_id) asc
 
 select * into [AuctionCategories] from 2023_AuctionCategories
@@ -29,24 +30,24 @@ from [2023_AuctionCategories]
 
 
 --1) run the SELECT INTO statements
-select * into [2024_TicketPurchases] from TicketPurchases
-select * into [2024_Bids] from Bids
-select * into [2024_ShoutOuts] from ShoutOuts
-select * into [2024_CatalogFavorites] from CatalogFavorites
-select * into [2024_EmailTemplates] from EmailTemplates
-select * into [2024_StoreItemPurchases] from StoreItemPurchases
-select * into [2024_BundleComponents] from BundleComponents
-select * into [2024_Sponsors] from Sponsors
-select * into [2024_Students] from Students
-select * into [2024_AuctionGuests] from AuctionGuests
-select * into [2024_Solicitors] from Solicitors
-select * into [2024_DonationItems] from DonationItems
-select * into [2024_Donors] from Donors
-select * into [2024_PayPalTransactions] from PayPalTransactions
-select * into [2024_AuctionItems] from AuctionItems
-select * into [2024_Invoices] from Invoices
-select * into [2024_StoreItems] from StoreItems
-select * into [2024_Bidders] from Bidders
+select * into [2025_TicketPurchases] from TicketPurchases
+select * into [2025_Bids] from Bids
+select * into [2025_ShoutOuts] from ShoutOuts
+select * into [2025_CatalogFavorites] from CatalogFavorites
+select * into [2025_EmailTemplates] from EmailTemplates
+select * into [2025_StoreItemPurchases] from StoreItemPurchases
+select * into [2025_BundleComponents] from BundleComponents
+select * into [2025_Sponsors] from Sponsors
+select * into [2025_Students] from Students
+select * into [2025_AuctionGuests] from AuctionGuests
+select * into [2025_Solicitors] from Solicitors
+select * into [2025_DonationItems] from DonationItems
+select * into [2025_Donors] from Donors
+select * into [2025_PayPalTransactions] from PayPalTransactions
+select * into [2025_AuctionItems] from AuctionItems
+select * into [2025_Invoices] from Invoices
+select * into [2025_StoreItems] from StoreItems
+select * into [2025_Bidders] from Bidders
 
 --2) disable check constraints
 ALTER TABLE [TicketPurchases] NOCHECK CONSTRAINT all
