@@ -379,7 +379,6 @@ namespace GlobeAuction.Controllers
                     break;
                 case "UploadImage":
                     //image upload
-                    const string pathBase = "~/Content/images/AuctionItems";
                     if (!auctionItemIdForUpload.HasValue) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
                     var auctionItemForImage = db.AuctionItems.Find(auctionItemIdForUpload.Value);
@@ -389,10 +388,10 @@ namespace GlobeAuction.Controllers
                     if (file == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
                     var fileName = Path.GetFileName(file.FileName);
-                    var path = Path.Combine(Server.MapPath(pathBase), fileName);
+                    var path = Path.Combine(Server.MapPath(Constants.ItemImagePathBase), fileName);
                     file.SaveAs(path);
 
-                    auctionItemForImage.ImageUrl = pathBase + "/" + fileName;
+                    auctionItemForImage.ImageUrl = Constants.ItemImagePathBase + "/" + fileName;
                     db.SaveChanges();
                     break;
             }

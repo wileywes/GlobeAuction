@@ -63,7 +63,7 @@ namespace GlobeAuction.Specflow
                     Phone = "234-234-2345"
                 };
 
-                diController.Create(item, "1", categoryId.ToString());
+                diController.Create(item, "1", categoryId.ToString(), null);
                 ItemsContext.DonationItemsCreated.Add(item);
             }
         }

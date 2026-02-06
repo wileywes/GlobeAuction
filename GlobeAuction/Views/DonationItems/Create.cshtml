@@ -19,7 +19,7 @@
 
 <br />
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -205,6 +205,13 @@
             @Html.CheckBoxFor(model => model.HasDisplay, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.HasDisplay, "", new { @class = "text-danger" })
             (Do you have a display for this item?)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class = "control-label col-md-2">Image</label>
+        <div class="col-md-10">
+            <input type="file" name="itemImage" />
         </div>
     </div>
 

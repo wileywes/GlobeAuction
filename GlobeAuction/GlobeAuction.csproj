@@ -548,6 +548,10 @@
     <Compile Include="Migrations\202502282011331_DigitalCertificateUrl.Designer.cs">
       <DependentUpon>202502282011331_DigitalCertificateUrl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202602010136437_ImageUrlOnDonationItem.cs" />
+    <Compile Include="Migrations\202602010136437_ImageUrlOnDonationItem.Designer.cs">
+      <DependentUpon>202602010136437_ImageUrlOnDonationItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -1130,6 +1134,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202502282011331_DigitalCertificateUrl.resx">
       <DependentUpon>202502282011331_DigitalCertificateUrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602010136437_ImageUrlOnDonationItem.resx">
+      <DependentUpon>202602010136437_ImageUrlOnDonationItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

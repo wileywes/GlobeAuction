@@ -98,6 +98,9 @@ namespace GlobeAuction.Models
         public bool UseDigitalCertificateForWinner { get; set; }
         public string DigitalCertificateUrl { get; set; }
 
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
+
         public virtual Solicitor Solicitor { get; set; }
         public virtual Donor Donor { get; set; }
     }

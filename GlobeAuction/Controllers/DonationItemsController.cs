@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -72,7 +73,9 @@ namespace GlobeAuction.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, string quantity, string categorySelect)
+        public ActionResult Create([Bind(Exclude = "DonationItemId,CreateDate,UpdateDate,SolicitorId,DonorId")] DonationItem donationItem, 
+            string quantity, string categorySelect,
+            HttpPostedFileBase itemImage)
         {
             //do category with special handling
             ModelState.Remove("Category");
@@ -92,6 +95,15 @@ namespace GlobeAuction.Controllers
                         donationItem.Category = db.AuctionCategories.Find(int.Parse(categorySelect));
                         donationItem.CreateDate = donationItem.UpdateDate = Utilities.GetEasternTimeNow();
                         donationItem.UpdateBy = donationItem.Solicitor.Email;
+
+                        if (itemImage != null && itemImage.ContentLength > 0)
+                        {
+                            var fileName = Path.GetFileName(itemImage.FileName);
+                            var path = Path.Combine(Server.MapPath(Constants.ItemImagePathBase), fileName);
+                            itemImage.SaveAs(path);
+
+                            donationItem.ImageUrl = Constants.ItemImagePathBase + "/" + fileName;
+                        }
 
                         db.DonationItems.Add(donationItem);
                         db.SaveChanges();

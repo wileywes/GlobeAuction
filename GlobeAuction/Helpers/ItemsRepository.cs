@@ -59,7 +59,8 @@ namespace GlobeAuction.Helpers
                 Description = description,
                 Title = title,
                 DonationItems = items,
-                Quantity = items.Count == 1 ? items.First().Quantity : 1
+                Quantity = items.Count == 1 ? items.First().Quantity : 1,
+                ImageUrl = items.Count == 1 ? items.First().ImageUrl : null,
             };
         }
         
