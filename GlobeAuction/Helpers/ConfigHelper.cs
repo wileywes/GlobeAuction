@@ -20,13 +20,13 @@ namespace GlobeAuction.Helpers
         HomePage_WhenHtml,
         HomePage_WhereHtml,
         HomePage_FooterHtml,
+        HomePage_VolunteerLink,
         SponsorLevelsOrdered,
         DonatePage_HeaderNote,
         DonatePage_SubHeaderNote,
         RegisterPage_StoreItemsSectionHeader,
         RegisterPage_StoreItemsSectionDescription,
-        RegisterPage_IsTicketPurchaseEnabled,
-        HomePage_VolunteerLink
+        RegisterPage_IsTicketPurchaseEnabled
     }
 
     public static class ConfigHelper
