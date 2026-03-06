@@ -296,5 +296,102 @@ else
         $guestLastName.val(this.value);
     });
 
-    $("#AuctionGuests_0__TicketType").prop('selectedIndex', 0);    
+    $("#AuctionGuests_0__TicketType").prop('selectedIndex', 0);
+
+    // --- Begin dynamic total calculation for registration ---
+    (function () {
+        // parse numeric value from a string (removes any non numeric chars except period/minus)
+        function parseNumber(val) {
+            if (val === null || val === undefined) return 0;
+            var sOriginal = val.toString().trim();
+            if (sOriginal.length === 0) return 0;
+            // remove currency symbols and thousands separators (commas)
+            var sParsed = sOriginal.replace(/[^0-9\.]/g, '');
+            var n = parseFloat(sParsed);
+
+            /*if (n > 0) {
+                alert("Found float " + n + " from string " + sParsed + " originally " + sOriginal);
+            }*/
+            return isNaN(n) ? 0 : n;
+        }
+
+        function updateSubmitButtons(amount) {
+            var formatted = '$' + amount.toFixed(2);
+
+            $('input[name="submitButton"]').each(function () {
+                var $btn = $(this);
+                // store original label once
+                var base = $btn.data('baseLabel');
+                if (!base) {
+                    base = $btn.val();
+                    $btn.data('baseLabel', base);
+                    // store the original width so we can preserve a sensible minimum
+                    $btn.data('baseWidth', $btn.outerWidth());
+                }
+
+                // Update value to include total.
+                $btn.val(base + ' - Total: ' + formatted);
+
+                // Force reflow and allow button to expand:
+                // - ensure nowrap and inline-block (set via stylesheet in section Scripts)
+                // - set width:auto so element grows to content
+                // - keep a sensible min-width so layout doesn't collapse if label is shorter later
+                $btn.css({
+                    'width': 'auto',
+                    'min-width': (($btn.data('baseWidth') || $btn.outerWidth()) + 150) + 'px',
+                    'display': 'inline-block'
+                });
+            });
+        }
+
+        function computeTotal() {
+            var total = 0;
+            // Use name attribute pattern MVC uses: "ItemPurchases[0].Price" and "ItemPurchases[0].QuantityPurchased"
+            var $prices = $('input[name$=".Price"]');
+            var $qtys = $('input[name$=".QuantityPurchased"]');
+
+            // Iterate by index to avoid mismatches
+            $prices.each(function (idx) {
+                var price = parseNumber($(this).val());
+                var $qty = $qtys.eq(idx);
+                var qty = parseNumber($qty.val());
+                total += price * qty;
+            });
+
+            // Use name attribute pattern MVC uses: "AuctionGuests[0].TicketType"
+            var $tickets = $('select[name$=".TicketType"] option:selected');
+            
+            // Iterate by index to avoid mismatches
+            $tickets.each(function (idx) {
+                var ticketPrice = parseNumber($(this).text());
+                /*if (ticketPrice > 0) {
+                    alert("found ticket price " + ticketPrice + " for ticket " + idx);
+                }*/
+                total += ticketPrice;
+            });
+
+            updateSubmitButtons(total);
+        }
+
+        $(function () {
+            // store base labels and widths on load so we can use them later
+            $('input[name="submitButton"]').each(function () {
+                var $btn = $(this);
+                if (!$btn.data('baseLabel')) {
+                    $btn.data('baseLabel', $btn.val());
+                }
+                if (!$btn.data('baseWidth')) {
+                    $btn.data('baseWidth', $btn.outerWidth());
+                }
+                // ensure visual rules applied immediately
+                $btn.css({ 'white-space': 'nowrap', 'display': 'inline-block', 'width': 'auto' });
+            });
+
+            // compute initially
+            computeTotal();
+            // bind to quantity and price changes (quantity input likely to change)
+            $(document).on('input change', 'input[name$=".QuantityPurchased"], input[name$=".Price"], select[name$=".TicketType"]', computeTotal);
+        });
+    })();
+    // --- End dynamic total calculation ---
 </script>
