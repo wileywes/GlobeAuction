@@ -614,28 +614,6 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\Images\auction-logo.png" />
     <Content Include="Content\Images\AuctionItems\placeholder to create directory.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-107.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-109.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-115.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-118.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-122.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-126.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-133.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-144.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-15.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-174.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-195.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-223.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-279.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-299.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-329.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-331.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-361.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-365.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-369.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-385.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-7.jpg" />
-    <Content Include="Content\Images\Carousel\GlobeAcademyLiveAuction2024-85.jpg" />
     <Content Include="Content\Images\controls.png" />
     <Content Include="Content\Images\icon_1dollarraffle.png" />
     <Content Include="Content\Images\icon_bid.png" />
@@ -1142,6 +1120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Images\BidSheets\" />
+    <Folder Include="Content\Images\Carousel\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
