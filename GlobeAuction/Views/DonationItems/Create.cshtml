@@ -32,7 +32,9 @@
         </div>
     }
 
-    <div class="form-horizontal">
+<div class="form-horizontal">
+    <!-- Solicitor inputs are kept in the DOM so they still post back, but hidden from users -->
+    <div id="solicitorSection" style="display:none;">
         <h4>Solicitor Information</h4>
         <hr />
 
@@ -64,12 +66,14 @@
                 @Html.ValidationMessageFor(model => model.Solicitor.Email, "", new { @class = "text-danger" })
             </div>
         </div>
+    </div>
 
         <h4>Donor Information</h4>
         <hr />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Copy From Solicitor" class="btn btn-sm" id="copyFromSolicitor" />
+                <!-- Copy button hidden because solicitor fields are hidden -->
+                <input type="button" value="Copy From Solicitor" class="btn btn-sm" id="copyFromSolicitor" style="display:none;" />
             </div>
         </div>
         <div class="form-group">
@@ -254,9 +258,9 @@
             </div>
         </div>
     </div>
-}
+    }
 
-<script type="text/javascript">
+    <script type="text/javascript">
     $("#copyFromSolicitor").click(function () {
         $(@Html.IdFor(m => m.Donor.ContactName)).val(
             $(@Html.IdFor(m => m.Solicitor.FirstName)).val() + ' ' + $(@Html.IdFor(m => m.Solicitor.LastName)).val());
@@ -265,8 +269,8 @@
         $(@Html.IdFor(m => m.Donor.Phone)).val(
             $(@Html.IdFor(m => m.Solicitor.Phone)).val());
     });
-</script>
+    </script>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

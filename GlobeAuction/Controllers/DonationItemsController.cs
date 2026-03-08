@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.IO;
@@ -48,23 +49,24 @@ namespace GlobeAuction.Controllers
         public ActionResult Create()
         {
             AddDonationItemControlInfo(null);
+
             var previousSolicitor = TempData["PreviousSolicitor"] as Solicitor;
             if (previousSolicitor != null)
             {
-                var anotherDonation = new DonationItem
-                {
-                    Solicitor = new Solicitor
-                    {
-                        Email = previousSolicitor.Email,
-                        FirstName = previousSolicitor.FirstName,
-                        LastName = previousSolicitor.LastName,
-                        Phone = previousSolicitor.Phone
-                    }
-                };
                 ViewData["showSuccess"] = true;
-                return View(anotherDonation);
             }
-            return View();
+
+            var newModel = new DonationItem
+            {
+                Solicitor = new Solicitor
+                {
+                    Email = previousSolicitor?.Email ?? ConfigurationManager.AppSettings["SiteEmailReplyTo"],
+                    FirstName = previousSolicitor?.FirstName ?? "Not",
+                    LastName = previousSolicitor?.LastName ?? "Required",
+                    Phone = previousSolicitor?.Phone ?? "1234567890"
+                }
+            };
+            return View(newModel);
         }
 
         // POST: DonationItems/Create
